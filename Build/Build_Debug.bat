@@ -1,0 +1,1 @@
+cmake --build ./vs2022_Interedit_x64 --config Debug -j 999
