@@ -67,7 +67,7 @@ if "%option_md%" NEQ "" (
 )
 
 del /s /q "./CMakeCache.txt"
-cmake ../../Project/Interedit -G %option_visual_studio% -A %option_platform% -T %option_generator_toolset%
+cmake ../../../Project/Interedit -G %option_visual_studio% -A %option_platform% -T %option_generator_toolset%
 if %ERRORLEVEL% neq 0 (
     echo 运行cmake出错
     pause
