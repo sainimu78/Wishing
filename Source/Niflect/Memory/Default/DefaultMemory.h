@@ -22,7 +22,7 @@ namespace Niflect
 		static void End();
 	};
 
-	void MyThreadTest();
+	void TestMemoryStatsOnThreads();
 
 	class CMemoryStats;
 	NIFLECT_API CMemoryStats* DebugGetMemoryStats();

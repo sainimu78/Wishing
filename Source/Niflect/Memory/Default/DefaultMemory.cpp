@@ -39,7 +39,7 @@ namespace Niflect
 		std::cout << memTest << std::endl;
 	}
 
-	void MyThreadTest()
+	void TestMemoryStatsOnThreads()
 	{
 		std::vector<std::thread> threads;
 		for (int i = 0; i < 5; ++i)
