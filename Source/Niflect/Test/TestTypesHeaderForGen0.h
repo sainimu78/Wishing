@@ -20,6 +20,11 @@ namespace TestTypesForGen
 	class CMySubClass
 	{
 	public:
+		CMySubClass()
+			: m_memberFloatOfSub0(0.0f)
+		{
+
+		}
 		float m_memberFloatOfSub0;
 	};
 
