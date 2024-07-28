@@ -1,6 +1,7 @@
 set(ModuleName Niflect)
 
-set(SourcePath ${RootSourcePath}/Niflect)
+set(BaseSourcePath ${RootSourcePath}/Base)
+set(SourcePath ${BaseSourcePath}/Niflect)
 
 file(GLOB_RECURSE SrcAll ${SourcePath}/*.cpp ${SourcePath}/*.h)
 #list(APPEND SrcAll ${SrcDefault})
@@ -22,7 +23,7 @@ target_include_directories(${ModuleName}
 	#PRIVATE ${S3EngineIncludePath}
 	##todo: 现代码未合并到引擎, 因此暂使用SampleTest的路径, 合并后可移除
 	#PRIVATE ${BaseSourcePath}
-	PUBLIC ${RootSourcePath}
+	PUBLIC ${BaseSourcePath}
 )
 
 target_compile_definitions(${ModuleName} PRIVATE -DNIFLECT_EXPORTS -DNIFLECT_C_EXPORTS)
