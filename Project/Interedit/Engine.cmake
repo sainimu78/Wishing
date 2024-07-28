@@ -12,6 +12,10 @@ create_source_group(${RootSourcePath} ${SrcAll})
 
 add_library(${ModuleName} SHARED ${SrcAll})
 #set_target_properties(${ModuleName} PROPERTIES LINKER_LANGUAGE CXX)
+set_target_properties(${ModuleName} PROPERTIES 
+    RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG}
+    RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE}
+)
 
 target_include_directories(${ModuleName}
 	#PRIVATE ${RootSourcePath}
@@ -21,12 +25,9 @@ target_include_directories(${ModuleName}
 	PUBLIC ${SourcePath}
 )
 
-target_compile_definitions(${ModuleName} PRIVATE -DNIFLECT_EXPORTS -DNIFLECT_C_EXPORTS)
+target_compile_definitions(${ModuleName} PRIVATE -DENGINE_EXPORTS -DENGINE_C_EXPORTS)
 
-set_target_properties(${ModuleName} PROPERTIES 
-    RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG}
-    RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE}
-)
+target_link_libraries(${ModuleName} PRIVATE Niflect)
 
 set(LinkParentName ${ModuleName})
 #set(ThirdPartyPath "ThirdParty")

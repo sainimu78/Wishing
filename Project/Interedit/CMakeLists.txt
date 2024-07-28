@@ -18,3 +18,4 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${AppOutputPath}/Release)
 
 include(Editor.cmake)
 include(Engine.cmake)
+include(Niflect.cmake)

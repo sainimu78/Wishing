@@ -11,6 +11,7 @@ add_executable(${ModuleName} ${SrcAll})
 #set_target_properties(${ModuleName} PROPERTIES LINKER_LANGUAGE CXX)
 
 target_link_libraries(${ModuleName} PRIVATE Engine)
+target_link_libraries(${ModuleName} PRIVATE Niflect)
 
 target_include_directories(${ModuleName}
 	#PRIVATE ${RootSourcePath}
