@@ -22,10 +22,13 @@ target_include_directories(${ModuleName}
 	#PRIVATE ${S3EngineIncludePath}
 	##todo: 现代码未合并到引擎, 因此暂使用SampleTest的路径, 合并后可移除
 	#PRIVATE ${BaseSourcePath}
-	PUBLIC ${SourcePath}
+	PUBLIC ${RootSourcePath}
 )
 
-target_compile_definitions(${ModuleName} PRIVATE -DENGINE_EXPORTS -DENGINE_C_EXPORTS)
+target_compile_definitions(${ModuleName}
+	PRIVATE -DENGINE_EXPORTS
+	PRIVATE -DENGINE_C_EXPORTS
+)
 
 target_link_libraries(${ModuleName} PRIVATE Niflect)
 

@@ -10,3 +10,8 @@ FUNCTION(create_source_group relativeSourcePath)
     ENDIF(NOT folder STREQUAL "")
   ENDFOREACH(currentSourceFile ${ARGN})
 ENDFUNCTION(create_source_group)
+
+if (WIN32)
+	#避免如 freopen 的 Warning C4996
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+endif()
