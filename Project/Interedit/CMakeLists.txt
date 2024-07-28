@@ -16,6 +16,6 @@ get_filename_component(RootSourcePath "${CMAKE_CURRENT_SOURCE_DIR}/../../Source"
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${AppOutputPath}/Debug)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${AppOutputPath}/Release)
 
-include(Editor.cmake)
-include(Engine.cmake)
-include(Niflect.cmake)
+add_subdirectory(Editor)
+add_subdirectory(Engine)
+add_subdirectory(Niflect)
