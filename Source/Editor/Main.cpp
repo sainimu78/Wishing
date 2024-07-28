@@ -8,6 +8,8 @@ typedef void (*FuncTestAPI_C)();
 int main(int argc, char** argv)
 {
 	TestAPI_Cpp();
+	
+	using namespace Niflect;
 
 	auto mem = Niflect::CMemory::Alloc(10);
 	Niflect::CMemory::Free(mem);

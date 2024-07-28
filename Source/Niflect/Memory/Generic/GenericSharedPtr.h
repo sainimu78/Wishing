@@ -59,10 +59,10 @@ namespace Niflect
 
 		template <typename TDerived, typename TSameMemory>
 		friend class TGenericSharedPtr;
-		template <typename TDerived, typename TMemory2, typename TConstructFunc, typename ...TArgs>
-		friend TGenericSharedPtr<TDerived, TMemory2> GenericMakeShared(uint32 objSize, const InvokeDestructorFunc& DestructFunc, const TConstructFunc& ConstructFunc, TArgs&& ...args);
-		template <typename TDerived, typename TMemory2>
-		friend TGenericSharedPtr<TDerived, TMemory2> GenericMakeSharable(TDerived* rawPtr, const InvokeDestructorFunc& DestructFunc);
+		template <typename TBase, typename TMemory2, typename TConstructFunc, typename ...TArgs>
+		friend TGenericSharedPtr<TBase, TMemory2> GenericPlacementMakeShared(uint32 objSize, const InvokeDestructorFunc& DestructFunc, const TConstructFunc& ConstructFunc, TArgs&& ...args);
+		template <typename TBase, typename TMemory2>
+		friend TGenericSharedPtr<TBase, TMemory2> GenericPlacementMakeSharable(TBase* rawPtr, const InvokeDestructorFunc& DestructFunc);
 
 #ifdef TEST_GENERIC_SHARED_PTR
 		friend void TestSharedPtr::TestReferences();
@@ -174,8 +174,7 @@ namespace Niflect
 		}
 
 	private:
-		template <typename TDerived>
-		void InitWithData(TDerived* pointer, const InvokeDestructorFunc& DestructFunc)
+		void InitWithData(CClass* pointer, const InvokeDestructorFunc& DestructFunc)
 		{
 			ASSERT(m_data == NULL);
 			m_pointer = pointer;
@@ -183,8 +182,7 @@ namespace Niflect
 			StaticInitData(m_data, DestructFunc, false);
 			this->IncRef();
 		}
-		template <typename TDerived>
-		void InitWithSharedData(TDerived* pointer, const InvokeDestructorFunc& DestructFunc, SGenericSharedPtrData* data)
+		void InitWithSharedData(CClass* pointer, const InvokeDestructorFunc& DestructFunc, SGenericSharedPtrData* data)
 		{
 			ASSERT(m_data == NULL);
 			m_pointer = pointer;
@@ -249,26 +247,36 @@ namespace Niflect
 		CClass* m_pointer;
 		SGenericSharedPtrData* m_data;
 	};
-	template <typename TDerived, typename TMemory, typename TConstructFunc, typename ...TArgs>
-	static TGenericSharedPtr<TDerived, TMemory> GenericMakeShared(uint32 objSize, const InvokeDestructorFunc& DestructFunc, const TConstructFunc& ConstructFunc, TArgs&& ...args)
+	template <typename TBase, typename TMemory, typename TConstructFunc, typename ...TArgs>
+	static TGenericSharedPtr<TBase, TMemory> GenericPlacementMakeShared(uint32 objSize, const InvokeDestructorFunc& DestructFunc, const TConstructFunc& ConstructFunc, TArgs&& ...args)
 	{
-		TGenericSharedPtr<TDerived, TMemory> shared;
+		TGenericSharedPtr<TBase, TMemory> shared;
 		auto dataSize = sizeof(SGenericSharedPtrData);
 		auto mem = TMemory::Alloc(dataSize + objSize);
-		auto obj = reinterpret_cast<TDerived*>(static_cast<char*>(mem) + dataSize);
+		auto obj = reinterpret_cast<TBase*>(static_cast<char*>(mem) + dataSize);
 		ConstructFunc(obj, std::forward<TArgs>(args)...);
 		shared.InitWithSharedData(obj, DestructFunc, static_cast<SGenericSharedPtrData*>(mem));
 		return shared;
 	}
+	template <typename TDerived, typename TMemory, typename ...TArgs>
+	static TGenericSharedPtr<TDerived, TMemory> GenericMakeShared(TArgs&& ...args)
+	{
+		return GenericPlacementMakeShared<TDerived, TMemory>(sizeof(TDerived), &GenericInstanceInvokeDestructor<TDerived>, &GenericInstanceInvokeConstructor<TDerived, TArgs...>, std::forward<TArgs>(args)...);
+	}
 	//当基类未定义virtual析构时, 为确保安全释放子类对象, 应使用MakeSharable, 在创建原始子类raw指针后立即建立引用
 	//如果能确保基类定义virtual析构, 则直接使用构造函数或=都是能安全释放的
-	template <typename TDerived, typename TMemory>
-	inline static TGenericSharedPtr<TDerived, TMemory> GenericMakeSharable(TDerived* rawPtr, const InvokeDestructorFunc& DestructFunc)
+	template <typename TBase, typename TMemory>
+	static TGenericSharedPtr<TBase, TMemory> GenericPlacementMakeSharable(TBase* rawPtr, const InvokeDestructorFunc& DestructFunc)
 	{
-		TGenericSharedPtr<TDerived, TMemory> shared;
+		TGenericSharedPtr<TBase, TMemory> shared;
 		ASSERT(rawPtr != NULL);
 		shared.InitWithData(rawPtr, DestructFunc);
 		return shared;
+	}
+	template <typename TDerived, typename TMemory>
+	static TGenericSharedPtr<TDerived, TMemory> GenericMakeSharable(TDerived* rawPtr)
+	{
+		return GenericPlacementMakeSharable<TDerived, TMemory>(rawPtr, &GenericInstanceInvokeDestructor<TDerived>);
 	}
 
 #ifdef TEST_GENERIC_SHARED_PTR

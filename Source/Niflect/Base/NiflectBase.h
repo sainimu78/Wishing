@@ -37,12 +37,12 @@ namespace Niflect
 	template <typename T>
 	inline static TSharedPtr<T> MakeSharable(T* rawPtr)
 	{
-		return GenericMakeSharable<T, CMemory>(rawPtr, &GenericInstanceInvokeDestructor<T>);
+		return GenericMakeSharable<T, CMemory>(rawPtr);
 	}
 	template <typename T, typename ...TArgs>
 	inline static TSharedPtr<T> MakeShared(TArgs&& ...args)
 	{
-		return GenericMakeShared<T, CMemory>(sizeof(T), &GenericInstanceInvokeDestructor<T>, &GenericInstanceInvokeConstructor<T, TArgs...>, std::forward<TArgs>(args)...);
+		return GenericMakeShared<T, CMemory>(std::forward<TArgs>(args)...);
 	}
 	
 	using CString = StlCompliantType2::CBasicString<THeapAllocator<char> >;
