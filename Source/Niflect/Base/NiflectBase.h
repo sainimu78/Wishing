@@ -1,5 +1,6 @@
 #pragma once
-#include "Niflect/Memory/Default/DefaultMemory.h"
+#include "Niflect/Memory/DefaultMemory.h"
+#include "Niflect/Memory/AllocatorInterface.h"
 #include "Niflect/Memory/Generic/GenericHeapAllocator.h"
 #include "Niflect/Memory/Generic/GenericSharedPtr.h"
 #include "Niflect/Util/StlCompliant/StlCompliantString2.h"
@@ -13,6 +14,42 @@
 
 namespace Niflect
 {
+	class CMemory
+	{
+	public:
+		static void* Alloc(size_t size)
+		{
+			if (s_currentAllocator == NULL)
+				return CDefaultMemory::Alloc(size);
+			return s_currentAllocator->Alloc(size);
+		}
+		static void* Realloc(void* ptr, size_t size)
+		{
+			if (s_currentAllocator == NULL)
+				return CDefaultMemory::Realloc(ptr, size);
+			return s_currentAllocator->Realloc(ptr, size);
+		}
+		static void Free(void* ptr)
+		{
+			if (s_currentAllocator == NULL)
+			{
+				CDefaultMemory::Free(ptr);
+				return;
+			}
+			s_currentAllocator->Free(ptr);
+		}
+
+	public:
+		static void SetCurrentAllocator(IAllocatorInterface* p)
+		{
+			ASSERT(p == NULL || s_currentAllocator == NULL);
+			s_currentAllocator = p;
+		}
+
+	private:
+		NIFLECT_API static IAllocatorInterface* s_currentAllocator;
+	};
+
 	class CInstance
 	{
 	public:
