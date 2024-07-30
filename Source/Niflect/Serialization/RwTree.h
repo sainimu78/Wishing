@@ -8,18 +8,24 @@ namespace Niflect
 	{
 		None,
 		Bool,
+		Int16,
 		Int32,
+		Int64,
+		Uint16,
+		Uint32,
+		Uint64,
 		Float,
 		Double,
 		String,
+		RawData,
 	};
 
-	using CInternalRwBuffer = Niflect::CString;//用字符串是为顺便避免String类型的转换
+	typedef Niflect::CString CRwRawData;//用字符串是为顺便避免String类型的转换
 
 	class CRwValue
 	{
 	public:
-		CRwValue(CInternalRwBuffer& data, ERwValueType& type)
+		CRwValue(CRwRawData& data, ERwValueType& type)
 			: m_data(data)
 			, m_type(type)
 		{
@@ -28,53 +34,77 @@ namespace Niflect
 		{
 			return m_type;
 		}
-		void SetBool(bool val)
+		void SetBool(const bool& val)
 		{
-			m_type = ERwValueType::Bool;
-			auto cnt = sizeof(val);
-			m_data.resize(cnt);
-			memcpy(&m_data[0], &val, cnt);
+			this->SetBuiltInValue<ERwValueType::Bool>(val);
 		}
 		const bool& GetBool() const
 		{
-			ASSERT(m_type == ERwValueType::Bool);
-			return *reinterpret_cast<bool*>(&m_data[0]);
+			return this->GetBuiltInValue<ERwValueType::Bool, bool>();
 		}
-		void SetFloat(float val)
+		void SetInt16(const int16& val)
 		{
-			m_type = ERwValueType::Float;
-			auto cnt = sizeof(val);
-			m_data.resize(cnt);
-			memcpy(&m_data[0], &val, cnt);
+			this->SetBuiltInValue<ERwValueType::Int16>(val);
 		}
-		const float& GetFloat() const
+		const int16& GetInt16() const
 		{
-			ASSERT(m_type == ERwValueType::Float);
-			return *reinterpret_cast<float*>(&m_data[0]);
+			return this->GetBuiltInValue<ERwValueType::Int16, int16>();
 		}
-		void SetDouble(double val)
+		void SetInt32(const int32& val)
 		{
-			m_type = ERwValueType::Double;
-			auto cnt = sizeof(val);
-			m_data.resize(cnt);
-			memcpy(&m_data[0], &val, cnt);
-		}
-		const double& GetDouble() const
-		{
-			ASSERT(m_type == ERwValueType::Double);
-			return *reinterpret_cast<double*>(&m_data[0]);
-		}
-		void SetInt32(int32 val)
-		{
-			m_type = ERwValueType::Int32;
-			auto cnt = sizeof(val);
-			m_data.resize(cnt);
-			memcpy(&m_data[0], &val, cnt);
+			this->SetBuiltInValue<ERwValueType::Int32>(val);
 		}
 		const int32& GetInt32() const
 		{
-			ASSERT(m_type == ERwValueType::Int32);
-			return *reinterpret_cast<int32*>(&m_data[0]);
+			return this->GetBuiltInValue<ERwValueType::Int32, int32>();
+		}
+		void SetInt64(const int64& val)
+		{
+			this->SetBuiltInValue<ERwValueType::Int64>(val);
+		}
+		const int64& GetInt64() const
+		{
+			return this->GetBuiltInValue<ERwValueType::Int64, int64>();
+		}
+		void SetUint16(const uint16& val)
+		{
+			this->SetBuiltInValue<ERwValueType::Uint16>(val);
+		}
+		const uint16& GetUint16() const
+		{
+			return this->GetBuiltInValue<ERwValueType::Uint16, uint16>();
+		}
+		void SetUint32(const uint32& val)
+		{
+			this->SetBuiltInValue<ERwValueType::Uint32>(val);
+		}
+		const uint32& GetUint32() const
+		{
+			return this->GetBuiltInValue<ERwValueType::Uint32, uint32>();
+		}
+		void SetUint64(const uint64& val)
+		{
+			this->SetBuiltInValue<ERwValueType::Uint64>(val);
+		}
+		const uint64& GetUint64() const
+		{
+			return this->GetBuiltInValue<ERwValueType::Uint64, uint64>();
+		}
+		void SetFloat(const float& val)
+		{
+			this->SetBuiltInValue<ERwValueType::Float>(val);
+		}
+		const float& GetFloat() const
+		{
+			return this->GetBuiltInValue<ERwValueType::Float, float>();
+		}
+		void SetDouble(const double& val)
+		{
+			this->SetBuiltInValue<ERwValueType::Double>(val);
+		}
+		const double& GetDouble() const
+		{
+			return this->GetBuiltInValue<ERwValueType::Double, double>();
 		}
 		void SetString(const Niflect::CString& val)
 		{
@@ -86,45 +116,44 @@ namespace Niflect
 			ASSERT(m_type == ERwValueType::String);
 			return m_data;
 		}
+		void SetRawData(const CRwRawData& val)
+		{
+			m_type = ERwValueType::RawData;
+			m_data = val;
+		}
+		void SetRawData(const void* src, uint32 size)
+		{
+			m_type = ERwValueType::RawData;
+			m_data.resize(size);
+			memcpy(&m_data[0], src, size);
+		}
+		const CRwRawData& GetRawData() const
+		{
+			ASSERT(m_type == ERwValueType::RawData);
+			return m_data;
+		}
 
 	private:
-		CInternalRwBuffer& m_data;
+		template <ERwValueType TEnumType, typename TValue>
+		inline void SetBuiltInValue(const TValue& val)
+		{
+			m_type = TEnumType;
+			auto cnt = sizeof(val);
+			m_data.resize(cnt);
+			memcpy(&m_data[0], &val, cnt);
+		}
+		template <ERwValueType TEnumType, typename TValue>
+		inline const TValue& GetBuiltInValue() const
+		{
+			ASSERT(m_type == TEnumType);
+			return *reinterpret_cast<TValue*>(&m_data[0]);
+		}
+
+	private:
+		CRwRawData& m_data;
 		ERwValueType& m_type;
 	};
 	using CSharedRwValue = Niflect::TSharedPtr<CRwValue>;
-
-	//template <typename TImpl>
-	//class TInternalRwWrapper
-	//{
-	//public:
-	//	TInternalRwWrapper()
-	//		: m_p(NULL)
-	//	{
-	//	}
-	//	TInternalRwWrapper(const TInternalRwWrapper& rhs)
-	//		: m_p(rhs.m_p)
-	//	{
-	//	}
-	//	TInternalRwWrapper(TImpl* p)
-	//		: m_p(p)
-	//	{
-	//	}
-	//	TInternalRwWrapper(const Niflect::TSharedPtr<TImpl>& shared)
-	//		: m_p(shared.Get())
-	//		, m_shared(shared)
-	//	{
-	//	}
-	//	explicit operator bool() const
-	//	{
-	//		return m_p != NULL;
-	//	}
-	//	TImpl* operator->() const
-	//	{
-	//		return m_p;
-	//	}
-	//	TImpl* m_p;
-	//	Niflect::TSharedPtr<TImpl> m_shared;
-	//};
 
 	class CRwNode;
 	using CSharedRwNode = Niflect::TSharedPtr<CRwNode>;
@@ -132,7 +161,7 @@ namespace Niflect
 	class CRwArray
 	{
 	public:
-		CRwArray(CInternalRwBuffer& data, Niflect::TArrayNif<CSharedRwNode>& vecItem)
+		CRwArray(CRwRawData& data, Niflect::TArrayNif<CSharedRwNode>& vecItem)
 			: m_data(data)
 			, m_vecItem(vecItem)
 		{
@@ -201,7 +230,7 @@ namespace Niflect
 		static CRwArray* InternalAddItemArray(CRwArray* rwArray);
 
 	private:
-		CInternalRwBuffer& m_data;
+		CRwRawData& m_data;
 		Niflect::TArrayNif<CSharedRwNode>& m_vecItem;
 	};
 	using CSharedRwArray = Niflect::TSharedPtr<CRwArray>;
@@ -212,10 +241,6 @@ namespace Niflect
 		CRwNode()
 			: m_valueType(ERwValueType::None)
 		{
-		}
-		~CRwNode()
-		{
-
 		}
 		void SetName(const Niflect::CString& name)
 		{
@@ -311,7 +336,7 @@ namespace Niflect
 		{
 			return m_rwArray.Get();
 		}
-		const CInternalRwBuffer& GetData() const
+		const CRwRawData& GetData() const
 		{
 			return m_data;
 		}
@@ -320,7 +345,7 @@ namespace Niflect
 		Niflect::CString m_name;
 		ERwValueType m_valueType;
 		Niflect::TArrayNif<CSharedRwNode> m_vecNode;
-		CInternalRwBuffer m_data;
+		CRwRawData m_data;
 		CSharedRwValue m_rwValue;
 		CSharedRwArray m_rwArray;
 	};
@@ -346,7 +371,10 @@ namespace Niflect
 		rwArray->AddItem(rwNode);
 		return rwNode->ToArray();
 	}
+}
 
+namespace Niflect
+{
 	static CRwNode* FindRwNode(const CRwNode* rwParent, const Niflect::CString& name)
 	{
 		if (rwParent != NULL)
@@ -372,6 +400,13 @@ namespace Niflect
 			value = rwValue->GetBool();
 		return value;
 	}
+	static int16 FindRwInt16(const CRwNode* rwParent, const Niflect::CString& name, int16 defaultValue = 0)
+	{
+		auto value = defaultValue;
+		if (auto rwValue = FindRwValue(rwParent, name))
+			value = rwValue->GetInt16();
+		return value;
+	}
 	static int32 FindRwInt32(const CRwNode* rwParent, const Niflect::CString& name, int32 defaultValue = 0)
 	{
 		auto value = defaultValue;
@@ -379,13 +414,34 @@ namespace Niflect
 			value = rwValue->GetInt32();
 		return value;
 	}
-	//static uint32 FindRwUint32(const CRwNode& rwParent, const Niflect::CString& name, uint32 defaultValue = 0u)
-	//{
-	//	auto value = defaultValue;
-	//	if (auto rwValue = FindRwValue(rwParent, name))
-	//		value = rwValue->GetUint32();
-	//	return value;
-	//}
+	static int64 FindRwInt64(const CRwNode* rwParent, const Niflect::CString& name, int64 defaultValue = 0)
+	{
+		auto value = defaultValue;
+		if (auto rwValue = FindRwValue(rwParent, name))
+			value = rwValue->GetInt64();
+		return value;
+	}
+	static uint16 FindRwUint16(const CRwNode* rwParent, const Niflect::CString& name, uint16 defaultValue = 0u)
+	{
+		auto value = defaultValue;
+		if (auto rwValue = FindRwValue(rwParent, name))
+			value = rwValue->GetUint16();
+		return value;
+	}
+	static uint32 FindRwUint32(const CRwNode* rwParent, const Niflect::CString& name, uint32 defaultValue = 0u)
+	{
+		auto value = defaultValue;
+		if (auto rwValue = FindRwValue(rwParent, name))
+			value = rwValue->GetUint32();
+		return value;
+	}
+	static uint64 FindRwUint64(const CRwNode* rwParent, const Niflect::CString& name, uint64 defaultValue = 0u)
+	{
+		auto value = defaultValue;
+		if (auto rwValue = FindRwValue(rwParent, name))
+			value = rwValue->GetUint64();
+		return value;
+	}
 	static float FindRwFloat(const CRwNode* rwParent, const Niflect::CString& name, float defaultValue = 0.0f)
 	{
 		auto value = defaultValue;
@@ -400,13 +456,12 @@ namespace Niflect
 			value = rwValue->GetString();
 		return value;
 	}
-	//static CRwRawData FindRwRawData(const CRwNode& rwParent, const Niflect::CString& name)
-	//{
-	//	CRwRawData rawData;
-	//	if (auto rwValue = FindRwValue(rwParent, name))
-	//		rwValue->GetRawData(rawData);
-	//	return rawData;
-	//}
+	static CRwRawData FindRwRawData(const CRwNode* rwParent, const Niflect::CString& name)
+	{
+		if (auto rwValue = FindRwValue(rwParent, name))
+			return rwValue->GetRawData();
+		return CRwRawData();
+	}
 	static uint32 GetRwNodesCount(const CRwNode* rwParent)
 	{
 		uint32 count = 0;
@@ -486,16 +541,36 @@ namespace Niflect
 		if (auto rwValue = AddRwValue(rwParent, name))
 			rwValue->SetBool(value);
 	}
+	static void AddRwInt16(CRwNode* rwParent, const Niflect::CString& name, int16 value)
+	{
+		if (auto rwValue = AddRwValue(rwParent, name))
+			rwValue->SetInt16(value);
+	}
 	static void AddRwInt32(CRwNode* rwParent, const Niflect::CString& name, int32 value)
 	{
 		if (auto rwValue = AddRwValue(rwParent, name))
 			rwValue->SetInt32(value);
 	}
-	//static void AddRwUint32(CRwNode& rwParent, const Niflect::CString& name, uint32 value)
-	//{
-	//	if (auto rwValue = AddRwValue(rwParent, name))
-	//		rwValue->SetUint32(value);
-	//}
+	static void AddRwInt64(CRwNode* rwParent, const Niflect::CString& name, int64 value)
+	{
+		if (auto rwValue = AddRwValue(rwParent, name))
+			rwValue->SetInt64(value);
+	}
+	static void AddRwUint16(CRwNode* rwParent, const Niflect::CString& name, uint16 value)
+	{
+		if (auto rwValue = AddRwValue(rwParent, name))
+			rwValue->SetUint16(value);
+	}
+	static void AddRwUint32(CRwNode* rwParent, const Niflect::CString& name, uint32 value)
+	{
+		if (auto rwValue = AddRwValue(rwParent, name))
+			rwValue->SetUint32(value);
+	}
+	static void AddRwUint64(CRwNode* rwParent, const Niflect::CString& name, uint64 value)
+	{
+		if (auto rwValue = AddRwValue(rwParent, name))
+			rwValue->SetUint64(value);
+	}
 	static void AddRwFloat(CRwNode* rwParent, const Niflect::CString& name, float value)
 	{
 		if (auto rwValue = AddRwValue(rwParent, name))
@@ -511,197 +586,11 @@ namespace Niflect
 		if (auto rwValue = AddRwValue(rwParent, name))
 			rwValue->SetString(value);
 	}
-	//static void AddRwRawData(CRwNode& rwParent, const Niflect::CString& name, const void* data, const size_t size)
-	//{
-	//	if (auto rwValue = AddRwValue(rwParent, name))
-	//		rwValue->SetRawData(data, size);
-	//}
-
-
-
-
-
-
-
-	//static CRwNode FindRwNode(const CRwNode& rwParent, const Niflect::CString& name)
-	//{
-	//	if (rwParent != NULL)
-	//		return rwParent->FindNode(name);
-	//	return NULL;
-	//}
-	//static CRwArray FindRwArray(const CRwNode& rwParent, const Niflect::CString& name)
-	//{
-	//	if (auto rwNode = FindRwNode(rwParent, name))
-	//		return rwNode->ToArray();
-	//	return NULL;
-	//}
-	//static CRwValue FindRwValue(const CRwNode& rwParent, const Niflect::CString& name)
-	//{
-	//	if (auto rwNode = FindRwNode(rwParent, name))
-	//		return rwNode->ToValue();
-	//	return NULL;
-	//}
-	//static bool FindRwBool(const CRwNode& rwParent, const Niflect::CString& name, bool defaultValue = false)
-	//{
-	//	auto value = defaultValue;
-	//	if (auto rwValue = FindRwValue(rwParent, name))
-	//		value = rwValue->GetBool();
-	//	return value;
-	//}
-	//static int32 FindRwInt32(const CRwNode& rwParent, const Niflect::CString& name, int32 defaultValue = 0)
-	//{
-	//	auto value = defaultValue;
-	//	if (auto rwValue = FindRwValue(rwParent, name))
-	//		value = rwValue->GetInt32();
-	//	return value;
-	//}
-	////static uint32 FindRwUint32(const CRwNode& rwParent, const Niflect::CString& name, uint32 defaultValue = 0u)
-	////{
-	////	auto value = defaultValue;
-	////	if (auto rwValue = FindRwValue(rwParent, name))
-	////		value = rwValue->GetUint32();
-	////	return value;
-	////}
-	//static float FindRwFloat(const CRwNode& rwParent, const Niflect::CString& name, float defaultValue = 0.0f)
-	//{
-	//	auto value = defaultValue;
-	//	if (auto rwValue = FindRwValue(rwParent, name))
-	//		value = rwValue->GetFloat();
-	//	return value;
-	//}
-	//static Niflect::CString FindRwString(const CRwNode& rwParent, const Niflect::CString& name, const Niflect::CString& defaultValue = Niflect::CString())
-	//{
-	//	auto value = defaultValue;
-	//	if (auto rwValue = FindRwValue(rwParent, name))
-	//		value = rwValue->GetString();
-	//	return value;
-	//}
-	////static CRwRawData FindRwRawData(const CRwNode& rwParent, const Niflect::CString& name)
-	////{
-	////	CRwRawData rawData;
-	////	if (auto rwValue = FindRwValue(rwParent, name))
-	////		rwValue->GetRawData(rawData);
-	////	return rawData;
-	////}
-	//static uint32 GetRwNodesCount(const CRwNode& rwParent)
-	//{
-	//	uint32 count = 0;
-	//	if (rwParent != NULL)
-	//		count = rwParent->GetNodesCount();
-	//	return count;
-	//}
-	//static CRwNode GetRwNode(const CRwNode& rwParent, uint32 idx)
-	//{
-	//	CRwNode node = NULL;
-	//	if (rwParent != NULL)
-	//		node = rwParent->GetNode(idx);
-	//	return node;
-	//}
-	//static CRwArray ToRwArray(const CRwNode& rwNode)
-	//{
-	//	if (rwNode != NULL)
-	//		return rwNode->ToArray();
-	//	return NULL;
-	//}
-	//static CRwValue ToRwValue(const CRwNode& rwNode)
-	//{
-	//	if (rwNode != NULL)
-	//		return rwNode->ToValue();
-	//	return NULL;
-	//}
-	//static uint32 GetRwItemsCount(const CRwArrayImpl* rwArray)
-	//{
-	//	uint32 count = 0;
-	//	if (rwArray != NULL)
-	//		count = rwArray->GetItemsCount();
-	//	return count;
-	//}
-	//static CSharedRwNode CreateRwNode()
-	//{
-	//	return MakeShared<CRwNodeImpl>();
-	//}
-	//static void AddExistingRwNode(CRwNode& rwParent, const Niflect::CString& name, const CSharedRwNode& shared, uint32* insertedIndex = NULL)
-	//{
-	//	//if (rwParent != NULL)
-	//	//	return rwParent->AddNode(name, rwNode, insertedIndex);
-	//	//return NULL;
-
-	//	if (rwParent != NULL)
-	//	{
-	//		ASSERT(shared->GetName().empty());
-	//		shared->SetName(name);
-	//		if (insertedIndex != NULL)
-	//			*insertedIndex = rwParent->GetNodesCount();
-	//		rwParent->AddNode(shared);
-	//	}
-	//}
-	//static CRwNode AddRwNode(CRwNode& rwParent, const Niflect::CString& name, uint32* insertedIndex = NULL)
-	//{
-	//	//if (rwParent != NULL)
-	//	//	return rwParent->CreateAndAddNode(name, insertedIndex);
-	//	//return NULL;
-
-	//	CRwNode node = NULL;
-	//	if (rwParent != NULL)
-	//	{
-	//		auto shared = CreateRwNode();
-	//		uint32 idx = INDEX_NONE;
-	//		AddExistingRwNode(rwParent, name, shared, &idx);
-	//		if (insertedIndex != NULL)
-	//			*insertedIndex = idx;
-	//		node = rwParent->GetNode(idx);
-	//	}
-	//	return node;
-	//}
-	//static CRwArray AddRwArray(CRwNode& rwParent, const Niflect::CString& name, uint32* insertedIndex = NULL)
-	//{
-	//	if (rwParent != NULL)
-	//		return AddRwNode(rwParent, name, insertedIndex)->ToArray();
-	//	return NULL;
-	//}
-	//static CRwValue AddRwValue(CRwNode& rwParent, const Niflect::CString& name, uint32* insertedIndex = NULL)
-	//{
-	//	if (rwParent != NULL)
-	//		return AddRwNode(rwParent, name, insertedIndex)->ToValue();
-	//	return NULL;
-	//}
-	//static void AddRwBool(CRwNode& rwParent, const Niflect::CString& name, bool value)
-	//{
-	//	if (auto rwValue = AddRwValue(rwParent, name))
-	//		rwValue->SetBool(value);
-	//}
-	//static void AddRwInt32(CRwNode& rwParent, const Niflect::CString& name, int32 value)
-	//{
-	//	if (auto rwValue = AddRwValue(rwParent, name))
-	//		rwValue->SetInt32(value);
-	//}
-	////static void AddRwUint32(CRwNode& rwParent, const Niflect::CString& name, uint32 value)
-	////{
-	////	if (auto rwValue = AddRwValue(rwParent, name))
-	////		rwValue->SetUint32(value);
-	////}
-	//static void AddRwFloat(CRwNode& rwParent, const Niflect::CString& name, float value)
-	//{
-	//	if (auto rwValue = AddRwValue(rwParent, name))
-	//		rwValue->SetFloat(value);
-	//}
-	//static void AddRwDouble(CRwNode& rwParent, const Niflect::CString& name, double value)
-	//{
-	//	if (auto rwValue = AddRwValue(rwParent, name))
-	//		rwValue->SetDouble(value);
-	//}
-	//static void AddRwString(CRwNode& rwParent, const Niflect::CString& name, const Niflect::CString& value)
-	//{
-	//	if (auto rwValue = AddRwValue(rwParent, name))
-	//		rwValue->SetString(value);
-	//}
-	////static void AddRwRawData(CRwNode& rwParent, const Niflect::CString& name, const void* data, const size_t size)
-	////{
-	////	if (auto rwValue = AddRwValue(rwParent, name))
-	////		rwValue->SetRawData(data, size);
-	////}
-
-
+	static void AddRwRawData(CRwNode* rwParent, const Niflect::CString& name, const void* data, uint32 size)
+	{
+		if (auto rwValue = AddRwValue(rwParent, name))
+			rwValue->SetRawData(data, size);
+	}
 }
 
 namespace Niflect
@@ -838,14 +727,23 @@ namespace Niflect
 			case ERwValueType::Bool:
 				str = rwValue->GetBool() ? "true" : "false";
 				break;
+			case ERwValueType::Int32:
+				str = std::to_string(rwValue->GetInt32()).c_str();
+				break;
+			case ERwValueType::Int64:
+				str = std::to_string(rwValue->GetInt64()).c_str();
+				break;
+			case ERwValueType::Uint32:
+				str = std::to_string(rwValue->GetUint32()).c_str();
+				break;
+			case ERwValueType::Uint64:
+				str = std::to_string(rwValue->GetUint64()).c_str();
+				break;
 			case ERwValueType::Float:
 				str = std::to_string(rwValue->GetFloat()).c_str();
 				break;
 			case ERwValueType::Double:
 				str = std::to_string(rwValue->GetDouble()).c_str();
-				break;
-			case ERwValueType::Int32:
-				str = std::to_string(rwValue->GetInt32()).c_str();
 				break;
 			case ERwValueType::String:
 				str = rwValue->GetString().c_str();
