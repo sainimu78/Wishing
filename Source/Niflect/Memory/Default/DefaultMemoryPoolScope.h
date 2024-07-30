@@ -4,17 +4,17 @@
 
 namespace Niflect
 {
-	class CPooledMemoryScope : public IAllocatorInterface
+	class CDefaultMemoryPoolScope : public IAllocatorInterface
 	{
 	public:
-		CPooledMemoryScope()
+		CDefaultMemoryPoolScope()
 			: m_poolSize(1024)
 			, m_poolMem(NULL)
 		{
 			//需要考虑嵌套的情况?
 			CMemory::SetCurrentAllocator(this);
 		}
-		~CPooledMemoryScope()
+		~CDefaultMemoryPoolScope()
 		{
 			CMemory::SetCurrentAllocator(NULL);
 			Niflect::CDefaultMemory::Free(m_poolMem);

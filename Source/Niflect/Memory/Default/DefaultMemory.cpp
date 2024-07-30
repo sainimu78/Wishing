@@ -1,4 +1,4 @@
-#include "Niflect/Memory/DefaultMemory.h"
+#include "Niflect/Memory/Default/DefaultMemory.h"
 #include "Niflect/Memory/Generic/GenericMemory.h"
 #include "Niflect/Memory/Generic/GenericSharedPtr.h"
 #include <thread>
@@ -53,7 +53,7 @@ namespace Niflect
 		}
 	}
 
-	static const bool g_enabledMemoryStats_MainThreadOnly_IncludingStaticStage = false;
+	static const bool g_enabledMemoryStats_MainThreadOnly_IncludingStaticStage = true;
 
 	static void MakeSureInitMemoryStats()
 	{
