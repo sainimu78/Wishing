@@ -1,15 +1,20 @@
 #pragma once
 #include "Niflect/Memory/AllocatorInterface.h"
 #include "Niflect/Base/NiflectBase.h"
+#include "Niflect/Memory/Generic/GenericHeapAllocator.h"
 
 namespace Niflect
 {
 	class CDefaultMemoryPoolScope : public IAllocatorInterface
 	{
+		struct SChunk
+		{
+			void* m_mem;
+			size_t m_sizeUsaed;
+		};
 	public:
 		CDefaultMemoryPoolScope()
-			: m_poolSize(1024)
-			, m_poolMem(NULL)
+			: m_chunkSize(32)//测试用
 		{
 			//需要考虑嵌套的情况?
 			CMemory::SetCurrentAllocator(this);
@@ -17,14 +22,25 @@ namespace Niflect
 		~CDefaultMemoryPoolScope()
 		{
 			CMemory::SetCurrentAllocator(NULL);
-			Niflect::CDefaultMemory::Free(m_poolMem);
+			for (auto& it : m_vecChunk)
+				Niflect::CDefaultMemory::Free(it.m_mem);
 		}
 		virtual void* Alloc(size_t size) override
 		{
-			m_poolSize += size;
-			//todo: 改为可预分配一定size
-			m_poolMem = Niflect::CDefaultMemory::Realloc(m_poolMem, m_poolSize);
-			return m_poolMem;
+			size_t sizeUsed = 0;
+			if (m_vecChunk.size() > 0)
+				sizeUsed = m_vecChunk.back().m_sizeUsaed;
+
+			{
+				auto maxChunkSize = sizeUsed > m_chunkSize ? sizeUsed : m_chunkSize;
+				if (maxChunkSize - sizeUsed < size || m_vecChunk.size() == 0)
+					m_vecChunk.push_back({ Niflect::CDefaultMemory::Alloc(size > m_chunkSize ? size : m_chunkSize), 0 });
+			}
+
+			auto& chunk = m_vecChunk.back();
+			auto addr = static_cast<char*>(chunk.m_mem) + chunk.m_sizeUsaed;
+			chunk.m_sizeUsaed += size;
+			return addr;
 		}
 		virtual void* Realloc(void* ptr, size_t size) override
 		{
@@ -35,7 +51,9 @@ namespace Niflect
 		}
 
 	private:
-		size_t m_poolSize;
-		void* m_poolMem;
+		// 略特殊, 因为改变了全局CMemory的allocator, 因此如果动态成员仍用CMemory的分配函数, 将导致嵌套执行本类的Alloc
+		// 因此使用DefaultMemory, 当然使用CRT或std::vector都是可行的, 只要不用CMemory的分配即可
+		StlCompliantType2::TVector<SChunk, TGenericHeapAllocator<SChunk, CDefaultMemory> > m_vecChunk;
+		const uint32 m_chunkSize;
 	};
 }

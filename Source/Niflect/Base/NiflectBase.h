@@ -25,7 +25,7 @@ namespace Niflect
 		NIFLECT_API static void SetCurrentAllocator(IAllocatorInterface* p);
 
 	private:
-		static IAllocatorInterface* s_currentAllocator;
+		static thread_local IAllocatorInterface* s_currentAllocator;
 	};
 
 	class CInstance

@@ -12,4 +12,6 @@ namespace NiflectUtil
 			strLevel += singleIndentInString;
 		return strLevel;
 	}
+
+	NIFLECT_API void Printf(const char* format, ...);
 }

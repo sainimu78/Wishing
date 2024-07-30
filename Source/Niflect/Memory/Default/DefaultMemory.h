@@ -14,15 +14,22 @@ namespace Niflect
 	class CMemoryStatsScope
 	{
 	public:
-		CMemoryStatsScope();
-		~CMemoryStatsScope();
+		CMemoryStatsScope()
+		{
+			Begin();
+		}
+		~CMemoryStatsScope()
+		{
+			End();
+		}
 
 	public:
-		static void Begin();
-		static void End();
+		NIFLECT_API static void Begin();
+		NIFLECT_API static void End();
 	};
 
-	void TestMemoryStatsOnThreads();
+	NIFLECT_API void TestMemoryStatsOnThreadsBegin();
+	NIFLECT_API void TestMemoryStatsOnThreadsEnd();
 
 	class CMemoryStats;
 	NIFLECT_API CMemoryStats* DebugGetMemoryStats();

@@ -6,6 +6,10 @@
 #include <iostream>
 #include <vector>
 
+#include "Niflect/Memory/Default/DefaultMemoryPoolScope.h"
+#include "Niflect/Base/NiflectBase.h"
+#include "Niflect/Util/DebugUtil.h"
+
 namespace Niflect
 {
 	thread_local CMemoryStats* g_memoryStatsThreadLocal = NULL;
@@ -20,40 +24,40 @@ namespace Niflect
 		delete g_memoryStatsThreadLocal;
 		g_memoryStatsThreadLocal = NULL;
 	}
-	CMemoryStatsScope::CMemoryStatsScope()
-	{
-		Begin();
-	}
-	CMemoryStatsScope::~CMemoryStatsScope()
-	{
-		End();
-	}
 	
-	std::mutex g_mtxPrint;
 	void threadFunction()
 	{
 		CMemoryStatsScope memStatsScope;
-
 		auto memTest = DebugGetMemoryStats();
-		std::lock_guard<std::mutex> lg(g_mtxPrint);
-		std::cout << memTest << std::endl;
+		{
+			CDefaultMemoryPoolScope sssss;
+			auto mem = CMemory::Alloc(123);
+			CMemory::Free(mem);
+		}
+		std::stringstream ss;
+		ss << memTest;
+		NiflectUtil::Printf("%s\n", ss.str().c_str());
 	}
 
-	void TestMemoryStatsOnThreads()
+	std::vector<std::thread> threads;
+	void TestMemoryStatsOnThreadsBegin()
 	{
-		std::vector<std::thread> threads;
 		for (int i = 0; i < 5; ++i)
 		{
 			threads.emplace_back(threadFunction);
 		}
-
+	}
+	void TestMemoryStatsOnThreadsEnd()
+	{
 		for (auto& t : threads)
 		{
 			t.join();
 		}
+		threads.clear();
 	}
 
-	static const bool g_enabledMemoryStats_MainThreadOnly_IncludingStaticStage = true;
+	//无可配置方法, 需手工修改
+	static const bool g_enabledMemoryStats_MainThreadOnly_IncludingStaticStage = false;
 
 	static void MakeSureInitMemoryStats()
 	{

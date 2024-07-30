@@ -2,7 +2,7 @@
 
 namespace Niflect
 {
-	IAllocatorInterface* CMemory::s_currentAllocator = NULL;
+	thread_local IAllocatorInterface* CMemory::s_currentAllocator = NULL;
 
 	void* CMemory::Alloc(size_t size)
 	{
