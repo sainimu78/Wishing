@@ -1,33 +1,34 @@
 #include "Niflect/Base/NiflectBase.h"
+#include "Niflect/Memory/Default/DefaultMemory.h"
 
 namespace Niflect
 {
-	thread_local IAllocatorInterface* CMemory::s_currentAllocator = NULL;
+	thread_local IAllocatorInterface* g_currentAllocator = NULL;
 
 	void* CMemory::Alloc(size_t size)
 	{
-		if (s_currentAllocator == NULL)
+		if (g_currentAllocator == NULL)
 			return CDefaultMemory::Alloc(size);
-		return s_currentAllocator->Alloc(size);
+		return g_currentAllocator->Alloc(size);
 	}
 	void* CMemory::Realloc(void* ptr, size_t size)
 	{
-		if (s_currentAllocator == NULL)
+		if (g_currentAllocator == NULL)
 			return CDefaultMemory::Realloc(ptr, size);
-		return s_currentAllocator->Realloc(ptr, size);
+		return g_currentAllocator->Realloc(ptr, size);
 	}
 	void CMemory::Free(void* ptr)
 	{
-		if (s_currentAllocator == NULL)
+		if (g_currentAllocator == NULL)
 		{
 			CDefaultMemory::Free(ptr);
 			return;
 		}
-		s_currentAllocator->Free(ptr);
+		g_currentAllocator->Free(ptr);
 	}
 	void CMemory::SetCurrentAllocator(IAllocatorInterface* p)
 	{
-		ASSERT(p == NULL || s_currentAllocator == NULL);
-		s_currentAllocator = p;
+		ASSERT(p == NULL || g_currentAllocator == NULL);
+		g_currentAllocator = p;
 	}
 }

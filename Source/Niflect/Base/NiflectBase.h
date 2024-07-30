@@ -1,5 +1,4 @@
 #pragma once
-#include "Niflect/Memory/Default/DefaultMemory.h"
 #include "Niflect/Memory/AllocatorInterface.h"
 #include "Niflect/Memory/Generic/GenericHeapAllocator.h"
 #include "Niflect/Memory/Generic/GenericSharedPtr.h"
@@ -23,9 +22,6 @@ namespace Niflect
 
 	public:
 		NIFLECT_API static void SetCurrentAllocator(IAllocatorInterface* p);
-
-	private:
-		static thread_local IAllocatorInterface* s_currentAllocator;
 	};
 
 	class CInstance

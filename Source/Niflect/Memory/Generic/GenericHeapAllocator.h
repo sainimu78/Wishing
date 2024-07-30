@@ -24,7 +24,7 @@ namespace Niflect
 		template <typename T2, typename TMemory2>
 		inline TGenericHeapAllocator(const TGenericHeapAllocator<T2, TMemory2> &) throw () { }
 
-		inline ~TGenericHeapAllocator() throw () { }
+		inline ~TGenericHeapAllocator() { }
 
 		inline pointer adress(reference r)
 		{

@@ -8,6 +8,7 @@
 #include "Niflect/Util/TypeUtil.h"
 #include "Windows.h"
 #include "stdio.h"
+#include "Niflect/Memory/Default/DefaultMemory.h"
 
 static void MyExp()
 {

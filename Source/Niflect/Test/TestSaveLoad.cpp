@@ -7,6 +7,7 @@
 #include "Niflect/Field/MapField.h"
 #include "Niflect/Test/TestModule0.h"
 #include "Niflect/Test/MyTransformField.h"
+#include "Niflect/Memory/Default/DefaultMemory.h"
 
 static void DebugCopyInstance(void* src, void* dst, const Niflect::TArrayNif<Niflect::CField*>& vecField)
 {
