@@ -1,6 +1,7 @@
 #pragma once
 #include "Niflect/Serialization/RwTree.h"
 #include <iomanip>
+#include <limits>
 
 namespace Niflect
 {

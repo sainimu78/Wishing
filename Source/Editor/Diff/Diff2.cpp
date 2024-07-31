@@ -1,6 +1,7 @@
 ﻿#include "Editor/Diff/Diff2.h"
 #include <iostream>
 #include "Niflect/Util/StringUtil.h"
+#include <stdexcept>
 
 namespace QtNodeEditor
 {
@@ -270,7 +271,7 @@ namespace QtNodeEditor
 
 		} // for D
 
-		throw std::exception("the algorithm should never come here.");
+		throw std::runtime_error("the algorithm should never come here.");
 	}
 	void CDiff2::LCS(CDiffData& DataA, int LowerA, int UpperA, CDiffData& DataB, int LowerB, int UpperB, std::vector<int>& DownVector, std::vector<int>& UpVector)
 	{
