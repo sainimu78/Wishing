@@ -55,14 +55,14 @@ int main(int argc, char** argv)
 		}
 		if (true)//JSON 格式读
 		{
-			CRwNode root;
+			{
+				CRwNode root;
+				std::ifstream ifs(TestDefinition::FilePath::InputJson_JsonFormat, std::ios::binary);
+				CJsonFormat::Read(&root, ifs);
 
-			std::ifstream ifs(TestDefinition::FilePath::InputJson_JsonFormat, std::ios::binary);
-			CJsonFormat::Read(&root, ifs);
-
-			std::ofstream ofs(TestDefinition::FilePath::OutputJson_JsonFormat, std::ios::binary);
-			CJsonFormat::Write(&root, ofs);
-
+				std::ofstream ofs(TestDefinition::FilePath::OutputJson_JsonFormat, std::ios::binary);
+				CJsonFormat::Write(&root, ofs);
+			}
 			ASSERT(NiflectUtil::ReadStringFromFile(TestDefinition::FilePath::InputJson_JsonFormat) == NiflectUtil::ReadStringFromFile(TestDefinition::FilePath::OutputJson_JsonFormat));
 		}
 		if (false)//JSON 格式读 rapidjson 所写数据

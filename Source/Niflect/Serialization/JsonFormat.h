@@ -27,6 +27,25 @@ namespace Niflect
 		}
 
 	private:
+		static void ConvertNumberToString(const CRwValue* rwValue, ERwValueType type, Niflect::CString& str)
+		{
+			double val;
+			switch (type)
+			{
+			case ERwValueType::Float:
+				val = rwValue->GetFloat();
+				break;
+			case ERwValueType::Double:
+				val = rwValue->GetDouble();
+				break;
+			default:
+				ASSERT(false);
+				break;
+			}
+			Niflect::CStringStream ss;
+			ss << std::setprecision(std::numeric_limits<double>::max_digits10) << val;
+			str = ss.str();
+		}
 		static void WriteJsonRecurs(const CRwNode* rwNode, std::ostream& stm, uint32 arrayItemIdx = INDEX_NONE, Niflect::CString strIndent = Niflect::CString())
 		{
 			stm << strIndent;
@@ -55,9 +74,12 @@ namespace Niflect
 					break;
 				case ERwValueType::Float:
 				{
-					Niflect::CStringStream ss;
-					ss << std::setprecision(std::numeric_limits<float>::max_digits10) << rwValue->GetFloat();
-					str = ss.str();
+					//Niflect::CStringStream ss;
+					//ss << std::fixed << std::setprecision(std::numeric_limits<float>::max_digits10) << rwValue->GetFloat();
+					//str = ss.str();
+
+					//现改为不支持Float, 统一转为Double
+					ConvertNumberToString(rwValue, ERwValueType::Float, str);
 					break;
 				}
 				case ERwValueType::Double:
@@ -71,9 +93,11 @@ namespace Niflect
 					//ASSERT(str0 == str1);
 					//end
 
-					Niflect::CStringStream ss;
-					ss << std::setprecision(std::numeric_limits<double>::max_digits10) << rwValue->GetDouble();
-					str = ss.str();
+					//Niflect::CStringStream ss;
+					//ss << std::fixed << std::setprecision(std::numeric_limits<double>::max_digits10) << rwValue->GetDouble();
+					//str = ss.str();
+
+					ConvertNumberToString(rwValue, ERwValueType::Double, str);
 					break;
 				}
 				case ERwValueType::Int32:
@@ -243,9 +267,30 @@ namespace Niflect
 
 			auto rwValue = rwNode->ToValue();
 			if (isFloat)
+			{
+				//double num = std::stod(numStr);
+				//int decimalPlaces = 0;
+				//{
+				//	double fraction = num - static_cast<long long>(num);
+				//	const auto& maxDigits = std::numeric_limits<double>::max_digits10;
+				//	while (fraction != 0 && decimalPlaces < maxDigits)
+				//	{
+				//		fraction *= maxDigits;
+				//		fraction -= static_cast<long long>(fraction);
+				//		decimalPlaces++;
+				//	}
+				//}
+				//if (decimalPlaces > std::numeric_limits<float>::max_digits10)
+				//	rwValue->SetDouble(num);
+				//else
+				//	rwValue->SetFloat(static_cast<float>(num));
+
 				rwValue->SetDouble(std::stod(numStr));
+			}
 			else
+			{
 				rwValue->SetInt32(std::stoi(numStr));
+			}
 		}
 		static void SkipWhitespace(std::istream& stm)
 		{
