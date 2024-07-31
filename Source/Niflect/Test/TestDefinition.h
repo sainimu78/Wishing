@@ -8,6 +8,8 @@ namespace TestDefinition
 #define ROOT_TEST_PATH "../../../../../Source/Niflect/Test"
 	namespace FilePath
 	{
+		constexpr const char* InputJson_JsonFormat = CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/RwTree/Input/JsonFormat.json");
+		constexpr const char* OutputJson_JsonFormat = CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/RwTree/Output/JsonFormat.json");
 		constexpr const char* InputJson_AnimGraphEditorData = CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/RwTree/Input/mhlike.animgraph.meta");
 		constexpr const char* OutputJson_AnimGraphEditorData = CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/RwTree/Output/mhlike.animgraph.meta");
 		constexpr const char* OutputJson_0 = CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/RwTree/Output/JsonFormat_0.json");

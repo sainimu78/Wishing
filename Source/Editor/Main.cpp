@@ -46,7 +46,26 @@ int main(int argc, char** argv)
 			DebugPrintTestTree();
 			TestMemoryStatsOnThreadsEnd();
 		}
-		if (false)//JSON 格式序列化
+		if (false)//写测试用的 JSON 格式文件
+		{
+			CRwNode root;
+			DebugBuildStructure(&root);
+			std::ofstream ofs(TestDefinition::FilePath::InputJson_JsonFormat, std::ios::binary);
+			CJsonFormat::Write(&root, ofs);
+		}
+		if (true)//JSON 格式读
+		{
+			CRwNode root;
+
+			std::ifstream ifs(TestDefinition::FilePath::InputJson_JsonFormat, std::ios::binary);
+			CJsonFormat::Read(&root, ifs);
+
+			std::ofstream ofs(TestDefinition::FilePath::OutputJson_JsonFormat, std::ios::binary);
+			CJsonFormat::Write(&root, ofs);
+
+			ASSERT(NiflectUtil::ReadStringFromFile(TestDefinition::FilePath::InputJson_JsonFormat) == NiflectUtil::ReadStringFromFile(TestDefinition::FilePath::OutputJson_JsonFormat));
+		}
+		if (false)//JSON 格式读 rapidjson 所写数据
 		{
 			CRwNode root;
 			std::ifstream ifs(TestDefinition::FilePath::InputJson_AnimGraphEditorData, std::ios::binary);
@@ -54,8 +73,12 @@ int main(int argc, char** argv)
 
 			std::ofstream ofs(TestDefinition::FilePath::OutputJson_AnimGraphEditorData, std::ios::binary);
 			CJsonFormat::Write(&root, ofs);
+
+			//写的结果存在一些差异
+			//1. 无法原样转换小数
+			//2. 来自 rapidjson 的数据中, 缩进字符为4个空格, CJsonFormat 为1个 Tab
 		}
-		if (true)//JSON & 自定义 Binary 格式相互转换
+		if (false)//JSON & 自定义 Binary 格式相互转换
 		{
 			{
 				CRwNode root;
