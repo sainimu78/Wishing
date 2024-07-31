@@ -62,6 +62,15 @@ namespace Niflect
 				}
 				case ERwValueType::Double:
 				{
+					//begin, 现转换方法无法保证从其它Writer读取的数据原样输出, 如无法保证原样输出rapidjson写的double
+					//const auto str0 = "0.4000000059604645";
+					//auto val = std::stod(str0);
+					//Niflect::CStringStream ss;
+					//ss << std::setprecision(std::numeric_limits<double>::max_digits10) << val;
+					//auto str1 = ss.str();
+					//ASSERT(str0 == str1);
+					//end
+
 					Niflect::CStringStream ss;
 					ss << std::setprecision(std::numeric_limits<double>::max_digits10) << rwValue->GetDouble();
 					str = ss.str();

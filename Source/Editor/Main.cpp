@@ -49,9 +49,10 @@ int main(int argc, char** argv)
 #define CONCAT_CONST_CHAR_3(a, b, c) CONCAT_CONST_CHAR_2(a, b)"" c
 #define CONCAT_CONST_CHAR_4(a, b, c, d) CONCAT_CONST_CHAR_3(a, b, c)"" d
 #define ROOT_TEST_PATH "../../../../../Source/Niflect/Test"
-			CRwNode root;
 			const char* fileInput = CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/RwTree/Input/mhlike.animgraph.meta");
 			const char* fileOutput = CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/RwTree/Output/mhlike.animgraph.meta");
+
+			CRwNode root;
 			std::ifstream ifs(fileInput, std::ios::binary);
 			CJsonFormat::Read(&root, ifs);
 
