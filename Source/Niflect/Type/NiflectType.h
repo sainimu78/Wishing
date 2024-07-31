@@ -119,6 +119,7 @@ namespace Niflect
 	//		return this->GetAccessorRoot()->GetInstanceRef<T>(parentBase);
 	//	}
 	public:
+		//todo: 此函数可废弃, 改为静态函数获取m_typeHash
 		template <typename T>
 		inline T& GetInstanceRef(AddrType base) const
 		{
