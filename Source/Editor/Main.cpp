@@ -12,6 +12,7 @@
 #include <fstream>
 #include "Niflect/Util/StringUtil.h"
 #include "Niflect/Test/TestDefinition.h"
+#include "Niflect/Serialization/DiffArrays.h"
 
 class CMyClassForSimplifiedMakeShared
 {
@@ -53,7 +54,7 @@ int main(int argc, char** argv)
 			std::ofstream ofs(TestDefinition::FilePath::InputJson_JsonFormat, std::ios::binary);
 			CJsonFormat::Write(&root, ofs);
 		}
-		if (true)//JSON 格式读
+		if (false)//JSON 格式读
 		{
 			{
 				CRwNode root;
@@ -102,6 +103,12 @@ int main(int argc, char** argv)
 			}
 
 			ASSERT(NiflectUtil::ReadStringFromFile(TestDefinition::FilePath::OutputJson_0) == NiflectUtil::ReadStringFromFile(TestDefinition::FilePath::OutputJson_1));
+		}
+		if (true)
+		{
+			//TestDiffLCS::SimpleNumberArrays();
+			TestDiffLCS::TestDiff();
+			printf("");
 		}
 	}
 
