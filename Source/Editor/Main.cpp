@@ -8,7 +8,10 @@
 #include "Niflect/Serialization/RwTree.h"
 #include "Niflect/Util/DebugUtil.h"
 #include "Niflect/Serialization/JsonFormat.h"
+#include "Niflect/Serialization/BinaryFormat.h"
 #include <fstream>
+#include "Niflect/Util/StringUtil.h"
+#include "Niflect/Test/TestDefinition.h"
 
 class CMyClassForSimplifiedMakeShared
 {
@@ -35,7 +38,7 @@ int main(int argc, char** argv)
 		using namespace Niflect;
 		CDefaultMemoryStatsScope memTestScope;
 		auto stats = GetDefaultMemoryStats();
-		if (false)//TLS Default Allocator 测试
+		if (false)//TLS Default Allocator
 		{
 			CDefaultMemoryPoolScope sdddddd;
 
@@ -43,21 +46,39 @@ int main(int argc, char** argv)
 			DebugPrintTestTree();
 			TestMemoryStatsOnThreadsEnd();
 		}
-		if (true)
+		if (false)//JSON 格式序列化
 		{
-#define CONCAT_CONST_CHAR_2(a, b) a"" b
-#define CONCAT_CONST_CHAR_3(a, b, c) CONCAT_CONST_CHAR_2(a, b)"" c
-#define CONCAT_CONST_CHAR_4(a, b, c, d) CONCAT_CONST_CHAR_3(a, b, c)"" d
-#define ROOT_TEST_PATH "../../../../../Source/Niflect/Test"
-			const char* fileInput = CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/RwTree/Input/mhlike.animgraph.meta");
-			const char* fileOutput = CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/RwTree/Output/mhlike.animgraph.meta");
-
 			CRwNode root;
-			std::ifstream ifs(fileInput, std::ios::binary);
+			std::ifstream ifs(TestDefinition::FilePath::InputJson_AnimGraphEditorData, std::ios::binary);
 			CJsonFormat::Read(&root, ifs);
 
-			std::ofstream ofs(fileOutput, std::ios::binary);
+			std::ofstream ofs(TestDefinition::FilePath::OutputJson_AnimGraphEditorData, std::ios::binary);
 			CJsonFormat::Write(&root, ofs);
+		}
+		if (true)//JSON & 自定义 Binary 格式相互转换
+		{
+			{
+				CRwNode root;
+				DebugBuildStructure(&root);
+				{
+					std::ofstream ofs(TestDefinition::FilePath::OutputBinary_0, std::ios::binary);
+					CBinaryFormat::A_2(&root, ofs);
+				}
+				{
+					std::ofstream ofs(TestDefinition::FilePath::OutputJson_0, std::ios::binary);
+					CJsonFormat::Write(&root, ofs);
+				}
+			}
+			{
+				CRwNode root;
+				std::ifstream ifs(TestDefinition::FilePath::OutputBinary_0, std::ios::binary);
+				CBinaryFormat::B_2(&root, ifs);
+
+				std::ofstream ofs(TestDefinition::FilePath::OutputJson_1, std::ios::binary);
+				CJsonFormat::Write(&root, ofs);
+			}
+
+			ASSERT(NiflectUtil::ReadStringFromFile(TestDefinition::FilePath::OutputJson_0) == NiflectUtil::ReadStringFromFile(TestDefinition::FilePath::OutputJson_1));
 		}
 	}
 
