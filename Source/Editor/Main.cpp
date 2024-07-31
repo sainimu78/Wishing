@@ -14,6 +14,7 @@
 #include "Niflect/Test/TestDefinition.h"
 #include "Editor/Diff/DiffArrays.h"
 #include "Editor/Diff/Diff2.h"
+#include "Niflect/Util/FileStreamUtil.h"
 
 class CMyClassForSimplifiedMakeShared
 {
@@ -48,21 +49,24 @@ int main(int argc, char** argv)
 			DebugPrintTestTree();
 			TestMemoryStatsOnThreadsEnd();
 		}
-		if (false)//写测试用的 JSON 格式文件
+		if (true)//写测试用的 JSON 格式文件
 		{
 			CRwNode root;
 			DebugBuildStructure(&root);
-			std::ofstream ofs(TestDefinition::FilePath::InputJson_JsonFormat, std::ios::binary);
+			//std::ofstream ofs(TestDefinition::FilePath::InputJson_JsonFormat, std::ios::binary);
+			NiflectUtil::COutputFileStream ofs(TestDefinition::FilePath::InputJson_JsonFormat);
 			CJsonFormat::Write(&root, ofs);
 		}
 		if (false)//JSON 格式读
 		{
 			{
 				CRwNode root;
-				std::ifstream ifs(TestDefinition::FilePath::InputJson_JsonFormat, std::ios::binary);
+				//std::ifstream ifs(TestDefinition::FilePath::InputJson_JsonFormat, std::ios::binary);
+				NiflectUtil::CInputFileStream ifs(TestDefinition::FilePath::InputJson_JsonFormat);
 				CJsonFormat::Read(&root, ifs);
 
-				std::ofstream ofs(TestDefinition::FilePath::OutputJson_JsonFormat, std::ios::binary);
+				//std::ofstream ofs(TestDefinition::FilePath::OutputJson_JsonFormat, std::ios::binary);
+				NiflectUtil::COutputFileStream ofs(TestDefinition::FilePath::OutputJson_JsonFormat);
 				CJsonFormat::Write(&root, ofs);
 			}
 			ASSERT(NiflectUtil::ReadStringFromFile(TestDefinition::FilePath::InputJson_JsonFormat) == NiflectUtil::ReadStringFromFile(TestDefinition::FilePath::OutputJson_JsonFormat));
@@ -70,10 +74,10 @@ int main(int argc, char** argv)
 		if (false)//JSON 格式读 rapidjson 所写数据
 		{
 			CRwNode root;
-			std::ifstream ifs(TestDefinition::FilePath::InputJson_AnimGraphEditorData, std::ios::binary);
+			NiflectUtil::CInputFileStream ifs(TestDefinition::FilePath::InputJson_AnimGraphEditorData);
 			CJsonFormat::Read(&root, ifs);
 
-			std::ofstream ofs(TestDefinition::FilePath::OutputJson_AnimGraphEditorData, std::ios::binary);
+			NiflectUtil::COutputFileStream ofs(TestDefinition::FilePath::OutputJson_AnimGraphEditorData);
 			CJsonFormat::Write(&root, ofs);
 
 			//写的结果存在一些差异
@@ -86,26 +90,30 @@ int main(int argc, char** argv)
 				CRwNode root;
 				DebugBuildStructure(&root);
 				{
-					std::ofstream ofs(TestDefinition::FilePath::OutputBinary_0, std::ios::binary);
+					//std::ofstream ofs(TestDefinition::FilePath::OutputBinary_0, std::ios::binary);
+					NiflectUtil::COutputFileStream ofs(TestDefinition::FilePath::OutputBinary_0);
 					CBinaryFormat::A_2(&root, ofs);
 				}
 				{
-					std::ofstream ofs(TestDefinition::FilePath::OutputJson_0, std::ios::binary);
+					//std::ofstream ofs(TestDefinition::FilePath::OutputJson_0, std::ios::binary);
+					NiflectUtil::COutputFileStream ofs(TestDefinition::FilePath::OutputJson_0);
 					CJsonFormat::Write(&root, ofs);
 				}
 			}
 			{
 				CRwNode root;
-				std::ifstream ifs(TestDefinition::FilePath::OutputBinary_0, std::ios::binary);
+				//std::ifstream ifs(TestDefinition::FilePath::OutputBinary_0, std::ios::binary);
+				NiflectUtil::CInputFileStream ifs(TestDefinition::FilePath::OutputBinary_0);
 				CBinaryFormat::B_2(&root, ifs);
 
-				std::ofstream ofs(TestDefinition::FilePath::OutputJson_1, std::ios::binary);
+				//std::ofstream ofs(TestDefinition::FilePath::OutputJson_1, std::ios::binary);
+				NiflectUtil::COutputFileStream ofs(TestDefinition::FilePath::OutputJson_1);
 				CJsonFormat::Write(&root, ofs);
 			}
 
 			ASSERT(NiflectUtil::ReadStringFromFile(TestDefinition::FilePath::OutputJson_0) == NiflectUtil::ReadStringFromFile(TestDefinition::FilePath::OutputJson_1));
 		}
-		if (true)
+		if (false)
 		{
 			//TestDiffLCS::SimpleNumberArrays();
 			//TestDiffLCS::TestDiff();
