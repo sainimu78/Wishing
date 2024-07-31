@@ -3,6 +3,8 @@
 
 namespace Niflect
 {
+	class CMemoryStats;
+
 	class CDefaultMemory
 	{
 	public:
@@ -10,27 +12,26 @@ namespace Niflect
 		NIFLECT_API static void* Realloc(void* ptr, size_t size);
 		NIFLECT_API static void Free(void* ptr);
 	};
-	
-	class CMemoryStatsScope
+
+	class CDefaultMemoryStatsScope
 	{
 	public:
-		CMemoryStatsScope()
+		CDefaultMemoryStatsScope()
 		{
 			Begin();
 		}
-		~CMemoryStatsScope()
+		~CDefaultMemoryStatsScope()
 		{
 			End();
 		}
 
-	public:
+	private:
 		NIFLECT_API static void Begin();
 		NIFLECT_API static void End();
 	};
 
+	NIFLECT_API CMemoryStats* GetDefaultMemoryStats();
+
 	NIFLECT_API void TestMemoryStatsOnThreadsBegin();
 	NIFLECT_API void TestMemoryStatsOnThreadsEnd();
-
-	class CMemoryStats;
-	NIFLECT_API CMemoryStats* DebugGetMemoryStats();
 }

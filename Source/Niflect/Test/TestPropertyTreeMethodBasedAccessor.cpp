@@ -257,7 +257,7 @@ static void TestCustomField()
 
 static void MyExp()
 {
-	auto memTest = Niflect::DebugGetMemoryStats();
+	auto memTest = Niflect::GetDefaultMemoryStats();
 	TestCreateModuleReg0();
 	TestSimpleClass2();
 	//TestTypicalClass();

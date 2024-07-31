@@ -14,7 +14,7 @@ static void MyExp()
 {
 	using namespace Niflect;
 
-	auto memTest = Niflect::DebugGetMemoryStats();
+	auto memTest = GetDefaultMemoryStats();
 	TestCreateModuleReg0();
 
 	{

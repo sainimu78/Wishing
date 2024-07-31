@@ -31,8 +31,8 @@ int main(int argc, char** argv)
 	
 	{
 		using namespace Niflect;
-		CMemoryStatsScope memTestScope;
-		auto stats = DebugGetMemoryStats();
+		CDefaultMemoryStatsScope memTestScope;
+		auto stats = GetDefaultMemoryStats();
 		{
 			CDefaultMemoryPoolScope sdddddd;
 

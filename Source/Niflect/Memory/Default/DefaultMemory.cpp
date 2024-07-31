@@ -14,21 +14,10 @@ namespace Niflect
 {
 	thread_local CMemoryStats* g_memoryStatsThreadLocal = NULL;
 	
-	void CMemoryStatsScope::Begin()
-	{
-		ASSERT(g_memoryStatsThreadLocal == NULL);
-		g_memoryStatsThreadLocal = new CMemoryStats;
-	}
-	void CMemoryStatsScope::End()
-	{
-		delete g_memoryStatsThreadLocal;
-		g_memoryStatsThreadLocal = NULL;
-	}
-	
 	void threadFunction()
 	{
-		CMemoryStatsScope memStatsScope;
-		auto memTest = DebugGetMemoryStats();
+		CDefaultMemoryStatsScope memStatsScope;
+		auto memTest = GetDefaultMemoryStats();
 		{
 			CDefaultMemoryPoolScope sssss;
 			auto mem = CMemory::Alloc(123);
@@ -85,7 +74,18 @@ namespace Niflect
 		CGenericMemory::Free(ptr, g_memoryStatsThreadLocal);
 	}
 
-	CMemoryStats* DebugGetMemoryStats()
+	void CDefaultMemoryStatsScope::Begin()
+	{
+		ASSERT(g_memoryStatsThreadLocal == NULL);
+		g_memoryStatsThreadLocal = new CMemoryStats;
+	}
+	void CDefaultMemoryStatsScope::End()
+	{
+		delete g_memoryStatsThreadLocal;
+		g_memoryStatsThreadLocal = NULL;
+	}
+
+	CMemoryStats* GetDefaultMemoryStats()
 	{
 		MakeSureInitMemoryStats();
 		return g_memoryStatsThreadLocal;
