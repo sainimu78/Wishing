@@ -107,7 +107,8 @@ int main(int argc, char** argv)
 		if (true)
 		{
 			//TestDiffLCS::SimpleNumberArrays();
-			TestDiffLCS::TestDiff();
+			//TestDiffLCS::TestDiff();
+			TestDiffLCS::TestLargeData();
 			printf("");
 		}
 	}

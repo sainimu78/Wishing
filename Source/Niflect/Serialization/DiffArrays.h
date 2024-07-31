@@ -195,8 +195,6 @@ namespace TestDiffLCS
 
 namespace TestDiffLCS
 {
-	using namespace Niflect;
-
 	void SimpleNumberArrays()
 	{
 
@@ -245,10 +243,9 @@ namespace TestDiffLCS
 
 namespace TestDiffLCS
 {
-	using namespace Niflect;
-
 	class CRwDiffItem
 	{
+		using CRwNode = Niflect::CRwNode;
 	public:
 		CRwDiffItem()
 			: m_node(NULL)
@@ -346,6 +343,7 @@ namespace TestDiffLCS
 		uint32 m_ownerIdx;
 		uint32 m_itemIdx;
 	};
+
 	struct CRwDiffItemHash {
 		std::size_t operator()(const CRwDiffItem& item) const {
 			std::size_t hash = 0;
@@ -371,7 +369,14 @@ namespace TestDiffLCS
 			return hash;
 		}
 	};
-	static void FlattenNodeRecurs2(CRwNode* rwNode, uint32 ownerIdx, uint32 itemIdx, Niflect::TArrayNif<CRwDiffItem>& vecNode)
+	
+	static void TestDiffItemHash()
+	{
+		//只定义测试编译, 原实现未实现基于此map的diff方法
+		std::unordered_map<CRwDiffItem, std::string, CRwDiffItemHash> myUnorderedMap;
+	}
+
+	static void FlattenNodeRecurs2(Niflect::CRwNode* rwNode, uint32 ownerIdx, uint32 itemIdx, Niflect::TArrayNif<CRwDiffItem>& vecNode)
 	{
 		auto indexingId = static_cast<uint32>(vecNode.size());
 		vecNode.push_back({ rwNode, ownerIdx, itemIdx });
@@ -379,6 +384,7 @@ namespace TestDiffLCS
 		for (uint32 idx = 0; idx < rwNode->GetNodesCount(); ++idx)
 			FlattenNodeRecurs2(rwNode->GetNode(idx), indexingId, idx, vecNode);
 	}
+
 	struct SRwDiffData
 	{
 		DiffArrays::EDiffEditAction m_editAction;
@@ -389,14 +395,18 @@ namespace TestDiffLCS
 		uint32 m_newOwnerIdx;
 		uint32 m_newItemIdx;
 	};
+
 	struct SRwAppliedData111111
 	{
-		CRwNode* m_existingNode;
-		CSharedRwNode m_holder;
+		Niflect::CRwNode* m_existingNode;
+		Niflect::CSharedRwNode m_holder;
 	};
-	static void DiffMy4(CRwNode* rwNodeA, CRwNode* rwNodeB)
+
+	//todo: rwNodeA应为const
+	static void DiffMy4(Niflect::CRwNode* rwNodeA, Niflect::CRwNode* rwNodeB)
 	{
 		using namespace DiffArrays;
+		using namespace Niflect;
 
 		Niflect::TArrayNif<CRwDiffItem> vecNodeA;
 		Niflect::TArrayNif<CRwDiffItem> vecNodeB;
@@ -411,7 +421,7 @@ namespace TestDiffLCS
 			item.m_editAction = it.action;
 			item.m_indexToEdit = it.index;
 			if (it.newValue.m_node != NULL)
-				CBinaryFormat::A_0(it.newValue.m_node, item.m_ss);
+				Niflect::CBinaryFormat::A_0(it.newValue.m_node, item.m_ss);
 			item.m_oldOwnerIdx = it.oldValue.m_ownerIdx;
 			item.m_oldItemIdx = it.oldValue.m_itemIdx;
 			item.m_newOwnerIdx = it.newValue.m_ownerIdx;
@@ -516,7 +526,7 @@ namespace TestDiffLCS
 			}
 		}
 		{
-			std::ofstream ofs("E:/b3.json", std::ios::binary);
+			std::ofstream ofs(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/Diff/Output/Merged.json"), std::ios::binary);
 			CJsonFormat::Write(arr1[0].m_existingNode, ofs);
 
 			std::stringstream ssA;
@@ -529,7 +539,7 @@ namespace TestDiffLCS
 		}
 		printf("");
 	}
-	static void TestDiffForCase(const char* fileA, const char* fileB)
+	static void InternalTestDiffForCase(const char* fileA, const char* fileB)
 	{
 		using namespace Niflect;
 		CRwNode root;
@@ -552,9 +562,33 @@ namespace TestDiffLCS
 		char filePathB[1024];
 		for (uint32 idx = 0; idx <= 11; ++idx)
 		{
-			sprintf(filePathA, CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/Diff/%ua.json"), idx);
-			sprintf(filePathB, CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/Diff/%ub.json"), idx);
-			TestDiffForCase(filePathA, filePathB);
+			sprintf(filePathA, CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/Diff/EditCases/%ua.json"), idx);
+			sprintf(filePathB, CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/Diff/EditCases/%ub.json"), idx);
+			InternalTestDiffForCase(filePathA, filePathB);
+		}
+	}
+	static void TestLargeData()
+	{
+		using namespace Niflect;
+
+		CRwNode root;
+		CRwNode root2;
+		{
+			std::ifstream ifs(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/Diff/LargeData/a.json"), std::ios::binary);
+			CJsonFormat::Read(&root, ifs);
+		}
+		{
+			std::ifstream ifs(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/Diff/LargeData/b.json"), std::ios::binary);
+			CJsonFormat::Read(&root2, ifs);
+		}
+		{
+			//Niflect::TArrayNif<SMyDiffInfo> vecDiffInfo;
+			//DiffMy3(root.Get(), root2.Get(), vecDiffInfo);
+			DiffMy4(&root, &root2);
+			printf("");
+			//计划首层用IndexingMap一对一diff, 即diff数据为每次修改的对象基本信息, 不需要LCS
+			//每个对象配一个上一次悠的rwNode拉平缓存, 用于和当前拉平缓存LCS diff
+			//方案灵活性在于第2层的diff也可用快速的memcpy或一对一树型比较, 但占用空间多, 也可用复杂度高的LCS, 减少保存数据量
 		}
 	}
 }
