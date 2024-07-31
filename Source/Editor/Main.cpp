@@ -13,6 +13,7 @@
 #include "Niflect/Util/StringUtil.h"
 #include "Niflect/Test/TestDefinition.h"
 #include "Editor/Diff/DiffArrays.h"
+#include "Editor/Diff/Diff2.h"
 
 class CMyClassForSimplifiedMakeShared
 {
@@ -109,6 +110,11 @@ int main(int argc, char** argv)
 			//TestDiffLCS::SimpleNumberArrays();
 			//TestDiffLCS::TestDiff();
 			TestDiffLCS::TestLargeData();
+			printf("");
+		}
+		if (false)
+		{
+			TestDiffEditGraph::TestLargeData();
 			printf("");
 		}
 	}

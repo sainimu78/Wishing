@@ -14,6 +14,15 @@ namespace NiflectUtil
 		va_end(va_alist);
 		return szContent;
 	}
+	static std::string FormatStdString(const char* format, ...)
+	{
+		char szContent[10240] = "";
+		va_list va_alist;
+		va_start(va_alist, format);
+		vsnprintf(szContent, 10240, format, va_alist);
+		va_end(va_alist);
+		return szContent;
+	}
 	static float StringToFloat(const Niflect::CString& str)
 	{
         return static_cast<float>(atof(str.c_str()));
