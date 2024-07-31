@@ -12,7 +12,7 @@
 #include <fstream>
 #include "Niflect/Util/StringUtil.h"
 #include "Niflect/Test/TestDefinition.h"
-#include "Niflect/Serialization/DiffArrays.h"
+#include "Editor/Diff/DiffArrays.h"
 
 class CMyClassForSimplifiedMakeShared
 {
