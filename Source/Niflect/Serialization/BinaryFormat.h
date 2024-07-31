@@ -270,7 +270,7 @@ namespace Niflect
 				{
 					uint8 data = 0;
 					stm.read(reinterpret_cast<char*>(&data), sizeof(data));
-					rwValue->SetBool(data);
+					rwValue->SetBool(data != 0);
 					break;
 				}
 				case ERwValueType::Float:

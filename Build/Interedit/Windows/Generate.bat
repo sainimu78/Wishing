@@ -13,6 +13,7 @@ if [%1]==[] (
     set option_visual_studio=Visual Studio 14 2015
 ) else if "%1"=="vs2017" (
     set option_visual_studio=Visual Studio 15 2017
+	set option_output_dir=vs2017
 	set option_generator_toolset=v140
 ) else (
     set option_visual_studio=Visual Studio 17 2022

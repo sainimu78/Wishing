@@ -3,6 +3,7 @@
 #include <vector>
 #include <iostream>
 #include <cassert>
+#include <algorithm>//for std::min with vs2017
 #include "Niflect/Base/NiflectBase.h"
 
 namespace DiffArrays
