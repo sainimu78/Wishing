@@ -209,6 +209,33 @@ namespace MyTestClassScope
 		}
 		return shared0;
 	}
+	
+#define USE_TEMPLATE_DEDUCTION_FOR_SIMPLIFYING_METHOD_DELEGATE
+#ifdef USE_TEMPLATE_DEDUCTION_FOR_SIMPLIFYING_METHOD_DELEGATE
+	// Helper function to create TAccessorMethodGetter
+	template <typename TOwner, typename Ret, typename ...Args>
+	auto MakeAccessorMethodGetter(Ret(TOwner::* method)(Args...) const)
+	{
+		using TCB = TAccessorMethodHasConst<TOwner, Ret, Args...>;
+		return MakeShared<TAccessorMethodGetter<TCB> >(TCB(method));
+	}
+	template <typename TValue, typename TOwner, typename Ret, typename ...Args>
+	auto MakeAccessorMethodGetter(Ret(TOwner::* method)(Args...))
+	{
+		using TCB = TAccessorMethodNonConst<TOwner, Ret, Args...>;
+		return MakeShared<TAccessorMethodSetter<TCB, TValue> >(TCB(method));
+	}
+
+	//template <typename TOwner, typename Ret, typename ...Args>
+	//auto MakeAccessorMethodSetter(Ret(TOwner::* method)(Args...))
+	//{
+	//	//using PlainValueType = typename std::remove_const<typename std::remove_reference<Args...>::type>::type;
+	//	using PlainValueType = std::decay_t<Args...>;
+	//	//using PlainValueType = std::remove_cv_t<std::remove_reference_t<Args...>>;
+	//	using TCB = TAccessorMethodNonConst<TOwner, Ret, Args...>;
+	//	return MakeShared<TAccessorMethodSetter<TCB, PlainValueType> >(TCB(method));
+	//}
+#endif
 	CSharedField CreateFieldLayout_CMyClassBase0_0()
 	{
 		auto shared0 = MakeShared<CCompoundField>();
@@ -235,8 +262,14 @@ namespace MyTestClassScope
 		{
 			auto shared1 = CreateFieldLayout_CMyClassBase0_0_0();
 			auto field1 = shared1.Get();
+#ifdef USE_TEMPLATE_DEDUCTION_FOR_SIMPLIFYING_METHOD_DELEGATE
+			field1->InitAccessorGetter(MakeAccessorMethodGetter(&CMyClassBase0_0::GetBaseSub1));
+			field1->InitAccessorSetter(MakeAccessorMethodGetter<CMyClassBase0_0_0>(&CMyClassBase0_0::SetBaseSub1));
+			//field1->InitAccessorSetter(MakeAccessorMethodSetter(&CMyClassBase0_0::SetBaseSub1));
+#else
 			field1->InitAccessorGetter(MakeShared<TAccessorMethodGetter<TAccessorMethodHasConst<CMyClassBase0_0, const CMyClassBase0_0_0&> > >(&CMyClassBase0_0::GetBaseSub1));
 			field1->InitAccessorSetter(MakeShared<TAccessorMethodSetter<TAccessorMethodNonConst<CMyClassBase0_0, void, const CMyClassBase0_0_0&>, CMyClassBase0_0_0> >(&CMyClassBase0_0::SetBaseSub1));
+#endif
 			field1->InitMemberMeta_ReservedForMethodBasedAccessor("m_base_sub_1", field0);
 			field0->AddChild(shared1);
 		}
