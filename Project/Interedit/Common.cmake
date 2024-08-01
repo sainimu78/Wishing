@@ -15,3 +15,6 @@ if (WIN32)
 	#避免如 freopen 的 Warning C4996
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 endif()
+
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
