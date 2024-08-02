@@ -71,7 +71,7 @@ int main(int argc, char** argv)
 			}
 			ASSERT(NiflectUtil::ReadStringFromFile(TestDefinition::FilePath::InputJson_JsonFormat) == NiflectUtil::ReadStringFromFile(TestDefinition::FilePath::OutputJson_JsonFormat));
 		}
-		if (false)//JSON 格式读 rapidjson 所写数据
+		if (true)//JSON 格式读 rapidjson 所写数据
 		{
 			{
 				CRwNode root;
@@ -142,9 +142,7 @@ int main(int argc, char** argv)
 						}
 						else
 						{
-							auto diff = strA.length() - strB.length();
-							diff = diff >= 0 ? diff : -diff;
-							ASSERT(diff == 1);
+							ASSERT((strA.length() - strB.length()) == 1);
 						}
 					}
 				}
