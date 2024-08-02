@@ -71,7 +71,7 @@ int main(int argc, char** argv)
 			}
 			ASSERT(NiflectUtil::ReadStringFromFile(TestDefinition::FilePath::InputJson_JsonFormat) == NiflectUtil::ReadStringFromFile(TestDefinition::FilePath::OutputJson_JsonFormat));
 		}
-		if (true)//JSON 格式读 rapidjson 所写数据
+		if (false)//JSON 格式读 rapidjson 所写数据
 		{
 			{
 				CRwNode root;
@@ -117,12 +117,14 @@ int main(int argc, char** argv)
 				ASSERT(vecLineA.size() == vecLineB.size());
 				bool same = vecLineA.size() > 0;
 				ASSERT(same);
+				uint32 diffCnt = 0;
 				for (auto idx = 0; idx < vecLineA.size(); ++idx)
 				{
 					auto& a = vecLineA[idx];
 					auto& b = vecLineB[idx];
 					if (a != b)
 					{
+						diffCnt++;
 						Niflect::CString strA;
 						Niflect::CString strB;
 						{
@@ -146,6 +148,7 @@ int main(int argc, char** argv)
 						}
 					}
 				}
+				ASSERT(diffCnt == 4);
 				ASSERT(same);
 			}
 		}
