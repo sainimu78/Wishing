@@ -10,7 +10,7 @@ namespace Niflect
 	constexpr const char JsonSyntaxPair_StringQuotes[] = { '\"', '\"' };
 	constexpr const char JsonSyntax_ElementDelimiter = ',';
 	constexpr const char JsonSyntax_ObjectColon = ':';
-	constexpr const char* JsonSyntax_Indent = "    ";
+	constexpr const char* JsonSyntax_Indent = "\t";
 	constexpr const char* JsonSyntax_True = "true";
 	constexpr const char* JsonSyntax_False = "false";
 
@@ -31,20 +31,21 @@ namespace Niflect
 		static void ConvertNumberToString(const CRwValue* rwValue, ERwValueType type, Niflect::CString& str)
 		{
 			double val;
+			Niflect::CStringStream ss;
 			switch (type)
 			{
 			case ERwValueType::Float:
 				val = rwValue->GetFloat();
+				ss << std::setprecision(std::numeric_limits<float>::max_digits10) << val;
 				break;
 			case ERwValueType::Double:
 				val = rwValue->GetDouble();
+				ss << std::setprecision(std::numeric_limits<double>::max_digits10) << val;
 				break;
 			default:
 				ASSERT(false);
 				break;
 			}
-			Niflect::CStringStream ss;
-			ss << std::setprecision(std::numeric_limits<double>::max_digits10) << val;
 			str = ss.str();
 		}
 		static void WriteJsonRecurs(const CRwNode* rwNode, std::ostream& stm, uint32 arrayItemIdx = INDEX_NONE, Niflect::CString strIndent = Niflect::CString())
@@ -269,24 +270,15 @@ namespace Niflect
 			auto rwValue = rwNode->ToValue();
 			if (isFloat)
 			{
-				//double num = std::stod(numStr);
-				//int decimalPlaces = 0;
-				//{
-				//	double fraction = num - static_cast<long long>(num);
-				//	const auto& maxDigits = std::numeric_limits<double>::max_digits10;
-				//	while (fraction != 0 && decimalPlaces < maxDigits)
-				//	{
-				//		fraction *= maxDigits;
-				//		fraction -= static_cast<long long>(fraction);
-				//		decimalPlaces++;
-				//	}
-				//}
-				//if (decimalPlaces > std::numeric_limits<float>::max_digits10)
-				//	rwValue->SetDouble(num);
-				//else
-				//	rwValue->SetFloat(static_cast<float>(num));
+				auto decimalPos = numStr.find('.');
+				ASSERT(decimalPos != std::string::npos);//如失败可能是科学计数格式, 认为有必要则实现解析
+				auto decimalPlaces = numStr.length() - decimalPos - 1;
+				if (decimalPlaces <= std::numeric_limits<float>::max_digits10)
+					rwValue->SetFloat(stof(numStr));
+				else
+					rwValue->SetDouble(stod(numStr));
 
-				rwValue->SetDouble(std::stod(numStr));
+				//rwValue->SetDouble(std::stod(numStr));
 			}
 			else
 			{

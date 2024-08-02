@@ -49,7 +49,7 @@ int main(int argc, char** argv)
 			DebugPrintTestTree();
 			TestMemoryStatsOnThreadsEnd();
 		}
-		if (true)//写测试用的 JSON 格式文件
+		if (false)//写测试用的 JSON 格式文件
 		{
 			CRwNode root;
 			DebugBuildStructure(&root);
@@ -73,16 +73,83 @@ int main(int argc, char** argv)
 		}
 		if (false)//JSON 格式读 rapidjson 所写数据
 		{
-			CRwNode root;
-			NiflectUtil::CInputFileStream ifs(TestDefinition::FilePath::InputJson_AnimGraphEditorData);
-			CJsonFormat::Read(&root, ifs);
+			{
+				CRwNode root;
+				NiflectUtil::CInputFileStream ifs(TestDefinition::FilePath::InputJson_AnimGraphEditorData);
+				CJsonFormat::Read(&root, ifs);
 
-			NiflectUtil::COutputFileStream ofs(TestDefinition::FilePath::OutputJson_AnimGraphEditorData);
-			CJsonFormat::Write(&root, ofs);
+				NiflectUtil::COutputFileStream ofs(TestDefinition::FilePath::OutputJson_AnimGraphEditorData);
+				CJsonFormat::Write(&root, ofs);
+			}
 
 			//写的结果存在一些差异
 			//1. 无法原样转换小数
 			//2. 来自 rapidjson 的数据中, 缩进字符为4个空格, CJsonFormat 为1个 Tab
+
+			{
+				//仅为测试将tab换成4个空格
+				Niflect::TArrayNif<Niflect::CString> vecLineA;
+				Niflect::CString line;
+				Niflect::CStringStream ss;
+				auto strFromFile = NiflectUtil::ReadStringFromFile(TestDefinition::FilePath::OutputJson_AnimGraphEditorData);
+				ss << strFromFile;
+				while (std::getline(ss, line))
+					vecLineA.push_back(line);
+				for (auto& it : vecLineA)
+				{
+					auto pos = it.find_first_not_of("\t");
+					if (pos > 0)
+					{
+						const auto& cnt = pos;
+						for (uint32 idx1 = 0; idx1 < cnt; ++idx1)
+							it.erase(it.begin());
+						Niflect::CString testIndents;
+						for (uint32 idx1 = 0; idx1 < cnt; ++idx1)
+							testIndents += "    ";
+						it = testIndents + it;
+					}
+				}
+				ss.clear();
+				Niflect::TArrayNif<Niflect::CString> vecLineB;
+				ss << NiflectUtil::ReadStringFromFile(TestDefinition::FilePath::InputJson_AnimGraphEditorData);
+				while (std::getline(ss, line))
+					vecLineB.push_back(line);
+				ASSERT(vecLineA.size() == vecLineB.size());
+				bool same = vecLineA.size() > 0;
+				ASSERT(same);
+				for (auto idx = 0; idx < vecLineA.size(); ++idx)
+				{
+					auto& a = vecLineA[idx];
+					auto& b = vecLineB[idx];
+					if (a != b)
+					{
+						Niflect::CString strA;
+						Niflect::CString strB;
+						{
+							auto pos = a.find_last_of(' ');
+							strA = a.substr(pos + 1, a.length() - pos);
+						}
+						{
+							auto pos = b.find_last_of(' ');
+							strB = b.substr(pos + 1, b.length() - pos);
+						}
+						auto numA = std::stod(strA.c_str());
+						auto numB = std::stod(strB.c_str());
+						if (numA != numB)
+						{
+							same = false;
+							break;
+						}
+						else
+						{
+							auto diff = strA.length() - strB.length();
+							diff = diff >= 0 ? diff : -diff;
+							ASSERT(diff == 1);
+						}
+					}
+				}
+				ASSERT(same);
+			}
 		}
 		if (false)//JSON & 自定义 Binary 格式相互转换
 		{
@@ -120,7 +187,7 @@ int main(int argc, char** argv)
 			TestDiffLCS::TestLargeData();
 			printf("");
 		}
-		if (false)
+		if (true)
 		{
 			TestDiffEditGraph::TestLargeData();
 			printf("");
