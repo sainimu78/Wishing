@@ -1,1 +1,0 @@
-#include "Niflect/Test/MyClassForGen.h"
