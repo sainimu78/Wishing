@@ -1,5 +1,5 @@
 #pragma once
-#include "Niflect/Base/NiflectBase.h"
+#include "Niflect/NiflectBase.h"
 #include <stdarg.h>
 #include <fstream>
 

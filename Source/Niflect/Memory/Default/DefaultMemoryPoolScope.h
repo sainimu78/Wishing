@@ -1,6 +1,6 @@
 #pragma once
 #include "Niflect/Memory/AllocatorInterface.h"
-#include "Niflect/Base/NiflectBase.h"
+#include "Niflect/NiflectBase.h"
 #include "Niflect/Memory/Generic/GenericHeapAllocator.h"
 
 namespace Niflect

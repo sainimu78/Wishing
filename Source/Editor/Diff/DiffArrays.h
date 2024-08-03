@@ -4,7 +4,7 @@
 #include <iostream>
 #include <cassert>
 #include <algorithm>//for std::min with vs2017
-#include "Niflect/Base/NiflectBase.h"
+#include "Niflect/NiflectBase.h"
 
 namespace DiffArrays
 {

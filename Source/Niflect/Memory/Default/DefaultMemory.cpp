@@ -7,7 +7,7 @@
 #include <vector>
 
 #include "Niflect/Memory/Default/DefaultMemoryPoolScope.h"
-#include "Niflect/Base/NiflectBase.h"
+#include "Niflect/NiflectBase.h"
 #include "Niflect/Util/DebugUtil.h"
 
 namespace Niflect

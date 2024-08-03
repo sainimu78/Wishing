@@ -1,6 +1,6 @@
 #pragma once
 #include <fstream>
-#include "Niflect/Base/NiflectBase.h"
+#include "Niflect/NiflectBase.h"
 
 namespace NiflectUtil
 {

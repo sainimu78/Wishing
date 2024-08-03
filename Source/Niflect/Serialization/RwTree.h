@@ -1,5 +1,5 @@
 #pragma once
-#include "Niflect/Base/NiflectBase.h"
+#include "Niflect/NiflectBase.h"
 #include "Niflect/Util/DebugUtil.h"
 
 namespace Niflect

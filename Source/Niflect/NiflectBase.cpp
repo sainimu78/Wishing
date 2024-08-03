@@ -1,4 +1,4 @@
-#include "Niflect/Base/NiflectBase.h"
+#include "Niflect/NiflectBase.h"
 #include "Niflect/Memory/Default/DefaultMemory.h"
 
 namespace Niflect
