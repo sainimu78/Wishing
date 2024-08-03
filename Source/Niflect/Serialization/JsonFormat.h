@@ -76,12 +76,9 @@ namespace Niflect
 					break;
 				case ERwValueType::Float:
 				{
-					//Niflect::CStringStream ss;
-					//ss << std::fixed << std::setprecision(std::numeric_limits<float>::max_digits10) << rwValue->GetFloat();
-					//str = ss.str();
-
-					//现改为不支持Float, 统一转为Double
-					ConvertNumberToString(rwValue, ERwValueType::Float, str);
+					Niflect::CStringStream ss;
+					ss << std::setprecision(std::numeric_limits<float>::max_digits10) << rwValue->GetFloat();
+					str = ss.str();
 					break;
 				}
 				case ERwValueType::Double:
@@ -95,11 +92,9 @@ namespace Niflect
 					//ASSERT(str0 == str1);
 					//end
 
-					//Niflect::CStringStream ss;
-					//ss << std::fixed << std::setprecision(std::numeric_limits<double>::max_digits10) << rwValue->GetDouble();
-					//str = ss.str();
-
-					ConvertNumberToString(rwValue, ERwValueType::Double, str);
+					Niflect::CStringStream ss;
+					ss << std::setprecision(std::numeric_limits<double>::max_digits10) << rwValue->GetDouble();
+					str = ss.str();
 					break;
 				}
 				case ERwValueType::Int32:
