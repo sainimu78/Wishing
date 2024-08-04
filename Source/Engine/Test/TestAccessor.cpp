@@ -2,6 +2,110 @@
 #include "Niflect/NiflectAccessor.h"
 #include "Niflect/Serialization/JsonFormat.h"
 
+namespace Engine
+{
+	using namespace RwTree;
+
+	class CFloatAccessor : public Niflect::CAccessor
+	{
+	public:
+		virtual bool SaveToRwNode(const AddrType base, CRwNode* rw) const override
+		{
+			auto offsetBase = this->GetAddr(base);
+			auto& instance = *static_cast<const float*>(offsetBase);
+			ASSERT(!rw->IsValue());
+			auto rwValue = rw->ToValue();
+			rwValue->SetFloat(instance);
+			return true;
+		}
+		virtual bool LoadFromRwNode(AddrType base, const CRwNode* rw) const override
+		{
+			auto offsetBase = this->GetAddr(base);
+			auto& instance = *static_cast<float*>(offsetBase);
+			ASSERT(rw->IsValue());
+			auto rwValue = rw->GetValue();
+			instance = rwValue->GetFloat();
+			return true;
+		}
+	};
+
+	class CCompoundAccessor : public Niflect::CAccessor
+	{
+	public:
+		virtual bool SaveToRwNode(const AddrType base, CRwNode* rw) const override
+		{
+			auto offsetBase = this->GetAddr(base);
+			auto count = this->GetChildrenCount();
+			for (uint32 idx = 0; idx < count; ++idx)
+			{
+				auto childAccessor = this->GetChild(idx);
+				ASSERT(!childAccessor->GetName().empty());
+				auto rwChild = CreateRwNode();
+				if (childAccessor->SaveToRwNode(offsetBase, rwChild.Get()))
+					AddExistingRwNode(rw, childAccessor->GetName(), rwChild);
+			}
+			return true;
+		}
+		virtual bool LoadFromRwNode(AddrType base, const CRwNode* rw) const override
+		{
+			auto offsetBase = this->GetAddr(base);
+			auto count = this->GetChildrenCount();
+			for (uint32 idx = 0; idx < count; ++idx)
+			{
+				auto childAccessor = this->GetChild(idx);
+				ASSERT(!childAccessor->GetName().empty());
+				auto rwChild = FindRwNode(rw, childAccessor->GetName());
+				childAccessor->LoadFromRwNode(offsetBase, rwChild);
+			}
+			return true;
+		}
+	};
+
+	template <typename TStlArray>
+	class TArrayAccessor : public Niflect::CAccessor
+	{
+	public:
+		virtual bool SaveToRwNode(const AddrType base, CRwNode* rw) const override
+		{
+			auto offsetBase = this->GetAddr(base);
+			auto& instance = *static_cast<const TStlArray*>(offsetBase);
+			ASSERT(!rw->IsArray());
+			auto rwArray = rw->ToArray();
+			auto elemAccessor = this->GetElementAccessor();
+			for (auto idx = 0; idx < instance.size(); ++idx)
+			{
+				auto rwItem = CreateRwNode();
+				auto elemBase = &instance[idx];
+				if (elemAccessor->SaveToRwNode(elemBase, rwItem.Get()))
+					rwArray->AddItem(rwItem);
+			}
+			return true;
+		}
+		virtual bool LoadFromRwNode(AddrType base, const CRwNode* rw) const override
+		{
+			auto offsetBase = this->GetAddr(base);
+			auto& instance = *static_cast<TStlArray*>(offsetBase);
+			ASSERT(rw->IsArray());
+			auto rwArray = rw->GetArray();
+			auto elemAccessor = this->GetElementAccessor();
+			instance.resize(rwArray->GetItemsCount());
+			for (auto idx = 0; idx < instance.size(); ++idx)
+			{
+				auto rwItem = rwArray->GetItem(idx);
+				auto elemBase = &instance[idx];
+				elemAccessor->LoadFromRwNode(elemBase, rwItem);
+			}
+			return true;
+		}
+
+	private:
+		CAccessor* GetElementAccessor() const
+		{
+			return this->GetChild(0);
+		}
+	};
+}
+
 namespace TestAccessor
 {
 	class CTestClassMy
@@ -29,110 +133,6 @@ namespace TestAccessor
 		Niflect::TArrayNif<float> m_array_1;
 		float m_float_2;
 	};
-
-	namespace Engine
-	{
-		using namespace RwTree;
-
-		class CFloatAccessor : public Niflect::CAccessor
-		{
-		public:
-			virtual bool SaveToRwNode(const AddrType base, CRwNode* rw) const override
-			{
-				auto offsetBase = this->GetAddr(base);
-				auto& instance = *static_cast<const float*>(offsetBase);
-				ASSERT(!rw->IsValue());
-				auto rwValue = rw->ToValue();
-				rwValue->SetFloat(instance);
-				return true;
-			}
-			virtual bool LoadFromRwNode(AddrType base, const CRwNode* rw) const override
-			{
-				auto offsetBase = this->GetAddr(base);
-				auto& instance = *static_cast<float*>(offsetBase);
-				ASSERT(rw->IsValue());
-				auto rwValue = rw->GetValue();
-				instance = rwValue->GetFloat();
-				return true;
-			}
-		};
-
-		class CCompoundAccessor : public Niflect::CAccessor
-		{
-		public:
-			virtual bool SaveToRwNode(const AddrType base, CRwNode* rw) const override
-			{
-				auto offsetBase = this->GetAddr(base);
-				auto count = this->GetChildrenCount();
-				for (uint32 idx = 0; idx < count; ++idx)
-				{
-					auto childAccessor = this->GetChild(idx);
-					ASSERT(!childAccessor->GetName().empty());
-					auto rwChild = CreateRwNode();
-					if (childAccessor->SaveToRwNode(offsetBase, rwChild.Get()))
-						AddExistingRwNode(rw, childAccessor->GetName(), rwChild);
-				}
-				return true;
-			}
-			virtual bool LoadFromRwNode(AddrType base, const CRwNode* rw) const override
-			{
-				auto offsetBase = this->GetAddr(base);
-				auto count = this->GetChildrenCount();
-				for (uint32 idx = 0; idx < count; ++idx)
-				{
-					auto childAccessor = this->GetChild(idx);
-					ASSERT(!childAccessor->GetName().empty());
-					auto rwChild = FindRwNode(rw, childAccessor->GetName());
-					childAccessor->LoadFromRwNode(offsetBase, rwChild);
-				}
-				return true;
-			}
-		};
-
-		template <typename TStlArray>
-		class TArrayAccessor : public Niflect::CAccessor
-		{
-		public:
-			virtual bool SaveToRwNode(const AddrType base, CRwNode* rw) const override
-			{
-				auto offsetBase = this->GetAddr(base);
-				auto& instance = *static_cast<const TStlArray*>(offsetBase);
-				ASSERT(!rw->IsArray());
-				auto rwArray = rw->ToArray();
-				auto elemAccessor = this->GetElementAccessor();
-				for (auto idx = 0; idx < instance.size(); ++idx)
-				{
-					auto rwItem = CreateRwNode();
-					auto elemBase = &instance[idx];
-					if (elemAccessor->SaveToRwNode(elemBase, rwItem.Get()))
-						rwArray->AddItem(rwItem);
-				}
-				return true;
-			}
-			virtual bool LoadFromRwNode(AddrType base, const CRwNode* rw) const override
-			{
-				auto offsetBase = this->GetAddr(base);
-				auto& instance = *static_cast<TStlArray*>(offsetBase);
-				ASSERT(rw->IsArray());
-				auto rwArray = rw->GetArray();
-				auto elemAccessor = this->GetElementAccessor();
-				instance.resize(rwArray->GetItemsCount());
-				for (auto idx = 0; idx < instance.size(); ++idx)
-				{
-					auto rwItem = rwArray->GetItem(idx);
-					auto elemBase = &instance[idx];
-					elemAccessor->LoadFromRwNode(elemBase, rwItem);
-				}
-				return true;
-			}
-
-		private:
-			CAccessor* GetElementAccessor() const
-			{
-				return this->GetChild(0);
-			}
-		};
-	}
 
 	void TestClasses()
 	{
