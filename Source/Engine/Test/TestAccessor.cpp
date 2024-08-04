@@ -108,7 +108,7 @@ namespace Engine
 	};
 
 	template <typename TStlArray>
-	class TArrayAccessor : public Niflect::CAccessor
+	class TStlArrayAccessor : public Niflect::CAccessor
 	{
 	public:
 		virtual bool SaveToRwNode(const AddrType base, CRwNode* rw) const override
@@ -121,7 +121,9 @@ namespace Engine
 			for (auto idx = 0; idx < instance.size(); ++idx)
 			{
 				auto rwItem = CreateRwNode();
-				auto elemBase = &instance[idx];//如std::vector<bool>无法支持, 可改用std::vector<uint8>, 或另定义Accessor
+				//auto elemBase = &instance[idx];//如std::vector<bool>无法支持, 因此额外定义特化模板 GetElementBaseToX, 也可改用std::vector<uint8>, 或另定义Accessor
+				bool stlBoolItemHandler;
+				auto elemBase = GetElementBaseToRead(instance[idx], stlBoolItemHandler);
 				if (elemAccessor->SaveToRwNode(elemBase, rwItem.Get()))
 					rwArray->AddItem(rwItem);
 			}
@@ -138,10 +140,45 @@ namespace Engine
 			for (auto idx = 0; idx < instance.size(); ++idx)
 			{
 				auto rwItem = rwArray->GetItem(idx);
-				auto elemBase = &instance[idx];
-				elemAccessor->LoadFromRwNode(elemBase, rwItem);
+				//auto elemBase = &instance[idx];
+				bool stlBoolItemHandler;
+				auto elemBase = GetElementBaseToWriteBegin(instance[idx], stlBoolItemHandler);
+				if (elemAccessor->LoadFromRwNode(elemBase, rwItem))
+					GetElementBaseToWriteEnd(instance[idx], stlBoolItemHandler);
 			}
 			return true;
+		}
+
+	private:
+		template <typename TItem>
+		static const AddrType GetElementBaseToRead(const TItem& item, bool& stlBoolItemHandler)
+		{
+			return &item;
+		}
+		template <>
+		static const AddrType GetElementBaseToRead<typename TStlArray::const_reference>(const typename TStlArray::const_reference& item, bool& stlBoolItemHandler)
+		{
+			stlBoolItemHandler = item;
+			return &stlBoolItemHandler;
+		}
+		template <typename TItem>
+		static AddrType GetElementBaseToWriteBegin(TItem& item, bool& stlBoolItemHandler)
+		{
+			return &item;
+		}
+		template <>
+		static AddrType GetElementBaseToWriteBegin<typename TStlArray::reference>(typename TStlArray::reference& item, bool& stlBoolItemHandler)
+		{
+			return &stlBoolItemHandler;
+		}
+		template <typename TItem>
+		static void GetElementBaseToWriteEnd(TItem& item, bool& stlBoolItemHandler)
+		{
+		}
+		template <>
+		static void GetElementBaseToWriteEnd<typename TStlArray::reference>(typename TStlArray::reference& item, bool& stlBoolItemHandler)
+		{
+			item = stlBoolItemHandler;
 		}
 
 	private:
@@ -195,6 +232,7 @@ namespace TestAccessor
 		CTestClassMy2()
 			: m_derived_bool_0(false)
 			, m_derived_float_2(0.0f)
+			, m_derived_bool_4(true)
 		{
 
 		}
@@ -203,10 +241,17 @@ namespace TestAccessor
 			inherited::TestInit();
 
 			m_derived_bool_0 = true;
-			m_derived_array_1.resize(2);
+			m_derived_array_1.resize(4);
 			m_derived_array_1[0] = 20.1f;
 			m_derived_array_1[1] = 20.2f;
+			m_derived_array_1[2] = 20.3f;
+			m_derived_array_1[3] = 20.4f;
 			m_derived_float_2 = 10.1f;
+			m_derived_array_3.resize(3);
+			m_derived_array_3[0] = true;
+			m_derived_array_3[1] = false;
+			m_derived_array_3[2] = true;
+			m_derived_bool_4 = false;
 		}
 
 		bool operator==(const CTestClassMy2& rhs) const
@@ -216,7 +261,9 @@ namespace TestAccessor
 				return 
 					(m_derived_bool_0 == rhs.m_derived_bool_0) &&
 					(m_derived_array_1 == rhs.m_derived_array_1) &&
-					(m_derived_float_2 == rhs.m_derived_float_2)
+					(m_derived_float_2 == rhs.m_derived_float_2) &&
+					(m_derived_array_3 == rhs.m_derived_array_3) &&
+					(m_derived_bool_4 == rhs.m_derived_bool_4)
 					;
 			}
 			return false;
@@ -225,6 +272,8 @@ namespace TestAccessor
 		bool m_derived_bool_0;
 		Niflect::TArrayNif<float> m_derived_array_1;
 		float m_derived_float_2;
+		Niflect::TArrayNif<bool> m_derived_array_3;
+		bool m_derived_bool_4;
 	};
 
 	static Niflect::CSharedAccessor BuildAccessor_CTestClassMy()
@@ -238,7 +287,7 @@ namespace TestAccessor
 			accessor0->AddChild(accessor1);
 		}
 		{
-			auto accessor1 = Niflect::MakeShared<TArrayAccessor<Niflect::TArrayNif<float> > >();
+			auto accessor1 = Niflect::MakeShared<TStlArrayAccessor<Niflect::TArrayNif<float> > >();
 			accessor1->InitMemberMeta("m_array_1", Niflect::GetMemberVariableOffset(&CTestClassMy::m_array_1));
 			{
 				auto accessor2 = Niflect::MakeShared<CFloatAccessor>();
@@ -265,7 +314,7 @@ namespace TestAccessor
 			accessor0->AddChild(accessor1);
 		}
 		{
-			auto accessor1 = Niflect::MakeShared<TArrayAccessor<Niflect::TArrayNif<float> > >();
+			auto accessor1 = Niflect::MakeShared<TStlArrayAccessor<Niflect::TArrayNif<float> > >();
 			accessor1->InitMemberMeta("m_derived_array_1", Niflect::GetMemberVariableOffset(&CTestClassMy2::m_derived_array_1));
 			{
 				auto accessor2 = Niflect::MakeShared<CFloatAccessor>();
@@ -277,6 +326,21 @@ namespace TestAccessor
 		{
 			auto accessor1 = Niflect::MakeShared<CFloatAccessor>();
 			accessor1->InitMemberMeta("m_derived_float_2", Niflect::GetMemberVariableOffset(&CTestClassMy2::m_derived_float_2));
+			accessor0->AddChild(accessor1);
+		}
+		{
+			auto accessor1 = Niflect::MakeShared<TStlArrayAccessor<Niflect::TArrayNif<bool> > >();
+			accessor1->InitMemberMeta("m_derived_array_3", Niflect::GetMemberVariableOffset(&CTestClassMy2::m_derived_array_3));
+			{
+				auto accessor2 = Niflect::MakeShared<CBoolAccessor>();
+				accessor2->InitMemberMeta("reserved_dim0", Niflect::CAddrOffset::None);
+				accessor1->AddChild(accessor2);
+			}
+			accessor0->AddChild(accessor1);
+		}
+		{
+			auto accessor1 = Niflect::MakeShared<CBoolAccessor>();
+			accessor1->InitMemberMeta("m_derived_bool_4", Niflect::GetMemberVariableOffset(&CTestClassMy2::m_derived_bool_4));
 			accessor0->AddChild(accessor1);
 		}
 		return accessor0;
@@ -295,10 +359,10 @@ namespace TestAccessor
 			accessor0->LoadFromRwNode(&dstData, &root);
 			printf("%f\n", dstData);
 		}
-		if (true)//简单数组
+		if (false)//简单数组
 		{
 			using namespace Engine;
-			auto accessor0 = Niflect::MakeShared<TArrayAccessor<Niflect::TArrayNif<float> > >();
+			auto accessor0 = Niflect::MakeShared<TStlArrayAccessor<Niflect::TArrayNif<float> > >();
 			{
 				auto accessor1 = Niflect::MakeShared<CFloatAccessor>();
 				accessor1->InitMemberMeta("reserved_dim0", Niflect::CAddrOffset::None);
@@ -316,6 +380,27 @@ namespace TestAccessor
 				printf("%f\n", it);
 			printf("");
 		}
+		if (false)//STL中, 被特殊处理 bool 数组
+		{
+			using namespace Engine;
+			auto accessor0 = Niflect::MakeShared<TStlArrayAccessor<Niflect::TArrayNif<bool> > >();
+			{
+				auto accessor1 = Niflect::MakeShared<CBoolAccessor>();
+				accessor1->InitMemberMeta("reserved_dim0", Niflect::CAddrOffset::None);
+				accessor0->AddChild(accessor1);
+			}
+			Niflect::TArrayNif<bool> srcData;
+			srcData.resize(2);
+			srcData[0] = false;
+			srcData[1] = true;
+			CRwNode root;
+			accessor0->SaveToRwNode(&srcData, &root);
+			Niflect::TArrayNif<bool> dstData;
+			accessor0->LoadFromRwNode(&dstData, &root);
+			for (auto& it : dstData)
+				printf("%s\n", it ? "true" : "false");
+			printf("");
+		}
 		if (false)
 		{
 			using namespace Engine;
@@ -329,7 +414,7 @@ namespace TestAccessor
 			ASSERT(srcData == dstData);
 			printf("");
 		}
-		if (false)
+		if (true)
 		{
 			using namespace Engine;
 			auto accessor0 = BuildAccessor_CTestClassMy();
