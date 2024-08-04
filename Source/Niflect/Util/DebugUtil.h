@@ -1,6 +1,6 @@
 #pragma once
 #include "Niflect/NiflectBase.h"
-#include "Niflect/Memory/Stats/NiflectMemoryStats.h"
+//#include "Niflect/Memory/Stats/NiflectMemoryStats.h"
 
 namespace NiflectUtil
 {

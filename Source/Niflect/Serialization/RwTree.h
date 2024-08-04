@@ -2,7 +2,7 @@
 #include "Niflect/NiflectBase.h"
 #include "Niflect/Util/DebugUtil.h"
 
-namespace Niflect
+namespace RwTree
 {
 	enum class ERwValueType : uint8
 	{
@@ -202,7 +202,7 @@ namespace Niflect
 			auto rwValue = this->AddItemValue();
 			rwValue->SetFloat(value);
 		}
-		void AddItemString(const CString& value)
+		void AddItemString(const Niflect::CString& value)
 		{
 			auto rwValue = this->AddItemValue();
 			rwValue->SetString(value);
@@ -373,7 +373,7 @@ namespace Niflect
 	}
 }
 
-namespace Niflect
+namespace RwTree
 {
 	static CRwNode* FindRwNode(const CRwNode* rwParent, const Niflect::CString& name)
 	{
@@ -593,7 +593,7 @@ namespace Niflect
 	}
 }
 
-namespace Niflect
+namespace RwTree
 {
 	static void DebugBuildSingleValue(CRwNode* root)
 	{

@@ -16,6 +16,8 @@
 
 namespace TestSerializationRwTree
 {
+	using namespace RwTree;
+
 	void TestMemory()
 	{
 		using namespace Niflect;

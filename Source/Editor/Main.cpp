@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "Engine/Engine.h"
 //#include "Windows.h"
-#include "Editor/Test/TestSerializationRwTree.h"
+#include "Engine/Test/TestAccessor.h"
 
 class CMyClassForSimplifiedMakeShared
 {
@@ -24,7 +24,7 @@ int main(int argc, char** argv)
 {
 	TestAPI_Cpp();
 
-	TestSerializationRwTree::TestSerialization();
+	TestAccessor::TestClasses();
 
 	//auto hLib = LoadLibrary("Engine.dll");
 	//if (hLib != NULL)

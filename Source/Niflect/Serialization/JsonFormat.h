@@ -3,7 +3,7 @@
 #include <iomanip>
 #include <limits>
 
-namespace Niflect
+namespace RwTree
 {
 	constexpr const char JsonSyntaxPair_CurlyBrackets[] = { '{', '}' };
 	constexpr const char JsonSyntaxPair_SquareBrackets[] = { '[', ']' };

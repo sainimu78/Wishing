@@ -170,6 +170,7 @@ namespace TestDiffEditGraph
 	{
 		using namespace QtNodeEditor;
 		using namespace Niflect;
+		using namespace RwTree;
 		CDiff2::CListData lstA;
 		{
 			CRwNode root;

@@ -244,9 +244,11 @@ namespace TestDiffLCS
 
 namespace TestDiffLCS
 {
+	using namespace RwTree;
+
 	class CRwDiffItem
 	{
-		using CRwNode = Niflect::CRwNode;
+		using CRwNode = CRwNode;
 	public:
 		CRwDiffItem()
 			: m_node(NULL)
@@ -377,7 +379,7 @@ namespace TestDiffLCS
 		std::unordered_map<CRwDiffItem, std::string, CRwDiffItemHash> myUnorderedMap;
 	}
 
-	static void FlattenNodeRecurs2(Niflect::CRwNode* rwNode, uint32 ownerIdx, uint32 itemIdx, Niflect::TArrayNif<CRwDiffItem>& vecNode)
+	static void FlattenNodeRecurs2(CRwNode* rwNode, uint32 ownerIdx, uint32 itemIdx, Niflect::TArrayNif<CRwDiffItem>& vecNode)
 	{
 		auto indexingId = static_cast<uint32>(vecNode.size());
 		vecNode.push_back({ rwNode, ownerIdx, itemIdx });
@@ -399,12 +401,12 @@ namespace TestDiffLCS
 
 	struct SRwAppliedData111111
 	{
-		Niflect::CRwNode* m_existingNode;
-		Niflect::CSharedRwNode m_holder;
+		CRwNode* m_existingNode;
+		CSharedRwNode m_holder;
 	};
 
 	//todo: rwNodeAӦΪconst
-	static void DiffMy4(Niflect::CRwNode* rwNodeA, Niflect::CRwNode* rwNodeB)
+	static void DiffMy4(CRwNode* rwNodeA, CRwNode* rwNodeB)
 	{
 		using namespace DiffArrays;
 		using namespace Niflect;
@@ -422,7 +424,7 @@ namespace TestDiffLCS
 			item.m_editAction = it.action;
 			item.m_indexToEdit = it.index;
 			if (it.newValue.m_node != NULL)
-				Niflect::CBinaryFormat::A_0(it.newValue.m_node, item.m_ss);
+				CBinaryFormat::A_0(it.newValue.m_node, item.m_ss);
 			item.m_oldOwnerIdx = it.oldValue.m_ownerIdx;
 			item.m_oldItemIdx = it.oldValue.m_itemIdx;
 			item.m_newOwnerIdx = it.newValue.m_ownerIdx;

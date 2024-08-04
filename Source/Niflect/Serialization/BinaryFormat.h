@@ -2,7 +2,7 @@
 #include "Niflect/Serialization/RwTree.h"
 //#include <iostream>
 
-namespace Niflect
+namespace RwTree
 {
 	class CBinaryFormat
 	{
