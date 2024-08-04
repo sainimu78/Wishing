@@ -45,6 +45,8 @@ namespace Niflect
 		{
 			return m_vecChild[idx].Get();
 		}
+
+	protected:
 		inline const AddrType GetAddr(const AddrType& base) const
 		{
 			return static_cast<const char*>(base) + m_addrOffset.GetOffset();

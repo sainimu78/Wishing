@@ -189,6 +189,146 @@ namespace Engine
 	};
 }
 
+namespace Engine
+{
+	template <typename T>
+	class TMyVector
+	{
+	public:
+		T m_x;
+		T m_y;
+		T m_z;
+	};
+
+	template <typename T>
+	class TMyQuaternion
+	{
+	public:
+		T m_x;
+		T m_y;
+		T m_z;
+		T m_w;
+	};
+
+	template <typename T>
+	class TMyTransform
+	{
+	public:
+		TMyVector<T> m_translation;
+		TMyQuaternion<T> m_rotation;
+		TMyVector<T> m_scale;
+	};
+
+	template <typename T>
+	bool operator==(const TMyVector<T>& lhs, const TMyVector<T>& rhs)
+	{
+		return
+			lhs.m_x == rhs.m_x &&
+			lhs.m_y == rhs.m_y &&
+			lhs.m_z == rhs.m_z
+			;
+	}
+	template <typename T>
+	bool operator==(const TMyQuaternion<T>& lhs, const TMyQuaternion<T>& rhs)
+	{
+		return
+			lhs.m_x == rhs.m_x &&
+			lhs.m_y == rhs.m_y &&
+			lhs.m_z == rhs.m_z &&
+			lhs.m_w == rhs.m_w
+			;
+	}
+	template <typename T>
+	bool operator==(const TMyTransform<T>& lhs, const TMyTransform<T>& rhs)
+	{
+		return
+			lhs.m_translation == rhs.m_translation &&
+			lhs.m_rotation == rhs.m_rotation &&
+			lhs.m_scale == rhs.m_scale
+			;
+	}
+
+	typedef TMyTransform<float> CMyTransformFloat;
+
+	template <typename T>
+	static void TestInit_TMyTransform(TMyTransform<T>& srcData)
+	{
+		srcData.m_translation.m_x = 1.0f;
+		srcData.m_translation.m_y = 2.0f;
+		srcData.m_translation.m_z = 3.0f;
+		srcData.m_rotation.m_x = 4.0f;
+		srcData.m_rotation.m_y = 5.0f;
+		srcData.m_rotation.m_z = 6.0f;
+		srcData.m_rotation.m_w = 7.0f;
+		srcData.m_scale.m_x = 8.0f;
+		srcData.m_scale.m_y = 9.0f;
+		srcData.m_scale.m_z = 10.0f;
+	}
+
+	template <typename T>
+	Niflect::CString MyVectorToString(const TMyVector<T>& v)
+	{
+		std::basic_stringstream<Niflect::CString::value_type, Niflect::CString::traits_type, Niflect::CString::allocator_type> ss;
+		ss << v.m_x << ',' << v.m_y << ',' << v.m_z;
+		return ss.str();
+	}
+	template <typename T>
+	TMyVector<T> StringToMyVector(const Niflect::CString& str)
+	{
+		std::basic_stringstream<Niflect::CString::value_type, Niflect::CString::traits_type, Niflect::CString::allocator_type> ss(str);
+		TMyVector<T> v;
+		char d;
+		ss >> v.m_x >> d >> v.m_y >> d >> v.m_z;
+		return v;
+	}
+
+	template <typename T>
+	Niflect::CString MyQuaternionToString(const TMyQuaternion<T>& v)
+	{
+		std::basic_stringstream<Niflect::CString::value_type, Niflect::CString::traits_type, Niflect::CString::allocator_type> ss;
+		ss << v.m_x << ',' << v.m_y << ',' << v.m_z << ',' << v.m_w;
+		return ss.str();
+	}
+	template <typename T>
+	TMyQuaternion<T> StringToMyQuaternion(const Niflect::CString& str)
+	{
+		std::basic_stringstream<Niflect::CString::value_type, Niflect::CString::traits_type, Niflect::CString::allocator_type> ss(str);
+		TMyQuaternion<T> v;
+		char d;
+		ss >> v.m_x >> d >> v.m_y >> d >> v.m_z >> d >> v.m_w;
+		return v;
+	}
+}
+
+namespace Engine
+{
+	template <typename T>
+	class TMyTransformAccessor : public Niflect::CAccessor
+	{
+	public:
+		virtual bool SaveToRwNode(const AddrType base, CRwNode* rw) const override
+		{
+			auto offsetBase = this->GetAddr(base);
+			auto& instance = *static_cast<const TMyTransform<T>*>(offsetBase);
+			//序列化方式是任意的, 因此可认为支持自定义编码
+			AddRwString(rw, "m_translation", MyVectorToString<T>(instance.m_translation));
+			AddRwString(rw, "m_rotation", MyQuaternionToString<T>(instance.m_rotation));
+			AddRwString(rw, "m_scale", MyVectorToString<T>(instance.m_scale));
+			return true;
+		}
+		virtual bool LoadFromRwNode(AddrType base, const CRwNode* rw) const override
+		{
+			auto offsetBase = this->GetAddr(base);
+			auto& instance = *static_cast<TMyTransform<T>*>(offsetBase);
+			//序列化方式是任意的, 因此可认为支持自定义编码
+			instance.m_translation = StringToMyVector<T>(FindRwString(rw, "m_translation"));
+			instance.m_rotation = StringToMyQuaternion<T>(FindRwString(rw, "m_rotation"));
+			instance.m_scale = StringToMyVector<T>(FindRwString(rw, "m_scale"));
+			return true;
+		}
+	};
+}
+
 namespace TestAccessor
 {
 	class CTestClassMy
@@ -380,6 +520,19 @@ namespace TestAccessor
 				printf("%f\n", it);
 			printf("");
 		}
+		if (true)
+		{
+			using namespace Engine;
+			auto accessor0 = Niflect::MakeShared<TMyTransformAccessor<float> >();
+			TMyTransform<float> srcData;
+			TestInit_TMyTransform(srcData);
+			CRwNode root;
+			accessor0->SaveToRwNode(&srcData, &root);
+			TMyTransform<float> dstData;
+			accessor0->LoadFromRwNode(&dstData, &root);
+			ASSERT(srcData == dstData);
+			printf("");
+		}
 		if (false)//STL中, 被特殊处理 bool 数组
 		{
 			using namespace Engine;
@@ -414,7 +567,7 @@ namespace TestAccessor
 			ASSERT(srcData == dstData);
 			printf("");
 		}
-		if (true)
+		if (false)
 		{
 			using namespace Engine;
 			auto accessor0 = BuildAccessor_CTestClassMy();
