@@ -121,7 +121,7 @@ namespace Engine
 			for (auto idx = 0; idx < instance.size(); ++idx)
 			{
 				auto rwItem = CreateRwNode();
-				auto elemBase = &instance[idx];//如std::vector<bool>无法支持
+				auto elemBase = &instance[idx];//如std::vector<bool>无法支持, 可改用std::vector<uint8>, 或另定义Accessor
 				if (elemAccessor->SaveToRwNode(elemBase, rwItem.Get()))
 					rwArray->AddItem(rwItem);
 			}
@@ -157,6 +157,13 @@ namespace TestAccessor
 	class CTestClassMy
 	{
 	public:
+		CTestClassMy()
+			: m_float_0(0.0f)
+			, m_float_2(0.0f)
+		{
+
+		}
+
 		void TestInit()
 		{
 			m_float_0 = 1.0f;
@@ -185,6 +192,12 @@ namespace TestAccessor
 	{
 		typedef CTestClassMy inherited;
 	public:
+		CTestClassMy2()
+			: m_derived_bool_0(false)
+			, m_derived_float_2(0.0f)
+		{
+
+		}
 		void TestInit()
 		{
 			inherited::TestInit();
