@@ -337,6 +337,7 @@ namespace TestAccessor
 		CTestClassMy()
 			: m_float_0(0.0f)
 			, m_float_2(0.0f)
+			, m_bool_3(false)
 		{
 
 		}
@@ -349,6 +350,15 @@ namespace TestAccessor
 			m_array_1[1] = 2.2f;
 			m_array_1[2] = 2.3f;
 			m_float_2 = 1.1f;
+			m_bool_3 = true;
+			m_array_array_4.resize(2);
+			m_array_array_4[0].resize(3);
+			m_array_array_4[0][0] = 1.2f;
+			m_array_array_4[0][1] = 1.3f;
+			m_array_array_4[0][2] = 1.4f;
+			m_array_array_4[1].resize(2);
+			m_array_array_4[1][0] = 1.5f;
+			m_array_array_4[1][1] = 1.6f;
 		}
 
 		bool operator==(const CTestClassMy& rhs) const
@@ -356,13 +366,17 @@ namespace TestAccessor
 			return
 				(m_float_0 == rhs.m_float_0) &&
 				(m_array_1 == rhs.m_array_1) &&
-				(m_float_2 == rhs.m_float_2)
+				(m_float_2 == rhs.m_float_2) &&
+				(m_bool_3 == rhs.m_bool_3) &&
+				(m_array_array_4 == rhs.m_array_array_4)
 				;
 		}
 
 		float m_float_0;
 		Niflect::TArrayNif<float> m_array_1;
 		float m_float_2;
+		bool m_bool_3;
+		Niflect::TArrayNif<Niflect::TArrayNif<float> > m_array_array_4;
 	};
 
 	class CTestClassMy2 : public CTestClassMy
@@ -439,6 +453,26 @@ namespace TestAccessor
 		{
 			auto accessor1 = Niflect::MakeShared<CFloatAccessor>();
 			accessor1->InitMemberMeta("m_float_2", Niflect::GetMemberVariableOffset(&CTestClassMy::m_float_2));
+			accessor0->AddChild(accessor1);
+		}
+		{
+			auto accessor1 = Niflect::MakeShared<CBoolAccessor>();
+			accessor1->InitMemberMeta("m_bool_3", Niflect::GetMemberVariableOffset(&CTestClassMy::m_bool_3));
+			accessor0->AddChild(accessor1);
+		}
+		{
+			auto accessor1 = Niflect::MakeShared<TStlArrayAccessor<Niflect::TArrayNif<Niflect::TArrayNif<float> > > >();
+			accessor1->InitMemberMeta("m_array_array_4", Niflect::GetMemberVariableOffset(&CTestClassMy::m_array_array_4));
+			{
+				auto accessor2 = Niflect::MakeShared<TStlArrayAccessor<Niflect::TArrayNif<float> > >();
+				accessor2->InitMemberMeta("reserved_dim1", Niflect::CAddrOffset::None);
+				{
+					auto accessor3 = Niflect::MakeShared<CFloatAccessor>();
+					accessor3->InitMemberMeta("reserved_dim1", Niflect::CAddrOffset::None);
+					accessor2->AddChild(accessor3);
+				}
+				accessor1->AddChild(accessor2);
+			}
 			accessor0->AddChild(accessor1);
 		}
 		return accessor0;
@@ -520,7 +554,7 @@ namespace TestAccessor
 				printf("%f\n", it);
 			printf("");
 		}
-		if (true)
+		if (false)
 		{
 			using namespace Engine;
 			auto accessor0 = Niflect::MakeShared<TMyTransformAccessor<float> >();
@@ -567,7 +601,7 @@ namespace TestAccessor
 			ASSERT(srcData == dstData);
 			printf("");
 		}
-		if (false)
+		if (true)
 		{
 			using namespace Engine;
 			auto accessor0 = BuildAccessor_CTestClassMy();
