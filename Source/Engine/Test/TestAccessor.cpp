@@ -642,6 +642,7 @@ namespace TestAccessor
 			accessor0->SaveToRwNode(&srcData, &root);
 			float dstData = 0.0f;
 			accessor0->LoadFromRwNode(&dstData, &root);
+			ASSERT(srcData == dstData);
 			printf("%f\n", dstData);
 		}
 		if (false)//สýื้
@@ -661,6 +662,7 @@ namespace TestAccessor
 			accessor0->SaveToRwNode(&srcData, &root);
 			Niflect::TArrayNif<float> dstData;
 			accessor0->LoadFromRwNode(&dstData, &root);
+			ASSERT(srcData == dstData);
 			for (auto& it : dstData)
 				printf("%f\n", it);
 			printf("");
@@ -693,6 +695,7 @@ namespace TestAccessor
 			accessor0->SaveToRwNode(&srcData, &root);
 			Niflect::TMap<Niflect::CString, float> dstData;
 			accessor0->LoadFromRwNode(&dstData, &root);
+			ASSERT(srcData == dstData);
 			for (auto& it : dstData)
 				printf("%s, %f\n", it.first.c_str(), it.second);
 			printf("");
@@ -727,6 +730,7 @@ namespace TestAccessor
 			accessor0->SaveToRwNode(&srcData, &root);
 			Niflect::TArrayNif<bool> dstData;
 			accessor0->LoadFromRwNode(&dstData, &root);
+			ASSERT(srcData == dstData);
 			for (auto& it : dstData)
 				printf("%s\n", it ? "true" : "false");
 			printf("");
