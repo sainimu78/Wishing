@@ -29,6 +29,29 @@ namespace Engine
 		}
 	};
 
+	class CUint8Accessor : public Niflect::CAccessor
+	{
+	public:
+		virtual bool SaveToRwNode(const AddrType base, CRwNode* rw) const override
+		{
+			auto offsetBase = this->GetAddr(base);
+			auto& instance = *static_cast<const uint8*>(offsetBase);
+			ASSERT(!rw->IsValue());
+			auto rwValue = rw->ToValue();
+			rwValue->SetUint8(instance);
+			return true;
+		}
+		virtual bool LoadFromRwNode(AddrType base, const CRwNode* rw) const override
+		{
+			auto offsetBase = this->GetAddr(base);
+			auto& instance = *static_cast<uint8*>(offsetBase);
+			ASSERT(rw->IsValue());
+			auto rwValue = rw->GetValue();
+			instance = rwValue->GetUint8();
+			return true;
+		}
+	};
+
 	class CBoolAccessor : public Niflect::CAccessor
 	{
 	public:

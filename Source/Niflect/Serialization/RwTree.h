@@ -8,9 +8,11 @@ namespace RwTree
 	{
 		None,
 		Bool,
+		Int8,
 		Int16,
 		Int32,
 		Int64,
+		Uint8,
 		Uint16,
 		Uint32,
 		Uint64,
@@ -42,6 +44,14 @@ namespace RwTree
 		{
 			return this->GetBuiltInValue<ERwValueType::Bool, bool>();
 		}
+		void SetInt8(const int8& val)
+		{
+			this->SetBuiltInValue<ERwValueType::Int8>(val);
+		}
+		const int8& GetInt8() const
+		{
+			return this->GetBuiltInValue<ERwValueType::Int8, int8>();
+		}
 		void SetInt16(const int16& val)
 		{
 			this->SetBuiltInValue<ERwValueType::Int16>(val);
@@ -65,6 +75,14 @@ namespace RwTree
 		const int64& GetInt64() const
 		{
 			return this->GetBuiltInValue<ERwValueType::Int64, int64>();
+		}
+		void SetUint8(const uint8& val)
+		{
+			this->SetBuiltInValue<ERwValueType::Uint8>(val);
+		}
+		const uint8& GetUint8() const
+		{
+			return this->GetBuiltInValue<ERwValueType::Uint8, uint8>();
 		}
 		void SetUint16(const uint16& val)
 		{
@@ -400,6 +418,13 @@ namespace RwTree
 			value = rwValue->GetBool();
 		return value;
 	}
+	static int8 FindRwInt8(const CRwNode* rwParent, const Niflect::CString& name, int8 defaultValue = 0)
+	{
+		auto value = defaultValue;
+		if (auto rwValue = FindRwValue(rwParent, name))
+			value = rwValue->GetInt8();
+		return value;
+	}
 	static int16 FindRwInt16(const CRwNode* rwParent, const Niflect::CString& name, int16 defaultValue = 0)
 	{
 		auto value = defaultValue;
@@ -419,6 +444,13 @@ namespace RwTree
 		auto value = defaultValue;
 		if (auto rwValue = FindRwValue(rwParent, name))
 			value = rwValue->GetInt64();
+		return value;
+	}
+	static uint8 FindRwUint8(const CRwNode* rwParent, const Niflect::CString& name, uint8 defaultValue = 0u)
+	{
+		auto value = defaultValue;
+		if (auto rwValue = FindRwValue(rwParent, name))
+			value = rwValue->GetUint8();
 		return value;
 	}
 	static uint16 FindRwUint16(const CRwNode* rwParent, const Niflect::CString& name, uint16 defaultValue = 0u)
@@ -541,6 +573,11 @@ namespace RwTree
 		if (auto rwValue = AddRwValue(rwParent, name))
 			rwValue->SetBool(value);
 	}
+	static void AddRwInt8(CRwNode* rwParent, const Niflect::CString& name, int8 value)
+	{
+		if (auto rwValue = AddRwValue(rwParent, name))
+			rwValue->SetInt8(value);
+	}
 	static void AddRwInt16(CRwNode* rwParent, const Niflect::CString& name, int16 value)
 	{
 		if (auto rwValue = AddRwValue(rwParent, name))
@@ -555,6 +592,11 @@ namespace RwTree
 	{
 		if (auto rwValue = AddRwValue(rwParent, name))
 			rwValue->SetInt64(value);
+	}
+	static void AddRwUint8(CRwNode* rwParent, const Niflect::CString& name, uint8 value)
+	{
+		if (auto rwValue = AddRwValue(rwParent, name))
+			rwValue->SetUint8(value);
 	}
 	static void AddRwUint16(CRwNode* rwParent, const Niflect::CString& name, uint16 value)
 	{

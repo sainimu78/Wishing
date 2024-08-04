@@ -9,6 +9,7 @@
 enum { INDEX_NONE = tq::INDEX_NONE };
 
 //begin, 实验阶段不使用PCH, 因此临时类型定义
+typedef char int8;
 typedef unsigned char uint8;
 typedef short int16;
 typedef unsigned short uint16;
