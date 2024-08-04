@@ -75,6 +75,29 @@ namespace Engine
 		}
 	};
 
+	class CStringAccessor : public Niflect::CAccessor
+	{
+	public:
+		virtual bool SaveToRwNode(const AddrType base, CRwNode* rw) const override
+		{
+			auto offsetBase = this->GetAddr(base);
+			auto& instance = *static_cast<const Niflect::CString*>(offsetBase);
+			ASSERT(!rw->IsValue());
+			auto rwValue = rw->ToValue();
+			rwValue->SetString(instance);
+			return true;
+		}
+		virtual bool LoadFromRwNode(AddrType base, const CRwNode* rw) const override
+		{
+			auto offsetBase = this->GetAddr(base);
+			auto& instance = *static_cast<Niflect::CString*>(offsetBase);
+			ASSERT(rw->IsValue());
+			auto rwValue = rw->GetValue();
+			instance = rwValue->GetString();
+			return true;
+		}
+	};
+
 	class CCompoundAccessor : public Niflect::CAccessor
 	{
 	public:
@@ -179,6 +202,53 @@ namespace Engine
 		static void GetElementBaseToWriteEnd<typename TStlArray::reference>(typename TStlArray::reference& item, bool& stlBoolItemHandler)
 		{
 			item = stlBoolItemHandler;
+		}
+
+	private:
+		CAccessor* GetElementAccessor() const
+		{
+			return this->GetChild(0);
+		}
+	};
+
+	template <typename TStlMap>
+	class TStlMapAccessor : public Niflect::CAccessor
+	{
+		using TElem = typename TStlMap::allocator_type::value_type;
+	public:
+		virtual bool SaveToRwNode(const AddrType base, CRwNode* rw) const override
+		{
+			auto offsetBase = this->GetAddr(base);
+			auto& instance = *static_cast<const TStlMap*>(offsetBase);
+			ASSERT(!rw->IsArray());
+			auto rwArray = rw->ToArray();
+			auto elemAccessor = this->GetElementAccessor();
+			for (auto& it : instance)
+			{
+				auto rwItem = CreateRwNode();
+				auto elemBase = &it;
+				if (elemAccessor->SaveToRwNode(elemBase, rwItem.Get()))
+					rwArray->AddItem(rwItem);
+			}
+			return true;
+		}
+		virtual bool LoadFromRwNode(AddrType base, const CRwNode* rw) const override
+		{
+			auto offsetBase = this->GetAddr(base);
+			auto& instance = *static_cast<TStlMap*>(offsetBase);
+			ASSERT(rw->IsArray());
+			auto rwArray = rw->GetArray();
+			auto elemAccessor = this->GetElementAccessor();
+			auto cnt = rwArray->GetItemsCount();
+			for (uint32 idx = 0; idx < cnt; ++idx)
+			{
+				auto rwItem = rwArray->GetItem(idx);
+				TElem item;
+				auto elemBase = &item;
+				if (elemAccessor->LoadFromRwNode(elemBase, rwItem))
+					instance.insert(item);
+			}
+			return true;
 		}
 
 	private:
@@ -563,7 +633,7 @@ namespace TestAccessor
 
 	void TestClasses()
 	{
-		if (false)//简单 BuiltIn Float
+		if (false)//BuiltIn Float
 		{
 			using namespace Engine;
 			auto accessor0 = Niflect::MakeShared<CFloatAccessor>();
@@ -574,7 +644,7 @@ namespace TestAccessor
 			accessor0->LoadFromRwNode(&dstData, &root);
 			printf("%f\n", dstData);
 		}
-		if (false)//简单数组
+		if (false)//数组
 		{
 			using namespace Engine;
 			auto accessor0 = Niflect::MakeShared<TStlArrayAccessor<Niflect::TArrayNif<float> > >();
@@ -593,6 +663,38 @@ namespace TestAccessor
 			accessor0->LoadFromRwNode(&dstData, &root);
 			for (auto& it : dstData)
 				printf("%f\n", it);
+			printf("");
+		}
+		if (false)//Map
+		{
+			using namespace Engine;
+			auto accessor0 = Niflect::MakeShared<TStlMapAccessor<Niflect::TMap<Niflect::CString, float> > >();
+			{
+				auto accessor1 = Niflect::MakeShared<CCompoundAccessor>();
+				accessor1->InitMemberMeta("reserved_dim0", Niflect::CAddrOffset::None);
+				{
+					{
+						auto accessor2 = Niflect::MakeShared<CStringAccessor>();
+						accessor2->InitMemberMeta("first", Niflect::GetMemberVariableOffset(&std::pair<const Niflect::CString, float>::first));
+						accessor1->AddChild(accessor2);
+					}
+					{
+						auto accessor2 = Niflect::MakeShared<CFloatAccessor>();
+						accessor2->InitMemberMeta("second", Niflect::GetMemberVariableOffset(&std::pair<const Niflect::CString, float>::second));
+						accessor1->AddChild(accessor2);
+					}
+				}
+				accessor0->AddChild(accessor1);
+			}
+			Niflect::TMap<Niflect::CString, float> srcData;
+			srcData["Nihao"] = 1.2f;
+			srcData["Bucuo"] = 3.4f;
+			CRwNode root;
+			accessor0->SaveToRwNode(&srcData, &root);
+			Niflect::TMap<Niflect::CString, float> dstData;
+			accessor0->LoadFromRwNode(&dstData, &root);
+			for (auto& it : dstData)
+				printf("%s, %f\n", it.first.c_str(), it.second);
 			printf("");
 		}
 		if (false)
@@ -642,7 +744,7 @@ namespace TestAccessor
 			ASSERT(srcData == dstData);
 			printf("");
 		}
-		if (true)
+		if (false)
 		{
 			using namespace Engine;
 			auto accessor0 = BuildAccessor_CTestClassMy();
