@@ -37,6 +37,7 @@ namespace Niflect
 	public:
 		CNiflectType()
 			: m_index(INDEX_NONE)
+			, m_niflectTypeSize(0)
 			, m_typeHash(0)
 		{
 		}
@@ -79,16 +80,16 @@ namespace Niflect
 		}
 
 	public:
-		void Construct(void* instanceBase) const
-		{
-			if (m_cb.m_InvokeConstructorFunc != NULL)
-				m_cb.m_InvokeConstructorFunc(instanceBase);
-		}
-		void Destruct(void* instanceBase) const
-		{
-			if (m_cb.m_InvokeDestructorFunc != NULL)
-				m_cb.m_InvokeDestructorFunc(instanceBase);
-		}
+		//void Construct(void* instanceBase) const
+		//{
+		//	if (m_cb.m_InvokeConstructorFunc != NULL)
+		//		m_cb.m_InvokeConstructorFunc(instanceBase);
+		//}
+		//void Destruct(void* instanceBase) const
+		//{
+		//	if (m_cb.m_InvokeDestructorFunc != NULL)
+		//		m_cb.m_InvokeDestructorFunc(instanceBase);
+		//}
 		CSharedAccessor CreateFieldLayout() const
 		{
 			if (m_cb.m_InvokeCreateFieldLayoutFunc != NULL)
