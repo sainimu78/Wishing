@@ -1,10 +1,9 @@
 #pragma once
 #include "Niflect/NiflectCommon.h"
+#include "Niflect/Memory/Stats/NiflectMemoryStats.h"
 
 namespace Niflect
 {
-	class CMemoryStats;
-
 	class CDefaultMemory
 	{
 	public:

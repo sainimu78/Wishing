@@ -108,24 +108,24 @@ namespace Niflect
 		static CSharedRegistration s_reg;
 	};
 
-	template <typename TField, typename TType>
-	static CSharedField __InternalUseForFunctionPointer()
-	{
-		return CreateField<TField, TType>();
-	}
+	//template <typename TField, typename TType>
+	//static CSharedField __InternalUseForFunctionPointer()
+	//{
+	//	return CreateField<TField, TType>();
+	//}
 
-	template <typename TField, typename TType>
-	static CNiflectType* StaticGetType_Misc(const CString& typeName)
-	{
-		if (!TInternalRegisteredType<TType>::IsValid())
-		{
-			auto reg = CNiflectRegistration::StaticGet();
-			auto& table = reg->GetMutableMiscTable();
-			ASSERT(!typeName.empty());
-			table.RegisterType<CNiflectType, TType>(typeName, &__InternalUseForFunctionPointer<TField, TType>, typeid(TType).hash_code());
-		}
-		return StaticGetType<TType>();
-	}
+	//template <typename TField, typename TType>
+	//static CNiflectType* StaticGetType_Misc(const CString& typeName)
+	//{
+	//	if (!TInternalRegisteredType<TType>::IsValid())
+	//	{
+	//		auto reg = CNiflectRegistration::StaticGet();
+	//		auto& table = reg->GetMutableMiscTable();
+	//		ASSERT(!typeName.empty());
+	//		table.RegisterType<CNiflectType, TType>(typeName, &__InternalUseForFunctionPointer<TField, TType>, typeid(TType).hash_code());
+	//	}
+	//	return StaticGetType<TType>();
+	//}
 }
 
 NIFLECT_C_API Niflect::CNiflectRegistration* GetNiflectModuleRegistration();

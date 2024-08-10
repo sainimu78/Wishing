@@ -2,14 +2,14 @@
 #include "Niflect/NiflectCommon.h"
 #include "Niflect/NiflectRegisteredType.h"
 #include "Niflect/NiflectMethod.h"
-#include "Niflect/NiflectField.h"
+#include "Niflect/NiflectAccessor.h"
 #include "Niflect/Util/TypeUtil.h"
 
 namespace Niflect
 {	
 	typedef uint32 CTypeIndex;
 
-	typedef CSharedField (*InvokeCreateFieldLayoutFunc)();
+	typedef CSharedAccessor (*InvokeCreateFieldLayoutFunc)();
 
 	class CTypeInvokations
 	{
@@ -20,7 +20,7 @@ namespace Niflect
 			, m_InvokeCreateFieldLayoutFunc(NULL)
 		{
 		}
-		InvokeConstructorFunc m_InvokeConstructorFunc;
+		InvokeConstructorFunc m_InvokeConstructorFunc;//一些其它框架中称作 Ctor 与 Dtor
 		InvokeDestructorFunc m_InvokeDestructorFunc;
 		InvokeCreateFieldLayoutFunc m_InvokeCreateFieldLayoutFunc;
 	};
@@ -57,10 +57,10 @@ namespace Niflect
 		}
 		
 	public:
-		CField* GetRootField() const
-		{
-			return m_fieldRoot.Get();
-		}
+		//CField* GetRootField() const
+		//{
+		//	return m_fieldRoot.Get();
+		//}
 		//const CSharedAccessor& GetSharedAccessorRoot() const
 		//{
 		//	return m_accessorRoot;
@@ -89,7 +89,7 @@ namespace Niflect
 			if (m_cb.m_InvokeDestructorFunc != NULL)
 				m_cb.m_InvokeDestructorFunc(instanceBase);
 		}
-		CSharedField CreateFieldLayout() const
+		CSharedAccessor CreateFieldLayout() const
 		{
 			if (m_cb.m_InvokeCreateFieldLayoutFunc != NULL)
 				return m_cb.m_InvokeCreateFieldLayoutFunc();
@@ -104,13 +104,14 @@ namespace Niflect
 		template <typename TBase>
 		TSharedPtr<TBase> MakeSharedInstance() const
 		{
-			return GenericMakeShared<TBase, CMemory>(m_niflectTypeSize, m_cb.m_InvokeDestructorFunc, m_cb.m_InvokeConstructorFunc);
+			//return GenericMakeShared<TBase, CMemory>(m_niflectTypeSize, m_cb.m_InvokeDestructorFunc, m_cb.m_InvokeConstructorFunc);
+			return GenericPlacementMakeShared<TBase, CMemory>(m_niflectTypeSize, m_cb.m_InvokeDestructorFunc, m_cb.m_InvokeConstructorFunc);
 		}
-		template <typename TBase>
-		inline TSharedPtr<TBase> MakeSharableInstance(TBase* obj) const
-		{
-			return GenericMakeSharable<TBase, CMemory>(obj, m_cb.m_InvokeDestructorFunc);
-		}
+		//template <typename TBase>
+		//inline TSharedPtr<TBase> MakeSharableInstance(TBase* obj) const
+		//{
+		//	return GenericMakeSharable<TBase, CMemory>(obj, m_cb.m_InvokeDestructorFunc);
+		//}
 
 	//public:
 	//	template <typename T>
@@ -161,7 +162,7 @@ namespace Niflect
 		CString m_name;
 		CTypeIndex m_index;
 		uint32 m_niflectTypeSize;
-		CSharedField m_fieldRoot;
+		CSharedAccessor m_fieldRoot;
 		//todo: 实现成员函数反射(CFunction), 考虑是否有可能与有必要实现支持任意构造函数
 		CTypeInvokations m_cb;
 		size_t m_typeHash;

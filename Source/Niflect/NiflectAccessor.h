@@ -8,16 +8,29 @@ namespace Niflect
 {
 	using namespace RwTree;
 
+	class CNiflectType;
+
 	class CAccessor;
 	using CSharedAccessor = TSharedPtr<CAccessor>;
 
 	class CAccessor
 	{
 	public:
+		CAccessor()
+			: m_type(NULL)
+		{
+
+		}
+
+	public:
 		virtual bool SaveToRwNode(const AddrType base, CRwNode* rw) const = 0;
 		virtual bool LoadFromRwNode(AddrType base, const CRwNode* rw) const = 0;
 
 	public:
+		void InitType(CNiflectType* type)
+		{
+			m_type = type;
+		}
 		void InitMemberMeta(const CString& name, const AddrOffsetType& offset)
 		{
 			m_name = name;
@@ -60,5 +73,6 @@ namespace Niflect
 		CAddrOffset m_addrOffset;
 		CString m_name;
 		TArrayNif<CSharedAccessor> m_vecChild;
+		CNiflectType* m_type;
 	};
 }
