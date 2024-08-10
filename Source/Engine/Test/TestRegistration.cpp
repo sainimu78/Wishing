@@ -32,17 +32,10 @@ namespace TestRegistration
 	{
 		using namespace Niflect;
 
+		if (false)
 		{
 			CDefaultMemoryStatsScope scope;
 			auto memTest = GetDefaultMemoryStats();
-
-			//TestCreateModuleReg0();
-
-			//Niflect::StaticGetType_Misc<float>("float");
-
-			//std::vector<bool> aaa;
-			//std::vector<bool>::value_type& a = aaa[0];
-			//a = false;
 
 			CNiflectTable table;
 			auto type = GetOrRegisterType<float, CFloatAccessor, CNiflectType>(&table, "float");
@@ -57,15 +50,52 @@ namespace TestRegistration
 			CJsonFormat::Write(&rw, ss);
 
 			auto sharedDstData = type->MakeSharedInstance<void*>();
-			auto& dstData = *sharedDstData;
+			auto& dstData = *reinterpret_cast<float*>(sharedDstData.Get());
 			layout->LoadFromRwNode(&dstData, &rw);
-			auto& instance = *reinterpret_cast<float*>(&dstData);
 
-			printf("%f\n", instance);
+			ASSERT(srcData == dstData);
 
-			//TestDestroyModuleReg0();
+			printf("%f\n", dstData);
+			printf("");
 		}
-		printf("");
+		if (false)
+		{
+			CDefaultMemoryStatsScope scope;
+			auto memTest = GetDefaultMemoryStats();
+
+			CNiflectTable table;
+			auto type = GetOrRegisterType<Niflect::TArrayNif<float>, TStlArrayAccessor<Niflect::TArrayNif<float> >, CNiflectType>(&table, "Niflect::TArrayNif<float>");
+			auto layout = type->CreateFieldLayout();
+			{
+				auto type = GetOrRegisterType<float, CFloatAccessor, CNiflectType>(&table, "float");
+				auto elemLayout = type->CreateFieldLayout();
+				layout->AddChild(elemLayout);
+			}
+			auto sharedSrcData = type->MakeSharedInstance<void*>();
+			auto& srcData = *reinterpret_cast<Niflect::TArrayNif<float>*>(sharedSrcData.Get());
+			for (uint32 idx = 0; idx < 123; ++idx)
+				srcData.push_back(static_cast<float>(idx));
+
+			CRwNode rw;
+			layout->SaveToRwNode(&srcData, &rw);
+			CStringStream ss;
+			CJsonFormat::Write(&rw, ss);
+
+			auto sharedDstData = type->MakeSharedInstance<void*>();
+			auto& dstData = *reinterpret_cast<Niflect::TArrayNif<float>*>(sharedDstData.Get());
+			layout->LoadFromRwNode(&dstData, &rw);
+
+			ASSERT(srcData == dstData);
+
+			printf("cnt: %u\n", static_cast<uint32>(dstData.size()));
+			for (auto& it : dstData)
+				printf("%f\n", it);
+			printf("");
+		}
+		if (true)
+		{
+
+		}
 	}
 	void TestRuntimeReg()
 	{
