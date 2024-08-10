@@ -5,97 +5,34 @@ namespace Engine
 {
 	using namespace RwTree;
 
-	class CFloatAccessor : public Niflect::CAccessor
+	template <typename TValue>
+	class TBasicTypeAccessor : public Niflect::CAccessor
 	{
 	public:
 		virtual bool SaveToRwNode(const AddrType base, CRwNode* rw) const override
 		{
 			auto offsetBase = this->GetAddr(base);
-			auto& instance = *static_cast<const float*>(offsetBase);
+			auto& instance = *static_cast<const TValue*>(offsetBase);
 			ASSERT(!rw->IsValue());
 			auto rwValue = rw->ToValue();
-			rwValue->SetFloat(instance);
+			SetRwTypedValue<TValue>(rwValue, instance);
 			return true;
 		}
 		virtual bool LoadFromRwNode(AddrType base, const CRwNode* rw) const override
 		{
 			auto offsetBase = this->GetAddr(base);
-			auto& instance = *static_cast<float*>(offsetBase);
+			auto& instance = *static_cast<TValue*>(offsetBase);
 			ASSERT(rw->IsValue());
 			auto rwValue = rw->GetValue();
-			instance = rwValue->GetFloat();
+			instance = GetRwTypedValue<TValue>(rwValue);
 			return true;
 		}
 	};
 
-	class CUint8Accessor : public Niflect::CAccessor
-	{
-	public:
-		virtual bool SaveToRwNode(const AddrType base, CRwNode* rw) const override
-		{
-			auto offsetBase = this->GetAddr(base);
-			auto& instance = *static_cast<const uint8*>(offsetBase);
-			ASSERT(!rw->IsValue());
-			auto rwValue = rw->ToValue();
-			rwValue->SetUint8(instance);
-			return true;
-		}
-		virtual bool LoadFromRwNode(AddrType base, const CRwNode* rw) const override
-		{
-			auto offsetBase = this->GetAddr(base);
-			auto& instance = *static_cast<uint8*>(offsetBase);
-			ASSERT(rw->IsValue());
-			auto rwValue = rw->GetValue();
-			instance = rwValue->GetUint8();
-			return true;
-		}
-	};
-
-	class CBoolAccessor : public Niflect::CAccessor
-	{
-	public:
-		virtual bool SaveToRwNode(const AddrType base, CRwNode* rw) const override
-		{
-			auto offsetBase = this->GetAddr(base);
-			auto& instance = *static_cast<const bool*>(offsetBase);
-			ASSERT(!rw->IsValue());
-			auto rwValue = rw->ToValue();
-			rwValue->SetBool(instance);
-			return true;
-		}
-		virtual bool LoadFromRwNode(AddrType base, const CRwNode* rw) const override
-		{
-			auto offsetBase = this->GetAddr(base);
-			auto& instance = *static_cast<bool*>(offsetBase);
-			ASSERT(rw->IsValue());
-			auto rwValue = rw->GetValue();
-			instance = rwValue->GetBool();
-			return true;
-		}
-	};
-
-	class CStringAccessor : public Niflect::CAccessor
-	{
-	public:
-		virtual bool SaveToRwNode(const AddrType base, CRwNode* rw) const override
-		{
-			auto offsetBase = this->GetAddr(base);
-			auto& instance = *static_cast<const Niflect::CString*>(offsetBase);
-			ASSERT(!rw->IsValue());
-			auto rwValue = rw->ToValue();
-			rwValue->SetString(instance);
-			return true;
-		}
-		virtual bool LoadFromRwNode(AddrType base, const CRwNode* rw) const override
-		{
-			auto offsetBase = this->GetAddr(base);
-			auto& instance = *static_cast<Niflect::CString*>(offsetBase);
-			ASSERT(rw->IsValue());
-			auto rwValue = rw->GetValue();
-			instance = rwValue->GetString();
-			return true;
-		}
-	};
+	using CBoolAccessor = TBasicTypeAccessor<bool>;
+	using CUint8Accessor = TBasicTypeAccessor<uint8>;
+	using CFloatAccessor = TBasicTypeAccessor<float>;
+	using CStringAccessor = TBasicTypeAccessor<Niflect::CString>;
 
 	class CCompoundAccessor : public Niflect::CAccessor
 	{

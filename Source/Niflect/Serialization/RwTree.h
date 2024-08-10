@@ -36,6 +36,8 @@ namespace RwTree
 		{
 			return m_type;
 		}
+
+	public:
 		void SetBool(const bool& val)
 		{
 			this->SetBuiltInValue<ERwValueType::Bool>(val);
@@ -134,6 +136,8 @@ namespace RwTree
 			ASSERT(m_type == ERwValueType::String);
 			return m_data;
 		}
+
+	public:
 		void SetRawData(const CRwRawData& val)
 		{
 			m_type = ERwValueType::RawData;
@@ -411,6 +415,61 @@ namespace RwTree
 			return rwNode->ToValue();
 		return NULL;
 	}
+	template <typename TValue>
+	static TValue GetRwTypedValue(const CRwValue* rwValue, TValue defaultValue = TValue())
+	{
+		ASSERT(false);
+	}
+
+#define SPECIALIZATION_IMPL_GetRwTypedValue(specType, getterFuncName)\
+	template <>\
+	inline specType GetRwTypedValue(const CRwValue* rwValue, specType defaultValue)\
+	{\
+		if (rwValue != NULL)\
+			return rwValue->getterFuncName();\
+		return defaultValue;\
+	}
+
+	SPECIALIZATION_IMPL_GetRwTypedValue(bool, GetBool)
+	SPECIALIZATION_IMPL_GetRwTypedValue(int8, GetInt8)
+	SPECIALIZATION_IMPL_GetRwTypedValue(int16, GetInt16)
+	SPECIALIZATION_IMPL_GetRwTypedValue(int32, GetInt32)
+	SPECIALIZATION_IMPL_GetRwTypedValue(int64, GetInt64)
+	SPECIALIZATION_IMPL_GetRwTypedValue(uint8, GetUint8)
+	SPECIALIZATION_IMPL_GetRwTypedValue(uint16, GetUint16)
+	SPECIALIZATION_IMPL_GetRwTypedValue(uint32, GetUint32)
+	SPECIALIZATION_IMPL_GetRwTypedValue(uint64, GetUint64)
+	SPECIALIZATION_IMPL_GetRwTypedValue(float, GetFloat)
+	SPECIALIZATION_IMPL_GetRwTypedValue(double, GetDouble)
+	SPECIALIZATION_IMPL_GetRwTypedValue(Niflect::CString, GetString)
+
+	template <typename TValue>
+	static void SetRwTypedValue(CRwValue* rwValue, TValue value)
+	{
+		ASSERT(false);
+	}
+
+#define SPECIALIZATION_IMPL_SetRwTypedValue(specType, setterFuncName)\
+	template <>\
+	inline void SetRwTypedValue(CRwValue* rwValue, specType value)\
+	{\
+		if (rwValue != NULL)\
+			rwValue->setterFuncName(value);\
+	}
+
+	SPECIALIZATION_IMPL_SetRwTypedValue(bool, SetBool)
+	SPECIALIZATION_IMPL_SetRwTypedValue(int8, SetInt8)
+	SPECIALIZATION_IMPL_SetRwTypedValue(int16, SetInt16)
+	SPECIALIZATION_IMPL_SetRwTypedValue(int32, SetInt32)
+	SPECIALIZATION_IMPL_SetRwTypedValue(int64, SetInt64)
+	SPECIALIZATION_IMPL_SetRwTypedValue(uint8, SetUint8)
+	SPECIALIZATION_IMPL_SetRwTypedValue(uint16, SetUint16)
+	SPECIALIZATION_IMPL_SetRwTypedValue(uint32, SetUint32)
+	SPECIALIZATION_IMPL_SetRwTypedValue(uint64, SetUint64)
+	SPECIALIZATION_IMPL_SetRwTypedValue(float, SetFloat)
+	SPECIALIZATION_IMPL_SetRwTypedValue(double, SetDouble)
+	SPECIALIZATION_IMPL_SetRwTypedValue(Niflect::CString, SetString)
+
 	static bool FindRwBool(const CRwNode* rwParent, const Niflect::CString& name, bool defaultValue = false)
 	{
 		auto value = defaultValue;
@@ -769,11 +828,23 @@ namespace RwTree
 			case ERwValueType::Bool:
 				str = rwValue->GetBool() ? "true" : "false";
 				break;
+			case ERwValueType::Int8:
+				str = std::to_string(rwValue->GetInt8()).c_str();
+				break;
+			case ERwValueType::Int16:
+				str = std::to_string(rwValue->GetInt16()).c_str();
+				break;
 			case ERwValueType::Int32:
 				str = std::to_string(rwValue->GetInt32()).c_str();
 				break;
 			case ERwValueType::Int64:
 				str = std::to_string(rwValue->GetInt64()).c_str();
+				break;
+			case ERwValueType::Uint8:
+				str = std::to_string(rwValue->GetUint8()).c_str();
+				break;
+			case ERwValueType::Uint16:
+				str = std::to_string(rwValue->GetUint16()).c_str();
 				break;
 			case ERwValueType::Uint32:
 				str = std::to_string(rwValue->GetUint32()).c_str();

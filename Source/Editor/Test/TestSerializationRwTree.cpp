@@ -37,7 +37,38 @@ namespace TestSerializationRwTree
 		using namespace Niflect;
 		CDefaultMemoryStatsScope memTestScope;
 		auto stats = GetDefaultMemoryStats();
-		if (true)//写测试用的 JSON 格式文件
+		if (true)
+		{
+			CRwNode root;
+			auto rw = &root;
+			SetRwTypedValue<bool>(AddRwValue(rw, "a"), true);
+			SetRwTypedValue<int8>(AddRwValue(rw, "b"), 1);
+			SetRwTypedValue<int16>(AddRwValue(rw, "c"), 2);
+			SetRwTypedValue<int32>(AddRwValue(rw, "d"), 3);
+			SetRwTypedValue<int64>(AddRwValue(rw, "e"), 4);
+			SetRwTypedValue<uint8>(AddRwValue(rw, "f"), 5);
+			SetRwTypedValue<uint16>(AddRwValue(rw, "g"), 6);
+			SetRwTypedValue<uint32>(AddRwValue(rw, "h"), 7);
+			SetRwTypedValue<uint64>(AddRwValue(rw, "i"), 8);
+			SetRwTypedValue<float>(AddRwValue(rw, "j"), 9);
+			SetRwTypedValue<double>(AddRwValue(rw, "k"), 10);
+			SetRwTypedValue<Niflect::CString>(AddRwValue(rw, "l"), "11 in string");
+			DebugPrintRecurs2(&root);
+			ASSERT(GetRwTypedValue<bool>(FindRwValue(rw, "a")) == true);
+			ASSERT(GetRwTypedValue<int8>(FindRwValue(rw, "b")) == 1);
+			ASSERT(GetRwTypedValue<int16>(FindRwValue(rw, "c")) == 2);
+			ASSERT(GetRwTypedValue<int32>(FindRwValue(rw, "d")) == 3);
+			ASSERT(GetRwTypedValue<int64>(FindRwValue(rw, "e")) == 4);
+			ASSERT(GetRwTypedValue<uint8>(FindRwValue(rw, "f")) == 5);
+			ASSERT(GetRwTypedValue<uint16>(FindRwValue(rw, "g")) == 6);
+			ASSERT(GetRwTypedValue<uint32>(FindRwValue(rw, "h")) == 7);
+			ASSERT(GetRwTypedValue<uint64>(FindRwValue(rw, "i")) == 8);
+			ASSERT(GetRwTypedValue<float>(FindRwValue(rw, "j")) == 9);
+			ASSERT(GetRwTypedValue<double>(FindRwValue(rw, "k")) == 10);
+			ASSERT(GetRwTypedValue<Niflect::CString>(FindRwValue(rw, "l")) == "11 in string");
+			printf("");
+		}
+		if (false)//写测试用的 JSON 格式文件
 		{
 			const auto oldData = NiflectUtil::ReadStringFromFile(TestDefinition::FilePath::InputJson_JsonFormat);
 			{

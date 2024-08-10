@@ -3,6 +3,7 @@
 //#include "Windows.h"
 #include "Engine/Test/TestRegistration.h"
 #include "Engine/Test/TestAccessor.h"
+#include "Editor/Test/TestSerializationRwTree.h"
 
 class CMyClassForSimplifiedMakeShared
 {
@@ -25,7 +26,10 @@ int main(int argc, char** argv)
 {
 	TestAPI_Cpp();
 
+	//TestAccessor::TestFieldLayout();
 	TestRegistration::TestTypeNatimeta();
+
+	//TestSerializationRwTree::TestSerialization();
 
 	//auto hLib = LoadLibrary("Engine.dll");
 	//if (hLib != NULL)
