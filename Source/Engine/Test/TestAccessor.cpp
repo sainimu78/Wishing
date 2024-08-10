@@ -699,7 +699,7 @@ namespace TestAccessor
 				printf("%s, %f\n", it.first.c_str(), it.second);
 			printf("");
 		}
-		if (false)
+		if (false)//自定义序列化
 		{
 			using namespace Engine;
 			auto accessor0 = Niflect::MakeShared<TMyTransformAccessor<float> >();
@@ -712,7 +712,7 @@ namespace TestAccessor
 			ASSERT(srcData == dstData);
 			printf("");
 		}
-		if (false)//STL中, 被特殊处理 bool 数组
+		if (false)//STL中, 被特殊处理的 bool 数组
 		{
 			using namespace Engine;
 			auto accessor0 = Niflect::MakeShared<TStlArrayAccessor<Niflect::TArrayNif<bool> > >();
@@ -734,7 +734,7 @@ namespace TestAccessor
 				printf("%s\n", it ? "true" : "false");
 			printf("");
 		}
-		if (false)
+		if (false)//简单类
 		{
 			using namespace Engine;
 			auto accessor0 = BuildAccessor_CTestClassMy();
@@ -747,7 +747,7 @@ namespace TestAccessor
 			ASSERT(srcData == dstData);
 			printf("");
 		}
-		if (false)
+		if (false)//继承类
 		{
 			using namespace Engine;
 			auto accessor0 = BuildAccessor_CTestClassMy();
