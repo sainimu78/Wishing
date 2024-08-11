@@ -9,6 +9,8 @@ namespace Niflect
 
 	using CSharedRegistration = TSharedPtr<CNiflectRegistration>;
 
+	typedef void (*InitialRegFunc)();
+
 	class CNiflectRegistration
 	{
 	public:
@@ -16,43 +18,50 @@ namespace Niflect
 			: m_miscTableIndex(INDEX_NONE)
 		{
 		}
+		~CNiflectRegistration()
+		{
+		}
+	//public:
+	//	void InitTables()
+	//	{
+	//		this->DoInitTables();
+	//		this->AddMiscTable();
+	//	}
+	//	void RegisterTypes()
+	//	{
+	//		this->DoRegisterTypes();
+	//	}
+	//	void InitTypes() const
+	//	{
+	//		this->DoInitTypes();
+	//	}
+	//	void InitMethods() const
+	//	{
+	//		this->DoInitMethods();
+	//	}
+	//	void InitTypesAccessorTree()
+	//	{
+	//		//#3, 创建AccessorTree, 主要用于序列化
+	//		for (uint32 idx0 = 0; idx0 < this->GetTablesCount(); ++idx0)
+	//		{
+	//			auto& table = this->GetMutableTable(idx0);
+	//			for (auto& it : table.m_vecType)
+	//				it->InitFieldLayout();
+	//		}
+	//	}
+
+	//protected:
+	//	virtual void DoInitTables() = 0;
+	//	virtual void DoRegisterTypes() = 0;
+	//	virtual void DoInitTypes() const = 0;
+	//	virtual void DoInitMethods() const = 0;
 
 	public:
-		void InitTables()
+		CNiflectTable* AddNewTable()
 		{
-			this->DoInitTables();
-			this->AddMiscTable();
+			m_vecTable.push_back(CNiflectTable());
+			return &m_vecTable.back();
 		}
-		void RegisterTypes()
-		{
-			this->DoRegisterTypes();
-		}
-		void InitTypes() const
-		{
-			this->DoInitTypes();
-		}
-		void InitMethods() const
-		{
-			this->DoInitMethods();
-		}
-		void InitTypesAccessorTree()
-		{
-			//#3, 创建AccessorTree, 主要用于序列化
-			for (uint32 idx0 = 0; idx0 < this->GetTablesCount(); ++idx0)
-			{
-				auto& table = this->GetMutableTable(idx0);
-				for (auto& it : table.m_vecType)
-					it->InitFieldLayout();
-			}
-		}
-
-	protected:
-		virtual void DoInitTables() = 0;
-		virtual void DoRegisterTypes() = 0;
-		virtual void DoInitTypes() const = 0;
-		virtual void DoInitMethods() const = 0;
-
-	public:
 		void ClearTables()//todo: 实际上还需要通过引用关系安全删除
 		{
 			m_vecTable.clear();
@@ -70,13 +79,6 @@ namespace Niflect
 			return m_vecTable[m_miscTableIndex];
 		}
 
-	protected:
-		CNiflectTable* AddNewTable()
-		{
-			m_vecTable.push_back(CNiflectTable());
-			return &m_vecTable.back();
-		}
-
 	private:
 		void AddMiscTable()
 		{
@@ -88,17 +90,24 @@ namespace Niflect
 	public:
 		static CNiflectRegistration* StaticGet()
 		{
+			if (s_reg == NULL)
+				s_reg = MakeShared<CNiflectRegistration>();
 			return s_reg.Get();
 		}
-		template <typename TDerivedReg>
-		static void StaticCreate()
-		{
-			s_reg = MakeShared<TDerivedReg>();
-		}
-		static void StaticDestroy()
+		static void StaticRelease()
 		{
 			s_reg = NULL;
 		}
+
+		//template <typename TDerivedReg>
+		//static void StaticCreate()
+		//{
+		//	s_reg = MakeShared<TDerivedReg>();
+		//}
+		//static void StaticDestroy()
+		//{
+		//	s_reg = NULL;
+		//}
 
 	private:
 		TArrayNif<CNiflectTable> m_vecTable;
@@ -106,6 +115,7 @@ namespace Niflect
 
 	private:
 		static CSharedRegistration s_reg;
+		static InitialRegFunc m_InitialRegFunc;
 	};
 
 	//template <typename TField, typename TType>
@@ -128,4 +138,4 @@ namespace Niflect
 	//}
 }
 
-NIFLECT_C_API Niflect::CNiflectRegistration* GetNiflectModuleRegistration();
+NIFLECT_C_API const Niflect::CNiflectRegistration* GetNiflectModuleRegistration();

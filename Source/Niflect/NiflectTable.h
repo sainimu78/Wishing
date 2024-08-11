@@ -13,7 +13,7 @@ namespace Niflect
 			m_name = name;
 		}
 		template <typename TInfo, typename TType>
-		void RegisterType(const CString& typeName, const InvokeCreateFieldLayoutFunc& Func, size_t typeHash)
+		void RegisterType(const CString& typeName, const InvokeCreateFieldLayoutFunc& Func)
 		{
 			CTypeInvokations typeFuncs;
 			typeFuncs.m_InvokeConstructorFunc = &GenericInstanceInvokeConstructor<TType>;
@@ -26,7 +26,7 @@ namespace Niflect
 			ASSERT(!TInternalRegisteredType<TType>::IsValid());
 			TInternalRegisteredType<TType>::s_type = type;
 			//type->InitStaticType<TType>();
-			type->InitTypeMeta(sizeof(TType), typeHash, typeName, idx, typeFuncs);
+			type->InitTypeMeta(sizeof(TType), CNiflectType::GetTypeHash<TType>(), typeName, idx, typeFuncs);
 			ASSERT(TInternalRegisteredType<TType>::IsValid());
 		}
 		uint32 GetTypesCount() const
@@ -57,13 +57,13 @@ namespace Niflect
 	class TStaticTableTypeReg
 	{
 	public:
-		TStaticTableTypeReg(CNiflectTable* table, const CString& typeName)
+		TStaticTableTypeReg(CNiflectTable* table, const CString& typeName, const InvokeCreateFieldLayoutFunc& Func)
 		{
-			table->RegisterType<TInfo, TType>(typeName, NULL, CNiflectType::GenerateTypeHash<TType>());
+			table->RegisterType<TInfo, TType>(typeName, Func);
 		}
 		template <typename TAnyCustomData>
-		TStaticTableTypeReg(CNiflectTable* table, const CString& typeName, const TAnyCustomData& customData)
-			: TStaticTableTypeReg(table, typeName)
+		TStaticTableTypeReg(CNiflectTable* table, const CString& typeName, const InvokeCreateFieldLayoutFunc& Func, const TAnyCustomData& customData)
+			: TStaticTableTypeReg(table, typeName, Func)
 		{
 			auto type = StaticGetType<TType>();
 			type->SetCustomData(MakeShared<TAnyCustomData>(customData));

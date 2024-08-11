@@ -8,7 +8,7 @@
 namespace Niflect
 {
 	template <typename TAccessor>
-	static CSharedAccessor CreateFieldLayout()
+	static CSharedAccessor __InternalCreateFieldLayoutForFunctionPointer()
 	{
 		return MakeShared<TAccessor>();
 	}
@@ -18,7 +18,7 @@ namespace Niflect
 		if (!TInternalRegisteredType<TType>::IsValid())
 		{
 			ASSERT(!typeName.empty());
-			table->RegisterType<TInfo, TType>(typeName, &CreateFieldLayout<TAccessor>, typeid(TType).hash_code());
+			table->RegisterType<TInfo, TType>(typeName, &__InternalCreateFieldLayoutForFunctionPointer<TAccessor>);
 		}
 		return Niflect::StaticGetType<TType>();
 	}
@@ -27,6 +27,69 @@ namespace Niflect
 namespace TestRegistration
 {
 	using namespace Engine;
+
+	class CMyRegClass
+	{
+	public:
+		CMyRegClass()
+			: m_float_0(0.0f)
+			, m_bool_1(false)
+		{
+
+		}
+
+		void TestInit()
+		{
+			m_float_0 = 1.23f;
+			m_bool_1 = true;
+		}
+
+		bool operator==(const CMyRegClass& rhs) const
+		{
+			return
+				m_float_0 == rhs.m_float_0 &&
+				m_bool_1 == rhs.m_bool_1
+				;
+		}
+
+	public:
+		float m_float_0;
+		bool m_bool_1;
+	};
+
+	static Niflect::CNiflectTable* GetSSSSSS()
+	{
+		static Niflect::CNiflectTable* s_table = NULL;
+		if (s_table == NULL)
+		{
+			auto reg = Niflect::CNiflectRegistration::StaticGet();
+			s_table = reg->AddNewTable();
+		}
+		return s_table;
+	}
+
+	//NIFLECT_REGISTER(Niflect::CClass, CMyRegClass, GetSSSSSS(), Niflect::CTypeCustomData())
+
+	static Niflect::CSharedAccessor SSSSCreateFieldLayout()
+	{
+		auto node0 = Niflect::MakeShared<CCompoundAccessor>();
+		node0->InitType(Niflect::StaticGetType<CMyRegClass>());
+		{
+			auto type = Niflect::StaticGetType<float>();
+			auto node1 = type->CreateFieldLayout();
+			node1->InitMemberMeta("m_float_0", Niflect::GetMemberVariableOffset(&CMyRegClass::m_float_0));
+			node0->AddChild(node1);
+		}
+		{
+			auto type = Niflect::StaticGetType<bool>();
+			auto node1 = type->CreateFieldLayout();
+			node1->InitMemberMeta("m_bool_1", Niflect::GetMemberVariableOffset(&CMyRegClass::m_bool_1));
+			node0->AddChild(node1);
+		}
+		return node0;
+	}
+
+	Niflect::TStaticTableTypeReg<Niflect::CClass, CMyRegClass> ss(GetSSSSSS(), "CMyRegClass", &SSSSCreateFieldLayout, Niflect::CTypeCustomData());
 
 	void TestTypeNatimeta()
 	{
@@ -92,10 +155,42 @@ namespace TestRegistration
 				printf("%f\n", it);
 			printf("");
 		}
+		//auto memTest2 = GetDefaultMemoryStats();
 		if (true)
 		{
+			//TestCreateModuleReg0();
 
+			auto table = GetSSSSSS();
+			//GetOrRegisterType<Niflect::TArrayNif<float>, TStlArrayAccessor<Niflect::TArrayNif<float> >, CNiflectType>(table, "Niflect::TArrayNif<float>");
+			//GetOrRegisterType<Niflect::TArrayNif<float>, TStlArrayAccessor<Niflect::TArrayNif<float> >, CNiflectType>(table, "Niflect::TArrayNif<float>");
+			
+			GetOrRegisterType<float, CFloatAccessor, CNiflectType>(table, "float");
+			GetOrRegisterType<bool, CBoolAccessor, CNiflectType>(table, "bool");
+			
+			{
+				CDefaultMemoryStatsScope scope;
+				auto memTest = GetDefaultMemoryStats();
+
+				auto type = Niflect::StaticGetType<CMyRegClass>();
+				auto layout = type->CreateFieldLayout();
+				auto sharedSrcData = type->MakeSharedInstance<void*>();
+				auto& srcData = *reinterpret_cast<CMyRegClass*>(sharedSrcData.Get());
+				srcData.TestInit();
+
+				CRwNode rw;
+				layout->SaveToRwNode(&srcData, &rw);
+				CStringStream ss;
+				CJsonFormat::Write(&rw, ss);
+
+				auto sharedDstData = type->MakeSharedInstance<void*>();
+				auto& dstData = *reinterpret_cast<CMyRegClass*>(sharedDstData.Get());
+				layout->LoadFromRwNode(&dstData, &rw);
+
+				ASSERT(srcData == dstData);
+				printf("%s\n", ss.str().c_str());
+			}
 		}
+		printf("");
 	}
 	void TestRuntimeReg()
 	{

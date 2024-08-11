@@ -151,7 +151,7 @@ namespace Niflect
 
 	public:
 		template <typename T>
-		static size_t GenerateTypeHash()
+		static size_t GetTypeHash()
 		{
 			return typeid(T).hash_code();
 		}

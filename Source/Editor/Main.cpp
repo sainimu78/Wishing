@@ -27,6 +27,7 @@ int main(int argc, char** argv)
 	TestAPI_Cpp();
 
 	//TestAccessor::TestFieldLayout();
+
 	TestRegistration::TestTypeNatimeta();
 
 	//TestSerializationRwTree::TestSerialization();

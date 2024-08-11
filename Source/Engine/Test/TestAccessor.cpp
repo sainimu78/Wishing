@@ -180,7 +180,7 @@ namespace TestAccessor
 
 	void TestFieldLayout()
 	{
-		if (true)//BuiltIn Float
+		if (false)//BuiltIn Float
 		{
 			using namespace Engine;
 			auto accessor0 = Niflect::MakeShared<CFloatAccessor>();
