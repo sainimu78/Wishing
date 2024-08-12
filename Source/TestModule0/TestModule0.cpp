@@ -6,8 +6,10 @@ namespace TestModule0
 {
 	void LoadTypes()
 	{
-		auto a = Niflect::StaticGetType<TestRegistration::CMyRegClass>();
-		printf("Dependency Type: %s\n", a->GetTypeName().c_str());
+		auto a = Niflect::StaticGetType<float>();
+		auto b = Niflect::StaticGetType<bool>();
+		auto c = Niflect::StaticGetType<TestRegistration::CMyRegClass>();
+		printf("Dependency Type: %s, %s, %s\n", a->GetTypeName().c_str(), b->GetTypeName().c_str(), c->GetTypeName().c_str());
 	}
 	void UnloadTypes()
 	{

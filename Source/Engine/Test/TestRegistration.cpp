@@ -27,32 +27,25 @@ namespace Niflect
 namespace Niflect
 {
 	template <>
-	inline CNiflectType* StaticGetType<float>()
+	NIFLECTTYPEREG_API CNiflectType* StaticGetType<float>()
 	{
 		return TInternalRegisteredType<float>::s_type;
 	}
-	//CNiflectType* TInternalRegisteredType<float>::s_type = NULL;
-
 	template <>
-	inline CNiflectType* StaticGetType<bool>()
+	NIFLECTTYPEREG_API CNiflectType* StaticGetType<bool>()
 	{
 		return TInternalRegisteredType<bool>::s_type;
 	}
-	//CNiflectType* TInternalRegisteredType<bool>::s_type = NULL;
-
 	template <>
-	inline CNiflectType* StaticGetType<Niflect::TArrayNif<float> >()
+	NIFLECTTYPEREG_API CNiflectType* StaticGetType<Niflect::TArrayNif<float> >()
 	{
 		return TInternalRegisteredType<Niflect::TArrayNif<float> >::s_type;
 	}
-	//CNiflectType* TInternalRegisteredType<Niflect::TArrayNif<float> >::s_type = NULL;
-
 	template <>
 	NIFLECTTYPEREG_API CNiflectType* StaticGetType<TestRegistration::CMyRegClass>()
 	{
 		return TInternalRegisteredType<TestRegistration::CMyRegClass>::s_type;
 	}
-	//CNiflectType* TInternalRegisteredType<TestRegistration::CMyRegClass>::s_type = NULL;
 }
 
 namespace TestRegistration
