@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.10.0)
 
-set(ModuleName Niflect)
+set(ModuleName TestModule0)
 
-set(SourcePath ${RootSourcePath}/Niflect)
+set(SourcePath ${RootSourcePath}/TestModule0)
 
 file(GLOB_RECURSE SrcAll ${SourcePath}/*.cpp ${SourcePath}/*.h)
 #list(APPEND SrcAll ${SrcDefault})
@@ -27,10 +27,13 @@ target_include_directories(${ModuleName}
 	PUBLIC ${RootSourcePath}
 )
 
-target_compile_definitions(${ModuleName} 
-	PRIVATE -DNIFLECT_EXPORTS
-	PUBLIC -DNIFLECTMODULEREG_EXPORTS
+target_compile_definitions(${ModuleName}
+	PRIVATE -DTESTMODULE0_EXPORTS
+	PRIVATE -DTESTMODULE0_C_EXPORTS
 )
+
+target_link_libraries(${ModuleName} PRIVATE Engine)
+target_link_libraries(${ModuleName} PRIVATE Niflect)
 
 set(LinkParentName ${ModuleName})
 #set(ThirdPartyPath "ThirdParty")

@@ -14,6 +14,7 @@ add_executable(${ModuleName} ${SrcAll})
 
 target_link_libraries(${ModuleName} PRIVATE Engine)
 target_link_libraries(${ModuleName} PRIVATE Niflect)
+target_link_libraries(${ModuleName} PRIVATE TestModule0)
 
 target_include_directories(${ModuleName}
 	#PRIVATE ${RootSourcePath}

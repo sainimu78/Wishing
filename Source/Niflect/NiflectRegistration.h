@@ -6,15 +6,18 @@
 namespace Niflect
 {
 	class CNiflectRegistration;
-
 	using CSharedRegistration = TSharedPtr<CNiflectRegistration>;
+}
 
-	typedef void (*InitialRegFunc)();
+typedef Niflect::CNiflectRegistration* (*FuncGeneratedNiflectRegistrationGet)();
+typedef void (*FuncGeneratedNiflectRegistrationRelease)();
 
-	NIFLECT_C_API Niflect::CNiflectRegistration* GeneratedNiflectModuleRegGet();
-	NIFLECT_C_API void GeneratedNiflectModuleRegRelease();
-	NIFLECT_C_API void GeneratedNiflectModuleRegInitialReg();
+NIFLECTMODULEREG_API Niflect::CNiflectRegistration* GeneratedNiflectRegistrationGet();
+NIFLECTMODULEREG_API void GeneratedNiflectRegistrationRelease();
+void GeneratedNiflectRegistrationInitialReg();
 
+namespace Niflect
+{
 	class CNiflectRegistration
 	{
 	public:
@@ -92,17 +95,21 @@ namespace Niflect
 		}
 
 	public:
-		static CNiflectRegistration* Get()
+		static const CNiflectRegistration* Get()
 		{
-			return GeneratedNiflectModuleRegGet();
+			return GeneratedNiflectRegistrationGet();
+		}
+		static CNiflectRegistration* GetMutable()
+		{
+			return GeneratedNiflectRegistrationGet();
 		}
 		static void Release()
 		{
-			GeneratedNiflectModuleRegRelease();
+			GeneratedNiflectRegistrationRelease();
 		}
 		static void InitialReg()
 		{
-			GeneratedNiflectModuleRegInitialReg();
+			GeneratedNiflectRegistrationInitialReg();
 		}
 
 

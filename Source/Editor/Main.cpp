@@ -1,9 +1,13 @@
 #include <stdio.h>
 #include "Engine/Engine.h"
+
 //#include "Windows.h"
+
 #include "Engine/Test/TestRegistration.h"
 #include "Engine/Test/TestAccessor.h"
 #include "Editor/Test/TestSerializationRwTree.h"
+#include "TestModule0/TestModule0.h"
+#include "Niflect/NiflectRegistration.h"
 
 class CMyClassForSimplifiedMakeShared
 {
@@ -34,13 +38,29 @@ int main(int argc, char** argv)
 
 	TestRegistration::TestTypeNatimeta();
 
+	//TestModule0::LoadTypes();
+	//TestModule0::UnloadTypes();
+
 	//TestSerializationRwTree::TestSerialization();
 
-	//auto hLib = LoadLibrary("Engine.dll");
-	//if (hLib != NULL)
 	//{
-	//	if (auto Func = reinterpret_cast<FuncTestAPI_C>(GetProcAddress(hLib, "TestAPI_C")))
-	//		Func();
+	//	auto hLib = LoadLibrary("Engine");
+	//	if (hLib != NULL)
+	//	{
+	//		if (auto Func = reinterpret_cast<FuncGeneratedNiflectRegistrationGet>(GetProcAddress(hLib, "GeneratedNiflectRegistrationGet")))
+	//			Func();
+	//	}
+	//}
+	//{
+	//	auto hLib = LoadLibrary("TestModule0");
+	//	if (hLib != NULL)
+	//	{
+	//		if (auto Func = reinterpret_cast<FuncGeneratedNiflectRegistrationGet>(GetProcAddress(hLib, "GeneratedNiflectRegistrationGet")))
+	//			Func();
+	//		if (auto Func = reinterpret_cast<FuncGeneratedNiflectRegistrationRelease>(GetProcAddress(hLib, "GeneratedNiflectRegistrationRelease")))
+	//			Func();
+	//		FreeLibrary(hLib);
+	//	}
 	//}
 
 	printf("Finished\n");

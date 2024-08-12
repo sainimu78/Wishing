@@ -62,7 +62,7 @@ namespace TestRegistration
 		static Niflect::CNiflectTable* s_table = NULL;
 		if (s_table == NULL)
 		{
-			auto reg = Niflect::CNiflectRegistration::Get();
+			auto reg = Niflect::CNiflectRegistration::GetMutable();
 			s_table = reg->AddNewTable();
 		}
 		return s_table;
