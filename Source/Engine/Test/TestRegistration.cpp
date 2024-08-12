@@ -89,7 +89,26 @@ namespace TestRegistration
 		return node0;
 	}
 
-	Niflect::TStaticTableTypeReg<Niflect::CClass, CMyRegClass> ss(GetSSSSSS(), "CMyRegClass", &SSSSCreateFieldLayout, Niflect::CNatimeta());
+	class CMyRegClassNatimeta : public Niflect::CNatimeta
+	{
+		typedef CMyRegClassNatimeta CThis;
+	public:
+		CMyRegClassNatimeta()
+			: m_exampleValue(0.0f)
+		{
+
+		}
+		CThis& SetExampleOption(float val)
+		{
+			m_exampleValue = val;
+			return *this;
+		}
+
+	public:
+		float m_exampleValue;
+	};
+
+	Niflect::TStaticTableTypeReg<Niflect::CClass, CMyRegClass> ss(GetSSSSSS(), "CMyRegClass", &SSSSCreateFieldLayout, CMyRegClassNatimeta().SetExampleOption(1.23f));
 
 	void TestTypeNatimeta()
 	{
@@ -175,6 +194,10 @@ namespace TestRegistration
 				}
 
 				auto type = Niflect::StaticGetType<CMyRegClass>();
+
+				auto natimeta = Niflect::Cast<CMyRegClassNatimeta>(type->GetNatimeta());
+				printf("Natimeta, exampleValue: %f\n", natimeta->m_exampleValue);
+
 				auto layout = type->CreateFieldLayout();
 				auto sharedSrcData = type->MakeSharedInstance<void*>();
 				auto& srcData = *reinterpret_cast<CMyRegClass*>(sharedSrcData.Get());
