@@ -29,8 +29,6 @@ target_include_directories(${ModuleName}
 
 target_compile_definitions(${ModuleName} 
 	PRIVATE -DNIFLECT_EXPORTS
-	PUBLIC -DNIFLECTMODULEREG_EXPORTS
-	PUBLIC -DNIFLECTTYPEREG_EXPORTS
 )
 
 set(LinkParentName ${ModuleName})

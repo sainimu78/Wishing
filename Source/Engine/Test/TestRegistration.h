@@ -1,11 +1,11 @@
 #pragma once
 #include "Engine/EngineCommon.h"
-#include "Niflect/NiflectRegisteredType.h"
+//#include "Niflect/NiflectRegisteredType.h"
 
-namespace TestRegistration
-{
-	class CMyRegClass;
-}
+//namespace TestRegistration
+//{
+//	class CMyRegClass;
+//}
 
 //namespace Niflect
 //{

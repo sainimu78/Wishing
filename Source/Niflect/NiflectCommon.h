@@ -47,36 +47,14 @@ ASSERT(false);\
     #endif
 #endif
 
-#ifdef NIFLECTMODULEREG_API
+#ifdef WIN32
+#define NIFLECTMODULEREG_API extern "C" __declspec(dllexport)
 #else
-    #ifdef WIN32
-        #ifdef NIFLECTMODULEREG_EXPORTS
-            #define NIFLECTMODULEREG_API extern "C" __declspec(dllexport)
-        #else
-		    #define NIFLECTMODULEREG_API
-        #endif
-    #else
-        #ifdef NIFLECTMODULEREG_EXPORTS
-		    #define NIFLECTMODULEREG_API extern "C" __attribute__((visibility("default")))
-	    #else
-		    #define NIFLECTMODULEREG_API 
-	    #endif
-    #endif
+#define NIFLECTMODULEREG_API extern "C" __attribute__((visibility("default")))
 #endif
 
-#ifdef NIFLECTTYPEREG_API
-#else
 #ifdef WIN32
-#ifdef NIFLECTTYPEREG_EXPORTS
 #define NIFLECTTYPEREG_API __declspec(dllexport)
 #else
-#define NIFLECTTYPEREG_API __declspec(dllimport)
-#endif
-#else
-#ifdef NIFLECTTYPEREG_EXPORTS
 #define NIFLECTTYPEREG_API __attribute__((visibility("default")))
-#else
-#define NIFLECTTYPEREG_API 
-#endif
-#endif
 #endif
