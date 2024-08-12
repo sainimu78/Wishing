@@ -25,10 +25,11 @@ namespace Niflect
 		InvokeCreateFieldLayoutFunc m_InvokeCreateFieldLayoutFunc;
 	};
 
-	class CTypeCustomData
+	//Native Meta
+	class CNatimeta
 	{
 	};
-	using CSharedTypeCustomData = TSharedPtr<CTypeCustomData>;
+	using CSharedNatimeta = TSharedPtr<CNatimeta>;
 
 	//todo: 可能需要绑factory或由factory创建, 而factory中绑module, 如此即可以树型组织, 以便获取各种信息
 	//todo: 考虑是否需要定义带const的CNiflectType, 方便外部使用
@@ -135,18 +136,18 @@ namespace Niflect
 		}
 
 	public:
-		void SetCustomData(const CSharedTypeCustomData& data)
+		void SetNatimeta(const CSharedNatimeta& natimeta)
 		{
-			m_customData = data;
+			m_natimeta = natimeta;
 		}
-		CTypeCustomData* GetCustomData() const
+		CNatimeta* GetNatimeta() const
 		{
-			return m_customData.Get();
+			return m_natimeta.Get();
 		}
-		template <typename TCustomData>
-		TCustomData* GetDerivedCustomData() const
+		template <typename TNatimeta>
+		TNatimeta* GetDerivedNatimeta() const
 		{
-			return static_cast<TCustomData*>(m_customData.Get());
+			return static_cast<TNatimeta*>(m_natimeta.Get());
 		}
 
 	public:
@@ -167,7 +168,7 @@ namespace Niflect
 		//todo: 实现成员函数反射(CFunction), 考虑是否有可能与有必要实现支持任意构造函数
 		CTypeInvokations m_cb;
 		size_t m_typeHash;
-		CSharedTypeCustomData m_customData;
+		CSharedNatimeta m_natimeta;
 	};
 
 	using CSharedType = TSharedPtr<CNiflectType>;

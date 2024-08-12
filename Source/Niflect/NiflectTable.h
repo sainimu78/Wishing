@@ -51,7 +51,7 @@ namespace Niflect
 		CString m_name;
 	};
 
-	using CSharedTable2 = TSharedPtr<CNiflectTable>;
+	using CSharedTable = TSharedPtr<CNiflectTable>;
 	
 	template <typename TInfo, typename TType>
 	class TStaticTableTypeReg
@@ -61,12 +61,12 @@ namespace Niflect
 		{
 			table->RegisterType<TInfo, TType>(typeName, Func);
 		}
-		template <typename TAnyCustomData>
-		TStaticTableTypeReg(CNiflectTable* table, const CString& typeName, const InvokeCreateFieldLayoutFunc& Func, const TAnyCustomData& customData)
+		template <typename TNatimeta>
+		TStaticTableTypeReg(CNiflectTable* table, const CString& typeName, const InvokeCreateFieldLayoutFunc& Func, const TNatimeta& natimeta)
 			: TStaticTableTypeReg(table, typeName, Func)
 		{
 			auto type = StaticGetType<TType>();
-			type->SetCustomData(MakeShared<TAnyCustomData>(customData));
+			type->SetNatimeta(MakeShared<TNatimeta>(natimeta));
 		}
 	};
 

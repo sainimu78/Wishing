@@ -46,7 +46,7 @@ namespace Niflect
 	}
 
 	//无可配置方法, 需手工修改
-	static const bool g_enabledGlobalMemoryStats_MainThreadOnly_IncludingStaticStage = true;
+	static const bool g_enabledGlobalMemoryStats_MainThreadOnly_IncludingStaticStage = false;
 
 	static void MakeSureInitMemoryStats()
 	{

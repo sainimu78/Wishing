@@ -89,7 +89,7 @@ namespace TestRegistration
 		return node0;
 	}
 
-	Niflect::TStaticTableTypeReg<Niflect::CClass, CMyRegClass> ss(GetSSSSSS(), "CMyRegClass", &SSSSCreateFieldLayout, Niflect::CTypeCustomData());
+	Niflect::TStaticTableTypeReg<Niflect::CClass, CMyRegClass> ss(GetSSSSSS(), "CMyRegClass", &SSSSCreateFieldLayout, Niflect::CNatimeta());
 
 	void TestTypeNatimeta()
 	{
