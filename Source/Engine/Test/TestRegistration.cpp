@@ -95,7 +95,7 @@ namespace TestRegistration
 	{
 		using namespace Niflect;
 
-		if (false)
+		if (false)//Initial Reg (模块初始化注册), 基本类型
 		{
 			CDefaultMemoryStatsScope scope;
 			auto memTest = GetDefaultMemoryStats();
@@ -121,7 +121,7 @@ namespace TestRegistration
 			printf("%f\n", dstData);
 			printf("");
 		}
-		if (false)
+		if (false)//Initial Reg (模块初始化注册), 数组
 		{
 			CDefaultMemoryStatsScope scope;
 			auto memTest = GetDefaultMemoryStats();
@@ -155,7 +155,7 @@ namespace TestRegistration
 				printf("%f\n", it);
 			printf("");
 		}
-		if (true)
+		if (true)//Static Reg (静态注册) 与 Initial Reg (模块初始化注册)
 		{
 			//TestCreateModuleReg0();
 
@@ -168,7 +168,7 @@ namespace TestRegistration
 				auto memTest = GetDefaultMemoryStats();
 
 				{
-					CDefaultMemoryStatsScope::CDisabled globalScope(scope);
+					CDefaultMemoryStatsScope::CDisabled globalScope(scope);//对于仅 Initial Reg 是不需要 Disabled 的, Static Reg 所在的 Scope 为 MakeSureInitMemoryStats 中的静态 StatsScope (即全局 StatsScope)
 					auto memTest2 = GetDefaultMemoryStats();
 					GetOrRegisterType<float, CFloatAccessor, CNiflectType>(table, "float");
 					GetOrRegisterType<bool, CBoolAccessor, CNiflectType>(table, "bool");
