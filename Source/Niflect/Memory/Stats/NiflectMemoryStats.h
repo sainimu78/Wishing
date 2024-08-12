@@ -28,6 +28,9 @@ namespace Niflect
 		}
 		~CMemoryStats()
 		{
+		}
+		void DebugCheck()
+		{
 			//早于2023.08.21的结论
 			//遗留缺陷, 无法保证该测试类最后释放
 			//计划实现全局单例专门的管理对象, 由该管理对象分配释放这些单例, 以保证释放顺序
@@ -52,5 +55,45 @@ namespace Niflect
 		size_t m_allocatedBytesTotal;
 		size_t m_freedBytesRuntimeTotal;
 		size_t m_freedBytesTotal;
+	};
+
+	template <typename TMemory>
+	class TStackedStatsScope
+	{
+	public:
+		TStackedStatsScope()
+			: m_lastStats(NULL)
+		{
+			TMemory::PushStats(&m_stats, m_lastStats);
+		}
+		~TStackedStatsScope()
+		{
+			TMemory::PopStats(m_lastStats);
+			m_stats.DebugCheck();
+		}
+
+	public:
+		class CDisabled
+		{
+		public:
+			CDisabled(TStackedStatsScope& parentScope)
+				: m_parentScope(parentScope)
+			{
+				CMemoryStats* placeholder;
+				TMemory::PushStats(m_parentScope.m_lastStats, placeholder);
+				ASSERT(placeholder == &m_parentScope.m_stats);
+			}
+			~CDisabled()
+			{
+				TMemory::PopStats(&m_parentScope.m_stats);
+			}
+
+		private:
+			TStackedStatsScope& m_parentScope;
+		};
+
+	private:
+		CMemoryStats m_stats;
+		CMemoryStats* m_lastStats;
 	};
 }

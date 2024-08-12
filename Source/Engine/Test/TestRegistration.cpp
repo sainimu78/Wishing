@@ -164,12 +164,16 @@ namespace TestRegistration
 			//GetOrRegisterType<Niflect::TArrayNif<float>, TStlArrayAccessor<Niflect::TArrayNif<float> >, CNiflectType>(table, "Niflect::TArrayNif<float>");
 			//GetOrRegisterType<Niflect::TArrayNif<float>, TStlArrayAccessor<Niflect::TArrayNif<float> >, CNiflectType>(table, "Niflect::TArrayNif<float>");
 			
-			GetOrRegisterType<float, CFloatAccessor, CNiflectType>(table, "float");
-			GetOrRegisterType<bool, CBoolAccessor, CNiflectType>(table, "bool");
-			
 			{
 				CDefaultMemoryStatsScope scope;
 				auto memTest = GetDefaultMemoryStats();
+
+				{
+					CDefaultMemoryStatsScope::CDisabled globalScope(scope);
+					auto memTest2 = GetDefaultMemoryStats();
+					GetOrRegisterType<float, CFloatAccessor, CNiflectType>(table, "float");
+					GetOrRegisterType<bool, CBoolAccessor, CNiflectType>(table, "bool");
+				}
 
 				auto type = Niflect::StaticGetType<CMyRegClass>();
 				auto layout = type->CreateFieldLayout();

@@ -46,17 +46,13 @@ namespace Niflect
 	}
 
 	//无可配置方法, 需手工修改
-	static const bool g_enabledMemoryStats_MainThreadOnly_IncludingStaticStage = false;
+	static const bool g_enabledGlobalMemoryStats_MainThreadOnly_IncludingStaticStage = false;
 
 	static void MakeSureInitMemoryStats()
 	{
-		if (!g_enabledMemoryStats_MainThreadOnly_IncludingStaticStage)
+		if (!g_enabledGlobalMemoryStats_MainThreadOnly_IncludingStaticStage)
 			return;
-		if (g_memoryStatsThreadLocal == NULL)
-		{
-			static CMemoryStats s_holder;
-			g_memoryStatsThreadLocal = &s_holder;
-		}
+		static CDefaultMemoryStatsScope s_holder;
 	}
 	
 	void* CDefaultMemory::Alloc(size_t size)
@@ -73,16 +69,14 @@ namespace Niflect
 	{
 		CGenericMemory::Free(ptr, g_memoryStatsThreadLocal);
 	}
-
-	void CDefaultMemoryStatsScope::Begin()
+	void CDefaultMemory::PushStats(CMemoryStats* stats, CMemoryStats*& lastStats)
 	{
-		ASSERT(g_memoryStatsThreadLocal == NULL);
-		g_memoryStatsThreadLocal = new CMemoryStats;
+		lastStats = g_memoryStatsThreadLocal;
+		g_memoryStatsThreadLocal = stats;
 	}
-	void CDefaultMemoryStatsScope::End()
+	void CDefaultMemory::PopStats(CMemoryStats* lastStats)
 	{
-		delete g_memoryStatsThreadLocal;
-		g_memoryStatsThreadLocal = NULL;
+		g_memoryStatsThreadLocal = lastStats;
 	}
 
 	CMemoryStats* GetDefaultMemoryStats()

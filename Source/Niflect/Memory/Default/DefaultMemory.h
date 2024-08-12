@@ -10,24 +10,13 @@ namespace Niflect
 		NIFLECT_API static void* Alloc(size_t size);
 		NIFLECT_API static void* Realloc(void* ptr, size_t size);
 		NIFLECT_API static void Free(void* ptr);
-	};
 
-	class CDefaultMemoryStatsScope
-	{
 	public:
-		CDefaultMemoryStatsScope()
-		{
-			Begin();
-		}
-		~CDefaultMemoryStatsScope()
-		{
-			End();
-		}
-
-	private:
-		NIFLECT_API static void Begin();
-		NIFLECT_API static void End();
+		NIFLECT_API static void PushStats(CMemoryStats* stats, CMemoryStats*& lastStats);
+		NIFLECT_API static void PopStats(CMemoryStats* lastStats);
 	};
+
+	using CDefaultMemoryStatsScope = TStackedStatsScope<CDefaultMemory>;
 
 	NIFLECT_API CMemoryStats* GetDefaultMemoryStats();
 

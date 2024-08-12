@@ -127,7 +127,7 @@ namespace Niflect
 		{
 			auto Check = [this]()
 			{
-				ASSERT(GenerateTypeHash<T>() == m_typeHash);
+				ASSERT(GetTypeHash<T>() == m_typeHash);
 				return true;
 			};
 			ASSERT(Check());
