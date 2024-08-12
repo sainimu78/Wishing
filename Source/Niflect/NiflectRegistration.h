@@ -11,17 +11,19 @@ namespace Niflect
 
 	typedef void (*InitialRegFunc)();
 
+	NIFLECT_C_API Niflect::CNiflectRegistration* GeneratedNiflectModuleRegGet();
+	NIFLECT_C_API void GeneratedNiflectModuleRegRelease();
+	NIFLECT_C_API void GeneratedNiflectModuleRegInitialReg();
+
 	class CNiflectRegistration
 	{
 	public:
 		CNiflectRegistration()
 			: m_miscTableIndex(INDEX_NONE)
 		{
-			printf("Constructed Reg\n");
 		}
 		~CNiflectRegistration()
 		{
-			printf("Destroyed Reg\n");
 		}
 	//public:
 	//	void InitTables()
@@ -90,9 +92,19 @@ namespace Niflect
 		}
 
 	public:
-		static CNiflectRegistration* Get();
-		static void Release();
-		static void InitialReg();
+		static CNiflectRegistration* Get()
+		{
+			return GeneratedNiflectModuleRegGet();
+		}
+		static void Release()
+		{
+			GeneratedNiflectModuleRegRelease();
+		}
+		static void InitialReg()
+		{
+			GeneratedNiflectModuleRegInitialReg();
+		}
+
 
 		//template <typename TDerivedReg>
 		//static void StaticCreate()
@@ -131,5 +143,3 @@ namespace Niflect
 	//	return StaticGetType<TType>();
 	//}
 }
-
-NIFLECT_C_API const Niflect::CNiflectRegistration* GetNiflectModuleRegistration();

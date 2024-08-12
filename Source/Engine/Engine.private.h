@@ -7,18 +7,19 @@
 namespace Niflect
 {
 	TSharedPtr<CNiflectRegistration>* s_reg = NULL;
-	CNiflectRegistration* CNiflectRegistration::Get()
+
+	Niflect::CNiflectRegistration* GeneratedNiflectModuleRegGet()
 	{
 		static TSharedPtr<CNiflectRegistration> s_holder(MakeShared<CNiflectRegistration>());
 		if (s_reg == NULL)
 			s_reg = &s_holder;
 		return s_holder.Get();
 	}
-	void CNiflectRegistration::Release()
+	void GeneratedNiflectModuleRegRelease()
 	{
 		*s_reg = NULL;
 	}
-	void CNiflectRegistration::InitialReg()
+	void GeneratedNiflectModuleRegInitialReg()
 	{
 	}
 }
@@ -82,9 +83,4 @@ namespace NiflectModuleReg
 	//{
 	//	CNiflectRegistration::StaticDestroy();
 	//}
-}
-
-const Niflect::CNiflectRegistration* GetNiflectModuleRegistration()
-{
-	return Niflect::CNiflectRegistration::Get();
 }
