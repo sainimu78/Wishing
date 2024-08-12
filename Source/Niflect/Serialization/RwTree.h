@@ -1,6 +1,7 @@
 #pragma once
 #include "Niflect/NiflectBase.h"
 #include "Niflect/Util/DebugUtil.h"
+#include <cstring>
 
 namespace RwTree
 {

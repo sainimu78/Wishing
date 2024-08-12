@@ -182,7 +182,7 @@ namespace TestDiffLCS
 	std::string DebugForDiff_ValueToString<double>(const double& val)
 	{
 		char a[1024];
-		sprintf_s(a, sizeof(a), "%.1lf", val);
+		sprintf(a, "%.1lf", val);
 		return a;
 	}
 	template <>
@@ -248,7 +248,6 @@ namespace TestDiffLCS
 
 	class CRwDiffItem
 	{
-		using CRwNode = CRwNode;
 	public:
 		CRwDiffItem()
 			: m_node(NULL)
