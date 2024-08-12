@@ -155,7 +155,6 @@ namespace TestRegistration
 				printf("%f\n", it);
 			printf("");
 		}
-		//auto memTest2 = GetDefaultMemoryStats();
 		if (true)
 		{
 			//TestCreateModuleReg0();
