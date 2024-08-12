@@ -4,11 +4,11 @@
 //#include "Niflect/Test/NiflectGenerated/MyModule/MyClass.private.h"
 //#include "Niflect/Test/NiflectGenerated/MyModule/MyTransform.private.h"
 
-Niflect::TSharedPtr<Niflect::CNiflectRegistration>* s_reg = NULL;
+static Niflect::TSharedPtr<Niflect::CNiflectRegistration>* s_reg = NULL;
 
 Niflect::CNiflectRegistration* GeneratedNiflectRegistrationGet()
 {
-	static Niflect::TSharedPtr<Niflect::CNiflectRegistration> s_holder(Niflect::MakeShared<Niflect::CNiflectRegistration>());
+	static auto s_holder(Niflect::MakeShared<Niflect::CNiflectRegistration>());
 	if (s_reg == NULL)
 		s_reg = &s_holder;
 	return s_holder.Get();
