@@ -1,20 +1,26 @@
 #pragma once
 #include "Engine/EngineCommon.h"
-//#include "Niflect/NiflectRegisteredType.h"
+#include "Niflect/NiflectRegisteredType.h"
 
-//namespace TestRegistration
-//{
-//	class CMyRegClass;
-//}
+namespace TestRegistration
+{
+	class CMyRegClass;
+}
 
-//namespace Niflect
-//{
-//	template <>
-//	NIFLECTTYPEREG_API CNiflectType* StaticGetType<TestRegistration::CMyRegClass>()
-//	{
-//		return TInternalRegisteredType<TestRegistration::CMyRegClass>::s_type;
-//	}
-//}
+namespace Niflect
+{
+	//template <typename T>
+	//extern CNiflectType* StaticGetType();
+
+	//template <typename T>
+	//CNiflectType* StaticGetType()
+	//{
+	//	return TInternalRegisteredType<T>::s_type;
+	//}
+
+	template <>
+	ENGINE_API CNiflectType* StaticGetType<TestRegistration::CMyRegClass>();
+}
 
 namespace TestRegistration
 {

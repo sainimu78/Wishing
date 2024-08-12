@@ -26,23 +26,35 @@ namespace Niflect
 
 namespace Niflect
 {
+	//template <typename T>
+	//CNiflectType* StaticGetType()
+	//{
+	//	return TInternalRegisteredType<T>::s_type;
+	//}
+
+	//template <>
+	//NIFLECTTYPEREG_API CNiflectType* StaticGetType<float>()
+	//{
+	//	return TInternalRegisteredType<float>::s_type;
+	//}
+	//template <>
+	//NIFLECTTYPEREG_API CNiflectType* StaticGetType<bool>()
+	//{
+	//	return TInternalRegisteredType<bool>::s_type;
+	//}
+	//template <>
+	//NIFLECTTYPEREG_API CNiflectType* StaticGetType<Niflect::TArrayNif<float> >()
+	//{
+	//	return TInternalRegisteredType<Niflect::TArrayNif<float> >::s_type;
+	//}
+	//template <>
+	//NIFLECTTYPEREG_API CNiflectType* StaticGetType<TestRegistration::CMyRegClass>()
+	//{
+	//	return TInternalRegisteredType<TestRegistration::CMyRegClass>::s_type;
+	//}
+
 	template <>
-	NIFLECTTYPEREG_API CNiflectType* StaticGetType<float>()
-	{
-		return TInternalRegisteredType<float>::s_type;
-	}
-	template <>
-	NIFLECTTYPEREG_API CNiflectType* StaticGetType<bool>()
-	{
-		return TInternalRegisteredType<bool>::s_type;
-	}
-	template <>
-	NIFLECTTYPEREG_API CNiflectType* StaticGetType<Niflect::TArrayNif<float> >()
-	{
-		return TInternalRegisteredType<Niflect::TArrayNif<float> >::s_type;
-	}
-	template <>
-	NIFLECTTYPEREG_API CNiflectType* StaticGetType<TestRegistration::CMyRegClass>()
+	CNiflectType* StaticGetType<TestRegistration::CMyRegClass>()
 	{
 		return TInternalRegisteredType<TestRegistration::CMyRegClass>::s_type;
 	}
