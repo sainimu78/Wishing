@@ -4,15 +4,23 @@
 //#include "Niflect/Test/NiflectGenerated/MyModule/MyClass.private.h"
 //#include "Niflect/Test/NiflectGenerated/MyModule/MyTransform.private.h"
 
-static void SSSSSSS()
-{
-
-}
-
 namespace Niflect
 {
-	CSharedRegistration CNiflectRegistration::s_reg;
-	InitialRegFunc CNiflectRegistration::m_InitialRegFunc = &SSSSSSS;
+	TSharedPtr<CNiflectRegistration>* s_reg = NULL;
+	CNiflectRegistration* CNiflectRegistration::Get()
+	{
+		static TSharedPtr<CNiflectRegistration> s_holder(MakeShared<CNiflectRegistration>());
+		if (s_reg == NULL)
+			s_reg = &s_holder;
+		return s_holder.Get();
+	}
+	void CNiflectRegistration::Release()
+	{
+		*s_reg = NULL;
+	}
+	void CNiflectRegistration::InitialReg()
+	{
+	}
 }
 
 namespace NiflectModuleReg
@@ -78,5 +86,5 @@ namespace NiflectModuleReg
 
 const Niflect::CNiflectRegistration* GetNiflectModuleRegistration()
 {
-	return Niflect::CNiflectRegistration::StaticGet();
+	return Niflect::CNiflectRegistration::Get();
 }

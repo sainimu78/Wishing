@@ -27,7 +27,7 @@ void TestAPI_C()
 //CNiflectRegistration* TestCreateModuleReg0()
 //{
 //	//CreateModuleRegistration();
-//	auto reg = CNiflectRegistration::StaticGet();
+//	auto reg = CNiflectRegistration::Get();
 //	reg->InitTables();
 //	reg->RegisterTypes();
 //	reg->InitTypes();
@@ -37,7 +37,7 @@ void TestAPI_C()
 //}
 //void TestDestroyModuleReg0()
 //{
-//	auto reg = CNiflectRegistration::StaticGet();
+//	auto reg = CNiflectRegistration::Get();
 //	reg->ClearTables();
 //	CNiflectRegistration::StaticRelease();
 //	//DestroyModuleRegistration();

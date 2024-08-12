@@ -17,9 +17,11 @@ namespace Niflect
 		CNiflectRegistration()
 			: m_miscTableIndex(INDEX_NONE)
 		{
+			printf("Constructed Reg\n");
 		}
 		~CNiflectRegistration()
 		{
+			printf("Destroyed Reg\n");
 		}
 	//public:
 	//	void InitTables()
@@ -88,16 +90,9 @@ namespace Niflect
 		}
 
 	public:
-		static CNiflectRegistration* StaticGet()
-		{
-			if (s_reg == NULL)
-				s_reg = MakeShared<CNiflectRegistration>();
-			return s_reg.Get();
-		}
-		static void StaticRelease()
-		{
-			s_reg = NULL;
-		}
+		static CNiflectRegistration* Get();
+		static void Release();
+		static void InitialReg();
 
 		//template <typename TDerivedReg>
 		//static void StaticCreate()
@@ -113,9 +108,8 @@ namespace Niflect
 		TArrayNif<CNiflectTable> m_vecTable;
 		uint32 m_miscTableIndex;
 
-	private:
-		static CSharedRegistration s_reg;
-		static InitialRegFunc m_InitialRegFunc;
+	//private:
+	//	static InitialRegFunc m_InitialRegFunc;
 	};
 
 	//template <typename TField, typename TType>
@@ -129,7 +123,7 @@ namespace Niflect
 	//{
 	//	if (!TInternalRegisteredType<TType>::IsValid())
 	//	{
-	//		auto reg = CNiflectRegistration::StaticGet();
+	//		auto reg = CNiflectRegistration::Get();
 	//		auto& table = reg->GetMutableMiscTable();
 	//		ASSERT(!typeName.empty());
 	//		table.RegisterType<CNiflectType, TType>(typeName, &__InternalUseForFunctionPointer<TField, TType>, typeid(TType).hash_code());
