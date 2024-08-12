@@ -24,38 +24,40 @@ namespace Niflect
 	}
 }
 
+namespace Niflect
+{
+	template <>
+	inline CNiflectType* StaticGetType<float>()
+	{
+		return TInternalRegisteredType<float>::s_type;
+	}
+	//CNiflectType* TInternalRegisteredType<float>::s_type = NULL;
+
+	template <>
+	inline CNiflectType* StaticGetType<bool>()
+	{
+		return TInternalRegisteredType<bool>::s_type;
+	}
+	//CNiflectType* TInternalRegisteredType<bool>::s_type = NULL;
+
+	template <>
+	inline CNiflectType* StaticGetType<Niflect::TArrayNif<float> >()
+	{
+		return TInternalRegisteredType<Niflect::TArrayNif<float> >::s_type;
+	}
+	//CNiflectType* TInternalRegisteredType<Niflect::TArrayNif<float> >::s_type = NULL;
+
+	template <>
+	NIFLECTTYPEREG_API CNiflectType* StaticGetType<TestRegistration::CMyRegClass>()
+	{
+		return TInternalRegisteredType<TestRegistration::CMyRegClass>::s_type;
+	}
+	//CNiflectType* TInternalRegisteredType<TestRegistration::CMyRegClass>::s_type = NULL;
+}
+
 namespace TestRegistration
 {
 	using namespace Engine;
-
-	class CMyRegClass
-	{
-	public:
-		CMyRegClass()
-			: m_float_0(0.0f)
-			, m_bool_1(false)
-		{
-
-		}
-
-		void TestInit()
-		{
-			m_float_0 = 1.23f;
-			m_bool_1 = true;
-		}
-
-		bool operator==(const CMyRegClass& rhs) const
-		{
-			return
-				m_float_0 == rhs.m_float_0 &&
-				m_bool_1 == rhs.m_bool_1
-				;
-		}
-
-	public:
-		float m_float_0;
-		bool m_bool_1;
-	};
 
 	static Niflect::CNiflectTable* GetSSSSSS()
 	{

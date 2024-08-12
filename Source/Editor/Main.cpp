@@ -38,7 +38,7 @@ int main(int argc, char** argv)
 
 	TestRegistration::TestTypeNatimeta();
 
-	//TestModule0::LoadTypes();
+	TestModule0::LoadTypes();
 	//TestModule0::UnloadTypes();
 
 	//TestSerializationRwTree::TestSerialization();

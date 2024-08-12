@@ -26,8 +26,5 @@ namespace Niflect
 	CNiflectType* TInternalRegisteredType<T>::s_type = NULL;
 
 	template <typename T>
-	static CNiflectType* StaticGetType()
-	{
-		return TInternalRegisteredType<T>::s_type;
-	}
+	NIFLECTTYPEREG_API CNiflectType* StaticGetType();
 }

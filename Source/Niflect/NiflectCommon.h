@@ -63,3 +63,20 @@ ASSERT(false);\
 	    #endif
     #endif
 #endif
+
+#ifdef NIFLECTTYPEREG_API
+#else
+#ifdef WIN32
+#ifdef NIFLECTTYPEREG_EXPORTS
+#define NIFLECTTYPEREG_API __declspec(dllexport)
+#else
+#define NIFLECTTYPEREG_API __declspec(dllimport)
+#endif
+#else
+#ifdef NIFLECTTYPEREG_EXPORTS
+#define NIFLECTTYPEREG_API __attribute__((visibility("default")))
+#else
+#define NIFLECTTYPEREG_API 
+#endif
+#endif
+#endif
