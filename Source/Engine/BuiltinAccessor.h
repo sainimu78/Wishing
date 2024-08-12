@@ -80,6 +80,7 @@ namespace Engine
 	{
 		return &array[idx];
 	}
+	//现无法实现 g++, std=c++14 下的, 同时兼容 std::vector 与 Niflect::TArrayNif 的特化, 因此废弃, 仅留作参考
 	template <>
 	inline const AddrType GetElementBaseToRead(const Niflect::TArrayNif<bool>& array, uint32 idx, bool& stlBoolItemHandler)
 	{
