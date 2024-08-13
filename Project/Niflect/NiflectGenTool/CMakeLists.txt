@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.10.0)
 
-set(ModuleName Editor)
+set(ModuleName NiflectGenTool)
 
-set(SourcePath ${RootSourcePath}/Editor)
+set(SourcePath ${RootSourcePath}/NiflectGenTool)
 
 file(GLOB_RECURSE SrcAll ${SourcePath}/*.cpp ${SourcePath}/*.h)
 #list(APPEND SrcAll ${SrcDefault})
@@ -12,9 +12,8 @@ create_source_group(${RootSourcePath} ${SrcAll})
 add_executable(${ModuleName} ${SrcAll})
 #set_target_properties(${ModuleName} PROPERTIES LINKER_LANGUAGE CXX)
 
-target_link_libraries(${ModuleName} PRIVATE Engine)
 target_link_libraries(${ModuleName} PRIVATE Niflect)
-target_link_libraries(${ModuleName} PRIVATE TestModule0)
+target_link_libraries(${ModuleName} PRIVATE NiflectGen)
 
 target_include_directories(${ModuleName}
 	#PRIVATE ${RootSourcePath}
