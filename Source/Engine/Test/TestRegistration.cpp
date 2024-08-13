@@ -4,6 +4,7 @@
 #include "Engine/Engine.h"
 #include "Niflect/Memory/Default/DefaultMemory.h"
 #include "Niflect/Serialization/JsonFormat.h"
+#include "Engine/Test/TestStaticGetType.h"
 
 namespace Niflect
 {
@@ -221,6 +222,8 @@ namespace TestRegistration
 
 				ASSERT(srcData == dstData);
 				printf("%s\n", ss.str().c_str());
+
+				SSSSSSSS();
 			}
 		}
 		printf("");
