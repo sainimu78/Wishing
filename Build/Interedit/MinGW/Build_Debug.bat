@@ -1,1 +1,0 @@
-cmake --build ./MinGW_Interedit_x64/Debug -j 999

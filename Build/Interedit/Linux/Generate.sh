@@ -8,7 +8,7 @@ option_generator_toolset_Predefines=
 
 if [ -z "$1" ]; then
     option_visual_studio="Unix Makefiles"
-    option_output_dir="MinGW"
+    option_output_dir="Linux"
 	option_generator_toolset="DefaultGCC"
 	#指定工具链如下, 现用默认即可
     #option_generator_toolset_Predefines="-DCMAKE_C_COMPILER=D:/HenDuoDongXi/perl/c/bin/gcc.exe -DCMAKE_CXX_COMPILER=D:/HenDuoDongXi/perl/c/bin/g++.exe"
@@ -79,11 +79,11 @@ rm -f "./CMakeCache.txt"
 #cmake ../../Project/Interedit -G $option_visual_studio -A $option_platform -T $option_generator_toolset
 #eval $option_platform
 #cmake ../../../Project/Interedit -G "Unix Makefiles" $option_generator_toolset_Predefines
-cmake ../../../../../Project/Interedit -G "Unix Makefiles" $option_generator_toolset_Predefines -DCMAKE_BUILD_TYPE=Debug
+cmake ../../../../../Project/Interedit -G "$option_visual_studio" $option_generator_toolset_Predefines -DCMAKE_BUILD_TYPE=Debug
 
 cd $aaaaaaaaa
 cd $OutputDirNameRelease
-cmake ../../../../../Project/Interedit -G "Unix Makefiles" $option_generator_toolset_Predefines -DCMAKE_BUILD_TYPE=Release
+cmake ../../../../../Project/Interedit -G "$option_visual_studio" $option_generator_toolset_Predefines -DCMAKE_BUILD_TYPE=Release
 
 if [ $? -ne 0 ]; then
     echo "运行cmake出错"
