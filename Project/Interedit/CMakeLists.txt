@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10.0)
 
-include(Common.cmake)
+include(../Common.cmake)
 
 project(Interedit)
 
@@ -32,5 +32,5 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${AppOutputPath}/Release)
 
 add_subdirectory(Editor)
 add_subdirectory(Engine)
-add_subdirectory(Niflect)
+add_subdirectory(Base)
 add_subdirectory(TestModule0)
