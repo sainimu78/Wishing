@@ -19,13 +19,7 @@ endif()
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(AppOutputPath ${CMAKE_BINARY_DIR}/${CMAKE_PROJECT_NAME})
-
 #set(EngineSourcePath "${RootSourcePath}/../Engine")
 #set(DependenciesPath "${EngineSourcePath}/Dependencies")
 #set(S3EngineIncludePath "${EngineSourcePath}/S3Engine")
 #set(BaseSourcePath "${EngineSourcePath}/SampleTest/SampleGamePrototyping/Cos/Client/ReflectionSystemDemo")
-
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${AppOutputPath})
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
