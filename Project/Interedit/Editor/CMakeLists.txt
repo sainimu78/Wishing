@@ -23,3 +23,9 @@ target_include_directories(${ModuleName}
 	#PRIVATE ${BaseSourcePath}
 	PRIVATE ${RootSourcePath}
 )
+
+if(MSVC)
+	set_target_properties(Editor PROPERTIES
+		VS_DEBUGGER_WORKING_DIRECTORY "$<IF:$<CONFIG:Debug>,${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Debug,${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Release>"
+	)
+endif()
