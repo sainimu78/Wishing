@@ -54,10 +54,10 @@ cd %OutputDirName%
 if 1==1 (
 	echo "====================Start Copy DLL ==========================="
 
-	xcopy "..\..\Dependencies\lib\llvm-project\%option_platform%%option_md%\Debug\bin\libclang.dll" "%AppOutputPath%\Debug\" /y
-	xcopy "..\..\Dependencies\lib\llvm-project\%option_platform%%option_md%\Debug\bin\libclang.pdb" "%AppOutputPath%\Debug\" /y
+	xcopy "..\..\..\..\ThirdParty\libclang\llvm-project\build\Windows\%option_platform%%option_md%\Debug\bin\libclang.dll" "Debug\Output\" /y
+	xcopy "..\..\..\..\ThirdParty\libclang\llvm-project\build\Windows\%option_platform%%option_md%\Debug\bin\libclang.pdb" "Debug\Output\" /y
 
-	xcopy "..\..\Dependencies\lib\llvm-project\%option_platform%%option_md%\Release\bin\libclang.dll" "%AppOutputPath%\Release\" /y
+	xcopy "..\..\..\..\ThirdParty\libclang\llvm-project\build\Windows\%option_platform%%option_md%\Release\bin\libclang.dll" "Release\Output\" /y
 )
 
 if "%option_md%" NEQ "" (
