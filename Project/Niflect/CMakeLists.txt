@@ -1,10 +1,14 @@
 cmake_minimum_required(VERSION 3.10.0)
 
-include(../CommonBeforeProject.cmake)
+include(RootProjectPath.cmake)
 
+include(${RootProjectPath}/CommonBeforeProject.cmake)
 project(NiflectGenTool)
+include(${RootProjectPath}/CommonAfterProject.cmake)
 
-include(../CommonAfterProject.cmake)
+if(MSVC)
+    set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT Niflect)
+endif()
 
 add_subdirectory(Niflect)
 add_subdirectory(NiflectGen)

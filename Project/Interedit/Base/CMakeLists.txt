@@ -1,3 +1,3 @@
 cmake_minimum_required(VERSION 3.10.0)
 
-include(../../Niflect/Niflect/Niflect.cmake)
+include(${RootProjectPath}/Niflect/Niflect/Niflect.cmake)

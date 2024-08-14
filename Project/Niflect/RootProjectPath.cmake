@@ -1,0 +1,1 @@
+get_filename_component(RootProjectPath "${CMAKE_CURRENT_SOURCE_DIR}/../../Project" ABSOLUTE)
