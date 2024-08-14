@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10.0)
 
-include(RootProjectPath.cmake)
+include(RootPathSetup.cmake)
 
 include(${RootProjectPath}/CommonBeforeProject.cmake)
 project(NiflectGenTool)

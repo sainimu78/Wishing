@@ -20,7 +20,6 @@ set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(AppOutputPath ${CMAKE_BINARY_DIR}/${CMAKE_PROJECT_NAME})
-get_filename_component(RootSourcePath "${CMAKE_CURRENT_SOURCE_DIR}/../../Source" ABSOLUTE)
 
 #set(EngineSourcePath "${RootSourcePath}/../Engine")
 #set(DependenciesPath "${EngineSourcePath}/Dependencies")
