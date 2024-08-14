@@ -25,7 +25,7 @@ target_include_directories(${ModuleName}
 )
 
 if(MSVC)
-	set_target_properties(Editor PROPERTIES
+	set_target_properties(${ModuleName} PROPERTIES
 		VS_DEBUGGER_WORKING_DIRECTORY "$<IF:$<CONFIG:Debug>,${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Debug,${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Release>"
 	)
 endif()
