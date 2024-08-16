@@ -3,13 +3,28 @@ add_library(libclang2 SHARED IMPORTED)
 
 target_include_directories(${ModuleName} PRIVATE "${RootThirdPartyPath}/libclang/llvm-project/clang/include")
 
+if(UNIX)
+	message(STATUS "Target Is on UNIX")
+	set(OsType Linux)
+	set(DlPost .so)
+	set(SlPost .a)
+elseif(APPLE)
+	message(STATUS "Target Is on APPLE")
+	message(FATAL_ERROR "OsType & DynamicLibraryPrefix & DynamicLibraryPostfix are not specified")
+elseif(WIN32)
+	message(STATUS "Target Is on WIN32")
+	set(OsType Windows)
+	set(DlPost .dll)
+	set(SlPost .lib)
+endif()
+
 if("${CMAKE_SIZEOF_VOID_P}" EQUAL "8")
-	set(LibPath "${RootThirdPartyPath}/libclang/llvm-project/build/Windows/x64")
+	set(LibPath "${RootThirdPartyPath}/libclang/llvm-project/build/${OsType}/x64")
 	
-	set(LIBCLANG_DLL_DEBUG "${LibPath}/Debug/bin/libclang.dll")
-	set(LIBCLANG_LIB_DEBUG "${LibPath}/Debug/lib/libclang.lib")
-	set(LIBCLANG_DLL_RELEASE "${LibPath}/Release/bin/libclang.dll")
-	set(LIBCLANG_LIB_RELEASE "${LibPath}/Release/lib/libclang.lib")
+	set(LIBCLANG_DLL_DEBUG "${LibPath}/Debug/bin/libclang${DlPost}")
+	set(LIBCLANG_LIB_DEBUG "${LibPath}/Debug/lib/libclang${SlPost}")
+	set(LIBCLANG_DLL_RELEASE "${LibPath}/Release/bin/libclang${DlPost}")
+	set(LIBCLANG_LIB_RELEASE "${LibPath}/Release/lib/libclang${SlPost}")
 	
 	set_target_properties(libclang2 PROPERTIES
 		IMPORTED_LOCATION_DEBUG "${LIBCLANG_DLL}"
