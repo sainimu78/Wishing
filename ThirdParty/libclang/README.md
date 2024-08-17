@@ -141,7 +141,7 @@ make
 
 ## Prepare dependencies mannully
 
-eg. Copy
+Copy
 
 ```
 libclang.so
