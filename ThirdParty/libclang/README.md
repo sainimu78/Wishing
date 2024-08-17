@@ -18,7 +18,13 @@ git checkout llvmorg-17.0.6
 
 6009708b4367171ccdbf4b5905cb6a803753fe18
 
-## Example commands build libclang on Ubuntu
+## Prebuild
+
+[clang+llvm-17.0.6-x86_64-linux-gnu-ubuntu-22.04.tar.xz](https://github.com/llvm/llvm-project/releases/download/llvmorg-17.0.6/clang+llvm-17.0.6-x86_64-linux-gnu-ubuntu-22.04.tar.xz)
+
+The release page is https://releases.llvm.org/
+
+## Build libclang from source on Ubuntu
 
 ### GNU Make
 
