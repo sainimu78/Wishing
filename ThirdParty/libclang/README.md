@@ -139,6 +139,22 @@ make
 ./MyMain
 ```
 
+## Prepare dependencies mannully
+
+eg. Copy
+
+```
+libclang.so
+libclang.so.20.0.0git
+libclang.so.20.0git
+```
+
+to path
+
+```
+Interedit/Build/NiflectGenTool/Linux/Linux_NiflectGNiflectGenTool_x64/Debug/NiflectGenTool
+```
+
 ### Maybe helpful references for issues of building clang
 
 https://discourse.llvm.org/t/unable-to-build-on-ubuntu-or-fedora/1083/2
