@@ -1,0 +1,197 @@
+#pragma once
+#include "ReflectionSystemDemo/Niflect/NiflectBase.h"
+#include <sstream>
+#include <fstream>
+#include <iostream>
+
+namespace NiflectGen
+{
+	struct SSection
+	{
+		Niflect::CString m_data;
+		bool m_isLabel;
+	};
+
+	class CSectionLine
+	{
+	public:
+		CSectionLine()
+			: m_tabsCount(0)
+		{
+
+		}
+		void AddLabelIndex(const Niflect::CString& data)
+		{
+			m_vecSection.push_back({ data, true });
+		}
+		void AddTextIndex(const Niflect::CString& data)
+		{
+			m_vecSection.push_back({ data, false });
+		}
+		uint32 m_tabsCount;
+		Niflect::TArrayNif<SSection> m_vecSection;
+	};
+
+	class CCodeTemplate
+	{
+	public:
+		CCodeTemplate()
+			: m_labelPrefix("${")
+			, m_labelPostfix("}")
+			, m_tabChar('\t')
+			, m_newLineChar('\n')
+			, m_returnChar('\r')
+		{
+
+		}
+		void ReadFromFileStream(const Niflect::CString& filePath)
+		{
+			std::ifstream ifstm;
+			ifstm.open(filePath.c_str(), std::ios::in | std::ios::binary);//使用std::ios::binary, 是为避免无法读取末尾空行, 以实现在CRLF下完全还原数据
+			this->ReadFromInputStream(ifstm);
+		}
+		void ReadFromInputStream(std::istream& istm)
+		{
+			using namespace Niflect;
+			CString line;
+			uint32 lineNumber = 0;
+			bool lastLineEndIsReturnChar = false;
+			while (std::getline(istm, line))
+			{
+				this->ParseLine(line, ++lineNumber);
+
+				if (!line.empty())
+					lastLineEndIsReturnChar = line.back() == m_returnChar;
+			}
+			if (lastLineEndIsReturnChar)
+				this->ParseLine(CString(), ++lineNumber);
+		}
+		void Reconstruct(Niflect::TArrayNif<Niflect::CString>& vecLine)
+		{
+			using namespace Niflect;
+			for (uint32 idx0 = 0; idx0 < m_vecSectionLine.size(); ++idx0)
+			{
+				auto& sectionLine = m_vecSectionLine[idx0];
+				CString line;
+				for (uint32 idx1 = 0; idx1 < sectionLine.m_tabsCount; ++idx1)
+					line += m_tabChar;
+				for (auto& it1 : sectionLine.m_vecSection)
+				{
+					if (it1.m_isLabel)
+					{
+						line += m_labelPrefix + it1.m_data + m_labelPostfix;
+					}
+					else
+					{
+						line += it1.m_data;
+					}
+				}
+				if (idx0 < m_vecSectionLine.size() - 1)
+					line += m_newLineChar;
+				vecLine.emplace_back(line);
+			}
+		}
+		void ReplaceLabels(Niflect::TMap<Niflect::CString, Niflect::CString&>& map) const
+		{
+			todo
+			for (auto& it : map)
+			{
+
+			}
+		}
+
+	private:
+		void ParseLine(const Niflect::CString& raw, uint32 lineNumber)
+		{
+			using namespace Niflect;
+
+			CSectionLine sections;
+
+			std::size_t posPrecedingTab = 0;
+			auto rawLength = raw.length();
+			while (posPrecedingTab < rawLength)
+			{
+				if (raw[posPrecedingTab] == m_tabChar)
+					sections.m_tabsCount++;
+				else
+					break;
+				posPrecedingTab++;
+			}
+
+			auto posLabelFinding = posPrecedingTab;
+			while (true)
+			{
+				bool foundLabel = false;
+				auto posTextBegin = posLabelFinding;
+				auto posTextEnd = raw.length();
+				auto posPrefix = raw.find(m_labelPrefix, posLabelFinding);
+				auto posPostfix = posPrefix;
+				if (posPrefix != std::string::npos)
+				{
+					posPostfix = raw.find(m_labelPostfix, posPrefix);
+					if (posPostfix != std::string::npos)
+					{
+						posLabelFinding = posPostfix + m_labelPostfix.length();
+						posTextEnd = posPrefix;
+						foundLabel = true;
+					}
+					//else
+					//{
+					//	this->AddError(NiflectUtil::FormatString("Mismatching of label postfix %s at line %u", m_labelPostfix, lineNumber));//需要传入行号与标签后缀字符串
+					//	break;
+					//}
+				}
+				if (posTextEnd != posTextBegin)
+					sections.AddTextIndex(raw.substr(posTextBegin, posTextEnd - posTextBegin));
+				if (foundLabel)
+					sections.AddLabelIndex(raw.substr(posPrefix + m_labelPrefix.length(), posPostfix - posPrefix - m_labelPrefix.length()));
+				if (posTextEnd == raw.length())
+					break;
+			}
+
+			m_vecSectionLine.emplace_back(sections);
+		}
+
+	private:
+		void AddError(const Niflect::CString& text)
+		{
+			ASSERT(false);
+			m_vecError.push_back(text);
+		}
+
+	public:
+		static void Test()
+		{
+			using namespace Niflect;
+			CCodeTemplate tpl;
+			//const char* pszFilePath = "F:/Fts/Proj/Test/Piccolo/engine/template/allSerializer.ipp.mustache";
+			const char* pszFilePath = "E:/TestFunctionTemplate0.template";
+			tpl.ReadFromFileStream(pszFilePath);
+			
+			TArrayNif<CString> vecLine;
+			tpl.Reconstruct(vecLine);
+			
+			std::stringstream ss0;
+			for (auto& it : vecLine)
+				ss0 << it;
+
+			std::ifstream ifstm;
+			ifstm.open(pszFilePath, std::ios::in | std::ios::binary);
+			std::stringstream ss1;
+			ss1 << ifstm.rdbuf();
+			auto str0 = ss0.str();
+			auto str1 = ss1.str();
+			ASSERT(str0 == str1);
+			printf("");
+		}
+
+	private:
+		const Niflect::CString m_labelPrefix;//如有需要改成可设置即可
+		const Niflect::CString m_labelPostfix;
+		const char m_tabChar;
+		const char m_newLineChar;
+		const char m_returnChar;
+		Niflect::TArrayNif<CSectionLine> m_vecSectionLine;
+		Niflect::TArrayNif<Niflect::CString> m_vecError;
+	};
+}

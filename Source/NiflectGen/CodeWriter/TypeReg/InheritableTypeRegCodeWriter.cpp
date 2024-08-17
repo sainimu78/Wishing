@@ -1,0 +1,815 @@
+#include "NiflectGen/CodeWriter/TypeReg/InheritableTypeRegCodeWriter.h"
+#include "NiflectGen/util/CursorUtil.h"
+#include "NiflectGen/CodeWriter/HardCoded/InheritableTypeTemplate.h"
+#include "NiflectGen/CodeWriter/CodeTemplate.h"
+#include "NiflectGen/CodeWriter/CppWriter.h"
+#include "NiflectGen/Base/NiflectGenDefinition.h"
+#include "Niflect/Util/TypeUtil.h"
+
+namespace NiflectGen
+{
+	CInheritableTypeRegCodeWriter::CInheritableTypeRegCodeWriter(const CXCursor& cursor, const STypeRegClassWritingSetting& writingSetting)
+		: inherited(cursor, writingSetting)
+	{
+	}
+	void CInheritableTypeRegCodeWriter::Init()
+	{
+	}
+	void CInheritableTypeRegCodeWriter::WriteDecl(const CWritingContext& context, CTypeRegDeclWrittingData& data) const
+	{
+		CCodeTemplate tpl;
+		tpl.ReadFromRawData(HardCodedTemplate::Deprecated_InheritableTypeReg_ClassDecl);
+		CLabelToCodeMapping map;
+		MapLabelToText(map, LABEL_SHARED_3, m_typeName.c_str());
+		MapLabelToText(map, LABEL_9, this->GetInfoTypeName().c_str());
+		CCodeLines linesInitType;
+		this->WriteDeclInitType(linesInitType);
+		if (linesInitType.size() > 0)
+			MapLabelToLines(map, LABEL_28, linesInitType);
+		CCodeLines linesInitMethod;
+		this->WriteDeclInitMethod(linesInitMethod);
+		if (linesInitMethod.size() > 0)
+			MapLabelToLines(map, LABEL_29, linesInitMethod);
+		Niflect::TSet<Niflect::CString> setReplacedLabel;
+		tpl.ReplaceLabels(map, data.m_lines, &setReplacedLabel);
+		ASSERT(setReplacedLabel.size() == map.size());
+	}
+	void CInheritableTypeRegCodeWriter::WriteImpl(const CWritingContext& context, CTypeRegImplWrittingData& data) const
+	{
+		CCodeTemplate tpl;
+		tpl.ReadFromRawData(HardCodedTemplate::Deprecated_InheritableTypeReg_ClassImpl);
+		CLabelToCodeMapping map;
+		MapLabelToText(map, LABEL_SHARED_3, m_typeName.c_str());
+		CCodeLines linesRegisterType;
+		CNoDupPathCollector placeholder;
+		CTypeRegClassWrittingData dataRegisterType(linesRegisterType, placeholder);
+		this->WriteRegisterType(context, dataRegisterType);
+		MapLabelToLines(map, LABEL_4, linesRegisterType);
+		CCodeLines linesInitType;
+		{
+			CCodeLines lines;
+			this->WriteImplInitType(lines);
+			if (lines.size() > 0)
+			{
+				CCppWriter writer;
+				writer.WriteLine(HardCodedTemplate::Deprecated_TypeReg_ImplStaticInitType);
+				CCodeTemplate tpl;
+				tpl.ReadFromRawData(writer.m_code.c_str());
+				CLabelToCodeMapping map;
+				MapLabelToText(map, LABEL_SHARED_3, m_typeName);
+				MapLabelToLines(map, LABEL_5, lines);
+				tpl.ReplaceLabels(map, linesInitType);
+			}
+		}
+		MapLabelToLines(map, LABEL_30, linesInitType);
+		CCodeLines linesCreateAccessorTree;
+		CTypeRegClassWrittingData dataCreateFieldLayout(linesCreateAccessorTree, placeholder);
+		this->WriteCreateAccessorTree(context, dataCreateFieldLayout);
+		MapLabelToLines(map, LABEL_6, linesCreateAccessorTree);
+
+		//todo: method可能需要合并到InitType中
+		CCodeLines linesInitMethod;
+		{
+			CCodeLines lines;
+			this->WriteImplInitMethod(lines);
+			if (lines.size() > 0)
+			{
+				CCppWriter writerInitType;
+				writerInitType.WriteLine(HardCodedTemplate::TypeReg_ImplStaticInitMethod);
+				CCodeTemplate tpl;
+				tpl.ReadFromRawData(writerInitType.m_code.c_str());
+				CLabelToCodeMapping map;
+				MapLabelToText(map, LABEL_SHARED_3, m_typeName);
+				MapLabelToLines(map, LABEL_32, lines);
+				tpl.ReplaceLabels(map, linesInitMethod);
+			}
+		}
+		MapLabelToLines(map, LABEL_30, linesInitType);
+
+		Niflect::TSet<Niflect::CString> setReplacedLabel;
+		tpl.ReplaceLabels(map, data.m_lines, &setReplacedLabel);
+		ASSERT(setReplacedLabel.size() <= map.size());
+	}
+
+	static Niflect::CString GetFieldTypeNameWithScope(const CXCursor& cursor, const Niflect::TArrayNif<Niflect::CString>& vecNamespaceEntered)
+	{
+		if (true)
+		{
+			auto fieldTypeName = CXStringToCString(clang_getCursorSpelling(cursor));
+			Niflect::TArrayNif<Niflect::CString> vecFieldNamespace;
+			Niflect::TArrayNif<Niflect::CString> vecTypeScope;
+			FindNamespaceAndScopeNameRecurs(cursor, vecFieldNamespace, vecTypeScope);
+			RemoveUnnessesaryNamespacees(vecNamespaceEntered, vecFieldNamespace);
+			Niflect::CString strScope;
+			for (uint32 idx2 = 0; idx2 < vecFieldNamespace.size(); ++idx2)
+				strScope += vecFieldNamespace[idx2] + "::";
+			for (uint32 idx2 = 0; idx2 < vecTypeScope.size(); ++idx2)
+				strScope += vecTypeScope[idx2] + "::";
+			return strScope + fieldTypeName;
+		}
+		else
+		{
+			//全namespace
+			auto fieldTypeNameScoped = CXStringToCString(clang_getTypeSpelling(clang_getCursorType(cursor)));
+			return fieldTypeNameScoped;
+		}
+	}
+
+	void CInheritableTypeRegCodeWriter::WriteClass(const CWritingContext& context, CTypeRegClassWrittingData& data) const
+	{
+		CCodeTemplate tpl;
+		tpl.ReadFromRawData(HardCodedTemplate::InheritableTypeReg_Class);
+		CLabelToCodeMapping map;
+		MapLabelToText(map, LABEL_SHARED_3, m_typeName.c_str());
+		MapLabelToText(map, LABEL_9, this->GetInfoTypeName().c_str());
+		CCodeLines linesRegisterType;
+		CTypeRegClassWrittingData dataRegisterType(linesRegisterType, data.m_includePathRequirement);
+		this->WriteRegisterType(context, dataRegisterType);
+		MapLabelToLines(map, LABEL_4, linesRegisterType);
+		CCodeLines linesInitType;
+		{
+			CCodeLines lines;
+			this->WriteImplInitType(lines);
+			if (lines.size() > 0)
+			{
+				CCppWriter writer;
+				writer.WriteLine(HardCodedTemplate::TypeReg_StaticInitType);
+				CCodeTemplate tpl;
+				tpl.ReadFromRawData(writer.m_code.c_str());
+				CLabelToCodeMapping map;
+				MapLabelToLines(map, LABEL_5, lines);
+				tpl.ReplaceLabels(map, linesInitType);
+			}
+		}
+		MapLabelToLines(map, LABEL_30, linesInitType);
+		auto typeNameWithTypeScopeOnly = GetFieldTypeNameWithScope(m_cursor, m_vecNamespace);
+		MapLabelToText(map, LABEL_33, typeNameWithTypeScopeOnly);
+		CCodeLines linesCreateAccessorTree;
+		CTypeRegClassWrittingData dataCreateFieldLayout(linesCreateAccessorTree, data.m_includePathRequirement);
+		this->WriteCreateAccessorTree(context, dataCreateFieldLayout);
+		MapLabelToLines(map, LABEL_6, linesCreateAccessorTree);
+
+		//todo: method可能需要合并到InitType中
+		CCodeLines linesInitMethod;
+		{
+			CCodeLines lines;
+			this->WriteImplInitMethod(lines);
+			if (lines.size() > 0)
+			{
+				CCppWriter writerInitType;
+				writerInitType.WriteLine(HardCodedTemplate::TypeReg_ImplStaticInitMethod);
+				CCodeTemplate tpl;
+				tpl.ReadFromRawData(writerInitType.m_code.c_str());
+				CLabelToCodeMapping map;
+				MapLabelToText(map, LABEL_SHARED_3, m_typeName);
+				MapLabelToLines(map, LABEL_32, lines);
+				tpl.ReplaceLabels(map, linesInitMethod);
+			}
+		}
+		MapLabelToLines(map, LABEL_30, linesInitType);
+
+		Niflect::TSet<Niflect::CString> setReplacedLabel;
+		tpl.ReplaceLabels(map, data.m_lines, &setReplacedLabel);
+		ASSERT(setReplacedLabel.size() <= map.size());
+	}
+	Niflect::CString CInheritableTypeRegCodeWriter::WriteTypeRegClassName() const
+	{
+		return ReplaceLabelToText1(HardCodedTemplate::TypeRegClassScopeName_InheritableType, LABEL_SHARED_3, m_typeName);
+	}
+	void CInheritableTypeRegCodeWriter::WriteRegisterType(const CWritingContext& context, CTypeRegClassWrittingData& data) const
+	{
+		CCodeTemplate tpl;
+		tpl.ReadFromRawData(HardCodedTemplate::InheritableTypeReg_RegisterType_Class2);//todo: struct另有模板, 因为不需要构造析构, 相应的也需要提示不支持的用法
+		CLabelToCodeMapping map;
+		MapLabelToText(map, LABEL_SHARED_3, m_typeName.c_str());
+		Niflect::CString typeNameForHash;
+		this->WriteTypeNameForHash(context, typeNameForHash, data.m_includePathRequirement);
+		MapLabelToText(map, LABEL_26, typeNameForHash);//todo: namespace & scope
+		Niflect::TSet<Niflect::CString> setReplacedLabel;
+		tpl.ReplaceLabels(map, data.m_lines, &setReplacedLabel);
+		ASSERT(setReplacedLabel.size() == map.size());
+	}
+	static const char* pszAccessorLevel0 = "0";
+	void CInheritableTypeRegCodeWriter::WriteCreateAccessorTree(const CWritingContext& context, CTypeRegClassWrittingData& data) const
+	{
+		CCppWriter tplWriter;
+		tplWriter.WriteLine(HardCodedTemplate::CreateFieldLayout_CreateField);
+		tplWriter.WriteLine(HardCodedTemplate::CreateFieldLayout_GetNodeFromShared2);
+		tplWriter.WriteLine(MAKELABEL(LABEL_13));
+		tplWriter.WriteLine(HardCodedTemplate::CreateFieldLayout_Return2);
+		CCodeTemplate tpl;
+		tpl.ReadFromRawData(tplWriter.m_code.c_str());
+		CLabelToCodeMapping map;
+		MapLabelToText(map, LABEL_7, pszAccessorLevel0);
+		CCodeLines linesInitAccessor;
+		CTypeRegClassWrittingData dataInitFieldLayout(linesInitAccessor, data.m_includePathRequirement);
+		this->WriteInitAccessor(context, dataInitFieldLayout);
+		MapLabelToLines(map, LABEL_13, linesInitAccessor);
+		Niflect::CString rootFieldTypeName;
+		this->WriteRootFieldTypeName(rootFieldTypeName, data.m_includePathRequirement);
+		MapLabelToText(map, LABEL_24, rootFieldTypeName);
+		Niflect::TSet<Niflect::CString> setReplacedLabel;
+		tpl.ReplaceLabels(map, data.m_lines, &setReplacedLabel);
+		ASSERT(setReplacedLabel.size() == map.size());
+	}
+
+	CInheritableTypeRegCodeWriter_FieldAccessor::CInheritableTypeRegCodeWriter_FieldAccessor(const CXCursor& cursor, const STypeRegClassWritingSetting& writingSetting, const CXCursor& actualDeclCursor, const CTypeDecl& fieldAccessorBindingType)
+		: inherited(cursor, writingSetting)
+		, m_actualDeclCursor(actualDeclCursor)
+		, m_fieldAccessorBindingType(fieldAccessorBindingType)
+	{
+	}
+	void CInheritableTypeRegCodeWriter_FieldAccessor::GetInvokationRequirement(CTypeRegInvokationData& data) const
+	{
+		data.m_requiredInvokationInitType = false;
+	}
+	void CInheritableTypeRegCodeWriter_FieldAccessor::WriteRootFieldTypeName(Niflect::CString& typeName, CNoDupPathCollector& includePathRequirement) const
+	{
+		typeName = m_typeName;
+	}
+	void CInheritableTypeRegCodeWriter_FieldAccessor::WriteTypeNameForHash(const CWritingContext& context, Niflect::CString& typeName, CNoDupPathCollector& includePathRequirement) const
+	{
+		typeName = CXStringToCString(clang_getTypeSpelling(m_fieldAccessorBindingType.m_CXType));
+		if (clang_getCursorKind(m_fieldAccessorBindingType.m_cursorDecl) != CXCursor_NoDeclFound)
+			this->CollectIncludePathFromCursor(context, m_fieldAccessorBindingType.m_cursorDecl, includePathRequirement);
+	}
+
+	Niflect::CString CInheritableTypeRegCodeWriter_FieldAccessor::GetInfoTypeName() const
+	{
+		return GetCursorInfoTypeName(m_actualDeclCursor);
+	}
+
+	CInheritableTypeRegCodeWriter_ObjectAccessor::CInheritableTypeRegCodeWriter_ObjectAccessor(const CXCursor& cursor, const STypeRegClassWritingSetting& writingSetting, const CXCursor& baseTypeCursor, const Niflect::TArrayNif<CTaggedInheritableTypeMember*>& vecMember)
+		: inherited(cursor, writingSetting)
+		, m_vecMember(vecMember)
+	{
+		if (!clang_Cursor_isNull(baseTypeCursor))
+		{
+			m_baseTypeName = CXStringToCString(clang_getCursorSpelling(baseTypeCursor));//todo: namespace
+			m_baseTypeNameWithScope = GetFieldTypeNameWithScope(baseTypeCursor, m_vecNamespace);
+			m_infoTypeNameOfBaseType = GetCursorInfoTypeName(baseTypeCursor);
+		}
+	}
+	void CInheritableTypeRegCodeWriter_ObjectAccessor::GetInvokationRequirement(CTypeRegInvokationData& data) const
+	{
+		//todo: 如果method合并到InitType中生成, 则此处为或关系
+		data.m_requiredInvokationInitType = this->HasTaggedBaseType();
+	}
+	void CInheritableTypeRegCodeWriter_ObjectAccessor::WriteDeclInitType(CCodeLines& lines) const
+	{
+		if (this->HasTaggedBaseType())
+			lines.push_back(HardCodedTemplate::TypeReg_DeclStaticInitType);
+	}
+	void CInheritableTypeRegCodeWriter_ObjectAccessor::WriteImplInitType(CCodeLines& lines) const
+	{
+		if (this->HasTaggedBaseType())
+		{
+			CCodeTemplate tpl;
+			tpl.ReadFromRawData(HardCodedTemplate::InheritableTypeReg_InitInheritance2);
+			CLabelToCodeMapping map;
+			MapLabelToText(map, LABEL_10, m_infoTypeNameOfBaseType.c_str());
+			//todo: baseType的namespace
+			MapLabelToText(map, LABEL_11, m_baseTypeNameWithScope.c_str());
+			Niflect::TSet<Niflect::CString> setReplacedLabel;
+			tpl.ReplaceLabels(map, lines, &setReplacedLabel);
+			ASSERT(setReplacedLabel.size() == map.size());
+		}
+	}
+	void CInheritableTypeRegCodeWriter_ObjectAccessor::WriteInitAccessor(const CWritingContext& context, CTypeRegClassWrittingData& data) const
+	{
+		Niflect::TArrayNif<SMemberSSSSSSSSSSS> vecMemberInfo;
+		Niflect::TArrayNif<uint32> vecIndex;
+		vecIndex.resize(m_vecMember.size());
+		for (uint32 idx = 0; idx < m_vecMember.size(); ++idx)
+		{
+			auto& it = m_vecMember[idx];
+			auto& cursorField = it->GetCursor();
+			auto type = clang_getCursorType(cursorField);
+			CTypeDecl typeDecl(clang_getTypeDeclaration(type), type);
+			auto kind = clang_getCursorKind(cursorField);
+			bool isFieldOrMethod = kind == CXCursor_FieldDecl;
+			vecMemberInfo.push_back({ typeDecl, CXStringToCString(clang_getCursorSpelling(cursorField)), isFieldOrMethod, it->m_vecDetailCursor, vecIndex[idx]});
+		}
+		this->WriteInitFieldLayoutCompoundType(m_typeName, 0, vecMemberInfo, context, data);
+	}
+	void CInheritableTypeRegCodeWriter_ObjectAccessor::WriteDeclInitMethod(CCodeLines& lines) const
+	{
+
+	}
+	void CInheritableTypeRegCodeWriter_ObjectAccessor::WriteImplInitMethod(CCodeLines& lines) const
+	{
+
+	}
+	void CInheritableTypeRegCodeWriter_ObjectAccessor::WriteInitFieldLayoutCompoundType(const Niflect::CString& fieldsOwnerTypeName, uint32 parentAccessorLevel, const Niflect::TArrayNif<SMemberSSSSSSSSSSS>& vecMemberInfo, const CWritingContext& context, CTypeRegClassWrittingData& data) const
+	{
+		for (uint32 idx = 0; idx < vecMemberInfo.size(); ++idx)
+		{
+			CCodeLines linesMember;
+			auto& it = vecMemberInfo[idx];
+			if (it.m_isFieldOrMethod)
+			{
+
+				////auto aaaaaaaaaaa = clang_getCursorType(cursorDecl);
+				////auto dddddddddddddd = clang_getTypeDeclaration(aaaaaaaaaaa);
+
+				//auto a = CXStringToCString(clang_getTypeSpelling(type));
+				//clang_type_
+				//auto b = CXStringToCString(clang_getCursorSpelling(cursorDecl));
+
+				//CSubcursor rrrrr;
+				//uint32 ssssss = 0;
+				//Niflect::TArrayNif<CXCursor> vecCCCCC;
+				//BuildSubcursorRecurs(type, vecCCCCC, ssssss, rrrrr);
+				//PrintSubcursorRecurs(rrrrr);
+
+				CSubcursor subcursorRoot;
+				Niflect::CString textForTemplateInstance;
+				bool withRightAngleBracket = false;
+				uint32 dimension = INDEX_NONE;
+				CTypeRegClassWrittingData dataInitFieldLayoutRecurs(linesMember, data.m_includePathRequirement);
+				if (!this->WriteInitAccessorRecurs(fieldsOwnerTypeName, subcursorRoot, textForTemplateInstance, withRightAngleBracket, true, it.m_typeDecl, it.m_vecDetailCursor, it.m_detailCursorsArrayIndex, it.m_typeDecl, dimension, EOwnerAccessorType::Object, parentAccessorLevel, it.m_memberName, context, dataInitFieldLayoutRecurs))
+				{
+					//GenLogError(context.m_log, NiflectUtil::FormatString("The type of field %s was not tagged", CXStringToCString(clang_getCursorSpelling(cursor)).c_str()));
+					break;
+				}
+			}
+			else
+			{
+				linesMember.push_back("todo: Method writer\n");
+			}
+
+			for (auto& it1 : linesMember)
+				data.m_lines.push_back(it1);
+		}
+	}
+	static void TakeNamespaces(CSubcursor& parentSubcursor, Niflect::TArrayNif<CXCursor>& vecTaken)
+	{
+		const uint32 detailCursorsArrayIndex = 0;
+		bool takingDetail = false;
+		//bool foundAliasCursor = false;
+		if ((clang_getCursorKind(parentSubcursor.m_cursorDecl) != CXCursor_NoDeclFound) || (parentSubcursor.m_CXType.kind == CXType_Unexposed))
+		{
+			takingDetail = true;
+		}
+		else if (parentSubcursor.m_CXType.kind == CXType_Invalid)
+		{
+			takingDetail = true;
+			//foundAliasCursor = true;
+		}
+		if (takingDetail)
+		{
+			while (clang_getCursorKind(parentSubcursor.m_vecAaaaaaaaaa[detailCursorsArrayIndex]) == CXCursor_NamespaceRef)
+			{
+				vecTaken.push_back(parentSubcursor.m_vecAaaaaaaaaa[detailCursorsArrayIndex]);
+				parentSubcursor.m_vecAaaaaaaaaa.erase(parentSubcursor.m_vecAaaaaaaaaa.begin());
+			}
+		}
+	}
+	static Niflect::CString ReplaceTemplateTypeNameAndGenerateCode(const CXType& underlyingType, const Niflect::TArrayNif<CXCursor>& vecDetailCursor, const CSubcursor& subcursorSrc)
+	{
+		CSubcursor qqqqqqqqqq;
+		BuildSubcursor(underlyingType, vecDetailCursor, qqqqqqqqqq, true);
+		//PrintSubcursorRecurs(qqqqqqqqqq);
+
+		Niflect::TArrayNif<CXCursor> vecNamespaceDst;
+		TakeNamespaces(qqqqqqqqqq, vecNamespaceDst);
+		qqqqqqqqqq.m_cursorDecl = subcursorSrc.m_cursorDecl;
+		qqqqqqqqqq.m_CXType = subcursorSrc.m_CXType;
+		qqqqqqqqqq.m_vecAaaaaaaaaa = subcursorSrc.m_vecAaaaaaaaaa;
+		Niflect::CString str;
+		GenerateTemplateInstanceCode(qqqqqqqqqq, str);
+		return str;
+	}
+	static void AAAAAAAAAAAAAA(const CCodeLines& linesInitAccessor, CCodeLines& lines2)
+	{
+		CCodeTemplate tpl;
+		tpl.ReadFromRawData(HardCodedTemplate::InitField_Scope);
+		CLabelToCodeMapping map;
+		MapLabelToLines(map, LABEL_14, linesInitAccessor);
+		Niflect::TSet<Niflect::CString> setReplacedLabel;
+		tpl.ReplaceLabels(map, lines2, &setReplacedLabel);
+		ASSERT(setReplacedLabel.size() == map.size());
+	}
+	bool CInheritableTypeRegCodeWriter_ObjectAccessor::HasTaggedBaseType() const
+	{
+		return !m_baseTypeName.empty();
+	}
+	bool CInheritableTypeRegCodeWriter_ObjectAccessor::WriteInitAccessorRecurs(const Niflect::CString& fieldsOwnerTypeName, CSubcursor& parentSubcursor, Niflect::CString& parentTextForTemplateInstance, bool& withRightAngleBracket, bool isTopLevelField, const CTypeDecl& typeDeclaaaaaaaaaaa, const Niflect::TArrayNif<CXCursor>& vecDetailCursor, uint32& detailCursorsArrayIndex, const CTypeDecl& typeDecl, uint32& dimension, EOwnerAccessorType ownerAccessorType, uint32 parentAccessorLevel, const Niflect::CString& internalName, const CWritingContext& context, CTypeRegClassWrittingData& data) const
+	{
+		CCodeLines linesInitAccessor;
+		bool ok = true;
+
+		parentSubcursor.m_cursorDecl = typeDeclaaaaaaaaaaa.m_cursorDecl;
+		parentSubcursor.m_CXType = typeDeclaaaaaaaaaaa.m_CXType;
+
+		if (detailCursorsArrayIndex < vecDetailCursor.size())
+		{
+			bool takingDetail = false;
+			//bool foundAliasCursor = false;
+			if ((clang_getCursorKind(parentSubcursor.m_cursorDecl) != CXCursor_NoDeclFound) || (parentSubcursor.m_CXType.kind == CXType_Unexposed))
+			{
+				takingDetail = true;
+			}
+			else if (parentSubcursor.m_CXType.kind == CXType_Invalid)
+			{
+				takingDetail = true;
+				//foundAliasCursor = true;
+			}
+			if (takingDetail)
+			{
+				while (clang_getCursorKind(vecDetailCursor[detailCursorsArrayIndex]) == CXCursor_NamespaceRef)
+				{
+					parentSubcursor.m_vecAaaaaaaaaa.push_back(vecDetailCursor[detailCursorsArrayIndex]);
+					detailCursorsArrayIndex++;
+				}
+				parentSubcursor.m_vecAaaaaaaaaa.push_back(vecDetailCursor[detailCursorsArrayIndex]);
+				detailCursorsArrayIndex++;
+
+				//if (foundAliasCursor)
+				//{
+				//	parentSubcursor.m_cursorDecl = parentSubcursor.m_vecAaaaaaaaaa.back();
+				//	parentSubcursor.m_CXType = clang_getCursorType(parentSubcursor.m_cursorDecl);
+				//}
+			}
+		}
+
+		auto cursorDecl = parentSubcursor.m_cursorDecl;
+		auto underlyingType = parentSubcursor.m_CXType;
+		auto cursorDeclKind = clang_getCursorKind(cursorDecl);
+		switch (cursorDeclKind)
+		{
+		case CXCursor_FieldDecl:
+			underlyingType = clang_getCursorType(cursorDecl);
+			cursorDecl = clang_getTypeDeclaration(underlyingType);
+			cursorDeclKind = clang_getCursorKind(cursorDecl);
+			break;
+		}
+		//switch (cursorDeclKind)
+		//{
+		//case CXCursor_TypedefDecl:
+		//case CXCursor_TypeAliasDecl:
+		//{
+		//	underlyingType = getUnderlyingType(underlyingType);
+		//	cursorDecl = clang_getTypeDeclaration(underlyingType);
+		//	cursorDeclKind = clang_getCursorKind(cursorDecl);
+		//}
+		//break;
+		//default:
+		//	break;
+		//}
+		//parentSubcursor.m_cursorDecl = cursorDecl;
+		//parentSubcursor.m_CXType = underlyingType;
+
+		const CAccessorBinding* accessorBinding = NULL;
+		if (cursorDeclKind != CXCursor_NoDeclFound)
+		{
+			if (parentSubcursor.m_vecAaaaaaaaaa.size() > 0)
+			{
+				//别名
+				//todo: namespace在m_vecAaaaaaaaaa的其它item中
+				auto refDecl = clang_getCursorReferenced(parentSubcursor.m_vecAaaaaaaaaa.back());
+				if (clang_getCursorKind(refDecl) != CXCursor_NoDeclFound)
+				{
+					accessorBinding = m_writingSetting.m_mapping.m_accessorBindingMapping.FindByCursorDecl(refDecl);
+					if (accessorBinding != NULL)
+						cursorDecl = refDecl;
+				}
+			}
+			if (accessorBinding == NULL)
+			{
+				if (cursorDeclKind == CXCursor_ClassDecl)
+				{
+					auto templateDecl = clang_getSpecializedCursorTemplate(cursorDecl);
+					if ((!clang_Cursor_isNull(templateDecl)) && clang_getCursorKind(templateDecl) != CXCursor_NoDeclFound)
+						accessorBinding = m_writingSetting.m_mapping.m_accessorBindingMapping.FindByCursorDecl(templateDecl);
+				}
+			}
+		}
+		else
+		{
+			auto& underlyingTypeKind = underlyingType.kind;
+			if (underlyingTypeKind == CXType_Pointer)
+			{
+				GenLogError(context.m_log, "Pointer field is not supported");
+				ok = false;
+			}
+			accessorBinding = m_writingSetting.m_mapping.m_accessorBindingMapping.FindByCXType(underlyingType);
+		}
+
+		Niflect::CString myTypeName;
+
+		CCodeLines linesScope;
+		if (accessorBinding != NULL)
+		{
+			if (IsCursorTemplateDecl(cursorDecl))
+			{
+				if (accessorBinding->Is1D())
+				{
+					auto templateArgsCount = clang_Type_getNumTemplateArguments(underlyingType);
+					if (templateArgsCount > 0)
+					{
+						parentSubcursor.m_vecChild.resize(templateArgsCount);
+						bool isLastChildWithRightAngleBracket = false;
+						//myTypeName += GetNameFromCursorOrTypeDeclaration(cursorDecl, underlyingType);
+						auto templateFieldTypeName = GetFieldTypeNameWithScope(cursorDecl, m_vecNamespace);
+						myTypeName += templateFieldTypeName;
+						dimension++;
+						for (int idx = 0; idx < templateArgsCount; ++idx)
+						{
+							myTypeName += "<";
+							CXType argType = clang_Type_getTemplateArgumentAsType(underlyingType, idx);
+							auto argCursorDecl = clang_getTypeDeclaration(argType);
+							Niflect::CString childText;
+							CTypeRegClassWrittingData dataInitFieldLayoutRecursForChild(linesScope, data.m_includePathRequirement);
+							this->WriteInitAccessorRecurs(fieldsOwnerTypeName, parentSubcursor.m_vecChild[idx], childText, isLastChildWithRightAngleBracket, false, CTypeDecl(argCursorDecl, argType), vecDetailCursor, detailCursorsArrayIndex, CTypeDecl(argCursorDecl, argType), dimension, EOwnerAccessorType::Array, parentAccessorLevel + 1, NiflectUtil::FormatString("reserved_dim%u", dimension), context, dataInitFieldLayoutRecursForChild);
+							myTypeName += childText;
+							if (idx != parentSubcursor.m_vecChild.size() - 1)
+								myTypeName += ", ";
+						}
+						dimension--;
+						if (isLastChildWithRightAngleBracket)
+							myTypeName += " ";
+						myTypeName += ">";
+						withRightAngleBracket = true;
+						CTypeRegInitFieldLayoutWrittingData dataInitFieldLayoutLines(linesInitAccessor, data.m_includePathRequirement, NULL);
+						this->WriteInitAccessorLines(fieldsOwnerTypeName, HardCodedTemplate::StaticGetType_Misc, linesScope, ownerAccessorType, parentAccessorLevel, internalName, accessorBinding->m_accessorCursorDecl, myTypeName, context, dataInitFieldLayoutLines);
+					}
+					else
+					{
+						GenLogError(context.m_log, "Fail to retrieve template instance arguments");
+						ok = false;
+					}
+				}
+				else if (accessorBinding->Is2D())
+				{
+					//auto& aaaaaa = accessorBinding->m_vecWWWW[1].m_subcursor.m_cursorDecl;
+					//auto a = CXStringToCString(clang_getCursorSpelling(aaaaaa));
+					//printf("%s\n", a.c_str());
+					//auto itFound = m_mapping.m_mapCursorDeclToUntaggedTemplate.find(accessorBinding->m_vecWWWW[1].m_subcursor.m_cursorDecl);
+					//if (itFound != m_mapping.m_mapCursorDeclToUntaggedTemplate.end())
+					//{
+					//	printf("");
+					//}
+
+					//ASSERT(false);
+
+
+					//ASSERT(accessorBinding->m_vecWWWW.size() > 1);
+
+					//auto ppppppp = &parentSubcursor;
+					//bool isLastChildWithRightAngleBracket = false;
+					//auto dddddddd = dimension;
+					//for (uint32 idx = 1; idx < accessorBinding->m_vecWWWW.size(); ++idx)
+					//{
+					//	ppppppp->m_vecChild.resize(1);
+					//	auto& it = accessorBinding->m_vecWWWW[idx];
+					//	CCodeLines linesScopeaaaaaaaaaaaa;
+					//	Niflect::CString childText;
+					//	dddddddd++;
+					//	CTypeDecl aaaaaaaaaaaaaaaaaaa;
+					//	//auto a = CXStringToCString(clang_getTypeSpelling(it.m_CXType));
+					//	//auto b = CXStringToCString(clang_getTypeSpelling(underlyingType));
+					//	if (clang_Type_getNumTemplateArguments(underlyingType) != clang_Type_getNumTemplateArguments(it.m_CXType))
+					//	{
+					//		GenLogError(context.m_log, NiflectUtil::FormatString("Element binding type template arguments count must be same as the container binding type's"));
+					//		ok = false;
+					//		break;
+					//	}
+					//	aaaaaaaaaaaaaaaaaaa.m_cursorDecl = it.m_cursorDecl;
+					//	aaaaaaaaaaaaaaaaaaa.m_CXType = underlyingType;
+					//	uint32 detailCursorsArrayIndexdddddddddd = 0;
+					//	this->WriteInitAccessorRecurs(ppppppp->m_vecChild[0], childText, isLastChildWithRightAngleBracket, false, aaaaaaaaaaaaaaaaaaa, it.m_vecAaaaaaaaaa, detailCursorsArrayIndexdddddddddd, aaaaaaaaaaaaaaaaaaa, dimension, EOwnerAccessorType::Object, parentAccessorLevel + 1 + idx, NiflectUtil::FormatString("reserved_dim%u", dddddddd), context, linesScopeaaaaaaaaaaaa);
+					//	ppppppp = &ppppppp->m_vecChild[0];
+					//}
+
+
+					//ASSERT(accessorBinding->m_vecWWWW.size() > 1);
+
+					//auto ppppppp = &parentSubcursor;
+					//bool isLastChildWithRightAngleBracket = false;
+					//auto dddddddd = dimension;
+					//for (uint32 idx = 1; idx < accessorBinding->m_vecWWWW.size(); ++idx)
+					//{
+					//	ppppppp->m_vecChild.resize(1);
+					//	auto& it = accessorBinding->m_vecWWWW[idx];
+					//	CCodeLines linesScopeaaaaaaaaaaaa;
+					//	Niflect::CString childText;
+					//	dddddddd++;
+					//	CTypeDecl aaaaaaaaaaaaaaaaaaa;
+					//	//auto a = CXStringToCString(clang_getTypeSpelling(it.m_CXType));
+					//	//auto b = CXStringToCString(clang_getTypeSpelling(underlyingType));
+					//	if (clang_Type_getNumTemplateArguments(underlyingType) != clang_Type_getNumTemplateArguments(it.m_subcursor.m_CXType))
+					//	{
+					//		GenLogError(context.m_log, NiflectUtil::FormatString("Element binding type template arguments count must be same as the container binding type's"));
+					//		ok = false;
+					//		break;
+					//	}
+					//	aaaaaaaaaaaaaaaaaaa.m_cursorDecl = it.m_subcursor.m_cursorDecl;
+					//	aaaaaaaaaaaaaaaaaaa.m_CXType = underlyingType;
+					//	uint32 detailCursorsArrayIndexdddddddddd = 0;
+					//	this->WriteInitAccessorRecurs(ppppppp->m_vecChild[0], childText, isLastChildWithRightAngleBracket, false, aaaaaaaaaaaaaaaaaaa, it.m_subcursor.m_vecAaaaaaaaaa, detailCursorsArrayIndexdddddddddd, aaaaaaaaaaaaaaaaaaa, dimension, EOwnerAccessorType::Object, parentAccessorLevel + 1 + idx, NiflectUtil::FormatString("reserved_dim%u", dddddddd), context, linesScopeaaaaaaaaaaaa);
+					//	ppppppp = &ppppppp->m_vecChild[0];
+					//}
+
+					
+					
+					auto& wwwwww = accessorBinding->m_vecWWWW[1];
+					auto& aaaaaa = wwwwww.m_subcursor.m_cursorDecl;
+					//auto a = CXStringToCString(clang_getTypeSpelling(wwwwww.m_subcursor.m_CXType));
+					//auto b = CXStringToCString(clang_getCursorSpelling(aaaaaa));
+					auto itFound = m_writingSetting.m_mapping.m_mapCursorDeclToUntaggedTemplate.find(aaaaaa);
+					if (itFound != m_writingSetting.m_mapping.m_mapCursorDeclToUntaggedTemplate.end())
+					{
+						auto elemFieldsOwnerTypeName = ReplaceTemplateTypeNameAndGenerateCode(underlyingType, vecDetailCursor, wwwwww.m_subcursor);
+
+						uint32 templateArgsCount = clang_Type_getNumTemplateArguments(underlyingType);
+						auto templateArgsCountOriginalDecl = clang_Type_getNumTemplateArguments(wwwwww.m_subcursor.m_CXType);
+						if (templateArgsCount == templateArgsCountOriginalDecl && templateArgsCount == itFound->second->DebugGetChildren().size())
+						{
+							CCodeLines linesScope2;
+							Niflect::TArrayNif<SMemberSSSSSSSSSSS> vecMemberInfo;
+							auto& vecChild = itFound->second->DebugGetChildren();
+							for (uint32 idx = 0; idx < templateArgsCount; ++idx)
+							{
+								auto member = Niflect::Cast<CTaggedInheritableTypeMember>(vecChild[idx].Get());
+								auto& cursorField = member->GetCursor();
+								if (clang_getCXXAccessSpecifier(cursorField) != CX_CXXAccessSpecifier::CX_CXXPublic)
+								{
+									GenLogError(context.m_log, "Field access scope must be public for a template type");
+									ok = false;
+									break;
+								}
+								auto type = clang_getCursorType(cursorField);
+								CXType argType = clang_Type_getTemplateArgumentAsType(underlyingType, idx);
+								auto argCursorDecl = clang_getTypeDeclaration(argType);
+								CTypeDecl typeDecl(argCursorDecl, argType);
+								auto kind = clang_getCursorKind(cursorField);
+								bool isFieldOrMethod = kind == CXCursor_FieldDecl;
+								ASSERT(isFieldOrMethod);
+								vecMemberInfo.push_back({ typeDecl, CXStringToCString(clang_getCursorSpelling(cursorField)), isFieldOrMethod, vecDetailCursor, detailCursorsArrayIndex });
+							}
+							CTypeRegClassWrittingData dataInitFieldLayout2ForCompoundType(linesScope2, data.m_includePathRequirement);
+							this->WriteInitFieldLayoutCompoundType(elemFieldsOwnerTypeName, parentAccessorLevel + 2, vecMemberInfo, context, dataInitFieldLayout2ForCompoundType);
+
+							if (auto sssssssssss = m_writingSetting.m_mapping.m_accessorBindingMapping.FindByCursorDecl(wwwwww.m_subcursor.m_cursorDecl))
+							{
+								CCodeLines linesScope1;
+								//auto a = CXStringToCString(clang_getCursorSpelling(sssssssssss->m_accessorCursorDecl));
+								//auto b = CXStringToCString(clang_getCursorSpelling(sssssssssss->m_vecWWWW[0].m_subcursor.m_cursorDecl));
+								//printf("");
+
+								{
+									CCodeLines linesScope1111111;
+									dimension++;
+									CTypeRegInitFieldLayoutWrittingData dataInitFieldLayout1Lines(linesScope1111111, data.m_includePathRequirement, NULL);
+									this->WriteInitAccessorLines(fieldsOwnerTypeName, HardCodedTemplate::StaticGetType_Misc, linesScope2, EOwnerAccessorType::Array, parentAccessorLevel + 1, NiflectUtil::FormatString("reserved_dim%u", dimension), sssssssssss->m_accessorCursorDecl, elemFieldsOwnerTypeName, context, dataInitFieldLayout1Lines);
+									dimension--;
+									AAAAAAAAAAAAAA(linesScope1111111, linesScope1);
+								}
+
+								CSubcursor qqqqqqqqqq;
+								BuildSubcursor(underlyingType, vecDetailCursor, qqqqqqqqqq, true);
+								Niflect::CString str;
+								GenerateTemplateInstanceCode(qqqqqqqqqq, str);
+								CTypeRegInitFieldLayoutWrittingData dataInitFieldLayoutLines(linesInitAccessor, data.m_includePathRequirement, NULL);
+								this->WriteInitAccessorLines(fieldsOwnerTypeName, HardCodedTemplate::StaticGetType_Misc, linesScope1, ownerAccessorType, parentAccessorLevel, internalName, accessorBinding->m_accessorCursorDecl, str, context, dataInitFieldLayoutLines);
+							}
+						}
+						else
+						{
+							GenLogError(context.m_log, NiflectUtil::FormatString("The element binding type's template arguments must match the container's"));
+							ok = false;
+						}
+					}
+				}
+				else
+				{
+					GenLogError(context.m_log, NiflectUtil::FormatString("Does not support a container with more than 2D"));
+					ok = false;
+				}
+			}
+			else
+			{
+				CTypeRegInitFieldLayoutWrittingData dataInitFieldLayoutLines(linesInitAccessor, data.m_includePathRequirement, NULL);
+				this->WriteInitAccessorLines(fieldsOwnerTypeName, HardCodedTemplate::StaticGetType_Registered2, linesScope, ownerAccessorType, parentAccessorLevel, internalName, accessorBinding->m_accessorCursorDecl, "", context, dataInitFieldLayoutLines);
+			}
+		}
+		else
+		{
+			if (cursorDeclKind != CXCursor_NoDeclFound)
+			{
+				bool canWrite = false;
+				if (isTopLevelField)
+				{
+					auto itFound = m_writingSetting.m_mapping.m_mapCursorDeclToTaggedType.find(cursorDecl);
+					if (itFound != m_writingSetting.m_mapping.m_mapCursorDeclToTaggedType.end())
+					{
+						canWrite = true;
+					}
+					else
+					{
+						GenLogError(context.m_log, NiflectUtil::FormatString("Generating failed for field %s in type %s", parentSubcursor.GetTypeName().c_str(), internalName.c_str()));
+						ok = false;
+					}
+				}
+				else
+				{
+					canWrite = true;
+				}
+				if (canWrite)
+				{
+					//由于使用函数模板定义StateGetType, 因此可能不能以别名调用函数模板实例, 否则可能出现找错signature, 如认为有必要用origianlCursorDecl生成代码, 则需要实际测试, 例如生成的类型在其它module中定义, 生成代码link时不出现链接错误即为正确
+					CTypeRegInitFieldLayoutWrittingData dataInitFieldLayoutLines(linesInitAccessor, data.m_includePathRequirement, &myTypeName);
+					this->WriteInitAccessorLines(fieldsOwnerTypeName, HardCodedTemplate::StaticGetType_Registered2, linesScope, ownerAccessorType, parentAccessorLevel, internalName, cursorDecl, "", context, dataInitFieldLayoutLines);
+				}
+			}
+			else
+			{
+				GenLogError(context.m_log, NiflectUtil::FormatString("Generating failed for field %s in type %s", internalName.c_str(), parentSubcursor.GetTypeName().c_str()));
+				ok = false;
+			}
+		}
+		if (ok)
+		{
+			if (myTypeName.empty())
+			{
+				myTypeName = GetNameFromCursorOrTypeDeclaration(cursorDecl, underlyingType);//todo: namespace & scope
+			}
+			//todo: 也可以用于其它类型的名称, 并加上namespace与scope
+			parentTextForTemplateInstance += myTypeName;
+
+			if (linesInitAccessor.size() > 0)
+			{
+				AAAAAAAAAAAAAA(linesInitAccessor, data.m_lines);
+			}
+		}
+		return ok;
+	}
+	void CInheritableTypeRegCodeWriter_ObjectAccessor::WriteRootFieldTypeName(Niflect::CString& typeName, CNoDupPathCollector& includePathRequirement) const
+	{
+		//可通过BindingSetting指定CompooundField, 从而避免依赖常量
+		typeName = NiflectGenDefinition::NiflectFramework::AccessorTypeName::CompoundField;
+		includePathRequirement.Add(NiflectGenDefinition::NiflectFramework::FilePath::CompoundFieldHeader);
+	}
+	void CInheritableTypeRegCodeWriter_ObjectAccessor::WriteTypeNameForHash(const CWritingContext& context, Niflect::CString& typeName, CNoDupPathCollector& includePathRequirement) const
+	{
+		typeName = m_typeName;
+	}
+	Niflect::CString CInheritableTypeRegCodeWriter_ObjectAccessor::GetInfoTypeName() const
+	{
+		return GetCursorInfoTypeName(m_cursor);
+	}
+	void CInheritableTypeRegCodeWriter_ObjectAccessor::WriteInitAccessorLines(const Niflect::CString& fieldsOwnerTypeName, const Niflect::CString& templateStaticGetType, const CCodeLines& linesScope, EOwnerAccessorType ownerAccessorType, uint32 parentAccessorLevel, const Niflect::CString& internalName, const CXCursor& fieldCursorDecl, const Niflect::CString& bindingTypeName, const CWritingContext& context, CTypeRegInitFieldLayoutWrittingData& data) const
+	{
+		auto registeredOrMiscTypeName = GetFieldTypeNameWithScope(fieldCursorDecl, m_vecNamespace);
+		this->CollectIncludePathFromCursor(context, fieldCursorDecl, data.m_includePathRequirement);
+
+		CCppWriter tplWriter;
+		tplWriter.WriteLine(templateStaticGetType);
+		tplWriter.WriteLine(HardCodedTemplate::InitField_CreateForMember);
+		tplWriter.WriteLine(MAKELABEL(LABEL_14));
+		tplWriter.WriteLine(HardCodedTemplate::InitField_AssignToOwner);
+		Niflect::CString templateAccessorOffset;
+		switch (ownerAccessorType)
+		{
+		case EOwnerAccessorType::Object:
+			templateAccessorOffset = HardCodedTemplate::GetMemberVariableOffset2;
+			break;
+		case EOwnerAccessorType::Array:
+			templateAccessorOffset = HardCodedTemplate::NoOffset2;
+			break;
+		default:
+			ASSERT(false);
+			break;
+		}
+		CCppWriter writerAccessorOffset;
+		{
+			CCodeTemplate tpl0;
+			tpl0.ReadFromRawData(templateAccessorOffset.c_str());
+			CLabelToCodeMapping map0;
+			MapLabelToText(map0, LABEL_21, internalName);
+			MapLabelToText(map0, LABEL_25, fieldsOwnerTypeName);
+			CCodeLines lines0;
+			tpl0.ReplaceLabels(map0, lines0);
+			writerAccessorOffset.WriteLines(lines0);
+		}
+		auto accessorLevel = parentAccessorLevel + 1;
+		auto strAccessorLevel = NiflectUtil::FormatString("%u", accessorLevel);
+		auto textGetNodeFromShared = ReplaceLabelToText1(HardCodedTemplate::CreateFieldLayout_GetNodeFromShared2, LABEL_7, strAccessorLevel);
+		CCodeTemplate tpl1;
+		tpl1.ReadFromRawData(tplWriter.m_code.c_str());
+		CLabelToCodeMapping map;
+		MapLabelToText(map, LABEL_7, strAccessorLevel);
+		MapLabelToText(map, LABEL_12, registeredOrMiscTypeName);
+		MapLabelToLines(map, LABEL_14, linesScope);
+		MapLabelToText(map, LABEL_19, NiflectUtil::FormatString("%u", parentAccessorLevel));
+		MapLabelToText(map, LABEL_20, writerAccessorOffset.m_code);
+		MapLabelToText(map, LABEL_21, internalName);
+		MapLabelToText(map, LABEL_23, textGetNodeFromShared);
+		if (!bindingTypeName.empty())
+			MapLabelToText(map, LABEL_27, bindingTypeName);
+		Niflect::TSet<Niflect::CString> setReplacedLabel;
+		tpl1.ReplaceLabels(map, data.m_lines, &setReplacedLabel);
+		ASSERT(setReplacedLabel.size() == map.size());
+	}
+}
