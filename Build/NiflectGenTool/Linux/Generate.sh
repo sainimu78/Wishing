@@ -79,11 +79,11 @@ rm -f "./CMakeCache.txt"
 #cmake ../../Project/Interedit -G $option_visual_studio -A $option_platform -T $option_generator_toolset
 #eval $option_platform
 #cmake ../../../Project/Interedit -G "Unix Makefiles" $option_generator_toolset_Predefines
-cmake ../../../../../Project/Niflect -G "$option_visual_studio" $option_generator_toolset_Predefines -DCMAKE_BUILD_TYPE=Debug
+cmake ../../../../../Project/NiflectGenTool -G "$option_visual_studio" $option_generator_toolset_Predefines -DCMAKE_BUILD_TYPE=Debug
 
 cd $aaaaaaaaa
 cd $OutputDirNameRelease
-cmake ../../../../../Project/Niflect -G "$option_visual_studio" $option_generator_toolset_Predefines -DCMAKE_BUILD_TYPE=Release
+cmake ../../../../../Project/NiflectGenTool -G "$option_visual_studio" $option_generator_toolset_Predefines -DCMAKE_BUILD_TYPE=Release
 
 if [ $? -ne 0 ]; then
     echo "运行cmake出错"
