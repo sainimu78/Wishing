@@ -19,26 +19,25 @@ elseif(WIN32)
 endif()
 
 if("${CMAKE_SIZEOF_VOID_P}" EQUAL "8")
-	set(LibPath "${RootThirdPartyPath}/libclang/llvm-project/build/${OsType}/x64")
-	
-	set(LIBCLANG_DLL_DEBUG "${LibPath}/Debug/bin/libclang${DlPost}")
-	set(LIBCLANG_LIB_DEBUG "${LibPath}/Debug/lib/libclang${SlPost}")
-	set(LIBCLANG_DLL_RELEASE "${LibPath}/Release/bin/libclang${DlPost}")
-	set(LIBCLANG_LIB_RELEASE "${LibPath}/Release/lib/libclang${SlPost}")
+	set(libclangBinDebug "${CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG}/libclang${DlPost}")
+	set(libclangBinRelease "${CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG}/libclang${DlPost}")
 	
 	set_target_properties(libclang2 PROPERTIES
-		IMPORTED_LOCATION_DEBUG "${LIBCLANG_DLL_DEBUG}"
-		IMPORTED_LOCATION_RELEASE "${LIBCLANG_DLL_RELEASE}"
-		IMPORTED_LOCATION_RELWITHDEBINFO "${LIBCLANG_DLL_DEBUG}"
-		IMPORTED_LOCATION_MINSIZEREL "${LIBCLANG_DLL_RELEASE}"
+		IMPORTED_LOCATION_DEBUG "${libclangBinDebug}"
+		IMPORTED_LOCATION_RELEASE "${libclangBinRelease}"
+		IMPORTED_LOCATION_RELWITHDEBINFO "${libclangBinDebug}"
+		IMPORTED_LOCATION_MINSIZEREL "${libclangBinRelease}"
 	)
 	
 	if(WIN32)
+		set(LibPath "${RootThirdPartyPath}/libclang/llvm-project/build/${OsType}/x64")
+		set(libclangLibDebug "${LibPath}/Debug/lib/libclang${SlPost}")
+		set(libclangLibRelease "${LibPath}/Release/lib/libclang${SlPost}")
 		set_target_properties(libclang2 PROPERTIES
-			IMPORTED_IMPLIB_DEBUG "${LIBCLANG_LIB_DEBUG}"
-			IMPORTED_IMPLIB_RELEASE "${LIBCLANG_LIB_RELEASE}"
-			IMPORTED_IMPLIB_RELWITHDEBINFO "${LIBCLANG_LIB_DEBUG}"
-			IMPORTED_IMPLIB_MINSIZEREL "${LIBCLANG_LIB_RELEASE}"
+			IMPORTED_IMPLIB_DEBUG "${libclangLibDebug}"
+			IMPORTED_IMPLIB_RELEASE "${libclangLibRelease}"
+			IMPORTED_IMPLIB_RELWITHDEBINFO "${libclangLibDebug}"
+			IMPORTED_IMPLIB_MINSIZEREL "${libclangLibRelease}"
 		)
 	endif()
 	
