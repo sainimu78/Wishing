@@ -51,7 +51,8 @@ cd %OutputDirName%
 ::xcopy "..\..\%option_platform%\*.*" "lib\Debug\" /y
 ::xcopy "..\..\Dependencies\lib\PhysX\vc14%option_platform%%option_md%\Debug\*.dll" "lib\Debug\" /y
 
-if 1==1 (
+::if 1==1 (
+if 1 NEQ 1 (
 	echo "====================Start Copy DLL ==========================="
 
 	xcopy "..\..\..\..\ThirdParty\libclang\llvm-project\build\Windows\%option_platform%%option_md%\Debug\bin\libclang.dll" "Debug\%AppName%\" /y
