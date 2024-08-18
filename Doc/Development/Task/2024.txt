@@ -1,0 +1,1 @@
+1. NiflectGenTool, CField 改写为 CAccessor, 废弃要求指定NIF_T, 因为设想Accessor可为模板
