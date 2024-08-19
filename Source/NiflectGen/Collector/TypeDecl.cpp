@@ -177,7 +177,7 @@ namespace NiflectGen
 			text += ">";
 		}
 	}
-	void GenerateTemplateInstanceCodeRecurs2(const CSubcursor& parentSubcursor, Niflect::CString& text, bool& withRightAngleBracket)
+	void GenerateTemplateInstanceCodeRecurs2(const CSubcursor& parentSubcursor, Niflect::CString& text, bool& withRightAngleBracket, const Niflect::TArrayNif<Niflect::CString>& vecTemplateArgReplacementString)
 	{
 		Niflect::CString name;
 		if (parentSubcursor.m_vecAaaaaaaaaa.size() > 0)
@@ -211,7 +211,17 @@ namespace NiflectGen
 			for (uint32 idx = 0; idx < parentSubcursor.m_vecChild.size(); ++idx)
 			{
 				Niflect::CString childText;
-				GenerateTemplateInstanceCodeRecurs2(parentSubcursor.m_vecChild[idx], childText, isLastChildWithRightAngleBracket);
+				if (vecTemplateArgReplacementString.size() > 0)
+				{
+					ASSERT(vecTemplateArgReplacementString.size() == parentSubcursor.m_vecChild.size());
+					childText = vecTemplateArgReplacementString[idx];
+					if (childText.back() == '>')
+						isLastChildWithRightAngleBracket = true;
+				}
+				else
+				{
+					GenerateTemplateInstanceCodeRecurs2(parentSubcursor.m_vecChild[idx], childText, isLastChildWithRightAngleBracket, vecTemplateArgReplacementString);
+				}
 				text += childText;
 				if (idx != parentSubcursor.m_vecChild.size() - 1)
 					text += ", ";
@@ -222,9 +232,9 @@ namespace NiflectGen
 			withRightAngleBracket = true;
 		}
 	}
-	void GenerateTemplateInstanceCode(const CSubcursor& parentSubcursor, Niflect::CString& text)
+	void GenerateTemplateInstanceCode(const CSubcursor& parentSubcursor, Niflect::CString& text, const Niflect::TArrayNif<Niflect::CString>& vecTemplateArgReplacementString)
 	{
 		bool withRightAngleBracket = false;
-		GenerateTemplateInstanceCodeRecurs2(parentSubcursor, text, withRightAngleBracket);
+		GenerateTemplateInstanceCodeRecurs2(parentSubcursor, text, withRightAngleBracket, vecTemplateArgReplacementString);
 	}
 }

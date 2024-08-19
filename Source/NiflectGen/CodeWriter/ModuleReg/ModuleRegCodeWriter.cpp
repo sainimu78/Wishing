@@ -134,7 +134,7 @@ namespace NiflectGen
         {
             if (it0.m_accessorData.m_isNotATemplate)
             {
-                auto filePath = GetCursorFilePath(it0.m_accessorCursorDecl);
+                auto filePath = GetCursorFilePath(it0.m_accessorSubcursor.m_cursorDecl);
                 auto itFound = m_mapping.m_mapOriginalFilePathToModuleRegIndicesAndIncPath.find(filePath);
                 if (itFound != m_mapping.m_mapOriginalFilePathToModuleRegIndicesAndIncPath.end())
                 {
@@ -145,7 +145,7 @@ namespace NiflectGen
                     privateHeaderData.m_vecTypeRegDataIndex.push_back(writerIndex);
                     ASSERT(it0.Is1D());//不支持模板, 因此只能为1D, 对应的Binding类型可能为builtin, 类型Decl或别名
                     STypeRegClassWritingSetting setting = { m_moduleRegInfo.m_userProvided.m_vecHeaderSearchPath, m_resolvedData.m_mapping };
-                    m_vecWriter.push_back(Niflect::MakeShared<CInheritableTypeRegCodeWriter_FieldAccessor>(it0.m_accessorCursorDecl, setting, it0.m_actualFieldDeclCursor, it0.m_vecWWWW[0].m_subcursor));
+                    m_vecWriter.push_back(Niflect::MakeShared<CInheritableTypeRegCodeWriter_FieldAccessor>(it0.m_accessorSubcursor.m_cursorDecl, setting, it0.m_actualFieldDeclCursor, it0.m_vecWWWW[0].m_subcursor));
                     m_mapping.m_vecTypeRegIncludePathPrivateHRef.push_back(&privateHeaderData.m_prevateHIncludePath);
                 }
             }

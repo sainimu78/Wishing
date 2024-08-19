@@ -40,8 +40,8 @@ namespace NiflectGen
 	class CAccessorBinding
 	{
 	public:
-		CAccessorBinding(const CXCursor& accessorCursorDecl, const CXCursor& actualFieldDeclCursor, const CAccessorData& accessorData)
-			: m_accessorCursorDecl(accessorCursorDecl)
+		CAccessorBinding(const CSubcursor& accessorSubcursor, const CXCursor& actualFieldDeclCursor, const CAccessorData& accessorData)
+			: m_accessorSubcursor(accessorSubcursor)
 			, m_actualFieldDeclCursor(actualFieldDeclCursor)
 			, m_accessorTaggedType(NULL)
 			, m_accessorData(accessorData)
@@ -55,7 +55,7 @@ namespace NiflectGen
 		{
 			return m_vecWWWW.size() == 2;
 		}
-		CXCursor m_accessorCursorDecl;
+		CSubcursor m_accessorSubcursor;
 		CXCursor m_actualFieldDeclCursor;
 		CTaggedType* m_accessorTaggedType;
 		Niflect::TArrayNif<CFieldWWWWWWW> m_vecWWWW;

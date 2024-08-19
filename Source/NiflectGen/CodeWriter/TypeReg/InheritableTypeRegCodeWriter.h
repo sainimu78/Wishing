@@ -56,7 +56,7 @@ namespace NiflectGen
 	{
 		CTypeDecl m_typeDecl;
 		Niflect::CString m_memberName;
-		bool m_isFieldOrMethod;
+		bool m_trueField_falseMethod;
 		const Niflect::TArrayNif<CXCursor>& m_vecDetailCursor;
 		uint32& m_detailCursorsArrayIndex;
 	};
@@ -104,7 +104,7 @@ namespace NiflectGen
 	private:
 		bool HasTaggedBaseType() const;
 		bool WriteInitAccessorRecurs(const Niflect::CString& fieldsOwnerTypeName, CSubcursor& parentSubcursor, Niflect::CString& parentTextForTemplateInstance, bool& withRightAngleBracket, bool isTopLevelField, const CTypeDecl& typeDeclaaaaaaaaaaa, const Niflect::TArrayNif<CXCursor>& vecDetailCursor, uint32& detailCursorsArrayIndex, const CTypeDecl& typeDecl, uint32& dimension, EOwnerAccessorType ownerAccessorType, uint32 parentAccessorLevel, const Niflect::CString& internalName, const CWritingContext& context, CTypeRegClassWrittingData& data) const;
-		void WriteInitAccessorLines(const Niflect::CString& fieldsOwnerTypeName, const Niflect::CString& templateStaticGetType, const CCodeLines& linesScope, EOwnerAccessorType ownerAccessorType, uint32 parentAccessorLevel, const Niflect::CString& internalName, const CXCursor& fieldCursorDecl, const Niflect::CString& bindingTypeName, const CWritingContext& context, CTypeRegInitFieldLayoutWrittingData& data) const;
+		void WriteInitAccessorLines(const Niflect::CString& fieldsOwnerTypeName, const Niflect::CString& templateStaticGetType, const CCodeLines& linesScope, EOwnerAccessorType ownerAccessorType, uint32 parentAccessorLevel, const Niflect::CString& internalName, const CSubcursor& accessorSubcursor, const Niflect::CString& bindingTypeName, const CWritingContext& context, CTypeRegInitFieldLayoutWrittingData& data) const;
 		void WriteInitFieldLayoutCompoundType(const Niflect::CString& fieldsOwnerTypeName, uint32 parentAccessorLevel, const Niflect::TArrayNif<SMemberSSSSSSSSSSS>& vecMemberInfo, const CWritingContext& context, CTypeRegClassWrittingData& data) const;
 		//bool WriteInitAccessorRecurs2(CSubcursor& parentSubcursor, Niflect::CString& parentTextForTemplateInstance, bool& withRightAngleBracket, bool isTopLevelField, const CTypeDecl& typeDeclaaaaaaaaaaa, const Niflect::TArrayNif<CXCursor>& vecDetailCursor, uint32& detailCursorsArrayIndex, const CTypeDecl& typeDecl, uint32& dimension, EOwnerAccessorType ownerAccessorType, uint32 parentAccessorLevel, const Niflect::CString& internalName, const CWritingContext& context, CCodeLines& lines2) const;
 

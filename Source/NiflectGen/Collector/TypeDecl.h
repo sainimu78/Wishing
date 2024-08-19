@@ -49,6 +49,5 @@ namespace NiflectGen
 	//void BuildSubcursorRecurs2(const CXType& parentType, uint32 maxDepth, const Niflect::TArrayNif<CXCursor>& vecAAAAAAA, uint32& frontIndex, CSubcursor& parentSubcursor, uint32 depth = 0);
 	bool BuildSubcursor(const CXType& parentType, const Niflect::TArrayNif<CXCursor>& vecAAAAAAA, CSubcursor& parentSubcursor, bool skipAlias = false);
 	void PrintSubcursorRecurs(const CSubcursor& parentSubcursor, uint32 level = 0);
-	void GenerateTemplateInstanceCodeRecurs(const CSubcursor& parentSubcursor, Niflect::CString& text);
-	void GenerateTemplateInstanceCode(const CSubcursor& parentSubcursor, Niflect::CString& text);
+	void GenerateTemplateInstanceCode(const CSubcursor& parentSubcursor, Niflect::CString& text, const Niflect::TArrayNif<Niflect::CString>& vecTemplateArgReplacementString = Niflect::TArrayNif<Niflect::CString>());
 }

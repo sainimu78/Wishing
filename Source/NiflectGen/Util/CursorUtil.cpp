@@ -173,6 +173,8 @@ namespace NiflectGen
 	{
 		if (vecNamespace.size() == 0)
 			return;
+		if (vecNamespaceReference.size() == 0)
+			return;
 		uint32 commonScopesCount = 0;
 		for (uint32 idx = 0; idx < vecNamespaceReference.size(); ++idx)
 		{

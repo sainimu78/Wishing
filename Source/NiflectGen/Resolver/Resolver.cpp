@@ -237,8 +237,7 @@ namespace NiflectGen
 				break;//todo: 处于2层for, 需要有另外的逻辑检查有错误则不遍历sibling
 			}
 
-			auto& accessorCursor = it0.GetAccessorTypeDecl().m_cursorDecl;
-			CAccessorBinding item(accessorCursor, it0.m_actualFieldDeclCursor, it0.m_accessorData);
+			CAccessorBinding item(it0.GetAccessorTypeDecl(), it0.m_actualFieldDeclCursor, it0.m_accessorData);
 			for (uint32 idx1 = 0; idx1 < it0.GetDimensionalBindingTypeDeclsCount(); ++idx1)
 			{
 				auto& bindingTypeDecl = it0.GetDimensionalBindingTypeDecl(idx1);
@@ -252,7 +251,7 @@ namespace NiflectGen
 		//todo: 可简化, 实际上只有非模板cursor才有可能具有TaggedNode
 		for (auto& it0 : accessorBindingMapping.m_vecAccessorBinding2)
 		{
-			auto ret = m_mapAccessorCursorDeclToAccessorBindingIndex.insert({ it0.m_accessorCursorDecl, &it0.m_accessorTaggedType });
+			auto ret = m_mapAccessorCursorDeclToAccessorBindingIndex.insert({ it0.m_accessorSubcursor.m_cursorDecl, &it0.m_accessorTaggedType });
 			if (!ret.second)
 			{
 				GenLogError(context.m_log, "Accessor types are conflicting, an identical binding is expected");

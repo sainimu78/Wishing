@@ -354,6 +354,11 @@ namespace NiflectGen
 		bool m_entered;
 	};
 
+	static bool IsTypeForBaseClassVerifying(CXCursorKind kind)
+	{
+		return kind == CXCursor_ClassDecl || kind == CXCursor_ClassTemplate;
+	}
+
 	class CScopeAccessorBaseCursorDecl
 	{
 	public:
@@ -363,7 +368,7 @@ namespace NiflectGen
 			, m_vecChild(vecChild)
 			, m_entered(false)
 		{
-			m_entered = clang_getCursorKind(cursor) == CXCursor_ClassDecl;
+			m_entered = IsTypeForBaseClassVerifying(clang_getCursorKind(cursor));
 		}
 		~CScopeAccessorBaseCursorDecl()
 		{
@@ -572,12 +577,14 @@ namespace NiflectGen
 			if (m_collectingClassBaseCursorDecl)
 			{
 				auto kind = clang_getCursorKind(cursor);
-				if (kind == CXCursor_ClassDecl)
+				
+				if (IsTypeForBaseClassVerifying(kind))
 				{
-					auto ret = m_mapCursorDeclToBaseCursorDecl.insert({cursor, g_invalidCursor});
+					auto ret = m_mapCursorDeclToBaseCursorDecl.insert({ cursor, g_invalidCursor });
 					ASSERT(ret.second);
 				}
-				else if (kind == CXCursor_TypeAliasTemplateDecl)
+
+				if (kind == CXCursor_TypeAliasTemplateDecl)
 				{
 					m_mapCursorDeclToAliasDecl.insert({ cursor, g_invalidCursor });
 					addedTaggedChild = m_templateCollector.Collect(cursor, taggedParent, context.m_log);
@@ -773,8 +780,8 @@ namespace NiflectGen
 		//{
 		//	for (auto& it : collectionData.m_vecBindingSetting)
 		//	{
-		//		PrintTemplateSubcursor(it.m_subCursorRoot, 0);
-		//		ASSERT(it.m_subCursorRoot.m_vecChild.size() == 2);
+		//		PrintSubcursorRecurs(it.m_subcursorRoot);
+		//		//ASSERT(it.m_subCursorRoot.m_vecChild.size() == 2);
 		//		printf("---------\n");
 		//	}
 		//}
