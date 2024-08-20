@@ -248,6 +248,7 @@ namespace NiflectGen
 			accessorBindingMapping.m_vecAccessorBinding2.emplace_back(item);
 		}
 
+#ifdef TAGGED_REQUIREMENT_OF_NON_TEMPLATE_ACCESSOR_TYPE
 		//todo: 可简化, 实际上只有非模板cursor才有可能具有TaggedNode
 		for (auto& it0 : accessorBindingMapping.m_vecAccessorBinding2)
 		{
@@ -275,6 +276,8 @@ namespace NiflectGen
 			//	}
 			//}
 		}
+#else
+#endif
 
 		this->ResolveRecurs2(taggedRoot, context, data);
 
@@ -320,8 +323,9 @@ namespace NiflectGen
 			//	data.m_vecResolvedTypes2.push_back(taggedType);
 			//}
 
-			auto& accessorBindingMapping = data.m_mapping.m_accessorBindingMapping;
 			bool isAccessorCursorDecl = false;
+#ifdef TAGGED_REQUIREMENT_OF_NON_TEMPLATE_ACCESSOR_TYPE
+			auto& accessorBindingMapping = data.m_mapping.m_accessorBindingMapping;
 			if (m_foundCursorsCount < accessorBindingMapping.m_vecAccessorBinding2.size())
 			{
 				auto itFound = m_mapAccessorCursorDeclToAccessorBindingIndex.find(cursor);
@@ -333,6 +337,8 @@ namespace NiflectGen
 					isAccessorCursorDecl = true;
 				}
 			}
+#else
+#endif
 			if (!isAccessorCursorDecl)
 			{
 				data.m_vecResolvedTypes2.push_back(taggedType);

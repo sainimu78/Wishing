@@ -43,7 +43,10 @@ namespace NiflectGen
 		CAccessorBinding(const CSubcursor& accessorSubcursor, const CXCursor& actualFieldDeclCursor, const CAccessorData& accessorData)
 			: m_accessorSubcursor(accessorSubcursor)
 			, m_actualFieldDeclCursor(actualFieldDeclCursor)
+#ifdef TAGGED_REQUIREMENT_OF_NON_TEMPLATE_ACCESSOR_TYPE
 			, m_accessorTaggedType(NULL)
+#else
+#endif
 			, m_accessorData(accessorData)
 		{
 		}
@@ -57,7 +60,10 @@ namespace NiflectGen
 		}
 		CSubcursor m_accessorSubcursor;
 		CXCursor m_actualFieldDeclCursor;
+#ifdef TAGGED_REQUIREMENT_OF_NON_TEMPLATE_ACCESSOR_TYPE
 		CTaggedType* m_accessorTaggedType;
+#else
+#endif
 		Niflect::TArrayNif<CFieldWWWWWWW> m_vecWWWW;
 		CAccessorData m_accessorData;
 	};

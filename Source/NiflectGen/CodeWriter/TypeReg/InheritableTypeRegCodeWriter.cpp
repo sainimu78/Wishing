@@ -468,25 +468,29 @@ namespace NiflectGen
 		const CAccessorBinding* accessorBinding = NULL;
 		if (cursorDeclKind != CXCursor_NoDeclFound)
 		{
-			if (parentSubcursor.m_vecAaaaaaaaaa.size() > 0)
-			{
-				//别名
-				//todo: namespace在m_vecAaaaaaaaaa的其它item中
-				auto refDecl = clang_getCursorReferenced(parentSubcursor.m_vecAaaaaaaaaa.back());
-				if (clang_getCursorKind(refDecl) != CXCursor_NoDeclFound)
-				{
-					accessorBinding = m_writingSetting.m_mapping.m_accessorBindingMapping.FindByCursorDecl(refDecl);
-					if (accessorBinding != NULL)
-						cursorDecl = refDecl;
-				}
-			}
+			accessorBinding = m_writingSetting.m_mapping.m_accessorBindingMapping.FindByCursorDecl(cursorDecl);
 			if (accessorBinding == NULL)
 			{
-				if (cursorDeclKind == CXCursor_ClassDecl)
+				if (parentSubcursor.m_vecAaaaaaaaaa.size() > 0)
 				{
-					auto templateDecl = clang_getSpecializedCursorTemplate(cursorDecl);
-					if ((!clang_Cursor_isNull(templateDecl)) && clang_getCursorKind(templateDecl) != CXCursor_NoDeclFound)
-						accessorBinding = m_writingSetting.m_mapping.m_accessorBindingMapping.FindByCursorDecl(templateDecl);
+					//别名
+					//todo: namespace在m_vecAaaaaaaaaa的其它item中
+					auto refDecl = clang_getCursorReferenced(parentSubcursor.m_vecAaaaaaaaaa.back());
+					if (clang_getCursorKind(refDecl) != CXCursor_NoDeclFound)
+					{
+						accessorBinding = m_writingSetting.m_mapping.m_accessorBindingMapping.FindByCursorDecl(refDecl);
+						if (accessorBinding != NULL)
+							cursorDecl = refDecl;
+					}
+				}
+				if (accessorBinding == NULL)
+				{
+					if (cursorDeclKind == CXCursor_ClassDecl)
+					{
+						auto templateDecl = clang_getSpecializedCursorTemplate(cursorDecl);
+						if ((!clang_Cursor_isNull(templateDecl)) && clang_getCursorKind(templateDecl) != CXCursor_NoDeclFound)
+							accessorBinding = m_writingSetting.m_mapping.m_accessorBindingMapping.FindByCursorDecl(templateDecl);
+					}
 				}
 			}
 		}
@@ -627,8 +631,15 @@ namespace NiflectGen
 			}
 			else
 			{
+				Niflect::CString str;
+				Niflect::CString sdasdf = HardCodedTemplate::StaticGetType_Registered2;
+				if (accessorBinding->m_accessorSubcursor.m_vecChild.size() > 0)
+				{
+					str = CXStringToCString(clang_getTypeSpelling(underlyingType));
+					sdasdf = HardCodedTemplate::StaticGetType_Misc;
+				}
 				CTypeRegInitFieldLayoutWrittingData dataInitFieldLayoutLines(linesInitAccessor, data.m_includePathRequirement, NULL);
-				this->WriteInitAccessorLines(fieldsOwnerTypeName, HardCodedTemplate::StaticGetType_Registered2, linesScope, ownerAccessorType, parentAccessorLevel, internalName, accessorBinding->m_accessorSubcursor, "", context, dataInitFieldLayoutLines);
+				this->WriteInitAccessorLines(fieldsOwnerTypeName, sdasdf, linesScope, ownerAccessorType, parentAccessorLevel, internalName, accessorBinding->m_accessorSubcursor, str, context, dataInitFieldLayoutLines);
 			}
 		}
 		else
@@ -742,7 +753,8 @@ namespace NiflectGen
 			MapLabelToText(map0, LABEL_25, fieldsOwnerTypeName);
 			CCodeLines lines0;
 			tpl0.ReplaceLabels(map0, lines0);
-			writerAccessorOffset.WriteLines(lines0);
+			ASSERT(lines0.size() == 1);
+			writerAccessorOffset.Write(lines0.back());
 		}
 		auto accessorLevel = parentAccessorLevel + 1;
 		auto strAccessorLevel = NiflectUtil::FormatString("%u", accessorLevel);

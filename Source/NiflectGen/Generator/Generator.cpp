@@ -268,7 +268,7 @@ namespace NiflectGen
                 writer.Write2(writingContext, m_genData);
             }
             debugData.Check();
-            m_collector.DebugFinish2(&taggedRoot, collectionData);
+            //m_collector.DebugFinish2(&taggedRoot, collectionData);
             fclose(fp);
         }
 
@@ -281,7 +281,12 @@ namespace NiflectGen
     void CGenerator::Save() const
     {
         //#4, Save to files
-        auto a = m_genData.m_moduleRegGenData.m_privateHIncludePath;
+        CCppWriter writer;
+        for (auto& it0 : m_genData.m_vecTypeRegGenData)
+        {
+            writer.WriteLines(it0.m_privateH);
+        }
+        NiflectUtil::WriteStringToFile(writer.m_code, "E:/NiflectGenTool_Test_privateH.cpp");
         printf("");
     }
 

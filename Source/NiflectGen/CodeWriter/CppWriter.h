@@ -18,6 +18,10 @@ namespace NiflectGen
 			for (auto& it : lines)
 				m_code += it + EscapeChar::NewLine;
 		}
+		void Write(const Niflect::CString& code)
+		{
+			m_code += code;
+		}
 
 	public:
 		Niflect::CString m_code;

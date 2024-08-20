@@ -341,6 +341,8 @@ namespace NiflectGen
 				}
 				//CollectTemplateSubcursorRecurs2(templateType, m_vecChild, data.m_subCursorRoot, cursorArrayFrontIndex);
 				//PrintSubcursorRecurs(data.m_subcursorRoot);
+				//Niflect::CString str;
+				//GenerateTemplateInstanceCode(data.m_subcursorRoot.m_vecChild[1], str);
 				m_collectionData.m_vecBindingSetting.emplace_back(data);
 			}
 		}
@@ -669,7 +671,11 @@ namespace NiflectGen
 			{
 				auto decl = this->FindAliasDecl(typeDecl.m_cursorDecl);
 				auto ret = collectionData.m_mapAliasTemplateDeclToClassTemplateCursor.insert({ typeDecl.m_cursorDecl, decl });
-				ASSERT(ret.second);
+				if (!ret.second)
+				{
+					GenLogError(context.m_log, NiflectUtil::FormatString("Duplicated binding type specified for %s. Additionally, partial template specialization is not supported for binding types.", CXStringToCString(clang_getCursorSpelling(typeDecl.m_cursorDecl)).c_str()));
+					break;//todo: 处于2层for, 需要有另外的逻辑检查有错误则不遍历sibling
+				}
 			}
 		}
 
