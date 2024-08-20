@@ -1,1 +1,6 @@
-1. NiflectGenTool, CField 改写为 CAccessor, 废弃要求指定NIF_T, 因为设想Accessor可为模板
+1. Done, NiflectGenTool, CField 改写为 CAccessor, 废弃要求指定NIF_T, 因为设想Accessor可为模板
+2. NiflectGenTool, 重构
+	1. AccessorBinding
+		1. 可定义N维模板
+		2. 可区分出特化类型, 特化类型以直接生成的方式生成代码, 同MyTransform
+	2. 用通用的流程递归N维Accessor
