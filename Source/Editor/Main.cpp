@@ -34,9 +34,9 @@ int main(int argc, char** argv)
 
 	//TestSerializationRwTree::TestMemory();
 
-	TestAccessor::TestFieldLayout();
+	//TestAccessor::TestFieldLayout();
 	
-	//TestRegistration::TestTypeNatimeta();
+	TestRegistration::TestTypeNatimeta();
 
 	//TestModule0::LoadTypes();
 	//TestModule0::UnloadTypes();
