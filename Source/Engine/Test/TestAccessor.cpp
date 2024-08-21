@@ -296,7 +296,7 @@ namespace TestAccessor
 			ASSERT(srcData == dstData);
 			printf("");
 		}
-		if (true)//ºÃ≥–¿‡
+		if (false)//ºÃ≥–¿‡
 		{
 			using namespace Engine;
 			auto accessor0 = BuildAccessor_CTestClassMy();

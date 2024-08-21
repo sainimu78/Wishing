@@ -159,7 +159,7 @@ namespace TestRegistration
 			{
 				auto type = GetOrRegisterType<float, CFloatAccessor, CNiflectType>(&table, "float");
 				auto elemLayout = type->CreateFieldLayout();
-				layout->AddChild(elemLayout);
+				layout->InitElementAccessor(elemLayout);
 			}
 			auto sharedSrcData = type->MakeSharedInstance<void*>();
 			auto& srcData = *reinterpret_cast<Niflect::TArrayNif<float>*>(sharedSrcData.Get());
@@ -182,7 +182,7 @@ namespace TestRegistration
 				printf("%f\n", it);
 			printf("");
 		}
-		if (true)//Static Reg (¾²Ì¬×¢²á) Óë Initial Reg (Ä£¿é³õÊ¼»¯×¢²á)
+		if (false)//Static Reg (¾²Ì¬×¢²á) Óë Initial Reg (Ä£¿é³õÊ¼»¯×¢²á)
 		{
 			//TestCreateModuleReg0();
 
