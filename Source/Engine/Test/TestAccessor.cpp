@@ -89,7 +89,7 @@ namespace TestAccessor
 			{
 				auto accessor2 = Niflect::MakeShared<CFloatAccessor>();
 				accessor2->InitMemberMeta("reserved_dim0", Niflect::CAddrOffset::None);
-				accessor1->AddChild(accessor2);
+				accessor1->InitElementAccessor(accessor2);
 			}
 			accessor0->AddChild(accessor1);
 		}
@@ -108,13 +108,13 @@ namespace TestAccessor
 			accessor1->InitMemberMeta("m_array_array_4", Niflect::GetMemberVariableOffset(&CTestClassMy::m_array_array_4));
 			{
 				auto accessor2 = Niflect::MakeShared<TStlArrayAccessor<Niflect::TArrayNif<float> > >();
-				accessor2->InitMemberMeta("reserved_dim1", Niflect::CAddrOffset::None);
+				accessor2->InitMemberMeta("reserved_dim0", Niflect::CAddrOffset::None);
 				{
 					auto accessor3 = Niflect::MakeShared<CFloatAccessor>();
 					accessor3->InitMemberMeta("reserved_dim1", Niflect::CAddrOffset::None);
-					accessor2->AddChild(accessor3);
+					accessor2->InitElementAccessor(accessor3);
 				}
-				accessor1->AddChild(accessor2);
+				accessor1->InitElementAccessor(accessor2);
 			}
 			accessor0->AddChild(accessor1);
 		}
@@ -141,7 +141,7 @@ namespace TestAccessor
 			{
 				auto accessor2 = Niflect::MakeShared<CFloatAccessor>();
 				accessor2->InitMemberMeta("reserved_dim0", Niflect::CAddrOffset::None);
-				accessor1->AddChild(accessor2);
+				accessor1->InitElementAccessor(accessor2);
 			}
 			accessor0->AddChild(accessor1);
 		}
@@ -156,7 +156,7 @@ namespace TestAccessor
 			{
 				auto accessor2 = Niflect::MakeShared<CBoolAccessor>();
 				accessor2->InitMemberMeta("reserved_dim0", Niflect::CAddrOffset::None);
-				accessor1->AddChild(accessor2);
+				accessor1->InitElementAccessor(accessor2);
 			}
 			accessor0->AddChild(accessor1);
 		}
@@ -171,7 +171,7 @@ namespace TestAccessor
 			{
 				auto accessor2 = Niflect::MakeShared<TMyTransformAccessor<float> >();
 				accessor2->InitMemberMeta("reserved_dim0", Niflect::CAddrOffset::None);
-				accessor1->AddChild(accessor2);
+				accessor1->InitElementAccessor(accessor2);
 			}
 			accessor0->AddChild(accessor1);
 		}
@@ -199,7 +199,7 @@ namespace TestAccessor
 			{
 				auto accessor1 = Niflect::MakeShared<CFloatAccessor>();
 				accessor1->InitMemberMeta("reserved_dim0", Niflect::CAddrOffset::None);
-				accessor0->AddChild(accessor1);
+				accessor0->InitElementAccessor(accessor1);
 			}
 			Niflect::TArrayNif<float> srcData;
 			srcData.resize(2);
@@ -233,7 +233,7 @@ namespace TestAccessor
 						accessor1->AddChild(accessor2);
 					}
 				}
-				accessor0->AddChild(accessor1);
+				accessor0->InitElementAccessor(accessor1);
 			}
 			Niflect::TMap<Niflect::CString, float> srcData;
 			srcData["Nihao"] = 1.2f;
@@ -265,9 +265,10 @@ namespace TestAccessor
 			using namespace Engine;
 			auto accessor0 = Niflect::MakeShared<TStlBitsArrayAccessor<Niflect::TArrayNif<bool> > >();
 			{
+				//todo: 但此测试未实现特殊处理, 和一般数组一样 InitElementAccessor 是错误的
 				auto accessor1 = Niflect::MakeShared<CBoolAccessor>();
 				accessor1->InitMemberMeta("reserved_dim0", Niflect::CAddrOffset::None);
-				accessor0->AddChild(accessor1);
+				accessor0->InitElementAccessor(accessor1);
 			}
 			Niflect::TArrayNif<bool> srcData;
 			srcData.resize(2);
@@ -295,7 +296,7 @@ namespace TestAccessor
 			ASSERT(srcData == dstData);
 			printf("");
 		}
-		if (false)//继承类
+		if (true)//继承类
 		{
 			using namespace Engine;
 			auto accessor0 = BuildAccessor_CTestClassMy();

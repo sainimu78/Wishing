@@ -7,3 +7,4 @@
 	1. 生成如函数模板, 将实例化的模板类型当作一种类型, 用于复用, 同时也能减少编译消耗
 	2. 模板实例当作一种类型后, 意味着生成代码流程可统一, 模板实例的 Field 与非模板的 Field 的生成方式类似
 	3. 打算以 cursorDecl 为key, 用underlyingType生成模板实例或生成函数名
+5. Done, Niflect, 数组型的ElementAccessor改为另外成员, 不与Children混用, 以方便在遍历结构时区分是否为数组型结构

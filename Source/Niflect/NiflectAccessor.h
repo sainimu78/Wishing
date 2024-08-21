@@ -58,6 +58,14 @@ namespace Niflect
 		{
 			return m_vecChild[idx].Get();
 		}
+		void InitElementAccessor(const CSharedAccessor& accessor)
+		{
+			m_elemAccessor = accessor;
+		}
+		CAccessor* GetElementAccessor() const
+		{
+			return m_elemAccessor.Get();
+		}
 
 	protected:
 		inline const AddrType GetAddr(const AddrType& base) const
@@ -73,6 +81,7 @@ namespace Niflect
 		CAddrOffset m_addrOffset;
 		CString m_name;
 		TArrayNif<CSharedAccessor> m_vecChild;
+		CSharedAccessor m_elemAccessor;
 		CNiflectType* m_type;
 	};
 }

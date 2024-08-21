@@ -148,12 +148,6 @@ namespace Engine
 			}
 			return true;
 		}
-
-	private:
-		CAccessor* GetElementAccessor() const
-		{
-			return this->GetChild(0);
-		}
 	};
 
 	template <typename TStlArray>
@@ -191,12 +185,6 @@ namespace Engine
 				elemAccessor->LoadFromRwNode(elemBase, rwItem);
 			}
 			return true;
-		}
-
-	private:
-		CAccessor* GetElementAccessor() const
-		{
-			return this->GetChild(0);
 		}
 	};
 
@@ -240,12 +228,6 @@ namespace Engine
 			}
 			return true;
 		}
-
-	private:
-		CAccessor* GetElementAccessor() const
-		{
-			return this->GetChild(0);
-		}
 	};
 
 	template <typename TStlMap>
@@ -286,12 +268,6 @@ namespace Engine
 					instance.insert(item);
 			}
 			return true;
-		}
-
-	private:
-		CAccessor* GetElementAccessor() const
-		{
-			return this->GetChild(0);
 		}
 	};
 }
