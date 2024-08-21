@@ -625,7 +625,7 @@ namespace NiflectGen
 				}
 				else
 				{
-					GenLogError(context.m_log, NiflectUtil::FormatString("Does not support a container with more than 2D"));
+					GenLogError(context.m_log, NiflectUtil::FormatString("Dimensional binding types must not be more than 2D"));
 					ok = false;
 				}
 			}
