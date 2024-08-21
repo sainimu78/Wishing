@@ -20,6 +20,9 @@ void GeneratedNiflectRegistrationRelease()
 void GeneratedNiflectRegistrationInitialReg()
 {
 }
+void GeneratedNiflectRegistrationInitTypes()
+{
+}
 
 namespace NiflectModuleReg
 {

@@ -12,6 +12,7 @@
 #include "NiflectGen/CodeWriter/CppWriter.h"
 #include "NiflectGen/CodeWriter/ModuleReg/ModuleRegCodeWriter.h"
 #include "NiflectGen/Resolver/Resolver.h"
+#include "Niflect/Util/SystemUtil.h"
 
 //#include <fstream>//std::getline
 //#include <stack>
@@ -280,16 +281,21 @@ namespace NiflectGen
     }
     void CGenerator::Save() const
     {
-        //#4, Save to files
+        const Niflect::CString outputRootPath = "E:";
         {
-            CCppWriter writer;
             for (auto& it0 : m_genData.m_vecTypeRegGenData)
             {
+                CCppWriter writer;
                 writer.WriteLines(it0.m_privateH);
+                auto filePath = NiflectUtil::ConcatPath(outputRootPath, it0.m_privateHIncludePath);
+                NiflectUtil::MakeDirectories(filePath);
+                NiflectUtil::WriteStringToFile(writer.m_code, filePath);
             }
-            NiflectUtil::WriteStringToFile(writer.m_code, "E:/NiflectGenTool_Test_TypeRegsPrivateH.cpp");
+            //NiflectUtil::WriteStringToFile(writer.m_code, "E:/NiflectGenTool_Test_TypeRegsPrivateH.cpp");
         }
         {
+            //todo: 未实现 GenH 代码生成, 包括模板实例的声明代码生成, 生成的代码模板须相应调整, 见 TestRegistration.cpp 中的 CMyRegClass
+            //  不支持 GenH 意味着标记的 Field 只能在 public 中
             CCppWriter writer;
             for (auto& it0 : m_genData.m_vecTypeRegGenData)
             {
@@ -298,17 +304,34 @@ namespace NiflectGen
             NiflectUtil::WriteStringToFile(writer.m_code, "E:/NiflectGenTool_Test_TypeRegsGenH.cpp");
         }
         {
-            CCppWriter writer;
-            for (auto& it0 : m_genData.m_vecSplittedModuleRegGenData)
             {
-                writer.WriteLines(it0.m_cpp);
+                for (auto& it0 : m_genData.m_vecSplittedModuleRegGenData)
+                {
+                    auto filePath = NiflectUtil::ConcatPath(outputRootPath, it0.m_includePath);
+                    {
+                        CCppWriter writer;
+                        writer.WriteLines(it0.m_h);
+                        NiflectUtil::MakeDirectories(filePath);
+                        NiflectUtil::WriteStringToFile(writer.m_code, filePath);
+                    }
+                    filePath = NiflectUtil::ReplaceFilePathExt(filePath, NiflectGenDefinition::FileExt::H, NiflectGenDefinition::FileExt::Cpp);
+                    {
+                        CCppWriter writer;
+                        writer.WriteLines(it0.m_cpp);
+                        NiflectUtil::MakeDirectories(filePath);
+                        NiflectUtil::WriteStringToFile(writer.m_code, filePath);
+                    }
+                }
             }
-            NiflectUtil::WriteStringToFile(writer.m_code, "E:/NiflectGenTool_Test_SplittedModuleRegsCpp.cpp");
+            //NiflectUtil::WriteStringToFile(writer.m_code, "E:/NiflectGenTool_Test_SplittedModuleRegsCpp.cpp");
         }
         {
             CCppWriter writer;
             writer.WriteLines(m_genData.m_moduleRegGenData.m_privateH);
-            NiflectUtil::WriteStringToFile(writer.m_code, "E:/NiflectGenTool_Test_ModuleRegPrivateH.cpp");
+            //NiflectUtil::WriteStringToFile(writer.m_code, "E:/NiflectGenTool_Test_ModuleRegPrivateH.cpp");
+            auto filePath = NiflectUtil::ConcatPath(outputRootPath, m_genData.m_moduleRegGenData.m_privateHIncludePath);
+            NiflectUtil::MakeDirectories(filePath);
+            NiflectUtil::WriteStringToFile(writer.m_code, filePath);
         }
         printf("");
     }

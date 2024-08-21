@@ -31,7 +31,6 @@ namespace NiflectGen
             tpl.ReadFromRawData(HardCodedTemplate::ModuleRegPrivateH);
             CLabelToCodeMapping map;
             MapLabelToText(map, LABEL_SHARED_0, writingCtx.m_moduleName);
-            MapLabelToLines(map, LABEL_1, linesMergedInitTables);
             MapLabelToLines(map, LABEL_2, linesMergedRegisterTypes);
             MapLabelToLines(map, LABEL_3, linesMergedInitTypes);
             MapLabelToLines(map, LABEL_7, linesIncludes);

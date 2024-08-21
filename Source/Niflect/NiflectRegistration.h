@@ -14,7 +14,8 @@ typedef void (*FuncGeneratedNiflectRegistrationRelease)();
 
 NIFLECTMODULEREG_API Niflect::CNiflectRegistration* GeneratedNiflectRegistrationGet();
 NIFLECTMODULEREG_API void GeneratedNiflectRegistrationRelease();
-void GeneratedNiflectRegistrationInitialReg();
+NIFLECTMODULEREG_API void GeneratedNiflectRegistrationInitialReg();
+NIFLECTMODULEREG_API void GeneratedNiflectRegistrationInitTypes();
 
 namespace Niflect
 {
@@ -110,6 +111,10 @@ namespace Niflect
 		static void InitialReg()
 		{
 			GeneratedNiflectRegistrationInitialReg();
+		}
+		static void InitTypes()
+		{
+			GeneratedNiflectRegistrationInitTypes();
 		}
 
 

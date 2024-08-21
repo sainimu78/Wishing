@@ -3,75 +3,43 @@
 
 namespace NiflectGen
 {
-#define LABEL_1 "TypeRegsAddAndInitTable"
 #define LABEL_2 "InvokationRegisterTypes"
 #define LABEL_3 "InvokationInitTypes"
-//#define LABEL_4 "TypeRegsInitMethod"
 #define LABEL_7 "IncludesTypeRegPrivateHeader"
-//#define LABEL_8 "ModuleCodeUnique"
-//#define LABEL_9 "ModuleRegSplittedID"
-//#define LABEL_10 "ModuleRegClassName"
-//#define LABEL_11 "IncludesSplittedModuleRegPrivateHeader"
 
 	namespace HardCodedTemplate
 	{
-//		static const char* ModuleRegClassName =
-//"CModuleReg_" MAKELABEL(LABEL_0) MAKELABEL(LABEL_9)
-//;
 		static const char* ModuleRegPrivateH =
 R"(#pragma once
-#include "Niflect/Type/NiflectRegistration.h"
+#include "Niflect/NiflectRegistration.h"
 )" MAKELABEL(LABEL_7) R"(
 
-namespace NiflectModuleReg
-{
-	using namespace Niflect;
-	
-	class CModuleReg_)" MAKELABEL(LABEL_SHARED_0) R"( : public CNiflectRegistration
-	{
-	protected:
-		virtual void DoInitTables() override
-		{
-			)" MAKELABEL(LABEL_1) R"(
-		}
-		virtual void DoRegisterTypes() override
-		{
-			)" MAKELABEL(LABEL_2) R"(
-		}
-		virtual void DoInitTypes() const override
-		{
-			)" MAKELABEL(LABEL_3) R"(
-		}
-	};
+static Niflect::TSharedPtr<Niflect::CNiflectRegistration>* s_reg = NULL;
 
-	static void CreateModuleRegistration()
+Niflect::CNiflectRegistration* GeneratedNiflectRegistrationGet()
+{
+	static auto s_holder(Niflect::MakeShared<Niflect::CNiflectRegistration>());
+	if (s_reg == NULL)
 	{
-		CNiflectRegistration::StaticCreate<CModuleReg_)" MAKELABEL(LABEL_SHARED_0) R"(>();
+		s_reg = &s_holder;
+
+		auto table = s_holder->AddNewTable();
+		table->Init(CString());
 	}
-	static void DestroyModuleRegistration()
-	{
-		CNiflectRegistration::StaticDestroy();
-	}
+	return s_holder.Get();
 }
-
-namespace Niflect
+void GeneratedNiflectRegistrationRelease()
 {
-	CSharedRegistration CNiflectRegistration::s_reg;
+	*s_reg = NULL;
 }
-
-Niflect::CNiflectRegistration* GetNiflectModuleRegistration()
+void GeneratedNiflectRegistrationInitialReg()
 {
-	return Niflect::CNiflectRegistration::StaticGet();
+	)" MAKELABEL(LABEL_2) R"(
+}
+void GeneratedNiflectRegistrationInitTypes()
+{
+	)" MAKELABEL(LABEL_3) R"(
 })"
 ;
-//		static const char* ModuleReg_TypeRegInitTable =
-//R"({
-//	auto table = this->AddNewTable();
-//	table->Init(CString());
-//})"
-//;
-//	static const char* ModuleReg_CodeUnique = 
-//R"()"
-//;
 	}
 }
