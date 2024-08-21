@@ -1,10 +1,11 @@
-1. Done, NiflectGenTool, CField 改写为 CAccessor, 废弃要求指定NIF_T, 因为设想Accessor可为模板
-2. Done, NiflectGenTool, 可区分出特化类型, 特化类型以直接生成的方式生成代码, 同MyTransform
-3. NiflectGenTool, 重构
+1. Done, NiflectGen, CField 改写为 CAccessor, 废弃要求指定NIF_T, 因为设想Accessor可为模板
+2. Done, NiflectGen, 可区分出特化类型, 特化类型以直接生成的方式生成代码, 同MyTransform
+3. NiflectGen, 重构
 	1. AccessorBinding 可定义N维模板
 	2. 用通用的流程递归N维Accessor
-4. NiflectGenTool, 为模板类型的 Field 生成代码
+4. NiflectGen, 为模板类型的 Field 生成代码
 	1. 生成如函数模板, 将实例化的模板类型当作一种类型, 用于复用, 同时也能减少编译消耗
 	2. 模板实例当作一种类型后, 意味着生成代码流程可统一, 模板实例的 Field 与非模板的 Field 的生成方式类似
 	3. 打算以 cursorDecl 为key, 用underlyingType生成模板实例或生成函数名
 5. Done, Niflect, 数组型的ElementAccessor改为另外成员, 不与Children混用, 以方便在遍历结构时区分是否为数组型结构
+6. 

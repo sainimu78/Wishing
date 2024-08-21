@@ -510,6 +510,9 @@ namespace NiflectGen
 		CCodeLines linesScope;
 		if (accessorBinding != NULL)
 		{
+			//不需要为成员类型添加include, 仅指针类型成员可只声明不引用include, 且已为owner类添加include, 因此只要被解析的代码本身是正确的, 就不需要为成员添加include
+			//this->CollectIncludePathFromCursor(context, cursorDecl, data.m_includePathRequirement);
+
 			if (IsCursorTemplateDecl(cursorDecl))
 			{
 				if (accessorBinding->Is1D())
@@ -540,6 +543,7 @@ namespace NiflectGen
 							myTypeName += " ";
 						myTypeName += ">";
 						withRightAngleBracket = true;
+
 						CTypeRegInitFieldLayoutWrittingData dataInitFieldLayoutLines(linesInitAccessor, data.m_includePathRequirement, NULL);
 						this->WriteInitAccessorLines(fieldsOwnerTypeName, HardCodedTemplate::StaticGetType_Misc, linesScope, ownerAccessorType, parentAccessorLevel, internalName, accessorBinding->m_accessorSubcursor, myTypeName, context, dataInitFieldLayoutLines);
 					}
@@ -716,6 +720,7 @@ namespace NiflectGen
 		if (accessorSubcursor.m_vecChild.size() == 0)
 		{
 			registeredOrMiscTypeName = GetFieldTypeNameWithScope(fieldCursorDecl, m_vecNamespace);
+			this->CollectIncludePathFromCursor(context, fieldCursorDecl, data.m_includePathRequirement);
 		}
 		else
 		{
@@ -724,7 +729,6 @@ namespace NiflectGen
 			GenerateTemplateInstanceCode(accessorSubcursor, registeredOrMiscTypeName, vecTemplateArgReplacementString);
 			registeredOrMiscTypeName = FindNamespaceAndTypeScope(accessorSubcursor.m_cursorDecl, m_vecNamespace) + registeredOrMiscTypeName;
 		}
-		this->CollectIncludePathFromCursor(context, fieldCursorDecl, data.m_includePathRequirement);
 
 		CCppWriter tplWriter;
 		tplWriter.WriteLine(templateStaticGetType);
