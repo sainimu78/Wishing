@@ -147,6 +147,9 @@ node)" MAKELABEL(LABEL_7) R"(->InitMemberMeta(")" MAKELABEL(LABEL_21) R"(", )" M
 		static const char* InitField_AssignToOwner =
 "node" MAKELABEL(LABEL_19) "->AddChild(shared" MAKELABEL(LABEL_7) ");"
 ;
+		static const char* InitField_AssignElementToOwner =
+"node" MAKELABEL(LABEL_19) "->InitElementAccessor(shared" MAKELABEL(LABEL_7) ");"
+;
 		static const char* TypeRegClassScopeName_InheritableType =
 "CInheritableTypeReg_" MAKELABEL(LABEL_SHARED_3)
 ;

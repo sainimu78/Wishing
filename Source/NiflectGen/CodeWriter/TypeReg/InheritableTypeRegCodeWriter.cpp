@@ -295,7 +295,7 @@ namespace NiflectGen
 			bool trueField_falseMethod = kind == CXCursor_FieldDecl;
 			vecMemberInfo.push_back({ typeDecl, CXStringToCString(clang_getCursorSpelling(cursorField)), trueField_falseMethod, it->m_vecDetailCursor, vecIndex[idx]});
 		}
-		this->WriteInitFieldLayoutCompoundType(m_typeName, 0, vecMemberInfo, context, data);
+		this->WriteInitFieldLayoutCompoundType(m_typeName, 0, INDEX_NONE, vecMemberInfo, context, data);
 	}
 	void CInheritableTypeRegCodeWriter_ObjectAccessor::WriteDeclInitMethod(CCodeLines& lines) const
 	{
@@ -305,7 +305,7 @@ namespace NiflectGen
 	{
 
 	}
-	void CInheritableTypeRegCodeWriter_ObjectAccessor::WriteInitFieldLayoutCompoundType(const Niflect::CString& fieldsOwnerTypeName, uint32 parentAccessorLevel, const Niflect::TArrayNif<SMemberSSSSSSSSSSS>& vecMemberInfo, const CWritingContext& context, CTypeRegClassWrittingData& data) const
+	void CInheritableTypeRegCodeWriter_ObjectAccessor::WriteInitFieldLayoutCompoundType(const Niflect::CString& fieldsOwnerTypeName, uint32 parentAccessorLevel, uint32 parentDimension, const Niflect::TArrayNif<SMemberSSSSSSSSSSS>& vecMemberInfo, const CWritingContext& context, CTypeRegClassWrittingData& data) const
 	{
 		for (uint32 idx = 0; idx < vecMemberInfo.size(); ++idx)
 		{
@@ -330,7 +330,7 @@ namespace NiflectGen
 				CSubcursor subcursorRoot;
 				Niflect::CString textForTemplateInstance;
 				bool withRightAngleBracket = false;
-				uint32 dimension = INDEX_NONE;
+				uint32 dimension = parentDimension;
 				CTypeRegClassWrittingData dataInitFieldLayoutRecurs(linesMember, data.m_includePathRequirement);
 				if (!this->WriteInitAccessorRecurs(fieldsOwnerTypeName, subcursorRoot, textForTemplateInstance, withRightAngleBracket, true, it.m_typeDecl, it.m_vecDetailCursor, it.m_detailCursorsArrayIndex, it.m_typeDecl, dimension, EOwnerAccessorType::Object, parentAccessorLevel, it.m_memberName, context, dataInitFieldLayoutRecurs))
 				{
@@ -593,8 +593,9 @@ namespace NiflectGen
 								ASSERT(trueField_falseMethod);
 								vecMemberInfo.push_back({ typeDecl, CXStringToCString(clang_getCursorSpelling(cursorField)), trueField_falseMethod, vecDetailCursor, detailCursorsArrayIndex });
 							}
+							dimension++;
 							CTypeRegClassWrittingData dataInitFieldLayout2ForCompoundType(linesScope2, data.m_includePathRequirement);
-							this->WriteInitFieldLayoutCompoundType(elemFieldsOwnerTypeName, parentAccessorLevel + 2, vecMemberInfo, context, dataInitFieldLayout2ForCompoundType);
+							this->WriteInitFieldLayoutCompoundType(elemFieldsOwnerTypeName, parentAccessorLevel + 2, dimension, vecMemberInfo, context, dataInitFieldLayout2ForCompoundType);
 
 							if (auto sssssssssss = m_writingSetting.m_mapping.m_accessorBindingMapping.FindByCursorDecl(wwwwww.m_subcursor.m_cursorDecl))
 							{
@@ -605,10 +606,8 @@ namespace NiflectGen
 
 								{
 									CCodeLines linesScope1111111;
-									dimension++;
 									CTypeRegInitFieldLayoutWrittingData dataInitFieldLayout1Lines(linesScope1111111, data.m_includePathRequirement, NULL);
 									this->WriteInitAccessorLines(fieldsOwnerTypeName, HardCodedTemplate::StaticGetType_Misc, linesScope2, EOwnerAccessorType::Array, parentAccessorLevel + 1, NiflectUtil::FormatString("reserved_dim%u", dimension), sssssssssss->m_accessorSubcursor, elemFieldsOwnerTypeName, context, dataInitFieldLayout1Lines);
-									dimension--;
 									AAAAAAAAAAAAAA(linesScope1111111, linesScope1);
 								}
 
@@ -619,6 +618,7 @@ namespace NiflectGen
 								CTypeRegInitFieldLayoutWrittingData dataInitFieldLayoutLines(linesInitAccessor, data.m_includePathRequirement, NULL);
 								this->WriteInitAccessorLines(fieldsOwnerTypeName, HardCodedTemplate::StaticGetType_Misc, linesScope1, ownerAccessorType, parentAccessorLevel, internalName, accessorBinding->m_accessorSubcursor, str, context, dataInitFieldLayoutLines);
 							}
+							dimension--;
 						}
 						else
 						{
@@ -734,20 +734,23 @@ namespace NiflectGen
 		tplWriter.WriteLine(templateStaticGetType);
 		tplWriter.WriteLine(HardCodedTemplate::InitField_CreateForMember);
 		tplWriter.WriteLine(MAKELABEL(LABEL_14));
-		tplWriter.WriteLine(HardCodedTemplate::InitField_AssignToOwner);
+		Niflect::CString templateAssignToOwner;
 		Niflect::CString templateAccessorOffset;
 		switch (ownerAccessorType)
 		{
 		case EOwnerAccessorType::Object:
 			templateAccessorOffset = HardCodedTemplate::GetMemberVariableOffset2;
+			templateAssignToOwner = HardCodedTemplate::InitField_AssignToOwner;
 			break;
 		case EOwnerAccessorType::Array:
 			templateAccessorOffset = HardCodedTemplate::NoOffset2;
+			templateAssignToOwner = HardCodedTemplate::InitField_AssignElementToOwner;
 			break;
 		default:
 			ASSERT(false);
 			break;
 		}
+		tplWriter.WriteLine(templateAssignToOwner);
 		CCppWriter writerAccessorOffset;
 		{
 			CCodeTemplate tpl0;
