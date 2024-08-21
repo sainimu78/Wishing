@@ -281,12 +281,35 @@ namespace NiflectGen
     void CGenerator::Save() const
     {
         //#4, Save to files
-        CCppWriter writer;
-        for (auto& it0 : m_genData.m_vecTypeRegGenData)
         {
-            writer.WriteLines(it0.m_privateH);
+            CCppWriter writer;
+            for (auto& it0 : m_genData.m_vecTypeRegGenData)
+            {
+                writer.WriteLines(it0.m_privateH);
+            }
+            NiflectUtil::WriteStringToFile(writer.m_code, "E:/NiflectGenTool_Test_TypeRegsPrivateH.cpp");
         }
-        NiflectUtil::WriteStringToFile(writer.m_code, "E:/NiflectGenTool_Test_privateH.cpp");
+        {
+            CCppWriter writer;
+            for (auto& it0 : m_genData.m_vecTypeRegGenData)
+            {
+                writer.WriteLines(it0.m_genH);
+            }
+            NiflectUtil::WriteStringToFile(writer.m_code, "E:/NiflectGenTool_Test_TypeRegsGenH.cpp");
+        }
+        {
+            CCppWriter writer;
+            for (auto& it0 : m_genData.m_vecSplittedModuleRegGenData)
+            {
+                writer.WriteLines(it0.m_cpp);
+            }
+            NiflectUtil::WriteStringToFile(writer.m_code, "E:/NiflectGenTool_Test_SplittedModuleRegsCpp.cpp");
+        }
+        {
+            CCppWriter writer;
+            writer.WriteLines(m_genData.m_moduleRegGenData.m_privateH);
+            NiflectUtil::WriteStringToFile(writer.m_code, "E:/NiflectGenTool_Test_ModuleRegPrivateH.cpp");
+        }
         printf("");
     }
 

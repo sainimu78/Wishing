@@ -228,7 +228,4 @@ namespace TestRegistration
 		}
 		printf("");
 	}
-	void TestRuntimeReg()
-	{
-	}
 }

@@ -30,8 +30,6 @@ int main(int argc, char** argv)
 {
 	TestAPI_Cpp();
 
-	//TestRegistration::TestRuntimeReg();
-
 	//TestSerializationRwTree::TestMemory();
 
 	//TestAccessor::TestFieldLayout();
