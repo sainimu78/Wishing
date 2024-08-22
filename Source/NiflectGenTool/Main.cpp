@@ -37,26 +37,26 @@ int main()
 	auto memTest = GetDefaultMemoryStats();
 	{
 		auto gen = CreateGenerator();
-		if (false)
-		{
-			gen->AddTypeBindingSettingHeader(CONCAT_CONST_CHAR_2(DEVELOPMENT_ROOT_SOURCE_PATH, "/SampleTest/SampleGamePrototyping/Cos/Client/ReflectionSystemDemo/Niflect/Test/TestTypeBindingSetting.h"));
-			gen->AddFileForSearching(CONCAT_CONST_CHAR_2(DEVELOPMENT_ROOT_SOURCE_PATH, "/SampleTest/SampleGamePrototyping/Cos/Client/ReflectionSystemDemo/Niflect/Test/TestTypesHeaderForGen0.h"));
-			gen->AddFileForSearching(CONCAT_CONST_CHAR_2(DEVELOPMENT_ROOT_SOURCE_PATH, "/SampleTest/SampleGamePrototyping/Cos/Client/ReflectionSystemDemo/Niflect/Test/TestTypesHeaderForGen1.h"));
-			gen->AddFileForSearching(CONCAT_CONST_CHAR_2(DEVELOPMENT_ROOT_SOURCE_PATH, "/SampleTest/SampleGamePrototyping/Cos/Client/ReflectionSystemDemo/Niflect/Test/TestTypesHeaderForGen2.h"));
-			gen->AddIncludePath(NiflectGenDefinition::Path::BypassingSTL);
-			for (auto& it : NiflectGenDefinition::Path::CLangParserArgs_I)
-				gen->AddIncludePath(it);
-			gen->ParseSourceFiles();
-		}
-		if (false)
-		{
-			gen->AddTypeBindingSettingHeader(CONCAT_CONST_CHAR_2(DEVELOPMENT_ROOT_SOURCE_PATH, "/SampleTest/SampleGamePrototyping/Cos/Client/ReflectionSystemDemo/Niflect/Test/TestMyGlobalBindingSetting.h"));
-			gen->AddFileForSearching(CONCAT_CONST_CHAR_2(DEVELOPMENT_ROOT_SOURCE_PATH, "/SampleTest/SampleGamePrototyping/Cos/Client/ReflectionSystemDemo/Niflect/Test/MyClassForGen.h"));
-			gen->AddIncludePath(NiflectGenDefinition::Path::BypassingSTL);
-			for (auto& it : NiflectGenDefinition::Path::CLangParserArgs_I)
-				gen->AddIncludePath(it);
-			gen->ParseSourceFiles();
-		}
+		//if (false)
+		//{
+		//	gen->AddTypeBindingSettingHeader(CONCAT_CONST_CHAR_2(DEVELOPMENT_ROOT_SOURCE_PATH, "/SampleTest/SampleGamePrototyping/Cos/Client/ReflectionSystemDemo/Niflect/Test/TestTypeBindingSetting.h"));
+		//	gen->AddFileForSearching(CONCAT_CONST_CHAR_2(DEVELOPMENT_ROOT_SOURCE_PATH, "/SampleTest/SampleGamePrototyping/Cos/Client/ReflectionSystemDemo/Niflect/Test/TestTypesHeaderForGen0.h"));
+		//	gen->AddFileForSearching(CONCAT_CONST_CHAR_2(DEVELOPMENT_ROOT_SOURCE_PATH, "/SampleTest/SampleGamePrototyping/Cos/Client/ReflectionSystemDemo/Niflect/Test/TestTypesHeaderForGen1.h"));
+		//	gen->AddFileForSearching(CONCAT_CONST_CHAR_2(DEVELOPMENT_ROOT_SOURCE_PATH, "/SampleTest/SampleGamePrototyping/Cos/Client/ReflectionSystemDemo/Niflect/Test/TestTypesHeaderForGen2.h"));
+		//	gen->AddIncludePath(NiflectGenDefinition::Path::BypassingSTL);
+		//	for (auto& it : NiflectGenDefinition::Path::CLangParserArgs_I)
+		//		gen->AddIncludePath(it);
+		//	gen->ParseSourceFiles();
+		//}
+		//if (false)
+		//{
+		//	gen->AddTypeBindingSettingHeader(CONCAT_CONST_CHAR_2(DEVELOPMENT_ROOT_SOURCE_PATH, "/SampleTest/SampleGamePrototyping/Cos/Client/ReflectionSystemDemo/Niflect/Test/TestMyGlobalBindingSetting.h"));
+		//	gen->AddFileForSearching(CONCAT_CONST_CHAR_2(DEVELOPMENT_ROOT_SOURCE_PATH, "/SampleTest/SampleGamePrototyping/Cos/Client/ReflectionSystemDemo/Niflect/Test/MyClassForGen.h"));
+		//	gen->AddIncludePath(NiflectGenDefinition::Path::BypassingSTL);
+		//	for (auto& it : NiflectGenDefinition::Path::CLangParserArgs_I)
+		//		gen->AddIncludePath(it);
+		//	gen->ParseSourceFiles();
+		//}
 		if (true)
 		{
 			CModuleRegInfo info;
@@ -66,7 +66,9 @@ int main()
 			info.m_vecOriginalHeader.push_back(CONCAT_CONST_CHAR_2(DEVELOPMENT_ROOT_SOURCE_PATH, "/SampleTest/SampleGamePrototyping/Cos/Client/ReflectionSystemDemo/Niflect/Test/MyClassForGen.h"));
 			info.m_vecOriginalHeader.push_back(CONCAT_CONST_CHAR_2(DEVELOPMENT_ROOT_SOURCE_PATH, "/SampleTest/SampleGamePrototyping/Cos/Client/ReflectionSystemDemo/Niflect/Test/MyField.h"));
 			info.m_vecBindingSettingHeader.push_back(CONCAT_CONST_CHAR_2(DEVELOPMENT_ROOT_SOURCE_PATH, "/SampleTest/SampleGamePrototyping/Cos/Client/ReflectionSystemDemo/Niflect/Test/TestMyGlobalBindingSetting.h"));
-			info.m_vecHeaderSearchPath.push_back(NiflectGenDefinition::Path::BypassingSTL);
+			//用于旁路clang_parseTranslationUnit过程中STL头文件解析, 可大幅减少耗时
+			//todo: 旁路代码极简单, 可只在内存中生成
+			info.m_vecHeaderSearchPath.push_back("F:/Fts/Proj/Test/Interedit/Source/NiflectGen/BypassCode/NiflectSTL");
 			for (auto& it : NiflectGenDefinition::Path::CLangParserArgs_I)
 				info.m_vecHeaderSearchPath.push_back(it);
 			gen->SetModuleRegInfo(info);

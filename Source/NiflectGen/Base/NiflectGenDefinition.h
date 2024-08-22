@@ -61,7 +61,7 @@ namespace NiflectGenDefinition
 
 		//用于旁路clang_parseTranslationUnit过程中STL头文件解析, 可大幅减少耗时
 		//todo: 旁路代码极简单, 可只在内存中生成
-		constexpr const char* BypassingSTL = CONCAT_CONST_CHAR_2(DEVELOPMENT_ROOT_SOURCE_PATH, "/SampleTest/SampleGamePrototyping/Cos/Client/ReflectionSystemDemo/Niflect/Base/BypassCode/NiflectSTL");
+		//constexpr const char* BypassingSTL = CONCAT_CONST_CHAR_2(DEVELOPMENT_ROOT_SOURCE_PATH, "/SampleTest/SampleGamePrototyping/Cos/Client/ReflectionSystemDemo/Niflect/Base/BypassCode/NiflectSTL");
 	}
 
 	namespace NiflectFramework
