@@ -579,7 +579,7 @@ namespace NiflectGen
 			if (m_collectingClassBaseCursorDecl)
 			{
 				auto kind = clang_getCursorKind(cursor);
-				
+
 				if (IsTypeForBaseClassVerifying(kind))
 				{
 					auto ret = m_mapCursorDeclToBaseCursorDecl.insert({ cursor, g_invalidCursor });
@@ -712,7 +712,13 @@ namespace NiflectGen
 			//}
 
 			auto decl = this->FindAliasDecl(accessorCursorDecl);
-			if (!this->CheckDeclDerivedFromFieldBaseClass(decl))
+			bool found = this->CheckDeclDerivedFromFieldBaseClass(decl);
+			if (!found)
+			{
+				auto templateDecl = clang_getSpecializedCursorTemplate(decl);//预留支持特化模板作Accessor, 还需要实现特化模板声明指定标记
+				found = this->CheckDeclDerivedFromFieldBaseClass(templateDecl);
+			}
+			if (!found)
 			{
 				GenLogError(context.m_log, NiflectUtil::FormatString("Field type must be derived from %s", NiflectGenDefinition::NiflectFramework::AccessorTypeName::Field));
 				break;
