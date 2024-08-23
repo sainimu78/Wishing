@@ -60,16 +60,26 @@ int main()
 		if (true)
 		{
 			CModuleRegInfo info;
-			info.m_moduleName = "MyModule";
+			info.m_moduleName = "Engine";
 			info.m_genIncludeBasePath = "NiflectGenerated";
-			info.m_genBasePath = DEVELOPMENT_ROOT_SOURCE_PATH;
-			info.m_vecOriginalHeader.push_back(CONCAT_CONST_CHAR_2(DEVELOPMENT_ROOT_SOURCE_PATH, "/SampleTest/SampleGamePrototyping/Cos/Client/ReflectionSystemDemo/Niflect/Test/MyClassForGen.h"));
-			info.m_vecOriginalHeader.push_back(CONCAT_CONST_CHAR_2(DEVELOPMENT_ROOT_SOURCE_PATH, "/SampleTest/SampleGamePrototyping/Cos/Client/ReflectionSystemDemo/Niflect/Test/MyField.h"));
-			info.m_vecBindingSettingHeader.push_back(CONCAT_CONST_CHAR_2(DEVELOPMENT_ROOT_SOURCE_PATH, "/SampleTest/SampleGamePrototyping/Cos/Client/ReflectionSystemDemo/Niflect/Test/TestMyGlobalBindingSetting.h"));
-			//用于旁路clang_parseTranslationUnit过程中STL头文件解析, 可大幅减少耗时
-			//todo: 旁路代码极简单, 可只在内存中生成
-			info.m_vecHeaderSearchPath.push_back("F:/Fts/Proj/Test/Interedit/Source/NiflectGen/BypassCode/NiflectSTL");
-			for (auto& it : NiflectGenDefinition::Path::CLangParserArgs_I)
+			info.m_genBasePath = "F:/Fts/Proj/Test/Interedit/Generated";
+			//begin, 指定需要解析的头文件列表
+			info.m_vecOriginalHeader.push_back("F:/Fts/Proj/Test/Interedit/Source/Engine/EngineObject.h");
+			info.m_vecOriginalHeader.push_back("F:/Fts/Proj/Test/Interedit/Source/Engine/Asset.h");
+			//end
+			//begin, 指定BindingSetting头文件列表
+			info.m_vecBindingSettingHeader.push_back("F:/Fts/Proj/Test/Interedit/Source/Engine/EngineTypeBindingSetting.h");
+			//end
+			constexpr const char* CLangParserArgs_I[] = {
+				//begin, 解析的头文件源码搜索目录
+				"F:/Fts/Proj/Test/Interedit/Source",
+				//end
+				//begin, 用于旁路clang_parseTranslationUnit过程中STL头文件解析, 可大幅减少耗时
+				//todo: 旁路代码极简单, 可只在内存中生成
+				"F:/Fts/Proj/Test/Interedit/Source/BypassCode/NiflectSTL",
+				//end
+			};
+			for (auto& it : CLangParserArgs_I)
 				info.m_vecHeaderSearchPath.push_back(it);
 			gen->SetModuleRegInfo(info);
 			gen->Generate();

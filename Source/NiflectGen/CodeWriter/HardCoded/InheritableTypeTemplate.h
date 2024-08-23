@@ -69,7 +69,7 @@ R"(void CInheritableTypeReg_)" MAKELABEL(LABEL_SHARED_3) R"(::StaticInitMethod()
 })"
 ;
 		static const char* Deprecated_InheritableTypeReg_ClassImpl =
-R"(void CInheritableTypeReg_)" MAKELABEL(LABEL_SHARED_3) R"(::StaticRegisterType(CNiflectTable& table)
+R"(void CInheritableTypeReg_)" MAKELABEL(LABEL_SHARED_3) R"(::StaticRegisterType(CNiflectTable* table)
 {
 	)" MAKELABEL(LABEL_4) R"(
 }
@@ -86,12 +86,12 @@ R"(class CInheritableTypeReg_)" MAKELABEL(LABEL_SHARED_3) R"(
 	using CTypeToReg = )" MAKELABEL(LABEL_33) R"(;
 	using CInfoType = )" MAKELABEL(LABEL_9) R"(;
 public:
-	static void StaticRegisterType(CNiflectTable& table)
+	static void StaticRegisterType(CNiflectTable* table)
 	{
 		)" MAKELABEL(LABEL_4) R"(
 	}
 	)" MAKELABEL(LABEL_30) R"(
-	static CSharedField StaticCreateFieldLayout()
+	static CSharedAccessor StaticCreateFieldLayout()
 	{
 		)" MAKELABEL(LABEL_6) R"(
 	}
@@ -104,14 +104,17 @@ R"(static void StaticInitType()
 })"
 ;
 		static const char* InheritableTypeReg_RegisterType_Class2 =
-R"(table.RegisterType<CInfoType, CTypeToReg>(")" MAKELABEL(LABEL_SHARED_3) R"(", &StaticCreateFieldLayout, typeid()" MAKELABEL(LABEL_26) ").hash_code());"
+R"(table->RegisterType<CInfoType, CTypeToReg>(")" MAKELABEL(LABEL_SHARED_3) R"(", &StaticCreateFieldLayout);)"
 ;
 		static const char* InheritableTypeReg_InitInheritance2 =
 R"(auto type = Cast<CInfoType>(StaticGetType<CTypeToReg>());
 type->InitInheritableTypeMeta(Cast<)" MAKELABEL(LABEL_10) ">(StaticGetType<" MAKELABEL(LABEL_11) ">()));"
 ;
 		static const char* CreateFieldLayout_CreateField =
-"auto shared" MAKELABEL(LABEL_7) " = CreateField<" MAKELABEL(LABEL_24) ", CTypeToReg>();"
+"auto shared" MAKELABEL(LABEL_7) " = Niflect::MakeShared<" MAKELABEL(LABEL_24) ">();"
+;
+		static const char* CreateFieldLayout_InitType222222222 =
+"node" MAKELABEL(LABEL_7) "->InitType(StaticGetType<CTypeToReg>());"
 ;
 		static const char* CreateFieldLayout_GetNodeFromShared2 =
 "auto node" MAKELABEL(LABEL_7) " = shared" MAKELABEL(LABEL_7) ".Get();"
@@ -142,7 +145,7 @@ R"(auto type = StaticGetType_Misc<)" MAKELABEL(LABEL_12) ", " MAKELABEL(LABEL_27
 		static const char* InitField_CreateForMember =
 "auto shared" MAKELABEL(LABEL_7) R"( = type->CreateFieldLayout();
 )" MAKELABEL(LABEL_23) R"(
-node)" MAKELABEL(LABEL_7) R"(->InitMemberMeta(")" MAKELABEL(LABEL_21) R"(", )" MAKELABEL(LABEL_20) ", node" MAKELABEL(LABEL_19) ");"
+node)" MAKELABEL(LABEL_7) R"(->InitMemberMeta(")" MAKELABEL(LABEL_21) R"(", )" MAKELABEL(LABEL_20) ");"
 ;
 		static const char* InitField_AssignToOwner =
 "node" MAKELABEL(LABEL_19) "->AddChild(shared" MAKELABEL(LABEL_7) ");"

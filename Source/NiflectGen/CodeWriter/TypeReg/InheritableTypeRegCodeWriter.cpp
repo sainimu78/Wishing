@@ -187,9 +187,9 @@ namespace NiflectGen
 		tpl.ReadFromRawData(HardCodedTemplate::InheritableTypeReg_RegisterType_Class2);//todo: struct另有模板, 因为不需要构造析构, 相应的也需要提示不支持的用法
 		CLabelToCodeMapping map;
 		MapLabelToText(map, LABEL_SHARED_3, m_typeName.c_str());
-		Niflect::CString typeNameForHash;
-		this->WriteTypeNameForHash(context, typeNameForHash, data.m_includePathRequirement);
-		MapLabelToText(map, LABEL_26, typeNameForHash);//todo: namespace & scope
+		//Niflect::CString typeNameForHash;
+		//this->WriteTypeNameForHash(context, typeNameForHash, data.m_includePathRequirement);
+		//MapLabelToText(map, LABEL_26, typeNameForHash);//todo: namespace & scope
 		Niflect::TSet<Niflect::CString> setReplacedLabel;
 		tpl.ReplaceLabels(map, data.m_lines, &setReplacedLabel);
 		ASSERT(setReplacedLabel.size() == map.size());
@@ -200,6 +200,7 @@ namespace NiflectGen
 		CCppWriter tplWriter;
 		tplWriter.WriteLine(HardCodedTemplate::CreateFieldLayout_CreateField);
 		tplWriter.WriteLine(HardCodedTemplate::CreateFieldLayout_GetNodeFromShared2);
+		tplWriter.WriteLine(HardCodedTemplate::CreateFieldLayout_InitType222222222);
 		tplWriter.WriteLine(MAKELABEL(LABEL_13));
 		tplWriter.WriteLine(HardCodedTemplate::CreateFieldLayout_Return2);
 		CCodeTemplate tpl;
@@ -635,11 +636,16 @@ namespace NiflectGen
 			}
 			else
 			{
-				Niflect::CString str;
+				Niflect::CString str = CXStringToCString(clang_getTypeSpelling(underlyingType));
 				Niflect::CString sdasdf = HardCodedTemplate::StaticGetType_Registered2;
-				if (accessorBinding->m_accessorSubcursor.m_vecChild.size() > 0)
+				auto kind = clang_getCursorKind(accessorBinding->m_accessorSubcursor.m_cursorDecl);
+				if (accessorBinding->m_accessorSubcursor.m_vecChild.size() == 0
+					|| (kind == CXCursor_TypeAliasDecl)//todo: 不确定如何区分别名是否为模板的别名, 因此应急用此特殊检查认定为直接使用此别名
+					)
 				{
-					str = CXStringToCString(clang_getTypeSpelling(underlyingType));
+				}
+				else
+				{
 					sdasdf = HardCodedTemplate::StaticGetType_Misc;
 				}
 				CTypeRegInitFieldLayoutWrittingData dataInitFieldLayoutLines(linesInitAccessor, data.m_includePathRequirement, NULL);
@@ -703,7 +709,9 @@ namespace NiflectGen
 	{
 		//可通过BindingSetting指定CompooundField, 从而避免依赖常量
 		typeName = NiflectGenDefinition::NiflectFramework::AccessorTypeName::CompoundField;
+#ifdef USER_PROVIDED_CCOMPONENTFIELD_CLASS_DEFINITION
 		includePathRequirement.Add(NiflectGenDefinition::NiflectFramework::FilePath::CompoundFieldHeader);
+#endif
 	}
 	void CInheritableTypeRegCodeWriter_ObjectAccessor::WriteTypeNameForHash(const CWritingContext& context, Niflect::CString& typeName, CNoDupPathCollector& includePathRequirement) const
 	{
@@ -717,10 +725,15 @@ namespace NiflectGen
 	{
 		const CXCursor& fieldCursorDecl = accessorSubcursor.m_cursorDecl;
 		Niflect::CString registeredOrMiscTypeName;
-		if (accessorSubcursor.m_vecChild.size() == 0)
+		auto kind = clang_getCursorKind(fieldCursorDecl);
+		Niflect::CString bindingTypeForStaticGetTypeMisc;
+		if ((accessorSubcursor.m_vecChild.size() == 0) 
+			|| (kind == CXCursor_TypeAliasDecl)//todo: 不确定如何区分别名是否为模板的别名, 因此应急用此特殊检查认定为直接使用此别名
+			)
 		{
-			registeredOrMiscTypeName = GetFieldTypeNameWithScope(fieldCursorDecl, m_vecNamespace);
-			this->CollectIncludePathFromCursor(context, fieldCursorDecl, data.m_includePathRequirement);
+			//registeredOrMiscTypeName = GetFieldTypeNameWithScope(fieldCursorDecl, m_vecNamespace);
+			//this->CollectIncludePathFromCursor(context, fieldCursorDecl, data.m_includePathRequirement);
+			registeredOrMiscTypeName = bindingTypeName;
 		}
 		else
 		{
@@ -728,6 +741,7 @@ namespace NiflectGen
 			vecTemplateArgReplacementString.push_back(bindingTypeName);
 			GenerateTemplateInstanceCode(accessorSubcursor, registeredOrMiscTypeName, vecTemplateArgReplacementString);
 			registeredOrMiscTypeName = FindNamespaceAndTypeScope(accessorSubcursor.m_cursorDecl, m_vecNamespace) + registeredOrMiscTypeName;
+			bindingTypeForStaticGetTypeMisc = bindingTypeName;
 		}
 
 		CCppWriter tplWriter;
@@ -776,8 +790,8 @@ namespace NiflectGen
 		MapLabelToText(map, LABEL_20, writerAccessorOffset.m_code);
 		MapLabelToText(map, LABEL_21, internalName);
 		MapLabelToText(map, LABEL_23, textGetNodeFromShared);
-		if (!bindingTypeName.empty())
-			MapLabelToText(map, LABEL_27, bindingTypeName);
+		if (!bindingTypeForStaticGetTypeMisc.empty())
+			MapLabelToText(map, LABEL_27, bindingTypeForStaticGetTypeMisc);
 		Niflect::TSet<Niflect::CString> setReplacedLabel;
 		tpl1.ReplaceLabels(map, data.m_lines, &setReplacedLabel);
 		ASSERT(setReplacedLabel.size() == map.size());

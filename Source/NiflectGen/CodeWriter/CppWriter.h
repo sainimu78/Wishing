@@ -54,6 +54,15 @@ namespace NiflectGen
 			}
 			return filePathAbs;
 		}
+		static void WriteUsingNamespaces(const CNoDupPathCollector& pathCollector, CCodeLines& lines)
+		{
+			WriteUsingNamespaceDirectives(pathCollector.m_vecPath, lines);
+		}
+		static void WriteUsingNamespaceDirectives(const CCodeLines& vecIncludePath, CCodeLines& lines)
+		{
+			for (auto& it : vecIncludePath)
+				lines.push_back(NiflectUtil::FormatString("using namespace %s;", it.c_str()));
+		}
 	};
 
 	class CSimpleCppWriter

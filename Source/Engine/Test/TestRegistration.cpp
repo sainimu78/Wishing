@@ -8,11 +8,6 @@
 
 namespace Niflect
 {
-	template <typename TAccessor>
-	static CSharedAccessor __InternalCreateFieldLayoutForFunctionPointer()
-	{
-		return MakeShared<TAccessor>();
-	}
 	template <typename TType, typename TAccessor, typename TInfo>
 	static TInfo* GetOrRegisterType(CNiflectTable* table, const Niflect::CString& typeName)
 	{
@@ -80,7 +75,7 @@ namespace TestRegistration
 
 	static Niflect::CSharedAccessor SSSSCreateFieldLayout()
 	{
-		auto node0 = Niflect::MakeShared<CCompoundAccessor>();
+		auto node0 = Niflect::MakeShared<Niflect::CCompoundAccessor>();
 		node0->InitType(Niflect::StaticGetType<CMyRegClass>());
 		{
 			auto type = Niflect::StaticGetType<float>();
@@ -116,7 +111,11 @@ namespace TestRegistration
 		float m_exampleValue;
 	};
 
+//#define ENABLED_TEST_STATIC_REG
+
+#ifdef ENABLED_TEST_STATIC_REG
 	Niflect::TStaticTableTypeReg<Niflect::CClass, CMyRegClass> ss(GetSSSSSS(), "CMyRegClass", &SSSSCreateFieldLayout, CMyRegClassNatimeta().SetExampleOption(1.23f));
+#endif
 
 	void TestTypeNatimeta()
 	{
@@ -184,6 +183,11 @@ namespace TestRegistration
 		}
 		if (false)//Static Reg (静态注册) 与 Initial Reg (模块初始化注册)
 		{
+#ifdef ENABLED_TEST_STATIC_REG
+#else
+			ASSERT(false);//应先启用宏 ENABLED_TEST_STATIC_REG
+#endif
+
 			//TestCreateModuleReg0();
 
 			auto table = GetSSSSSS();

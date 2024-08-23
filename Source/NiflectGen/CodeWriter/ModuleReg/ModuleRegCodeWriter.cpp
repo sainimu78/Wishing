@@ -116,9 +116,9 @@ namespace NiflectGen
                     auto incPath = CIncludesHelper::ConvertToIncludePath(it1, userProvided.m_vecHeaderSearchPath);
                     item.m_includePath_reserved = incPath;
                     auto orgIncPathPrivateH = NiflectUtil::ReplaceFilePathExt(incPath, NiflectGenDefinition::FileExt::H, NiflectGenDefinition::FileExt::PrivateH);
-                    auto genIncPathPrivateH = NiflectUtil::ConcatPath(m_moduleRegInfo.m_moduleRegBasePath, orgIncPathPrivateH);
+                    auto genIncPathPrivateH = NiflectUtil::ConcatPath(m_moduleRegInfo.m_typeRegBasePath, orgIncPathPrivateH);
                     auto orgIncPathGenH = NiflectUtil::ReplaceFilePathExt(incPath, NiflectGenDefinition::FileExt::H, NiflectGenDefinition::FileExt::GenH);
-                    auto genIncPathGenH = NiflectUtil::ConcatPath(m_moduleRegInfo.m_moduleRegBasePath, orgIncPathGenH);
+                    auto genIncPathGenH = NiflectUtil::ConcatPath(m_moduleRegInfo.m_typeRegBasePath, orgIncPathGenH);
                     item.m_includePathPrivateHIndex = static_cast<uint32>(vecTypeRegGenFileInfo.size());
                     vecTypeRegGenFileInfo.push_back(CTypeRegGenFileInfo(genIncPathPrivateH, genIncPathGenH));
                 }
@@ -191,7 +191,7 @@ namespace NiflectGen
             WriteSplittedModuleRegs(context, spliitedModuleRegWritingCtx, vecSplittedModuleRegInvokationData, data.m_vecSplittedModuleRegGenData);
 
             SModuleRegWritingContext moduleRegWritngCtx = { userProvided.m_moduleName, vecSplittedModuleRegInvokationData, data.m_vecSplittedModuleRegGenData };
-            auto genIncPathPrivateH = NiflectUtil::ConcatPath(m_moduleRegInfo.m_moduleRegBasePath, userProvided.m_moduleName) + NiflectGenDefinition::FileExt::H;
+            auto genIncPathPrivateH = NiflectUtil::ConcatPath(m_moduleRegInfo.m_moduleRegBasePath, userProvided.m_moduleName) + NiflectGenDefinition::FileExt::PrivateH;
             data.m_moduleRegGenData.m_privateHIncludePath = genIncPathPrivateH;
             SModuleRegWritingData moduleRegWrtingData = { data.m_moduleRegGenData.m_privateH };
             WriteModuleRegPrivateHeader(context, moduleRegWritngCtx, moduleRegWrtingData);
@@ -264,6 +264,8 @@ namespace NiflectGen
             //}
 
             it->WriteGenHeaderDeclaration(context, data.m_genHeaderDeclData);
+
+            data.m_vecNamespaceRequirement = it->GetNamespaces();
         }
     }
     //void CTemplateBasedCppWriter::WriteModuleRegs(const CWritingContext& context, const Niflect::TArrayNif<CTypeRegWritingData>& vecTypeRegData, Niflect::TArrayNif<CModuleRegWritingData>& vecModuleRegData)

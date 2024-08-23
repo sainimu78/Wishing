@@ -8,6 +8,7 @@
 #include "Editor/Test/TestSerializationRwTree.h"
 #include "TestModule0/TestModule0.h"
 #include "Niflect/NiflectRegistration.h"
+#include "Niflect/Memory/Default/DefaultMemory.h"
 
 class CMyClassForSimplifiedMakeShared
 {
@@ -30,16 +31,22 @@ int main(int argc, char** argv)
 {
 	TestAPI_Cpp();
 
+
 	//TestSerializationRwTree::TestMemory();
 
 	//TestAccessor::TestFieldLayout();
 	
-	TestRegistration::TestTypeNatimeta();
+	//TestRegistration::TestTypeNatimeta();
 
 	//TestModule0::LoadTypes();
 	//TestModule0::UnloadTypes();
 
 	//TestSerializationRwTree::TestSerialization();
+
+	auto memTest = Niflect::GetDefaultMemoryStats();
+	TestEngineCreate();
+	TestEngineRun();
+	TestEngineDestroy();
 
 	//{
 	//	auto hLib = LoadLibrary("Engine");

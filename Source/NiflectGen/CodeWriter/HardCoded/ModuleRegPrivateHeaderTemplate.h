@@ -22,9 +22,7 @@ Niflect::CNiflectRegistration* GeneratedNiflectRegistrationGet()
 	if (s_reg == NULL)
 	{
 		s_reg = &s_holder;
-
-		auto table = s_holder->AddNewTable();
-		table->Init(CString());
+		s_holder->InitMiscTable();
 	}
 	return s_holder.Get();
 }

@@ -25,6 +25,7 @@ namespace NiflectGen
 		//void Validate();
 		//void Init(const CModuleInfo& info);
 
+		Niflect::CString m_typeRegBasePath;
 		Niflect::CString m_moduleRegBasePath;
 		CModuleRegInfo m_userProvided;
 	};

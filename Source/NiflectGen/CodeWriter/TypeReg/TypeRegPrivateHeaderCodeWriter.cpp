@@ -10,6 +10,7 @@ namespace NiflectGen
 		//todo: 收集同namespace, 同global的class定义
 
 		CNoDupPathCollector includesNoDup;
+		CNoDupPathCollector namespacesNoDup;
 		CCodeLines linesRegClasses;
 		for (auto& it0 : genCtx.m_vecWritingData)
 		{
@@ -17,9 +18,13 @@ namespace NiflectGen
 				linesRegClasses.push_back(it1);
 			for (auto& it1 : it0->m_privateHeaderincludePath.m_vecPath)
 				includesNoDup.Add(it1);
+			for (auto& it1 : it0->m_vecNamespaceRequirement)
+				namespacesNoDup.Add(it1);
 		}
 		CCodeLines linesIncludes;
 		CIncludesHelper::Write(includesNoDup, linesIncludes);
+		CCodeLines linesNamespaces;
+		CIncludesHelper::WriteUsingNamespaces(namespacesNoDup, linesNamespaces);
 
 		{
 			CCodeTemplate tpl;
@@ -27,6 +32,7 @@ namespace NiflectGen
 			CLabelToCodeMapping map;
 			MapLabelToLines(map, LABEL_0, linesIncludes);
 			MapLabelToLines(map, LABEL_1, linesRegClasses);
+			MapLabelToLines(map, LABEL_2, linesNamespaces);
 			tpl.ReplaceLabels(map, data.m_privateH);
 		}
 	}

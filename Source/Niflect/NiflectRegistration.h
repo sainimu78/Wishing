@@ -29,6 +29,14 @@ namespace Niflect
 		~CNiflectRegistration()
 		{
 		}
+
+	public:
+		void InitMiscTable()
+		{
+			ASSERT(m_miscTableIndex == INDEX_NONE);
+			m_miscTableIndex = this->GetTablesCount();
+			this->AddNewTable();
+		}
 	//public:
 	//	void InitTables()
 	//	{
@@ -78,21 +86,13 @@ namespace Niflect
 		{
 			return static_cast<uint32>(m_vecTable.size());
 		}
-		CNiflectTable& GetMutableTable(uint32 idx)
+		CNiflectTable* GetMutableTable(uint32 idx)
 		{
-			return m_vecTable[idx];
+			return &m_vecTable[idx];
 		}
-		CNiflectTable& GetMutableMiscTable()
+		CNiflectTable* GetMutableMiscTable()
 		{
-			return m_vecTable[m_miscTableIndex];
-		}
-
-	private:
-		void AddMiscTable()
-		{
-			ASSERT(m_miscTableIndex == INDEX_NONE);
-			m_miscTableIndex = this->GetTablesCount();
-			this->AddNewTable();
+			return &m_vecTable[m_miscTableIndex];
 		}
 
 	public:

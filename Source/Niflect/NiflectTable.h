@@ -70,6 +70,12 @@ namespace Niflect
 		}
 	};
 
+	template <typename TAccessor>
+	static CSharedAccessor __InternalCreateFieldLayoutForFunctionPointer()
+	{
+		return MakeShared<TAccessor>();
+	}
+
 #define NIFLECT_MEMBER_FUNCTION_GET_TYPE_VIRTUAL()\
 	public:\
 		virtual Niflect::CNiflectType* GetType() const { return NULL; }

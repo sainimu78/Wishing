@@ -23,6 +23,12 @@ namespace NiflectGenDefinition
 		}
 	}
 
+	namespace RelativeDirPath
+	{
+		constexpr const char* ModuleReg = "ModuleReg";
+		constexpr const char* TypeReg = "TypeReg";
+	}
+
 	namespace CodeTag
 	{
 		constexpr const char* BindingSetting = "__NiflectGen_BindingSetting";
@@ -51,7 +57,7 @@ namespace NiflectGenDefinition
 
 	namespace Path
 	{
-		constexpr const char* CLangParserArgs_I[] = {
+		constexpr const char* CLangParserArgs_I2[] = {
 			CONCAT_CONST_CHAR_2(DEVELOPMENT_ROOT_SOURCE_PATH, "/S3Engine"),
 			//todo: 现代码未合并到引擎, 因此暂使用SampleTest的路径, 合并后可移除
 			CONCAT_CONST_CHAR_2(DEVELOPMENT_ROOT_SOURCE_PATH, "/SampleTest/SampleGamePrototyping/Cos/Client/ReflectionSystemDemo"),
@@ -68,9 +74,9 @@ namespace NiflectGenDefinition
 	{
 		namespace AccessorTypeName
 		{
-			constexpr const char* Field = "CField";
+			constexpr const char* Field = "CAccessor";
 			constexpr const char* ArrayField = "CArrayField";
-			constexpr const char* CompoundField = "CCompoundField";
+			constexpr const char* CompoundField = "CCompoundAccessor";
 		}
 
 		namespace InfoTypeName
@@ -87,7 +93,9 @@ namespace NiflectGenDefinition
 
 		namespace FilePath
 		{
+#ifdef USER_PROVIDED_CCOMPONENTFIELD_CLASS_DEFINITION
 			constexpr const char* CompoundFieldHeader = "Niflect/Field/CompoundField.h";
+#endif
 		}
 	}
 }

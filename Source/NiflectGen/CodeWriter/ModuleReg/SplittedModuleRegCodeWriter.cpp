@@ -28,7 +28,7 @@ namespace NiflectGen
             auto& dataForInvokation = vecSplittedModuleRegInvokationData[idx0];
             auto& data = vecSplittedModuleRegData[idx0];
 
-            auto splittedModuleName = ReplaceLabelToText2(HardCodedTemplate::SplittedModuleName, LABEL_SHARED_0, LABEL_0, writingCtx.m_moduleName, NiflectUtil::FormatString("%u", idx0));
+            auto splittedModuleName = ReplaceLabelToText2(HardCodedTemplate::SplittedModuleName, LABEL_SHARED_0, LABEL_0, writingCtx.m_moduleName, NiflectUtil::FormatString("_%u", idx0));
             {
                 CCodeTemplate tpl;
                 tpl.ReadFromRawData(HardCodedTemplate::SplittedModuleRegH);
@@ -38,7 +38,7 @@ namespace NiflectGen
             }
             dataForInvokation.m_invokationRegisterTypes.push_back(ReplaceLabelToText1(HardCodedTemplate::SplittedModuleRegInvokationRegisterTypes, LABEL_1, splittedModuleName));
             dataForInvokation.m_invokationInitTypes.push_back(ReplaceLabelToText1(HardCodedTemplate::SplittedModuleRegInvokationInitTypes, LABEL_1, splittedModuleName));
-            data.m_includePath = NiflectUtil::FormatString("%s/__%s%s", writingCtx.m_moduleRegBasePath.c_str(), splittedModuleName.c_str(), NiflectGenDefinition::FileExt::H);
+            data.m_includePath = NiflectUtil::FormatString("%s/Splitted/_%s%s", writingCtx.m_moduleRegBasePath.c_str(), splittedModuleName.c_str(), NiflectGenDefinition::FileExt::H);
 
             {
                 CCodeTemplate tpl;
@@ -58,10 +58,16 @@ namespace NiflectGen
                 auto& refInfo = writingCtx.m_vecTypeRegRefInfo[vecTypeRegIndex[idx1]];
                 auto& it0 = *refInfo.m_typeRegData;
                 includesNoDup.Add(*refInfo.m_includePathPrivateH);
+#ifdef INVOKE_TYPEREG_WITH_NAMESPACE
                 auto regNamespace = "reserved_reg_namespace";//todo: ¥”itªÒ»°namespace?
                 linesInvokationRegisterType.push_back(ReplaceLabelToText2(HardCodedTemplate::InvokationRegisterType, LABEL_6, LABEL_7, regNamespace, it0.m_regClassName));
                 if (it0.m_invokationRequirement.m_requiredInvokationInitType)
                     linesInvokationInitType.push_back(ReplaceLabelToText2(HardCodedTemplate::InvokationInitType, LABEL_6, LABEL_7, regNamespace, it0.m_regClassName));
+#else
+                linesInvokationRegisterType.push_back(ReplaceLabelToText1(HardCodedTemplate::InvokationRegisterType2, LABEL_7, it0.m_regClassName));
+                if (it0.m_invokationRequirement.m_requiredInvokationInitType)
+                    linesInvokationInitType.push_back(ReplaceLabelToText1(HardCodedTemplate::InvokationInitType2, LABEL_7, it0.m_regClassName));
+#endif
 
                 //data.m_linesInvokingRegisterType.push_back(ReplaceLabelToText2(HardCodedTemplate::InvokationRegisterType, LABEL_6, LABEL_7, regNamespace, it0.m_regClassName));
                 //if (it0.m_invokationRequirement.m_requiredInvokationInitType)

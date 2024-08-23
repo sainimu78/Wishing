@@ -77,7 +77,7 @@ namespace TestAccessor
 	{
 		using namespace Engine;
 
-		auto accessor0 = Niflect::MakeShared<CCompoundAccessor>();
+		auto accessor0 = Niflect::MakeShared<Niflect::CCompoundAccessor>();
 		{
 			auto accessor1 = Niflect::MakeShared<CFloatAccessor>();
 			accessor1->InitMemberMeta("m_float_0", Niflect::GetMemberVariableOffset(&CTestClassMy::m_float_0));
@@ -129,7 +129,7 @@ namespace TestAccessor
 	{
 		using namespace Engine;
 
-		auto accessor0 = Niflect::MakeShared<CCompoundAccessor>();
+		auto accessor0 = Niflect::MakeShared<Niflect::CCompoundAccessor>();
 		{
 			auto accessor1 = Niflect::MakeShared<CBoolAccessor>();
 			accessor1->InitMemberMeta("m_derived_bool_0", Niflect::GetMemberVariableOffset(&CTestClassMy2::m_derived_bool_0));
@@ -219,7 +219,7 @@ namespace TestAccessor
 			using namespace Engine;
 			auto accessor0 = Niflect::MakeShared<TStlMapAccessor<Niflect::TMap<Niflect::CString, float> > >();
 			{
-				auto accessor1 = Niflect::MakeShared<CCompoundAccessor>();
+				auto accessor1 = Niflect::MakeShared<Niflect::CCompoundAccessor>();
 				accessor1->InitMemberMeta("reserved_dim0", Niflect::CAddrOffset::None);
 				{
 					{

@@ -31,7 +31,8 @@ void SplittedModuleRegInitTypes_)" MAKELABEL(LABEL_1) R"(();
 )"
 ;
 		static const char* SplittedModuleRegCpp =
-MAKELABEL(LABEL_5) R"(
+R"(#include "Niflect/NiflectRegistration.h")" R"(
+)" MAKELABEL(LABEL_5) R"(
 
 void SplittedModuleRegRegsterTypes_)" MAKELABEL(LABEL_1) R"(()
 {
@@ -50,15 +51,28 @@ R"({
 ;
 		static const char* TypeRegRegsterTypeScope =
 R"({
-	auto& table = this->GetMutableTable(0);
+	auto reg = Niflect::CNiflectRegistration::GetMutable();
+	auto table = reg->GetMutableMiscTable();
 	)" MAKELABEL(LABEL_3) R"(
 })"
 ;
+#ifdef INVOKE_TYPEREG_WITH_NAMESPACE
 		static const char* InvokationRegisterType =
 MAKELABEL(LABEL_6) "::" MAKELABEL(LABEL_7) "::StaticRegisterType(table);"
 ;
+#else
+		static const char* InvokationRegisterType2 =
+MAKELABEL(LABEL_7) "::StaticRegisterType(table);"
+;
+#endif
+#ifdef INVOKE_TYPEREG_WITH_NAMESPACE
 		static const char* InvokationInitType =
 MAKELABEL(LABEL_6) "::" MAKELABEL(LABEL_7) "::InitType();"
 ;
+#else
+		static const char* InvokationInitType2 =
+MAKELABEL(LABEL_7) "::InitType();"
+;
+#endif
 	}
 }

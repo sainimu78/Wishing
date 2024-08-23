@@ -84,4 +84,36 @@ namespace Niflect
 		CSharedAccessor m_elemAccessor;
 		CNiflectType* m_type;
 	};
+
+	class CCompoundAccessor : public CAccessor
+	{
+	public:
+		virtual bool SaveToRwNode(const AddrType base, CRwNode* rw) const override
+		{
+			auto offsetBase = this->GetAddr(base);
+			auto count = this->GetChildrenCount();
+			for (uint32 idx = 0; idx < count; ++idx)
+			{
+				auto childAccessor = this->GetChild(idx);
+				ASSERT(!childAccessor->GetName().empty());
+				auto rwChild = CreateRwNode();
+				if (childAccessor->SaveToRwNode(offsetBase, rwChild.Get()))
+					AddExistingRwNode(rw, childAccessor->GetName(), rwChild);
+			}
+			return true;
+		}
+		virtual bool LoadFromRwNode(AddrType base, const CRwNode* rw) const override
+		{
+			auto offsetBase = this->GetAddr(base);
+			auto count = this->GetChildrenCount();
+			for (uint32 idx = 0; idx < count; ++idx)
+			{
+				auto childAccessor = this->GetChild(idx);
+				ASSERT(!childAccessor->GetName().empty());
+				auto rwChild = FindRwNode(rw, childAccessor->GetName());
+				childAccessor->LoadFromRwNode(offsetBase, rwChild);
+			}
+			return true;
+		}
+	};
 }

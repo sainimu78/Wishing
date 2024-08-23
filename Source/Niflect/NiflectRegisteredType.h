@@ -10,6 +10,14 @@ namespace Niflect
 	{
 		template <typename T2>
 		friend CNiflectType* StaticGetType();
+
+		////begin, 已验证无法通过特化区分原始类型与别名(using和typedef定义的别名)
+		//template <typename T2>
+		//friend void __InternalStaticSetType(CNiflectType* type);
+		//template <typename T2>
+		//friend bool __InternalStaticIsValid();
+		////end
+
 		friend class CNiflectTable;
 
 	public:
@@ -30,4 +38,16 @@ namespace Niflect
 	{
 		return TInternalRegisteredType<T>::s_type;
 	}
+	////begin, 已验证无法通过特化区分原始类型与别名(using和typedef定义的别名)
+	//template <typename T>
+	//void __InternalStaticSetType(CNiflectType* type)
+	//{
+	//	TInternalRegisteredType<T>::s_type = type;
+	//}
+	//template <typename T>
+	//bool __InternalStaticIsValid()
+	//{
+	//	return TInternalRegisteredType<T>::s_type != NULL;
+	//}
+	////end
 }

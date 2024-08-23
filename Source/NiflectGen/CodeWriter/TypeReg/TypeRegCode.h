@@ -46,5 +46,6 @@ namespace NiflectGen
 		Niflect::CString m_regClassName;
 		STypeRegGenHeaderDeclarationWritingData m_genHeaderDeclData;
 		CNoDupPathCollector m_privateHeaderincludePath;
+		Niflect::TArrayNif<Niflect::CString> m_vecNamespaceRequirement;
 	};
 }
