@@ -7,9 +7,9 @@
 
 namespace Niflect
 {
-	using InvalidPlaceholder = void*;
+	using BindingTypePlaceholder = void*;
 
-	template <typename TField, typename TBindingType, typename TElementBindingType = InvalidPlaceholder>
+	template <typename TField, typename TBindingType, typename TElementBindingType = BindingTypePlaceholder>
 	class TBindingSetting
 	{
 	};
