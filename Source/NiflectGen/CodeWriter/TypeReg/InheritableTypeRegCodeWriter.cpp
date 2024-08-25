@@ -296,7 +296,8 @@ namespace NiflectGen
 			bool trueField_falseMethod = kind == CXCursor_FieldDecl;
 			vecMemberInfo.push_back({ typeDecl, CXStringToCString(clang_getCursorSpelling(cursorField)), trueField_falseMethod, it->m_vecDetailCursor, vecIndex[idx]});
 		}
-		this->WriteInitFieldLayoutCompoundType(m_typeName, 0, INDEX_NONE, vecMemberInfo, context, data);
+		Niflect::CString textForTemplateInstance;
+		this->WriteInitFieldLayoutCompoundType(m_typeName, 0, INDEX_NONE, textForTemplateInstance, vecMemberInfo, context, data);
 	}
 	void CInheritableTypeRegCodeWriter_ObjectAccessor::WriteDeclInitMethod(CCodeLines& lines) const
 	{
@@ -306,7 +307,7 @@ namespace NiflectGen
 	{
 
 	}
-	void CInheritableTypeRegCodeWriter_ObjectAccessor::WriteInitFieldLayoutCompoundType(const Niflect::CString& fieldsOwnerTypeName, uint32 parentAccessorLevel, uint32 parentDimension, const Niflect::TArrayNif<SMemberSSSSSSSSSSS>& vecMemberInfo, const CWritingContext& context, CTypeRegClassWrittingData& data) const
+	void CInheritableTypeRegCodeWriter_ObjectAccessor::WriteInitFieldLayoutCompoundType(const Niflect::CString& fieldsOwnerTypeName, uint32 parentAccessorLevel, uint32 parentDimension, Niflect::CString& parentTextForTemplateInstance, const Niflect::TArrayNif<SMemberSSSSSSSSSSS>& vecMemberInfo, const CWritingContext& context, CTypeRegClassWrittingData& data) const
 	{
 		for (uint32 idx = 0; idx < vecMemberInfo.size(); ++idx)
 		{
@@ -338,6 +339,9 @@ namespace NiflectGen
 					//GenLogError(context.m_log, NiflectUtil::FormatString("The type of field %s was not tagged", CXStringToCString(clang_getCursorSpelling(cursor)).c_str()));
 					break;
 				}
+				parentTextForTemplateInstance += textForTemplateInstance;
+				if (idx != vecMemberInfo.size() - 1)
+					parentTextForTemplateInstance += ", ";
 			}
 			else
 			{
@@ -507,6 +511,7 @@ namespace NiflectGen
 		}
 
 		Niflect::CString myTypeName;
+		Niflect::CString textForTemplateInstance;
 
 		CCodeLines linesScope;
 		if (accessorBinding != NULL)
@@ -546,7 +551,7 @@ namespace NiflectGen
 						withRightAngleBracket = true;
 
 						CTypeRegInitFieldLayoutWrittingData dataInitFieldLayoutLines(linesInitAccessor, data.m_includePathRequirement, NULL);
-						this->WriteInitAccessorLines(fieldsOwnerTypeName, HardCodedTemplate::StaticGetType_Misc, linesScope, ownerAccessorType, parentAccessorLevel, internalName, accessorBinding->m_accessorSubcursor, myTypeName, context, dataInitFieldLayoutLines);
+						this->WriteInitAccessorLines(fieldsOwnerTypeName, HardCodedTemplate::StaticGetType_Registered2, linesScope, ownerAccessorType, parentAccessorLevel, internalName, accessorBinding->m_accessorSubcursor, myTypeName, context, dataInitFieldLayoutLines);
 					}
 					else
 					{
@@ -596,7 +601,7 @@ namespace NiflectGen
 							}
 							dimension++;
 							CTypeRegClassWrittingData dataInitFieldLayout2ForCompoundType(linesScope2, data.m_includePathRequirement);
-							this->WriteInitFieldLayoutCompoundType(elemFieldsOwnerTypeName, parentAccessorLevel + 2, dimension, vecMemberInfo, context, dataInitFieldLayout2ForCompoundType);
+							this->WriteInitFieldLayoutCompoundType(elemFieldsOwnerTypeName, parentAccessorLevel + 2, dimension, textForTemplateInstance, vecMemberInfo, context, dataInitFieldLayout2ForCompoundType);
 
 							if (auto sssssssssss = m_writingSetting.m_mapping.m_accessorBindingMapping.FindByCursorDecl(wwwwww.m_subcursor.m_cursorDecl))
 							{
@@ -608,7 +613,7 @@ namespace NiflectGen
 								{
 									CCodeLines linesScope1111111;
 									CTypeRegInitFieldLayoutWrittingData dataInitFieldLayout1Lines(linesScope1111111, data.m_includePathRequirement, NULL);
-									this->WriteInitAccessorLines(fieldsOwnerTypeName, HardCodedTemplate::StaticGetType_Misc, linesScope2, EOwnerAccessorType::Array, parentAccessorLevel + 1, NiflectUtil::FormatString("reserved_dim%u", dimension), sssssssssss->m_accessorSubcursor, elemFieldsOwnerTypeName, context, dataInitFieldLayout1Lines);
+									this->WriteInitAccessorLines(fieldsOwnerTypeName, HardCodedTemplate::StaticGetType_Registered2, linesScope2, EOwnerAccessorType::Array, parentAccessorLevel + 1, NiflectUtil::FormatString("reserved_dim%u", dimension), sssssssssss->m_accessorSubcursor, elemFieldsOwnerTypeName, context, dataInitFieldLayout1Lines);
 									AAAAAAAAAAAAAA(linesScope1111111, linesScope1);
 								}
 
@@ -617,7 +622,7 @@ namespace NiflectGen
 								Niflect::CString str;
 								GenerateTemplateInstanceCode(qqqqqqqqqq, str);
 								CTypeRegInitFieldLayoutWrittingData dataInitFieldLayoutLines(linesInitAccessor, data.m_includePathRequirement, NULL);
-								this->WriteInitAccessorLines(fieldsOwnerTypeName, HardCodedTemplate::StaticGetType_Misc, linesScope1, ownerAccessorType, parentAccessorLevel, internalName, accessorBinding->m_accessorSubcursor, str, context, dataInitFieldLayoutLines);
+								this->WriteInitAccessorLines(fieldsOwnerTypeName, HardCodedTemplate::StaticGetType_Registered2, linesScope1, ownerAccessorType, parentAccessorLevel, internalName, accessorBinding->m_accessorSubcursor, str, context, dataInitFieldLayoutLines);
 							}
 							dimension--;
 						}
@@ -638,16 +643,16 @@ namespace NiflectGen
 			{
 				Niflect::CString str = CXStringToCString(clang_getTypeSpelling(underlyingType));
 				Niflect::CString sdasdf = HardCodedTemplate::StaticGetType_Registered2;
-				auto kind = clang_getCursorKind(accessorBinding->m_accessorSubcursor.m_cursorDecl);
-				if (accessorBinding->m_accessorSubcursor.m_vecChild.size() == 0
-					|| (kind == CXCursor_TypeAliasDecl)//todo: 不确定如何区分别名是否为模板的别名, 因此应急用此特殊检查认定为直接使用此别名
-					)
-				{
-				}
-				else
-				{
-					sdasdf = HardCodedTemplate::StaticGetType_Misc;
-				}
+				//auto kind = clang_getCursorKind(accessorBinding->m_accessorSubcursor.m_cursorDecl);
+				//if (accessorBinding->m_accessorSubcursor.m_vecChild.size() == 0
+				//	|| (kind == CXCursor_TypeAliasDecl)//todo: 不确定如何区分别名是否为模板的别名, 因此应急用此特殊检查认定为直接使用此别名
+				//	)
+				//{
+				//}
+				//else
+				//{
+				//	sdasdf = HardCodedTemplate::StaticGetType_Misc;
+				//}
 				CTypeRegInitFieldLayoutWrittingData dataInitFieldLayoutLines(linesInitAccessor, data.m_includePathRequirement, NULL);
 				this->WriteInitAccessorLines(fieldsOwnerTypeName, sdasdf, linesScope, ownerAccessorType, parentAccessorLevel, internalName, accessorBinding->m_accessorSubcursor, str, context, dataInitFieldLayoutLines);
 			}
@@ -698,6 +703,9 @@ namespace NiflectGen
 			//todo: 也可以用于其它类型的名称, 并加上namespace与scope
 			parentTextForTemplateInstance += myTypeName;
 
+			//if (!textForTemplateInstance.empty())
+			//	parentTextForTemplateInstance += NiflectUtil::FormatString("<%s>", textForTemplateInstance.c_str());
+
 			if (linesInitAccessor.size() > 0)
 			{
 				AAAAAAAAAAAAAA(linesInitAccessor, data.m_lines);
@@ -727,22 +735,26 @@ namespace NiflectGen
 		Niflect::CString registeredOrMiscTypeName;
 		auto kind = clang_getCursorKind(fieldCursorDecl);
 		Niflect::CString bindingTypeForStaticGetTypeMisc;
-		if ((accessorSubcursor.m_vecChild.size() == 0) 
-			|| (kind == CXCursor_TypeAliasDecl)//todo: 不确定如何区分别名是否为模板的别名, 因此应急用此特殊检查认定为直接使用此别名
-			)
-		{
-			//registeredOrMiscTypeName = GetFieldTypeNameWithScope(fieldCursorDecl, m_vecNamespace);
-			//this->CollectIncludePathFromCursor(context, fieldCursorDecl, data.m_includePathRequirement);
-			registeredOrMiscTypeName = bindingTypeName;
-		}
-		else
-		{
-			Niflect::TArrayNif<Niflect::CString> vecTemplateArgReplacementString;
-			vecTemplateArgReplacementString.push_back(bindingTypeName);
-			GenerateTemplateInstanceCode(accessorSubcursor, registeredOrMiscTypeName, vecTemplateArgReplacementString);
-			registeredOrMiscTypeName = FindNamespaceAndTypeScope(accessorSubcursor.m_cursorDecl, m_vecNamespace) + registeredOrMiscTypeName;
-			bindingTypeForStaticGetTypeMisc = bindingTypeName;
-		}
+		//if ((accessorSubcursor.m_vecChild.size() == 0) 
+		//	|| (kind == CXCursor_TypeAliasDecl)//todo: 不确定如何区分别名是否为模板的别名, 因此应急用此特殊检查认定为直接使用此别名
+		//	)
+		//{
+		//	//registeredOrMiscTypeName = GetFieldTypeNameWithScope(fieldCursorDecl, m_vecNamespace);
+		//	//this->CollectIncludePathFromCursor(context, fieldCursorDecl, data.m_includePathRequirement);
+		//	registeredOrMiscTypeName = bindingTypeName;
+		//}
+		//else
+		//{
+		//	Niflect::TArrayNif<Niflect::CString> vecTemplateArgReplacementString;
+		//	vecTemplateArgReplacementString.push_back(bindingTypeName);
+		//	GenerateTemplateInstanceCode(accessorSubcursor, registeredOrMiscTypeName, vecTemplateArgReplacementString);
+		//	registeredOrMiscTypeName = FindNamespaceAndTypeScope(accessorSubcursor.m_cursorDecl, m_vecNamespace) + registeredOrMiscTypeName;
+		//	bindingTypeForStaticGetTypeMisc = bindingTypeName;
+		//}
+
+		registeredOrMiscTypeName = bindingTypeName;
+		if (NiflectUtil::EndsWith(registeredOrMiscTypeName, '>'))
+			registeredOrMiscTypeName += ' ';
 
 		CCppWriter tplWriter;
 		tplWriter.WriteLine(templateStaticGetType);

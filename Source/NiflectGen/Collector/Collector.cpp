@@ -339,10 +339,17 @@ namespace NiflectGen
 					GenLogError(m_context.m_log, "Fail to apply the BindingSetting");
 					return;
 				}
-				//CollectTemplateSubcursorRecurs2(templateType, m_vecChild, data.m_subCursorRoot, cursorArrayFrontIndex);
+				//auto a = CXStringToCString(clang_getTypeSpelling(templateType));
+				////CollectTemplateSubcursorRecurs2(templateType, m_vecChild, data.m_subCursorRoot, cursorArrayFrontIndex);
+				//auto& b = m_vecChild[5];
+				//auto c = clang_isReference(b.kind);
+				//auto d = clang_getCursorReferenced(b);
+
 				//PrintSubcursorRecurs(data.m_subcursorRoot);
-				//Niflect::CString str;
-				//GenerateTemplateInstanceCode(data.m_subcursorRoot.m_vecChild[1], str);
+				//Niflect::CString str0;
+				//GenerateTemplateInstanceCode(data.m_subcursorRoot.m_vecChild[0], str0);
+				//Niflect::CString str1;
+				//GenerateTemplateInstanceCode(data.m_subcursorRoot.m_vecChild[1], str1);
 				m_collectionData.m_vecBindingSetting.emplace_back(data);
 			}
 		}

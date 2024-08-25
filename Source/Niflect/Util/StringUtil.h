@@ -35,6 +35,12 @@ namespace NiflectUtil
 		}
 		return false;
 	}
+	static bool EndsWith(const Niflect::CString& fullString, const char& ending)
+	{
+		if (fullString.length() >= 1)
+			return fullString.back() == ending;
+		return false;
+	}
 	static bool EndsWith(const Niflect::CString& fullString, const Niflect::CString& ending)
 	{
 		if(fullString.length() >= ending.length())

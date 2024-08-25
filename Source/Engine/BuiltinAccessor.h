@@ -32,6 +32,7 @@ namespace Engine
 	using CBoolAccessor = TBasicTypeAccessor<bool>;
 	using CUint8Accessor = TBasicTypeAccessor<uint8>;
 	using CFloatAccessor = TBasicTypeAccessor<float>;
+	//typedef TBasicTypeAccessor<float> CFloatAccessor;
 	using CStringAccessor = TBasicTypeAccessor<Niflect::CString>;
 
 	template <typename TStlArray>
