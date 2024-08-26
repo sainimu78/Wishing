@@ -9,6 +9,7 @@
 //多使用一个bool变量保存创建来源为MakeShared或MakeSharable, bool变量被对齐为4字节
 //为减少此微小空间占用, 也可考虑将 SGenericSharedPtrData 指定为非对齐结构
 //现通过假定函数地址是对齐的, 不被使用, 利用最低位保存创建来源
+//如果现特殊方法不可行, 或某些平台或编译器不适用, 以启用此宏的实现版本编译即可
 //#define DETERMINE_CONSTRUCTED_FROM_MAKESHARED_OR_MAKESHARABLE_BY_A_BOOL
 
 namespace Niflect
@@ -254,12 +255,12 @@ namespace Niflect
 				//对于指针对齐的相关条款:
 				//	<cstdint> 和类型对齐 :
 				//		C++标准中的 alignas 和 alignof 关键字可以帮助您控制和查询类型的对齐要求，以便您知道如何处理不同类型的指针。
-				//		函数的对齐要求 :
-				//	虽然C++标准没有明确规定函数指针的对齐方式，但通常情况下，编译器会确保函数指针的对齐与数据指针相同，以便在实际使用中避免问题。
-				//		相关链接 :
-				//	虽然没有直接的链接可以证明函数指针必须对齐，但以下是一些C++标准文档的相关参考：
-				//		C++ Standard(ISO / IEC 14882)（可以在此查找最新的C++标准草案和详细说明）
-				//		C++ Core Guidelines（这些指南常常强调类型安全和内存管理的重要性）
+				//	函数的对齐要求 :
+				//		虽然C++标准没有明确规定函数指针的对齐方式，但通常情况下，编译器会确保函数指针的对齐与数据指针相同，以便在实际使用中避免问题。
+				//	相关链接 :
+				//		虽然没有直接的链接可以证明函数指针必须对齐，但以下是一些C++标准文档的相关参考：
+				//			C++ Standard(ISO / IEC 14882)（可以在此查找最新的C++标准草案和详细说明）
+				//			C++ Core Guidelines（这些指南常常强调类型安全和内存管理的重要性）
 				//end
 
 				auto funcAsInt = reinterpret_cast<ptrdiff_t>(m_data->m_InvokeDestructorFunc);
