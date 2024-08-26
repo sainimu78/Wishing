@@ -249,6 +249,12 @@ namespace Niflect
 #else
 				//虽然是连续内存, MkaeShared 的 m_pointer 地址一定比 m_data 大, 但隐患在于 m_data 可能是在一些分配和释放操作后再分配的, 就有一定可能性刚比 m_pointer 小
 				//if (reinterpret_cast<ptrdiff_t>(m_pointer) > reinterpret_cast<ptrdiff_t>(m_data))
+				//{
+				//	...
+				//	void* mem = reinterpret_cast<char*>(m_pointer) - sizeof(SGenericSharedPtrData);
+				//	if (mem == m_data)
+				//		...
+				//}
 				
 				//据说编译器能保证函数地址是对齐的, 因此最低位不使用
 				//begin, GPT解释
@@ -268,14 +274,11 @@ namespace Niflect
 				{
 					funcAsInt &= ~0x1;
 					void* mem = reinterpret_cast<char*>(m_pointer) - sizeof(SGenericSharedPtrData);
-					if (mem == m_data)
-					{
-						ASSERT(m_data->m_debugIsAllocatedByMakeShared);
-						auto DestructorFunc = reinterpret_cast<InvokeDestructorFunc>(funcAsInt);
-						DestructorFunc(m_pointer);
-						CMemory::Free(mem);
-						return;
-					}
+					ASSERT(m_data->m_debugIsAllocatedByMakeShared);
+					auto DestructorFunc = reinterpret_cast<InvokeDestructorFunc>(funcAsInt);
+					DestructorFunc(m_pointer);
+					CMemory::Free(mem);
+					return;
 				}
 
 				ASSERT((reinterpret_cast<ptrdiff_t>(m_data->m_InvokeDestructorFunc) & 0x1) == 0);
