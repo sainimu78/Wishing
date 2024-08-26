@@ -6,6 +6,11 @@
 #include <stdio.h>
 #endif
 
+//多使用一个bool变量保存创建来源为MakeShared或MakeSharable, bool变量被对齐为4字节
+//为减少此微小空间占用, 也可考虑将 SGenericSharedPtrData 指定为非对齐结构
+//现通过假定函数地址是对齐的, 不被使用, 利用最低位保存创建来源
+//#define DETERMINE_CONSTRUCTED_FROM_MAKESHARED_OR_MAKESHARABLE_BY_A_BOOL
+
 namespace Niflect
 {
 #ifdef TEST_GENERIC_SHARED_PTR
@@ -47,7 +52,11 @@ namespace Niflect
 	struct SGenericSharedPtrData
 	{
 		uint32 m_refCount;//可改为平台相关的整数或64位整数, 现认为32位足够, 如类型改为64位整数, 则公共智能指针数据占用空间相应增加4字节
+#ifdef DETERMINE_CONSTRUCTED_FROM_MAKESHARED_OR_MAKESHARABLE_BY_A_BOOL
 		bool m_isAllocatedByMakeShared;//为支持MakeShared, 内部确定如何删除data, 如有规范要求只能用MakeShared或MakeSharable, 则可不定义该bool以减少占用内存与略微简化释放对象的过程
+#else
+		bool m_debugIsAllocatedByMakeShared;
+#endif
 		InvokeDestructorFunc m_InvokeDestructorFunc;//为通用性增加该函数指针以支持基类未定义virtual析构也能够安全释放, 如有规范要求基类必须定义virtual析构, 则可不定义该函数指针以减少占用内存
 	};
 
@@ -187,7 +196,13 @@ namespace Niflect
 			ASSERT(m_data == NULL);
 			m_pointer = pointer;
 			m_data = data;
+#ifdef DETERMINE_CONSTRUCTED_FROM_MAKESHARED_OR_MAKESHARABLE_BY_A_BOOL
 			StaticInitData(m_data, DestructFunc, true);
+#else
+			ASSERT((reinterpret_cast<ptrdiff_t>(DestructFunc) & 0x1) == 0);
+			auto flaggedDestructFunc = reinterpret_cast<InvokeDestructorFunc>(reinterpret_cast<ptrdiff_t>(DestructFunc) | 0x1);
+			StaticInitData(m_data, flaggedDestructFunc, true);
+#endif
 			this->IncRef();
 		}
 		void IncRef()
@@ -207,24 +222,68 @@ namespace Niflect
 		{
 			data->m_refCount = 0u;
 			data->m_InvokeDestructorFunc = DestructFunc;
+#ifdef DETERMINE_CONSTRUCTED_FROM_MAKESHARED_OR_MAKESHARABLE_BY_A_BOOL
 			data->m_isAllocatedByMakeShared = isAllocatedByMakeShared;
+#else
+			data->m_debugIsAllocatedByMakeShared = isAllocatedByMakeShared;
+#endif
 		}
 		void DeletePointer()
 		{
 			if (m_data->m_refCount == 0)
 			{
-				if (!m_data->m_isAllocatedByMakeShared)
-				{
-					CGenericInstance::DestructAndFree<CMemory>(m_pointer, m_data->m_InvokeDestructorFunc);
-					//UE的实现方法, 定义一种析构代理类(见DefaultDeleter), MakeShareable时使用CRT默认new创建, 在删除时使用的CRT默认delete释放
-					CMemory::Free(m_data);
-				}
-				else
+#ifdef DETERMINE_CONSTRUCTED_FROM_MAKESHARED_OR_MAKESHARABLE_BY_A_BOOL
+				if (m_data->m_isAllocatedByMakeShared)
 				{
 					m_data->m_InvokeDestructorFunc(m_pointer);
 					auto mem = reinterpret_cast<char*>(m_pointer) - sizeof(SGenericSharedPtrData);
 					CMemory::Free(mem);
 				}
+				else
+				{
+					CGenericInstance::DestructAndFree<CMemory>(m_pointer, m_data->m_InvokeDestructorFunc);
+					//UE的实现方法, 定义一种析构代理类(见DefaultDeleter), MakeShareable时使用CRT默认new创建, 在删除时使用的CRT默认delete释放
+					CMemory::Free(m_data);
+				}
+#else
+				//虽然是连续内存, MkaeShared 的 m_pointer 地址一定比 m_data 大, 但隐患在于 m_data 可能是在一些分配和释放操作后再分配的, 就有一定可能性刚比 m_pointer 小
+				//if (reinterpret_cast<ptrdiff_t>(m_pointer) > reinterpret_cast<ptrdiff_t>(m_data))
+				
+				//据说编译器能保证函数地址是对齐的, 因此最低位不使用
+				//begin, GPT解释
+				//对于指针对齐的相关条款:
+				//	<cstdint> 和类型对齐 :
+				//		C++标准中的 alignas 和 alignof 关键字可以帮助您控制和查询类型的对齐要求，以便您知道如何处理不同类型的指针。
+				//		函数的对齐要求 :
+				//	虽然C++标准没有明确规定函数指针的对齐方式，但通常情况下，编译器会确保函数指针的对齐与数据指针相同，以便在实际使用中避免问题。
+				//		相关链接 :
+				//	虽然没有直接的链接可以证明函数指针必须对齐，但以下是一些C++标准文档的相关参考：
+				//		C++ Standard(ISO / IEC 14882)（可以在此查找最新的C++标准草案和详细说明）
+				//		C++ Core Guidelines（这些指南常常强调类型安全和内存管理的重要性）
+				//end
+
+				auto funcAsInt = reinterpret_cast<ptrdiff_t>(m_data->m_InvokeDestructorFunc);
+				if ((funcAsInt & 0x1) != 0)
+				{
+					funcAsInt &= ~0x1;
+					void* mem = reinterpret_cast<char*>(m_pointer) - sizeof(SGenericSharedPtrData);
+					if (mem == m_data)
+					{
+						ASSERT(m_data->m_debugIsAllocatedByMakeShared);
+						auto DestructorFunc = reinterpret_cast<InvokeDestructorFunc>(funcAsInt);
+						DestructorFunc(m_pointer);
+						CMemory::Free(mem);
+						return;
+					}
+				}
+
+				ASSERT((reinterpret_cast<ptrdiff_t>(m_data->m_InvokeDestructorFunc) & 0x1) == 0);
+				ASSERT(!m_data->m_debugIsAllocatedByMakeShared);
+
+				CGenericInstance::DestructAndFree<CMemory>(m_pointer, m_data->m_InvokeDestructorFunc);
+				//UE的实现方法, 定义一种析构代理类(见DefaultDeleter), MakeShareable时使用CRT默认new创建, 在删除时使用的CRT默认delete释放
+				CMemory::Free(m_data);
+#endif
 			}
 		}
 		void AssignFrom(CClass* pointer, SGenericSharedPtrData* data)
