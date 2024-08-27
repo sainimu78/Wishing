@@ -36,6 +36,10 @@ namespace Niflect
 			m_name = name;
 			m_addrOffset.SetOffset(offset);
 		}
+		CNiflectType* GetType() const
+		{
+			return m_type;
+		}
 		const CString& GetName() const
 		{
 			return m_name;

@@ -8,4 +8,12 @@
 	2. 模板实例当作一种类型后, 意味着生成代码流程可统一, 模板实例的 Field 与非模板的 Field 的生成方式类似
 	3. 打算以 cursorDecl 为key, 用underlyingType生成模板实例或生成函数名
 5. Done, Niflect, 数组型的ElementAccessor改为另外成员, 不与Children混用, 以方便在遍历结构时区分是否为数组型结构
-6. 
+6. Niflect, 概念调整
+	1. 概念
+		1. Accessor作为结构
+		2. Type作为原生类型指针
+	2. 作用
+		1. 数组型的 Accessor 也为默认的 ArrayAccessor, Type为Native的类型如std::vector<float>
+		2. 在反射创建实例时, 通过Type创建Native实例
+		3. Accessor 作为一种特定类型, 用于实例序列化
+		4. 在查找实例时, 通过入口 ArrayAccessor + 其中的 ElementAccessor 组合查找

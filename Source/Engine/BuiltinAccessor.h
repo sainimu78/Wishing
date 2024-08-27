@@ -168,15 +168,8 @@ namespace Engine
 			auto& instance = *static_cast<const TStlArray*>(offsetBase);
 			ASSERT(!rw->IsArray());
 			auto rwArray = rw->ToArray();
-			auto elemAccessor = this->GetElementAccessor();
 			for (auto idx = 0; idx < instance.size(); ++idx)
-			{
-				auto rwItem = CreateRwNode();
-				auto elem = instance[idx];
-				auto elemBase = &elem;
-				if (elemAccessor->SaveToRwNode(elemBase, rwItem.Get()))
-					rwArray->AddItem(rwItem);
-			}
+				rwArray->AddItemBool(instance[idx]);
 			return true;
 		}
 		virtual bool LoadFromRwNode(AddrType base, const CRwNode* rw) const override
@@ -185,15 +178,11 @@ namespace Engine
 			auto& instance = *static_cast<TStlArray*>(offsetBase);
 			ASSERT(rw->IsArray());
 			auto rwArray = rw->GetArray();
-			auto elemAccessor = this->GetElementAccessor();
 			instance.resize(GetRwItemsCount(rwArray));
 			for (auto idx = 0; idx < instance.size(); ++idx)
 			{
-				auto rwItem = rwArray->GetItem(idx);
-				typename TStlArray::value_type elem;
-				auto elemBase = &elem;
-				if (elemAccessor->LoadFromRwNode(elemBase, rwItem))
-					instance[idx] = elem;
+				auto rwItem = rwArray->GetItem(idx)->ToValue();
+				instance[idx] = rwItem->GetBool();
 			}
 			return true;
 		}
