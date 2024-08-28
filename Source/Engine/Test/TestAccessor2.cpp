@@ -3,6 +3,7 @@
 #include "Niflect/NiflectAccessor.h"
 #include "Niflect/NiflectTable.h"
 #include "Engine/BuiltinAccessor.h"
+#include "Niflect/Util/StringUtil.h"
 
 namespace Engine
 {
@@ -335,9 +336,10 @@ namespace TestAccessor2
 			m_array_5[4] = true;
 			m_map_6["nihao"] = 5.1f;
 			m_map_6["bucuo"] = 5.2f;
-			m_array_7.push_back("shima");
+			m_map_6["shima"] = 5.3f;
 			m_array_7.push_back("zhende");
 			m_array_7.push_back("woxin");
+			m_array_7.push_back("jiushi");
 			TestInit_TMyTransform(m_tm_8);
 		}
 
@@ -573,10 +575,17 @@ namespace TestAccessor2
 	class CPropertyNode
 	{
 	public:
-		virtual void BuildSelf(const SSSSSSSSContext& ctx)
+		void Init(const Niflect::CString& name)
 		{
-			m_name = ctx.m_accessor->GetName();
+			m_name = name;
 		}
+		void InitDefault(const Niflect::CAccessor* accessor)
+		{
+			m_name = accessor->GetName();
+		}
+
+	public:
+		virtual void BuildSelf(const SSSSSSSSContext& ctx) = 0;
 
 	public:
 		void AddNode(const CSharedPropertyNode& node)
@@ -591,21 +600,32 @@ namespace TestAccessor2
 
 	static CSharedPropertyNode BuildPropertyTreeRecurs(const CPropertyNodeFactory& factory, const CRwNode* rwParent, const Niflect::CAccessor* accessorParent);
 
+	class CPropertyItem : public CPropertyNode
+	{
+	public:
+		virtual void BuildSelf(const SSSSSSSSContext& ctx) override
+		{
+
+		}
+		CSharedRwNode m_rwData;
+	};
+
 	class CPropertyGroup : public CPropertyNode
 	{
 		typedef CPropertyNode inherited;
 	public:
 		virtual void BuildSelf(const SSSSSSSSContext& ctx) override
 		{
-			inherited::BuildSelf(ctx);
-
 			auto cnt = ctx.m_accessor->GetChildrenCount();
 			for (uint32 idx = 0; idx < cnt; ++idx)
 			{
 				auto accessorChild = ctx.m_accessor->GetChild(idx);
 				auto rwChild = ctx.m_rw->GetNode(idx);
 				if (auto propChild = BuildPropertyTreeRecurs(ctx.m_factory, rwChild, accessorChild))
+				{
+					propChild->InitDefault(accessorChild);
 					this->AddNode(propChild);
+				}
 			}
 		}
 	};
@@ -616,15 +636,56 @@ namespace TestAccessor2
 	public:
 		virtual void BuildSelf(const SSSSSSSSContext& ctx) override
 		{
-			inherited::BuildSelf(ctx);
-
-			auto cnt = ctx.m_rw->GetNodesCount();
 			auto elemAccessor = ctx.m_accessor->GetElementAccessor();
+			auto cnt = ctx.m_rw->GetNodesCount();
 			for (uint32 idx = 0; idx < cnt; ++idx)
 			{
 				auto rwChild = ctx.m_rw->GetNode(idx);
 				if (auto propChild = BuildPropertyTreeRecurs(ctx.m_factory, rwChild, elemAccessor))
+				{
+					propChild->Init(NiflectUtil::FormatString("%u (%s)", idx, elemAccessor->GetType()->GetTypeName().c_str()));
 					this->AddNode(propChild);
+				}
+			}
+		}
+	};
+
+	class CPropertyBitsArray : public CPropertyNode
+	{
+		typedef CPropertyNode inherited;
+	public:
+		virtual void BuildSelf(const SSSSSSSSContext& ctx) override
+		{
+			auto cnt = ctx.m_rw->GetNodesCount();
+			for (uint32 idx = 0; idx < cnt; ++idx)
+			{
+				auto rwChild = ctx.m_rw->GetNode(idx);
+				if (auto propChild = Niflect::MakeShared<CPropertyItem>())
+				{
+					propChild->Init(NiflectUtil::FormatString("%u (bit)", idx));
+					this->AddNode(propChild);
+				}
+			}
+		}
+	};
+
+	class CPropertyMap : public CPropertyNode
+	{
+		typedef CPropertyNode inherited;
+	public:
+		virtual void BuildSelf(const SSSSSSSSContext& ctx) override
+		{
+			auto elemAccessor = ctx.m_accessor->GetElementAccessor();
+			auto cnt = ctx.m_rw->GetNodesCount();
+			for (uint32 idx = 0; idx < cnt; ++idx)
+			{
+				auto rwChild = ctx.m_rw->GetNode(idx);
+				//希望将 first 与 second 另命名为 key 与 value, 可通过选项传入, 或另外定义 pair 的 property 与 accessor
+				if (auto propChild = BuildPropertyTreeRecurs(ctx.m_factory, rwChild, elemAccessor))
+				{
+					propChild->Init(NiflectUtil::FormatString("%u (%s)", idx, elemAccessor->GetType()->GetTypeName().c_str()));
+					this->AddNode(propChild);
+				}
 			}
 		}
 	};
@@ -639,12 +700,18 @@ namespace TestAccessor2
 		{
 			if (rwParent->IsValue())
 			{
-				//ASSERT(false);
+				ASSERT(false);//没注册type与Property的绑定? 见 factory.Register(StaticGetType<float>(), StaticGetType<CPropertyFloat>());
 			}
 			else if (rwParent->IsArray())
 			{
-				todo: 定义如TStlArrayAccessor的基类相应cast即可, 也可在CAccessor增加表示容器结构Array或Map等的枚举
-				ASSERT(false);
+				if (auto p = CArrayAccessor::CastChecked(accessorParent))
+					prop = Niflect::MakeShared<CPropertyArray>();
+				else if (auto p = CBitsArrayAccessor::CastChecked(accessorParent))
+					prop = Niflect::MakeShared<CPropertyBitsArray>();
+				else if (auto p = CMapAccessor::CastChecked(accessorParent))
+					prop = Niflect::MakeShared<CPropertyMap>();
+				else
+					ASSERT(false);
 			}
 			else
 			{
@@ -668,10 +735,17 @@ namespace TestAccessor2
 			DebugPrintPropertyNodeRecurs(it.Get(), level);
 	}
 
-	class CPropertyItem : public CPropertyNode
+	class CPropertyBool : public CPropertyItem
 	{
+		typedef CPropertyItem inherited;
 	public:
-		CSharedRwNode m_rwData;
+		virtual void BuildSelf(const SSSSSSSSContext& ctx) override
+		{
+			ASSERT(ctx.m_rw->IsValue());
+			auto& value = ctx.m_rw->GetValue()->GetBool();
+			m_rwData = CreateRwNode();
+			SetRwTypedValue<bool>(m_rwData->ToValue(), value);
+		}
 	};
 
 	class CPropertyFloat : public CPropertyItem
@@ -680,12 +754,46 @@ namespace TestAccessor2
 	public:
 		virtual void BuildSelf(const SSSSSSSSContext& ctx) override
 		{
-			inherited::BuildSelf(ctx);
-
 			ASSERT(ctx.m_rw->IsValue());
-			auto value = ctx.m_rw->GetValue()->GetFloat();
+			auto& value = ctx.m_rw->GetValue()->GetFloat();
 			m_rwData = CreateRwNode();
 			SetRwTypedValue<float>(m_rwData->ToValue(), value);
+		}
+	};
+
+	class CPropertyString : public CPropertyItem
+	{
+		typedef CPropertyItem inherited;
+	public:
+		virtual void BuildSelf(const SSSSSSSSContext& ctx) override
+		{
+			ASSERT(ctx.m_rw->IsValue());
+			auto& value = ctx.m_rw->GetValue()->GetString();
+			m_rwData = CreateRwNode();
+			SetRwTypedValue<Niflect::CString>(m_rwData->ToValue(), value);
+		}
+	};
+
+	template <typename TPrecision>
+	class TPropertyMyVectorN : public CPropertyItem
+	{
+		typedef CPropertyItem inherited;
+	public:
+		virtual void BuildSelf(const SSSSSSSSContext& ctx) override
+		{
+			printf("");
+		}
+	};
+
+	template <typename TPrecision>
+	class TPropertyMyTransform : public CPropertyItem
+	{
+		typedef CPropertyItem inherited;
+	public:
+		virtual void BuildSelf(const SSSSSSSSContext& ctx) override
+		{
+			RwTree::DebugPrintRecurs2(ctx.m_rw);
+			printf("");
 		}
 	};
 
@@ -783,12 +891,18 @@ namespace TestAccessor2
 			{
 				{
 					auto table = &tableHolder;
+					table->RegisterType<CClass, CPropertyBool>("CPropertyBool", NULL);
 					table->RegisterType<CClass, CPropertyFloat>("CPropertyFloat", NULL);
+					table->RegisterType<CClass, CPropertyString>("CPropertyString", NULL);
+					table->RegisterType<CClass, TPropertyMyTransform<float> >("TPropertyMyTransform<float>", NULL);
 				}
 
 				{
 					CPropertyNodeFactory factory;
+					factory.Register(StaticGetType<bool>(), StaticGetType<CPropertyBool>());
 					factory.Register(StaticGetType<float>(), StaticGetType<CPropertyFloat>());
+					factory.Register(StaticGetType<Niflect::CString>(), StaticGetType<CPropertyString>());
+					factory.Register(StaticGetType<TMyTransform<float> >(), StaticGetType<TPropertyMyTransform<float> >());
 
 					CSharedAccessor accessorSrc;
 					CRwNode rwSrc;

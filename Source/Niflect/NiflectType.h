@@ -146,6 +146,12 @@ namespace Niflect
 		{
 			return m_natimeta.Get();
 		}
+		template <typename TDerived>
+		TDerived* GetDerivedNatimeta() const
+		{
+			ASSERT(dynamic_cast<TDerived*>(m_natimeta.Get()) != NULL);
+			return static_cast<TDerived*>(m_natimeta.Get());
+		}
 
 	public:
 		template <typename T>

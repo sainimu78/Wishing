@@ -1,5 +1,6 @@
 #pragma once
 #include "Niflect/NiflectAccessor.h"
+#include "Niflect/Util/TypeUtil.h"
 
 namespace Engine
 {
@@ -34,6 +35,20 @@ namespace Engine
 	using CFloatAccessor = TBasicTypeAccessor<float>;
 	//typedef TBasicTypeAccessor<float> CFloatAccessor;
 	using CStringAccessor = TBasicTypeAccessor<Niflect::CString>;
+
+	class CArrayAccessor : public Niflect::CAccessor
+	{
+	public:
+		//专门封装 Cast 是为表示本类作为框架支撑的类型, 需要被 Cast
+		static CArrayAccessor* CastChecked(Niflect::CAccessor* base)
+		{
+			return dynamic_cast<CArrayAccessor*>(base);
+		}
+		static const CArrayAccessor* CastChecked(const Niflect::CAccessor* base)
+		{
+			return dynamic_cast<const CArrayAccessor*>(base);
+		}
+	};
 
 	template <typename TStlArray>
 	static const AddrType GetElementBaseToRead(const TStlArray& array, uint32 idx, bool& stlBoolItemHandler);
@@ -77,7 +92,7 @@ namespace Engine
 	}
 
 	template <typename TStlArray>
-	class TStlArrayAccessor_HandledBitsBasedBoolArray : public Niflect::CAccessor
+	class TStlArrayAccessor_HandledBitsBasedBoolArray : public CArrayAccessor
 	{
 	public:
 		virtual bool SaveToRwNode(const AddrType base, CRwNode* rw) const override
@@ -120,7 +135,7 @@ namespace Engine
 	};
 
 	template <typename TStlArray>
-	class TStlArrayAccessor : public Niflect::CAccessor
+	class TStlArrayAccessor : public CArrayAccessor
 	{
 	public:
 		virtual bool SaveToRwNode(const AddrType base, CRwNode* rw) const override
@@ -157,9 +172,23 @@ namespace Engine
 		}
 	};
 
+	class CBitsArrayAccessor : public Niflect::CAccessor
+	{
+	public:
+		//专门封装 Cast 是为表示本类作为框架支撑的类型, 需要被 Cast
+		static CBitsArrayAccessor* CastChecked(Niflect::CAccessor* base)
+		{
+			return dynamic_cast<CBitsArrayAccessor*>(base);
+		}
+		static const CBitsArrayAccessor* CastChecked(const Niflect::CAccessor* base)
+		{
+			return dynamic_cast<const CBitsArrayAccessor*>(base);
+		}
+	};
+
 	//todo: Bits Array 应改为特殊序列化, 如不需要逐个单独保存, 用不同大小的整数保存, 节省空间
 	template <typename TStlArray>
-	class TStlBitsArrayAccessor : public Niflect::CAccessor
+	class TStlBitsArrayAccessor : public CBitsArrayAccessor
 	{
 	public:
 		virtual bool SaveToRwNode(const AddrType base, CRwNode* rw) const override
@@ -188,8 +217,22 @@ namespace Engine
 		}
 	};
 
+	class CMapAccessor : public Niflect::CAccessor
+	{
+	public:
+		//专门封装 Cast 是为表示本类作为框架支撑的类型, 需要被 Cast
+		static CMapAccessor* CastChecked(Niflect::CAccessor* base)
+		{
+			return dynamic_cast<CMapAccessor*>(base);
+		}
+		static const CMapAccessor* CastChecked(const Niflect::CAccessor* base)
+		{
+			return dynamic_cast<const CMapAccessor*>(base);
+		}
+	};
+
 	template <typename TStlMap>
-	class TStlMapAccessor : public Niflect::CAccessor
+	class TStlMapAccessor : public CMapAccessor
 	{
 		using TElem = typename TStlMap::allocator_type::value_type;
 	public:

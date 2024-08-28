@@ -207,7 +207,7 @@ namespace TestRegistration
 
 				auto type = Niflect::StaticGetType<CMyRegClass>();
 
-				auto natimeta = Niflect::Cast<CMyRegClassNatimeta>(type->GetNatimeta());
+				auto natimeta = type->GetDerivedNatimeta<CMyRegClassNatimeta>();
 				printf("Natimeta, exampleValue: %f\n", natimeta->m_exampleValue);
 
 				auto layout = type->CreateFieldLayout();
