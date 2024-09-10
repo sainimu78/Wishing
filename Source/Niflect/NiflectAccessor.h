@@ -23,8 +23,18 @@ namespace Niflect
 		}
 
 	public:
-		virtual bool SaveToRwNode(const AddrType base, CRwNode* rw) const = 0;
-		virtual bool LoadFromRwNode(AddrType base, const CRwNode* rw) const = 0;
+		bool SaveToRwNode(const AddrType base, CRwNode* rw) const
+		{
+			return this->SaveToRwNode2222(this->GetAddr(base), rw);
+		}
+		bool LoadFromRwNode(AddrType base, const CRwNode* rw) const
+		{
+			return this->LoadFromRwNode2222(this->GetAddr(base), rw);
+		}
+
+	protected:
+		virtual bool SaveToRwNode2222(const AddrType offsetBase, CRwNode* rw) const = 0;
+		virtual bool LoadFromRwNode2222(AddrType offsetBase, const CRwNode* rw) const = 0;
 
 	public:
 		void InitType(CNiflectType* type)
@@ -92,9 +102,8 @@ namespace Niflect
 	class CCompoundAccessor : public CAccessor
 	{
 	public:
-		virtual bool SaveToRwNode(const AddrType base, CRwNode* rw) const override
+		virtual bool SaveToRwNode2222(const AddrType offsetBase, CRwNode* rw) const override
 		{
-			auto offsetBase = this->GetAddr(base);
 			auto count = this->GetChildrenCount();
 			for (uint32 idx = 0; idx < count; ++idx)
 			{
@@ -106,9 +115,8 @@ namespace Niflect
 			}
 			return true;
 		}
-		virtual bool LoadFromRwNode(AddrType base, const CRwNode* rw) const override
+		virtual bool LoadFromRwNode2222(AddrType offsetBase, const CRwNode* rw) const override
 		{
-			auto offsetBase = this->GetAddr(base);
 			auto count = this->GetChildrenCount();
 			for (uint32 idx = 0; idx < count; ++idx)
 			{

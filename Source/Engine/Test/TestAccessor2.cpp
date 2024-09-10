@@ -4,6 +4,7 @@
 #include "Niflect/NiflectTable.h"
 #include "Engine/BuiltinAccessor.h"
 #include "Niflect/Util/StringUtil.h"
+#include "Niflect/Serialization/JsonFormat.h"
 
 namespace Engine
 {
@@ -135,9 +136,8 @@ namespace Engine
 	class TMyTransformAccessor : public Niflect::CAccessor
 	{
 	public:
-		virtual bool SaveToRwNode(const AddrType base, CRwNode* rw) const override
+		virtual bool SaveToRwNode2222(const AddrType offsetBase, CRwNode* rw) const override
 		{
-			auto offsetBase = this->GetAddr(base);
 			auto& instance = *static_cast<const TMyTransform<T>*>(offsetBase);
 			//序列化方式是任意的, 因此可认为支持自定义编码
 			AddRwString(rw, "m_translation", MyVectorToString<T>(instance.m_translation));
@@ -145,9 +145,8 @@ namespace Engine
 			AddRwString(rw, "m_scale", MyVectorToString<T>(instance.m_scale));
 			return true;
 		}
-		virtual bool LoadFromRwNode(AddrType base, const CRwNode* rw) const override
+		virtual bool LoadFromRwNode2222(AddrType offsetBase, const CRwNode* rw) const override
 		{
-			auto offsetBase = this->GetAddr(base);
 			auto& instance = *static_cast<TMyTransform<T>*>(offsetBase);
 			//序列化方式是任意的, 因此可认为支持自定义编码
 			instance.m_translation = StringToMyVector<T>(FindRwString(rw, "m_translation"));
@@ -607,8 +606,17 @@ namespace TestAccessor2
 		{
 
 		}
+		static CPropertyItem* CastChecked(CPropertyNode* base)
+		{
+			return dynamic_cast<CPropertyItem*>(base);
+		}
+		static const CPropertyItem* CastChecked(const CPropertyNode* base)
+		{
+			return dynamic_cast<const CPropertyItem*>(base);
+		}
 		CSharedRwNode m_rwData;
 	};
+	using CSharedPropertyItem = Niflect::TSharedPtr<CPropertyItem>;
 
 	class CPropertyGroup : public CPropertyNode
 	{
@@ -729,7 +737,20 @@ namespace TestAccessor2
 	static void DebugPrintPropertyNodeRecurs(const CPropertyNode* propParent, uint32 level = 0)
 	{
 		auto strLevel = NiflectUtil::DebugIndentToString(level);
-		printf("%s%s\n", strLevel.c_str(), propParent->m_name.c_str());
+		printf("%s%s", strLevel.c_str(), propParent->m_name.c_str());
+		if (auto propItem = CPropertyItem::CastChecked(propParent))
+		{
+			if (auto rw = propItem->m_rwData.Get())
+			{
+				if (rw->IsValue())
+				{
+					Niflect::CStringStream ss;
+					CJsonFormat::Write(rw, ss);
+					printf(", %s", ss.str().c_str());
+				}
+			}
+		}
+		printf("\n");
 		level++;
 		for (auto& it : propParent->m_vecNode)
 			DebugPrintPropertyNodeRecurs(it.Get(), level);
@@ -742,9 +763,9 @@ namespace TestAccessor2
 		virtual void BuildSelf(const SSSSSSSSContext& ctx) override
 		{
 			ASSERT(ctx.m_rw->IsValue());
-			auto& value = ctx.m_rw->GetValue()->GetBool();
+			auto& value = ctx.m_rw->GetValue()->GetAs<bool>();
 			m_rwData = CreateRwNode();
-			SetRwTypedValue<bool>(m_rwData->ToValue(), value);
+			m_rwData->ToValue()->SetAs<bool>(value);
 		}
 	};
 
@@ -774,6 +795,15 @@ namespace TestAccessor2
 		}
 	};
 
+	template <typename T2>
+	static CSharedPropertyItem CreateVectorEntryProperty();
+
+	template <>
+	CSharedPropertyItem CreateVectorEntryProperty<float>()
+	{
+		return Niflect::MakeShared<CPropertyFloat>();
+	}
+
 	template <typename TPrecision>
 	class TPropertyMyVectorN : public CPropertyItem
 	{
@@ -782,6 +812,16 @@ namespace TestAccessor2
 		virtual void BuildSelf(const SSSSSSSSContext& ctx) override
 		{
 			printf("");
+		}
+
+	public:
+		void AddEntry(const Niflect::CString& name, const TPrecision& val)
+		{
+			auto propX = CreateVectorEntryProperty<TPrecision>();
+			propX->m_rwData = CreateRwNode();
+			SetRwTypedValue<TPrecision>(propX->m_rwData->ToValue(), val);
+			propX->Init(name);
+			this->AddNode(propX);
 		}
 	};
 
@@ -792,8 +832,54 @@ namespace TestAccessor2
 	public:
 		virtual void BuildSelf(const SSSSSSSSContext& ctx) override
 		{
-			RwTree::DebugPrintRecurs2(ctx.m_rw);
-			printf("");
+			//RwTree::DebugPrintRecurs2(ctx.m_rw);
+
+			//m_rwData = CreateRwNode();
+			//TMyTransform<TPrecision> instance;
+			//ctx.m_accessor->LoadFromRwNode2222(&instance, ctx.m_rw);
+			//ctx.m_accessor->SaveToRwNode2222(&instance, m_rwData.Get());
+
+			m_rwData = CreateRwNode();
+			TMyTransform<TPrecision> instance;
+			auto accessorTransform = ctx.m_accessor->GetType()->CreateFieldLayout();
+			accessorTransform->LoadFromRwNode(&instance, ctx.m_rw);
+			accessorTransform->SaveToRwNode(&instance, m_rwData.Get());
+
+			{
+				auto propTranslation = Niflect::MakeShared<TPropertyMyVectorN<TPrecision> >();
+				auto x = instance.m_translation.m_x;//可理解为某种解码
+				propTranslation->AddEntry("Prop_X", x);
+				auto y = instance.m_translation.m_y;
+				propTranslation->AddEntry("Prop_Y", y);
+				auto z = instance.m_translation.m_z;
+				propTranslation->AddEntry("Prop_Z", z);
+				propTranslation->Init("Prop_Translation");
+				this->AddNode(propTranslation);
+			}
+			{
+				auto propRotation = Niflect::MakeShared<TPropertyMyVectorN<TPrecision> >();
+				auto x = instance.m_rotation.m_x;
+				propRotation->AddEntry("Prop_X", x);
+				auto y = instance.m_rotation.m_y;
+				propRotation->AddEntry("Prop_Y", y);
+				auto z = instance.m_rotation.m_z;
+				propRotation->AddEntry("Prop_Z", z);
+				auto w = instance.m_rotation.m_w;
+				propRotation->AddEntry("Prop_W", w);
+				propRotation->Init("Prop_Rotation");
+				this->AddNode(propRotation);
+			}
+			{
+				auto propScale = Niflect::MakeShared<TPropertyMyVectorN<TPrecision> >();
+				auto x = instance.m_scale.m_x;//可理解为某种解码
+				propScale->AddEntry("Prop_X", x);
+				auto y = instance.m_scale.m_y;
+				propScale->AddEntry("Prop_Y", y);
+				auto z = instance.m_scale.m_z;
+				propScale->AddEntry("Prop_Z", z);
+				propScale->Init("Prop_Scale");
+				this->AddNode(propScale);
+			}
 		}
 	};
 

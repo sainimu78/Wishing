@@ -10,18 +10,16 @@ namespace Engine
 	class TBasicTypeAccessor : public Niflect::CAccessor
 	{
 	public:
-		virtual bool SaveToRwNode(const AddrType base, CRwNode* rw) const override
+		virtual bool SaveToRwNode2222(const AddrType offsetBase, CRwNode* rw) const override
 		{
-			auto offsetBase = this->GetAddr(base);
 			auto& instance = *static_cast<const TValue*>(offsetBase);
 			ASSERT(!rw->IsValue());
 			auto rwValue = rw->ToValue();
 			SetRwTypedValue<TValue>(rwValue, instance);
 			return true;
 		}
-		virtual bool LoadFromRwNode(AddrType base, const CRwNode* rw) const override
+		virtual bool LoadFromRwNode2222(AddrType offsetBase, const CRwNode* rw) const override
 		{
-			auto offsetBase = this->GetAddr(base);
 			auto& instance = *static_cast<TValue*>(offsetBase);
 			ASSERT(rw->IsValue());
 			auto rwValue = rw->GetValue();
@@ -95,9 +93,8 @@ namespace Engine
 	class TStlArrayAccessor_HandledBitsBasedBoolArray : public CArrayAccessor
 	{
 	public:
-		virtual bool SaveToRwNode(const AddrType base, CRwNode* rw) const override
+		virtual bool SaveToRwNode2222(const AddrType offsetBase, CRwNode* rw) const override
 		{
-			auto offsetBase = this->GetAddr(base);
 			auto& instance = *static_cast<const TStlArray*>(offsetBase);
 			ASSERT(!rw->IsArray());
 			auto rwArray = rw->ToArray();
@@ -113,9 +110,8 @@ namespace Engine
 			}
 			return true;
 		}
-		virtual bool LoadFromRwNode(AddrType base, const CRwNode* rw) const override
+		virtual bool LoadFromRwNode2222(AddrType offsetBase, const CRwNode* rw) const override
 		{
-			auto offsetBase = this->GetAddr(base);
 			auto& instance = *static_cast<TStlArray*>(offsetBase);
 			ASSERT(rw->IsArray());
 			auto rwArray = rw->GetArray();
@@ -138,9 +134,8 @@ namespace Engine
 	class TStlArrayAccessor : public CArrayAccessor
 	{
 	public:
-		virtual bool SaveToRwNode(const AddrType base, CRwNode* rw) const override
+		virtual bool SaveToRwNode2222(const AddrType offsetBase, CRwNode* rw) const override
 		{
-			auto offsetBase = this->GetAddr(base);
 			auto& instance = *static_cast<const TStlArray*>(offsetBase);
 			ASSERT(!rw->IsArray());
 			auto rwArray = rw->ToArray();
@@ -154,9 +149,8 @@ namespace Engine
 			}
 			return true;
 		}
-		virtual bool LoadFromRwNode(AddrType base, const CRwNode* rw) const override
+		virtual bool LoadFromRwNode2222(AddrType offsetBase, const CRwNode* rw) const override
 		{
-			auto offsetBase = this->GetAddr(base);
 			auto& instance = *static_cast<TStlArray*>(offsetBase);
 			ASSERT(rw->IsArray());
 			auto rwArray = rw->GetArray();
@@ -191,9 +185,8 @@ namespace Engine
 	class TStlBitsArrayAccessor : public CBitsArrayAccessor
 	{
 	public:
-		virtual bool SaveToRwNode(const AddrType base, CRwNode* rw) const override
+		virtual bool SaveToRwNode2222(const AddrType offsetBase, CRwNode* rw) const override
 		{
-			auto offsetBase = this->GetAddr(base);
 			auto& instance = *static_cast<const TStlArray*>(offsetBase);
 			ASSERT(!rw->IsArray());
 			auto rwArray = rw->ToArray();
@@ -201,9 +194,8 @@ namespace Engine
 				rwArray->AddItemBool(instance[idx]);
 			return true;
 		}
-		virtual bool LoadFromRwNode(AddrType base, const CRwNode* rw) const override
+		virtual bool LoadFromRwNode2222(AddrType offsetBase, const CRwNode* rw) const override
 		{
-			auto offsetBase = this->GetAddr(base);
 			auto& instance = *static_cast<TStlArray*>(offsetBase);
 			ASSERT(rw->IsArray());
 			auto rwArray = rw->GetArray();
@@ -236,9 +228,8 @@ namespace Engine
 	{
 		using TElem = typename TStlMap::allocator_type::value_type;
 	public:
-		virtual bool SaveToRwNode(const AddrType base, CRwNode* rw) const override
+		virtual bool SaveToRwNode2222(const AddrType offsetBase, CRwNode* rw) const override
 		{
-			auto offsetBase = this->GetAddr(base);
 			auto& instance = *static_cast<const TStlMap*>(offsetBase);
 			ASSERT(!rw->IsArray());
 			auto rwArray = rw->ToArray();
@@ -252,9 +243,8 @@ namespace Engine
 			}
 			return true;
 		}
-		virtual bool LoadFromRwNode(AddrType base, const CRwNode* rw) const override
+		virtual bool LoadFromRwNode2222(AddrType offsetBase, const CRwNode* rw) const override
 		{
-			auto offsetBase = this->GetAddr(base);
 			auto& instance = *static_cast<TStlMap*>(offsetBase);
 			ASSERT(rw->IsArray());
 			auto rwArray = rw->GetArray();

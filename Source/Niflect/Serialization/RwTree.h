@@ -37,6 +37,10 @@ namespace RwTree
 		{
 			return m_type;
 		}
+		template <typename T>
+		const T& GetAs() const;
+		template <typename T>
+		void SetAs(const T& val);
 
 	public:
 		void SetBool(const bool& val)
@@ -47,6 +51,16 @@ namespace RwTree
 		{
 			return this->GetBuiltInValue<ERwValueType::Bool, bool>();
 		}
+		template <>
+		void SetAs<bool>(const bool& val)
+		{
+			return this->SetBool(val);
+		}
+		template <>
+		const bool& GetAs<bool>() const
+		{
+			return this->GetBool();
+		}
 		void SetInt8(const int8& val)
 		{
 			this->SetBuiltInValue<ERwValueType::Int8>(val);
@@ -54,6 +68,16 @@ namespace RwTree
 		const int8& GetInt8() const
 		{
 			return this->GetBuiltInValue<ERwValueType::Int8, int8>();
+		}
+		template <>
+		void SetAs<int8>(const int8& val)
+		{
+			return this->SetInt8(val);
+		}
+		template <>
+		const int8& GetAs<int8>() const
+		{
+			return this->GetInt8();
 		}
 		void SetInt16(const int16& val)
 		{
@@ -63,6 +87,16 @@ namespace RwTree
 		{
 			return this->GetBuiltInValue<ERwValueType::Int16, int16>();
 		}
+		template <>
+		void SetAs<int16>(const int16& val)
+		{
+			return this->SetInt16(val);
+		}
+		template <>
+		const int16& GetAs<int16>() const
+		{
+			return this->GetInt16();
+		}
 		void SetInt32(const int32& val)
 		{
 			this->SetBuiltInValue<ERwValueType::Int32>(val);
@@ -70,6 +104,16 @@ namespace RwTree
 		const int32& GetInt32() const
 		{
 			return this->GetBuiltInValue<ERwValueType::Int32, int32>();
+		}
+		template <>
+		void SetAs<int32>(const int32& val)
+		{
+			return this->SetInt32(val);
+		}
+		template <>
+		const int32& GetAs<int32>() const
+		{
+			return this->GetInt32();
 		}
 		void SetInt64(const int64& val)
 		{
@@ -79,6 +123,16 @@ namespace RwTree
 		{
 			return this->GetBuiltInValue<ERwValueType::Int64, int64>();
 		}
+		template <>
+		void SetAs<int64>(const int64& val)
+		{
+			return this->SetInt64(val);
+		}
+		template <>
+		const int64& GetAs<int64>() const
+		{
+			return this->GetInt64();
+		}
 		void SetUint8(const uint8& val)
 		{
 			this->SetBuiltInValue<ERwValueType::Uint8>(val);
@@ -86,6 +140,16 @@ namespace RwTree
 		const uint8& GetUint8() const
 		{
 			return this->GetBuiltInValue<ERwValueType::Uint8, uint8>();
+		}
+		template <>
+		void SetAs<uint8>(const uint8& val)
+		{
+			return this->SetUint8(val);
+		}
+		template <>
+		const uint8& GetAs<uint8>() const
+		{
+			return this->GetUint8();
 		}
 		void SetUint16(const uint16& val)
 		{
@@ -95,6 +159,16 @@ namespace RwTree
 		{
 			return this->GetBuiltInValue<ERwValueType::Uint16, uint16>();
 		}
+		template <>
+		void SetAs<uint16>(const uint16& val)
+		{
+			return this->SetUint16(val);
+		}
+		template <>
+		const uint16& GetAs<uint16>() const
+		{
+			return this->GetUint16();
+		}
 		void SetUint32(const uint32& val)
 		{
 			this->SetBuiltInValue<ERwValueType::Uint32>(val);
@@ -102,6 +176,16 @@ namespace RwTree
 		const uint32& GetUint32() const
 		{
 			return this->GetBuiltInValue<ERwValueType::Uint32, uint32>();
+		}
+		template <>
+		void SetAs<uint32>(const uint32& val)
+		{
+			return this->SetUint32(val);
+		}
+		template <>
+		const uint32& GetAs<uint32>() const
+		{
+			return this->GetUint32();
 		}
 		void SetUint64(const uint64& val)
 		{
@@ -111,6 +195,16 @@ namespace RwTree
 		{
 			return this->GetBuiltInValue<ERwValueType::Uint64, uint64>();
 		}
+		template <>
+		void SetAs<uint64>(const uint64& val)
+		{
+			return this->SetUint64(val);
+		}
+		template <>
+		const uint64& GetAs<uint64>() const
+		{
+			return this->GetUint64();
+		}
 		void SetFloat(const float& val)
 		{
 			this->SetBuiltInValue<ERwValueType::Float>(val);
@@ -119,6 +213,16 @@ namespace RwTree
 		{
 			return this->GetBuiltInValue<ERwValueType::Float, float>();
 		}
+		template <>
+		void SetAs<float>(const float& val)
+		{
+			return this->SetFloat(val);
+		}
+		template <>
+		const float& GetAs<float>() const
+		{
+			return this->GetFloat();
+		}
 		void SetDouble(const double& val)
 		{
 			this->SetBuiltInValue<ERwValueType::Double>(val);
@@ -126,6 +230,16 @@ namespace RwTree
 		const double& GetDouble() const
 		{
 			return this->GetBuiltInValue<ERwValueType::Double, double>();
+		}
+		template <>
+		void SetAs<double>(const double& val)
+		{
+			return this->SetDouble(val);
+		}
+		template <>
+		const double& GetAs<double>() const
+		{
+			return this->GetDouble();
 		}
 		void SetString(const Niflect::CString& val)
 		{
@@ -136,6 +250,16 @@ namespace RwTree
 		{
 			ASSERT(m_type == ERwValueType::String);
 			return m_data;
+		}
+		template <>
+		void SetAs<Niflect::CString>(const Niflect::CString& val)
+		{
+			return this->SetString(val);
+		}
+		template <>
+		const Niflect::CString& GetAs<Niflect::CString>() const
+		{
+			return this->GetString();
 		}
 
 	public:
