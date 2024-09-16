@@ -24,6 +24,7 @@ public:
 	float m_float;
 	bool m_bool;
 	double m_double;
+	int m_arr[128];
 };
 
 typedef void (*FuncTestAPI_C)();

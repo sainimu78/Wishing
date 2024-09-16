@@ -49,11 +49,13 @@ namespace Niflect
 	//1. 在释放时, 通过MakeShared创建的SharedPtr, 不需要删除两个对象, 而std::shared_ptr需要删除引用对象与计数对象
 	//2. 不支持week_ptr
 	//3. 模板实例本身占用空间为2个指针, 而std::shared_ptr包含引用指针与两个引用计数
+	//4. 通过虚函数区分通过 std::make_shared 与 std::shared_ptr 构造建立的引用, 虚函数额外使用8字节, 见 std::_Ref_count_base(即使使用了 VC 中的 __declspec(novtable) 也需要额外的8字节)
 	//不考虑任意从原始指针建立引用时, 该类可与std::shared_ptr简单替换
 	//----------------------------------------------------------------------------------------------
 	//与UE TSharedPtr不同处:
 	//1. 删除过程更简单一些, 可直接调用析构函数指针, 而UE TSharedPtr需要通过一个虚函数调用析构函数, 消耗略多一些
 	//2. 其它不同处见上述关于std::shared_ptr的第2与3项
+	//3. 与 VC 的 STL 相同, 通过虚函数区分通过 MakeShared 与 MakeSharable 建立引用, 虚函数额外使用8字节
 
 	struct SGenericSharedPtrData
 	{
