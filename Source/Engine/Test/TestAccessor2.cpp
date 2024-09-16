@@ -772,7 +772,7 @@ namespace TestAccessor2
 			ASSERT(ctx.m_rw->IsValue());
 			auto& value = ctx.m_rw->GetValue()->GetFloat();
 			m_rwData = CreateRwNode();
-			SetRwTypedValue<float>(m_rwData->ToValue(), value);
+			SetRwValueAs<float>(m_rwData->ToValue(), value);
 		}
 	};
 
@@ -785,7 +785,7 @@ namespace TestAccessor2
 			ASSERT(ctx.m_rw->IsValue());
 			auto& value = ctx.m_rw->GetValue()->GetString();
 			m_rwData = CreateRwNode();
-			SetRwTypedValue<Niflect::CString>(m_rwData->ToValue(), value);
+			SetRwValueAs<Niflect::CString>(m_rwData->ToValue(), value);
 		}
 	};
 
@@ -813,7 +813,7 @@ namespace TestAccessor2
 		{
 			auto propX = CreateVectorEntryProperty<TPrecision>();
 			propX->m_rwData = CreateRwNode();
-			SetRwTypedValue<TPrecision>(propX->m_rwData->ToValue(), val);
+			SetRwValueAs<TPrecision>(propX->m_rwData->ToValue(), val);
 			propX->Init(name);
 			this->AddNode(propX);
 		}

@@ -37,6 +37,7 @@ namespace RwTree
 		{
 			return m_type;
 		}
+
 		template <typename T>
 		const T& GetAs() const;
 		template <typename T>
@@ -51,16 +52,6 @@ namespace RwTree
 		{
 			return this->GetBuiltInValue<ERwValueType::Bool, bool>();
 		}
-		template <>
-		void SetAs<bool>(const bool& val)
-		{
-			return this->SetBool(val);
-		}
-		template <>
-		const bool& GetAs<bool>() const
-		{
-			return this->GetBool();
-		}
 		void SetInt8(const int8& val)
 		{
 			this->SetBuiltInValue<ERwValueType::Int8>(val);
@@ -68,16 +59,6 @@ namespace RwTree
 		const int8& GetInt8() const
 		{
 			return this->GetBuiltInValue<ERwValueType::Int8, int8>();
-		}
-		template <>
-		void SetAs<int8>(const int8& val)
-		{
-			return this->SetInt8(val);
-		}
-		template <>
-		const int8& GetAs<int8>() const
-		{
-			return this->GetInt8();
 		}
 		void SetInt16(const int16& val)
 		{
@@ -87,16 +68,6 @@ namespace RwTree
 		{
 			return this->GetBuiltInValue<ERwValueType::Int16, int16>();
 		}
-		template <>
-		void SetAs<int16>(const int16& val)
-		{
-			return this->SetInt16(val);
-		}
-		template <>
-		const int16& GetAs<int16>() const
-		{
-			return this->GetInt16();
-		}
 		void SetInt32(const int32& val)
 		{
 			this->SetBuiltInValue<ERwValueType::Int32>(val);
@@ -104,16 +75,6 @@ namespace RwTree
 		const int32& GetInt32() const
 		{
 			return this->GetBuiltInValue<ERwValueType::Int32, int32>();
-		}
-		template <>
-		void SetAs<int32>(const int32& val)
-		{
-			return this->SetInt32(val);
-		}
-		template <>
-		const int32& GetAs<int32>() const
-		{
-			return this->GetInt32();
 		}
 		void SetInt64(const int64& val)
 		{
@@ -123,16 +84,6 @@ namespace RwTree
 		{
 			return this->GetBuiltInValue<ERwValueType::Int64, int64>();
 		}
-		template <>
-		void SetAs<int64>(const int64& val)
-		{
-			return this->SetInt64(val);
-		}
-		template <>
-		const int64& GetAs<int64>() const
-		{
-			return this->GetInt64();
-		}
 		void SetUint8(const uint8& val)
 		{
 			this->SetBuiltInValue<ERwValueType::Uint8>(val);
@@ -140,16 +91,6 @@ namespace RwTree
 		const uint8& GetUint8() const
 		{
 			return this->GetBuiltInValue<ERwValueType::Uint8, uint8>();
-		}
-		template <>
-		void SetAs<uint8>(const uint8& val)
-		{
-			return this->SetUint8(val);
-		}
-		template <>
-		const uint8& GetAs<uint8>() const
-		{
-			return this->GetUint8();
 		}
 		void SetUint16(const uint16& val)
 		{
@@ -159,16 +100,6 @@ namespace RwTree
 		{
 			return this->GetBuiltInValue<ERwValueType::Uint16, uint16>();
 		}
-		template <>
-		void SetAs<uint16>(const uint16& val)
-		{
-			return this->SetUint16(val);
-		}
-		template <>
-		const uint16& GetAs<uint16>() const
-		{
-			return this->GetUint16();
-		}
 		void SetUint32(const uint32& val)
 		{
 			this->SetBuiltInValue<ERwValueType::Uint32>(val);
@@ -176,16 +107,6 @@ namespace RwTree
 		const uint32& GetUint32() const
 		{
 			return this->GetBuiltInValue<ERwValueType::Uint32, uint32>();
-		}
-		template <>
-		void SetAs<uint32>(const uint32& val)
-		{
-			return this->SetUint32(val);
-		}
-		template <>
-		const uint32& GetAs<uint32>() const
-		{
-			return this->GetUint32();
 		}
 		void SetUint64(const uint64& val)
 		{
@@ -195,16 +116,6 @@ namespace RwTree
 		{
 			return this->GetBuiltInValue<ERwValueType::Uint64, uint64>();
 		}
-		template <>
-		void SetAs<uint64>(const uint64& val)
-		{
-			return this->SetUint64(val);
-		}
-		template <>
-		const uint64& GetAs<uint64>() const
-		{
-			return this->GetUint64();
-		}
 		void SetFloat(const float& val)
 		{
 			this->SetBuiltInValue<ERwValueType::Float>(val);
@@ -213,16 +124,6 @@ namespace RwTree
 		{
 			return this->GetBuiltInValue<ERwValueType::Float, float>();
 		}
-		template <>
-		void SetAs<float>(const float& val)
-		{
-			return this->SetFloat(val);
-		}
-		template <>
-		const float& GetAs<float>() const
-		{
-			return this->GetFloat();
-		}
 		void SetDouble(const double& val)
 		{
 			this->SetBuiltInValue<ERwValueType::Double>(val);
@@ -230,16 +131,6 @@ namespace RwTree
 		const double& GetDouble() const
 		{
 			return this->GetBuiltInValue<ERwValueType::Double, double>();
-		}
-		template <>
-		void SetAs<double>(const double& val)
-		{
-			return this->SetDouble(val);
-		}
-		template <>
-		const double& GetAs<double>() const
-		{
-			return this->GetDouble();
 		}
 		void SetString(const Niflect::CString& val)
 		{
@@ -250,16 +141,6 @@ namespace RwTree
 		{
 			ASSERT(m_type == ERwValueType::String);
 			return m_data;
-		}
-		template <>
-		void SetAs<Niflect::CString>(const Niflect::CString& val)
-		{
-			return this->SetString(val);
-		}
-		template <>
-		const Niflect::CString& GetAs<Niflect::CString>() const
-		{
-			return this->GetString();
 		}
 
 	public:
@@ -301,6 +182,127 @@ namespace RwTree
 		ERwValueType& m_type;
 	};
 	using CSharedRwValue = Niflect::TSharedPtr<CRwValue>;
+
+	template <>
+	inline void CRwValue::SetAs<bool>(const bool& val)
+	{
+		return this->SetBool(val);
+	}
+	template <>
+	inline const bool& CRwValue::GetAs<bool>() const
+	{
+		return this->GetBool();
+	}
+	template <>
+	inline void CRwValue::SetAs<int8>(const int8& val)
+	{
+		return this->SetInt8(val);
+	}
+	template <>
+	inline const int8& CRwValue::GetAs<int8>() const
+	{
+		return this->GetInt8();
+	}
+	template <>
+	inline void CRwValue::SetAs<int16>(const int16& val)
+	{
+		return this->SetInt16(val);
+	}
+	template <>
+	inline const int16& CRwValue::GetAs<int16>() const
+	{
+		return this->GetInt16();
+	}
+	template <>
+	inline void CRwValue::SetAs<int32>(const int32& val)
+	{
+		return this->SetInt32(val);
+	}
+	template <>
+	inline const int32& CRwValue::GetAs<int32>() const
+	{
+		return this->GetInt32();
+	}
+	template <>
+	inline void CRwValue::SetAs<int64>(const int64& val)
+	{
+		return this->SetInt64(val);
+	}
+	template <>
+	inline const int64& CRwValue::GetAs<int64>() const
+	{
+		return this->GetInt64();
+	}
+	template <>
+	inline void CRwValue::SetAs<uint8>(const uint8& val)
+	{
+		return this->SetUint8(val);
+	}
+	template <>
+	inline const uint8& CRwValue::GetAs<uint8>() const
+	{
+		return this->GetUint8();
+	}
+	template <>
+	inline void CRwValue::SetAs<uint16>(const uint16& val)
+	{
+		return this->SetUint16(val);
+	}
+	template <>
+	inline const uint16& CRwValue::GetAs<uint16>() const
+	{
+		return this->GetUint16();
+	}
+	template <>
+	inline void CRwValue::SetAs<uint32>(const uint32& val)
+	{
+		return this->SetUint32(val);
+	}
+	template <>
+	inline const uint32& CRwValue::GetAs<uint32>() const
+	{
+		return this->GetUint32();
+	}
+	template <>
+	inline void CRwValue::SetAs<uint64>(const uint64& val)
+	{
+		return this->SetUint64(val);
+	}
+	template <>
+	inline const uint64& CRwValue::GetAs<uint64>() const
+	{
+		return this->GetUint64();
+	}
+	template <>
+	inline void CRwValue::SetAs<float>(const float& val)
+	{
+		return this->SetFloat(val);
+	}
+	template <>
+	inline const float& CRwValue::GetAs<float>() const
+	{
+		return this->GetFloat();
+	}
+	template <>
+	inline void CRwValue::SetAs<double>(const double& val)
+	{
+		return this->SetDouble(val);
+	}
+	template <>
+	inline const double& CRwValue::GetAs<double>() const
+	{
+		return this->GetDouble();
+	}
+	template <>
+	inline void CRwValue::SetAs<Niflect::CString>(const Niflect::CString& val)
+	{
+		return this->SetString(val);
+	}
+	template <>
+	inline const Niflect::CString& CRwValue::GetAs<Niflect::CString>() const
+	{
+		return this->GetString();
+	}
 
 	class CRwNode;
 	using CSharedRwNode = Niflect::TSharedPtr<CRwNode>;
@@ -540,137 +542,73 @@ namespace RwTree
 			return rwNode->ToValue();
 		return NULL;
 	}
-	template <typename TValue>
-	static TValue GetRwTypedValue(const CRwValue* rwValue, TValue defaultValue = TValue())
-	{
-		ASSERT(false);
-	}
-
-#define SPECIALIZATION_IMPL_GetRwTypedValue(specType, getterFuncName)\
-	template <>\
-	inline specType GetRwTypedValue(const CRwValue* rwValue, specType defaultValue)\
-	{\
-		if (rwValue != NULL)\
-			return rwValue->getterFuncName();\
-		return defaultValue;\
-	}
-
-	SPECIALIZATION_IMPL_GetRwTypedValue(bool, GetBool)
-	SPECIALIZATION_IMPL_GetRwTypedValue(int8, GetInt8)
-	SPECIALIZATION_IMPL_GetRwTypedValue(int16, GetInt16)
-	SPECIALIZATION_IMPL_GetRwTypedValue(int32, GetInt32)
-	SPECIALIZATION_IMPL_GetRwTypedValue(int64, GetInt64)
-	SPECIALIZATION_IMPL_GetRwTypedValue(uint8, GetUint8)
-	SPECIALIZATION_IMPL_GetRwTypedValue(uint16, GetUint16)
-	SPECIALIZATION_IMPL_GetRwTypedValue(uint32, GetUint32)
-	SPECIALIZATION_IMPL_GetRwTypedValue(uint64, GetUint64)
-	SPECIALIZATION_IMPL_GetRwTypedValue(float, GetFloat)
-	SPECIALIZATION_IMPL_GetRwTypedValue(double, GetDouble)
-	SPECIALIZATION_IMPL_GetRwTypedValue(Niflect::CString, GetString)
 
 	template <typename TValue>
-	static void SetRwTypedValue(CRwValue* rwValue, TValue value)
+	static TValue GetRwValueAs(const CRwValue* rwValue, TValue defaultValue = TValue())
 	{
-		ASSERT(false);
+		if (rwValue != NULL)
+			return rwValue->GetAs<TValue>();
+		return defaultValue;
 	}
 
-#define SPECIALIZATION_IMPL_SetRwTypedValue(specType, setterFuncName)\
-	template <>\
-	inline void SetRwTypedValue(CRwValue* rwValue, specType value)\
-	{\
-		if (rwValue != NULL)\
-			rwValue->setterFuncName(value);\
+	template <typename TValue>
+	static void SetRwValueAs(CRwValue* rwValue, TValue value)
+	{
+		if (rwValue != NULL)
+			rwValue->SetAs<TValue>(value);
 	}
 
-	SPECIALIZATION_IMPL_SetRwTypedValue(bool, SetBool)
-	SPECIALIZATION_IMPL_SetRwTypedValue(int8, SetInt8)
-	SPECIALIZATION_IMPL_SetRwTypedValue(int16, SetInt16)
-	SPECIALIZATION_IMPL_SetRwTypedValue(int32, SetInt32)
-	SPECIALIZATION_IMPL_SetRwTypedValue(int64, SetInt64)
-	SPECIALIZATION_IMPL_SetRwTypedValue(uint8, SetUint8)
-	SPECIALIZATION_IMPL_SetRwTypedValue(uint16, SetUint16)
-	SPECIALIZATION_IMPL_SetRwTypedValue(uint32, SetUint32)
-	SPECIALIZATION_IMPL_SetRwTypedValue(uint64, SetUint64)
-	SPECIALIZATION_IMPL_SetRwTypedValue(float, SetFloat)
-	SPECIALIZATION_IMPL_SetRwTypedValue(double, SetDouble)
-	SPECIALIZATION_IMPL_SetRwTypedValue(Niflect::CString, SetString)
-
-	static bool FindRwBool(const CRwNode* rwParent, const Niflect::CString& name, bool defaultValue = false)
+	template <typename TValue>
+	static TValue FindRwValueAs(const CRwNode* rwParent, const Niflect::CString& name, const TValue& defaultValue = TValue())
 	{
 		auto value = defaultValue;
 		if (auto rwValue = FindRwValue(rwParent, name))
-			value = rwValue->GetBool();
+			value = rwValue->GetAs<TValue>();
 		return value;
+	}
+	static bool FindRwBool(const CRwNode* rwParent, const Niflect::CString& name, bool defaultValue = false)
+	{
+		return FindRwValueAs<bool>(rwParent, name, defaultValue);
 	}
 	static int8 FindRwInt8(const CRwNode* rwParent, const Niflect::CString& name, int8 defaultValue = 0)
 	{
-		auto value = defaultValue;
-		if (auto rwValue = FindRwValue(rwParent, name))
-			value = rwValue->GetInt8();
-		return value;
+		return FindRwValueAs<int8>(rwParent, name, defaultValue);
 	}
 	static int16 FindRwInt16(const CRwNode* rwParent, const Niflect::CString& name, int16 defaultValue = 0)
 	{
-		auto value = defaultValue;
-		if (auto rwValue = FindRwValue(rwParent, name))
-			value = rwValue->GetInt16();
-		return value;
+		return FindRwValueAs<int16>(rwParent, name, defaultValue);
 	}
 	static int32 FindRwInt32(const CRwNode* rwParent, const Niflect::CString& name, int32 defaultValue = 0)
 	{
-		auto value = defaultValue;
-		if (auto rwValue = FindRwValue(rwParent, name))
-			value = rwValue->GetInt32();
-		return value;
+		return FindRwValueAs<int32>(rwParent, name, defaultValue);
 	}
 	static int64 FindRwInt64(const CRwNode* rwParent, const Niflect::CString& name, int64 defaultValue = 0)
 	{
-		auto value = defaultValue;
-		if (auto rwValue = FindRwValue(rwParent, name))
-			value = rwValue->GetInt64();
-		return value;
+		return FindRwValueAs<int64>(rwParent, name, defaultValue);
 	}
 	static uint8 FindRwUint8(const CRwNode* rwParent, const Niflect::CString& name, uint8 defaultValue = 0u)
 	{
-		auto value = defaultValue;
-		if (auto rwValue = FindRwValue(rwParent, name))
-			value = rwValue->GetUint8();
-		return value;
+		return FindRwValueAs<uint8>(rwParent, name, defaultValue);
 	}
 	static uint16 FindRwUint16(const CRwNode* rwParent, const Niflect::CString& name, uint16 defaultValue = 0u)
 	{
-		auto value = defaultValue;
-		if (auto rwValue = FindRwValue(rwParent, name))
-			value = rwValue->GetUint16();
-		return value;
+		return FindRwValueAs<uint16>(rwParent, name, defaultValue);
 	}
 	static uint32 FindRwUint32(const CRwNode* rwParent, const Niflect::CString& name, uint32 defaultValue = 0u)
 	{
-		auto value = defaultValue;
-		if (auto rwValue = FindRwValue(rwParent, name))
-			value = rwValue->GetUint32();
-		return value;
+		return FindRwValueAs<uint32>(rwParent, name, defaultValue);
 	}
 	static uint64 FindRwUint64(const CRwNode* rwParent, const Niflect::CString& name, uint64 defaultValue = 0u)
 	{
-		auto value = defaultValue;
-		if (auto rwValue = FindRwValue(rwParent, name))
-			value = rwValue->GetUint64();
-		return value;
+		return FindRwValueAs<uint64>(rwParent, name, defaultValue);
 	}
 	static float FindRwFloat(const CRwNode* rwParent, const Niflect::CString& name, float defaultValue = 0.0f)
 	{
-		auto value = defaultValue;
-		if (auto rwValue = FindRwValue(rwParent, name))
-			value = rwValue->GetFloat();
-		return value;
+		return FindRwValueAs<float>(rwParent, name, defaultValue);
 	}
 	static Niflect::CString FindRwString(const CRwNode* rwParent, const Niflect::CString& name, const Niflect::CString& defaultValue = Niflect::CString())
 	{
-		auto value = defaultValue;
-		if (auto rwValue = FindRwValue(rwParent, name))
-			value = rwValue->GetString();
-		return value;
+		return FindRwValueAs<Niflect::CString>(rwParent, name, defaultValue);
 	}
 	static CRwRawData FindRwRawData(const CRwNode* rwParent, const Niflect::CString& name)
 	{
@@ -713,10 +651,6 @@ namespace RwTree
 	}
 	static bool AddExistingRwNode(CRwNode* rwParent, const Niflect::CString& name, const CSharedRwNode& shared, uint32* insertedIndex = NULL)
 	{
-		//if (rwParent != NULL)
-		//	return rwParent->AddNode(name, rwNode, insertedIndex);
-		//return NULL;
-
 		if (rwParent != NULL)
 		{
 			ASSERT(shared->GetName().empty());
@@ -730,10 +664,6 @@ namespace RwTree
 	}
 	static CRwNode* AddRwNode(CRwNode* rwParent, const Niflect::CString& name, uint32* insertedIndex = NULL)
 	{
-		//if (rwParent != NULL)
-		//	return rwParent->CreateAndAddNode(name, insertedIndex);
-		//return NULL;
-
 		auto shared = CreateRwNode();
 		uint32 idx = INDEX_NONE;
 		if (AddExistingRwNode(rwParent, name, shared, &idx))
@@ -752,65 +682,59 @@ namespace RwTree
 	{
 		return AddRwNode(rwParent, name, insertedIndex)->ToValue();
 	}
-	static void AddRwBool(CRwNode* rwParent, const Niflect::CString& name, bool value)
+	template <typename TValue>
+	static void AddRwValueAs(CRwNode* rwParent, const Niflect::CString& name, const TValue& value)
 	{
 		if (auto rwValue = AddRwValue(rwParent, name))
-			rwValue->SetBool(value);
+			rwValue->SetAs<TValue>(value);
+	}
+	static void AddRwBool(CRwNode* rwParent, const Niflect::CString& name, bool value)
+	{
+		AddRwValueAs<bool>(rwParent, name, value);
 	}
 	static void AddRwInt8(CRwNode* rwParent, const Niflect::CString& name, int8 value)
 	{
-		if (auto rwValue = AddRwValue(rwParent, name))
-			rwValue->SetInt8(value);
+		AddRwValueAs<int8>(rwParent, name, value);
 	}
 	static void AddRwInt16(CRwNode* rwParent, const Niflect::CString& name, int16 value)
 	{
-		if (auto rwValue = AddRwValue(rwParent, name))
-			rwValue->SetInt16(value);
+		AddRwValueAs<int16>(rwParent, name, value);
 	}
 	static void AddRwInt32(CRwNode* rwParent, const Niflect::CString& name, int32 value)
 	{
-		if (auto rwValue = AddRwValue(rwParent, name))
-			rwValue->SetInt32(value);
+		AddRwValueAs<int32>(rwParent, name, value);
 	}
 	static void AddRwInt64(CRwNode* rwParent, const Niflect::CString& name, int64 value)
 	{
-		if (auto rwValue = AddRwValue(rwParent, name))
-			rwValue->SetInt64(value);
+		AddRwValueAs<int64>(rwParent, name, value);
 	}
 	static void AddRwUint8(CRwNode* rwParent, const Niflect::CString& name, uint8 value)
 	{
-		if (auto rwValue = AddRwValue(rwParent, name))
-			rwValue->SetUint8(value);
+		AddRwValueAs<uint8>(rwParent, name, value);
 	}
 	static void AddRwUint16(CRwNode* rwParent, const Niflect::CString& name, uint16 value)
 	{
-		if (auto rwValue = AddRwValue(rwParent, name))
-			rwValue->SetUint16(value);
+		AddRwValueAs<uint16>(rwParent, name, value);
 	}
 	static void AddRwUint32(CRwNode* rwParent, const Niflect::CString& name, uint32 value)
 	{
-		if (auto rwValue = AddRwValue(rwParent, name))
-			rwValue->SetUint32(value);
+		AddRwValueAs<uint32>(rwParent, name, value);
 	}
 	static void AddRwUint64(CRwNode* rwParent, const Niflect::CString& name, uint64 value)
 	{
-		if (auto rwValue = AddRwValue(rwParent, name))
-			rwValue->SetUint64(value);
+		AddRwValueAs<uint64>(rwParent, name, value);
 	}
 	static void AddRwFloat(CRwNode* rwParent, const Niflect::CString& name, float value)
 	{
-		if (auto rwValue = AddRwValue(rwParent, name))
-			rwValue->SetFloat(value);
+		AddRwValueAs<float>(rwParent, name, value);
 	}
 	static void AddRwDouble(CRwNode* rwParent, const Niflect::CString& name, double value)
 	{
-		if (auto rwValue = AddRwValue(rwParent, name))
-			rwValue->SetDouble(value);
+		AddRwValueAs<double>(rwParent, name, value);
 	}
 	static void AddRwString(CRwNode* rwParent, const Niflect::CString& name, const Niflect::CString& value)
 	{
-		if (auto rwValue = AddRwValue(rwParent, name))
-			rwValue->SetString(value);
+		AddRwValueAs<Niflect::CString>(rwParent, name, value);
 	}
 	static void AddRwRawData(CRwNode* rwParent, const Niflect::CString& name, const void* data, uint32 size)
 	{

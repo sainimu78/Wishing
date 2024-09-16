@@ -15,7 +15,7 @@ namespace Engine
 			auto& instance = *static_cast<const TValue*>(offsetBase);
 			ASSERT(!rw->IsValue());
 			auto rwValue = rw->ToValue();
-			SetRwTypedValue<TValue>(rwValue, instance);
+			SetRwValueAs<TValue>(rwValue, instance);
 			return true;
 		}
 		virtual bool LoadFromRwNode2222(AddrType offsetBase, const CRwNode* rw) const override
@@ -23,7 +23,7 @@ namespace Engine
 			auto& instance = *static_cast<TValue*>(offsetBase);
 			ASSERT(rw->IsValue());
 			auto rwValue = rw->GetValue();
-			instance = GetRwTypedValue<TValue>(rwValue);
+			instance = GetRwValueAs<TValue>(rwValue);
 			return true;
 		}
 	};

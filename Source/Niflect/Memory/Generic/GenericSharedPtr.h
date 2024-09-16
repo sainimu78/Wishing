@@ -10,7 +10,12 @@
 //为减少此微小空间占用, 也可考虑将 SGenericSharedPtrData 指定为非对齐结构
 //现通过假定函数地址是对齐的, 不被使用, 利用最低位保存创建来源
 //如果现特殊方法不可行, 或某些平台或编译器不适用, 以启用此宏的实现版本编译即可
-//#define DETERMINE_CONSTRUCTED_FROM_MAKESHARED_OR_MAKESHARABLE_BY_A_BOOL
+#define DETERMINE_CONSTRUCTED_FROM_MAKESHARED_OR_MAKESHARABLE_BY_A_BOOL
+
+#ifdef DETERMINE_CONSTRUCTED_FROM_MAKESHARED_OR_MAKESHARABLE_BY_A_BOOL
+#else
+//#include <sstream>//打印DestructFunc函数地址
+#endif
 
 namespace Niflect
 {
@@ -200,7 +205,12 @@ namespace Niflect
 #ifdef DETERMINE_CONSTRUCTED_FROM_MAKESHARED_OR_MAKESHARABLE_BY_A_BOOL
 			StaticInitData(m_data, DestructFunc, true);
 #else
+			//std::stringstream ss;
+			//ss << DestructFunc;
+			//printf("My DestructFunc %s\n", ss.str().c_str());
+			//测试发现在 MinGW Build 的 DestructFunc 地址为 0x1
 			ASSERT((reinterpret_cast<ptrdiff_t>(DestructFunc) & 0x1) == 0);
+
 			auto flaggedDestructFunc = reinterpret_cast<InvokeDestructorFunc>(reinterpret_cast<ptrdiff_t>(DestructFunc) | 0x1);
 			StaticInitData(m_data, flaggedDestructFunc, true);
 #endif
