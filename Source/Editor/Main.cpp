@@ -18,6 +18,7 @@ public:
 		: m_float(1.23f)
 		, m_bool(true)
 		, m_double(43.21)
+		, m_arr{}
 	{
 
 	}
