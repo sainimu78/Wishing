@@ -578,10 +578,6 @@ namespace TestAccessor2
 		{
 			m_name = name;
 		}
-		void InitDefault(const Niflect::CAccessor* accessor)
-		{
-			m_name = accessor->GetName();
-		}
 
 	public:
 		virtual void BuildSelf(const SSSSSSSSContext& ctx) = 0;
@@ -631,7 +627,7 @@ namespace TestAccessor2
 				auto rwChild = ctx.m_rw->GetNode(idx);
 				if (auto propChild = BuildPropertyTreeRecurs(ctx.m_factory, rwChild, accessorChild))
 				{
-					propChild->InitDefault(accessorChild);
+					propChild->Init(accessorChild->GetName());
 					this->AddNode(propChild);
 				}
 			}
@@ -668,11 +664,9 @@ namespace TestAccessor2
 			for (uint32 idx = 0; idx < cnt; ++idx)
 			{
 				auto rwChild = ctx.m_rw->GetNode(idx);
-				if (auto propChild = Niflect::MakeShared<CPropertyItem>())
-				{
-					propChild->Init(NiflectUtil::FormatString("%u (bit)", idx));
-					this->AddNode(propChild);
-				}
+				auto propElem = Niflect::MakeShared<CPropertyItem>();
+				propElem->Init(NiflectUtil::FormatString("%u (bit)", idx));
+				this->AddNode(propElem);
 			}
 		}
 	};
