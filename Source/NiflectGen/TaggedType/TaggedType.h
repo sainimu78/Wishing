@@ -32,6 +32,7 @@ namespace NiflectGen
 
 	class CTaggedInheritableTypeMember : public CTaggedNode2
 	{
+		typedef CTaggedNode2 inherited;
 	public:
 		CTaggedInheritableTypeMember();
 		void InitMember(CX_CXXAccessSpecifier accessSpecifier);
@@ -49,6 +50,17 @@ namespace NiflectGen
 		}
 
 	public:
+		static CTaggedInheritableTypeMember* Cast(inherited* base)
+		{
+			ASSERT(dynamic_cast<CTaggedInheritableTypeMember*>(base) != NULL);
+			return static_cast<CTaggedInheritableTypeMember*>(base);
+		}
+		static CTaggedInheritableTypeMember* CastChecked(inherited* base)
+		{
+			return dynamic_cast<CTaggedInheritableTypeMember*>(base);
+		}
+
+	public:
 		CX_CXXAccessSpecifier m_accessSpecifier;
 		Niflect::TArrayNif<CXCursor> m_vecDetailCursor;
 	};
@@ -61,5 +73,11 @@ namespace NiflectGen
 
 	public:
 		virtual bool CollectSibling(const CXCursor& cursor, const STaggedNodeCollectingContext& context) override;
+
+	public:
+		static CUntaggedTemplate* CastChecked(inherited* base)
+		{
+			return dynamic_cast<CUntaggedTemplate*>(base);
+		}
 	};
 }

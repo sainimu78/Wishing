@@ -32,7 +32,7 @@ namespace NiflectGen
 		for (auto& it : m_vecChild)
 		{
 			//嵌套类型也为taggedType的子节点
-			if (auto member = Niflect::CastChecked<CTaggedInheritableTypeMember>(it.Get()))
+			if (auto member = CTaggedInheritableTypeMember::CastChecked(it.Get()))
 				vecMember.push_back(member);
 		}
 		return Niflect::MakeShared<CInheritableTypeRegCodeWriter_ObjectAccessor>(this->GetCursor(), setting, baseTypeCursorDecl, vecMember);

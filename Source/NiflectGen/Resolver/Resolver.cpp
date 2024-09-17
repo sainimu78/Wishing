@@ -347,7 +347,7 @@ namespace NiflectGen
 			//printf("%s\n", a.c_str());
 			data.m_mapping.m_mapCursorDeclToTaggedType.insert({ cursor, taggedType });
 		}
-		else if (auto untaggedType = Niflect::CastChecked<CUntaggedTemplate>(taggedParent))
+		else if (auto untaggedType = CUntaggedTemplate::CastChecked(taggedParent))
 		{
 			auto& cursor = untaggedType->GetCursor();
 			data.m_mapping.m_mapCursorDeclToUntaggedTemplate.insert({ cursor, untaggedType });

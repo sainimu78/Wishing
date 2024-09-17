@@ -579,7 +579,7 @@ namespace NiflectGen
 							auto& vecChild = itFound->second->DebugGetChildren();
 							for (uint32 idx = 0; idx < templateArgsCount; ++idx)
 							{
-								auto member = Niflect::Cast<CTaggedInheritableTypeMember>(vecChild[idx].Get());
+								auto member = CTaggedInheritableTypeMember::Cast(vecChild[idx].Get());
 								auto& cursorField = member->GetCursor();
 								if (clang_getCXXAccessSpecifier(cursorField) != CX_CXXAccessSpecifier::CX_CXXPublic)
 								{
