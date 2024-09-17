@@ -131,6 +131,21 @@ namespace Engine
 		ss >> v.m_x >> d >> v.m_y >> d >> v.m_z >> d >> v.m_w;
 		return v;
 	}
+	template <typename T>
+	static void SaveMyTransformToRwNode(const TMyTransform<T>& instance, CRwNode* rw)
+	{
+		//序列化方式是任意的, 因此可认为支持自定义编码
+		AddRwString(rw, "m_translation", MyVectorToString<T>(instance.m_translation));
+		AddRwString(rw, "m_rotation", MyQuaternionToString<T>(instance.m_rotation));
+		AddRwString(rw, "m_scale", MyVectorToString<T>(instance.m_scale));
+	}
+	template <typename T>
+	static void LoadMyTransformFromRwNode(const CRwNode* rw, TMyTransform<T>& instance)
+	{
+		instance.m_translation = StringToMyVector<T>(FindRwString(rw, "m_translation"));
+		instance.m_rotation = StringToMyQuaternion<T>(FindRwString(rw, "m_rotation"));
+		instance.m_scale = StringToMyVector<T>(FindRwString(rw, "m_scale"));
+	}
 
 	template <typename T>
 	class TMyTransformAccessor : public Niflect::CAccessor
@@ -139,19 +154,13 @@ namespace Engine
 		virtual bool SaveToRwNode2222(const AddrType offsetBase, CRwNode* rw) const override
 		{
 			auto& instance = *static_cast<const TMyTransform<T>*>(offsetBase);
-			//序列化方式是任意的, 因此可认为支持自定义编码
-			AddRwString(rw, "m_translation", MyVectorToString<T>(instance.m_translation));
-			AddRwString(rw, "m_rotation", MyQuaternionToString<T>(instance.m_rotation));
-			AddRwString(rw, "m_scale", MyVectorToString<T>(instance.m_scale));
+			SaveMyTransformToRwNode<T>(instance, rw);
 			return true;
 		}
 		virtual bool LoadFromRwNode2222(AddrType offsetBase, const CRwNode* rw) const override
 		{
 			auto& instance = *static_cast<TMyTransform<T>*>(offsetBase);
-			//序列化方式是任意的, 因此可认为支持自定义编码
-			instance.m_translation = StringToMyVector<T>(FindRwString(rw, "m_translation"));
-			instance.m_rotation = StringToMyQuaternion<T>(FindRwString(rw, "m_rotation"));
-			instance.m_scale = StringToMyVector<T>(FindRwString(rw, "m_scale"));
+			LoadMyTransformFromRwNode<T>(rw, instance);
 			return true;
 		}
 	};
