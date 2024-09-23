@@ -769,7 +769,7 @@ namespace NiflectGen
 				GenerateTemplateInstanceCode(it0.m_subcursorRoot, str0);
 				Niflect::CString str1;
 				GenerateTemplateInstanceCode(vecSetting[idxDupWith].m_subcursorRoot, str1);
-				GenLogError(context.m_log, NiflectUtil::FormatString("Duplicated accessor binding %s with %s. Additionally, partial template specialization is not supported for binding types.", str0.c_str(), str1.c_str()));
+				GenLogError(context.m_log, NiflectUtil::FormatString("Duplicated accessor binding of %s with %s. Additionally, partial template specialization is not supported for binding types.", str0.c_str(), str1.c_str()));
 
 				if (!context.m_log->m_opt.m_cachedItems)
 					break;
