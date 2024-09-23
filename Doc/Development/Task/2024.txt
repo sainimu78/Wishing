@@ -25,5 +25,5 @@
 12. NiflectGen, Resolve, AccessorBinding对非1维收集需要生成的UntaggedType, 如pair
 	1. 检查成员是否都为public
 13. NiflectGen, Resolve, 生成Field类型与m_vecAccessorBindingSetting的查找表, 方便在Write阶段查找
-	1. 向Field类型的别名方向遍历每一级定义是否存在对应的BindingType
-	2. 如只支持一一对应的匹配方式, 则无须进一步生成查找表
+	1. 对于模板嵌套, 需要解析模板实例, 查找每一层模板对应的AccessorBinding, 因此需要考虑是否为特化的完整模板实例生成对应的AccessorBinding索引序列
+	2. 向Field类型的别名方向遍历每一级定义是否存在对应的BindingType, 或可只支持一一对应的匹配方式
