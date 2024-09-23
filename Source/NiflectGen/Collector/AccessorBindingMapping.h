@@ -28,11 +28,11 @@ namespace NiflectGen
 		{
 			return m_subcursorRoot.m_vecChild[BindingTypeChildStartIndex];
 		}
-		uint32 GetDimensionalBindingTypeDeclsCount() const
+		uint32 GetDimensionalBindingTypeDeclsCount() const//todo: 计划改名为GetDimensionalBindingTypeSubcursorsCount
 		{
 			return static_cast<uint32>(m_subcursorRoot.m_vecChild.size()) - BindingTypeChildStartIndex;
 		}
-		const CSubcursor& GetDimensionalBindingTypeDecl(uint32 idx) const
+		const CSubcursor& GetDimensionalBindingTypeDecl(uint32 idx) const//todo: 计划改名为GetDimensionalBindingTypeSubcursor
 		{
 			return m_subcursorRoot.m_vecChild[BindingTypeChildStartIndex + idx];
 		}
@@ -64,6 +64,7 @@ namespace NiflectGen
 	public:
 		Niflect::TArrayNif<CBindingSettingData> m_vecAccessorBindingSetting;
 		TCursorMap<uint32> m_mapCursorToIndex;
+		TCXTypeMap<uint32> m_mapCXTypeToIndex;
 	};
 	using CSharedAccessorBindingMapping = Niflect::TSharedPtr<CAccessorBindingMapping2>;
 }

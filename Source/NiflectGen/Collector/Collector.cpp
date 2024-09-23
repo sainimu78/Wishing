@@ -730,7 +730,9 @@ namespace NiflectGen
 			//}
 			if (!ok)
 			{
-				GenLogError(context.m_log, NiflectUtil::FormatString("Field type must be derived from %s", NiflectGenDefinition::NiflectFramework::AccessorTypeName::Field));
+				Niflect::CString str;
+				GenerateTemplateInstanceCode(it0.m_subcursorRoot, str);
+				GenLogError(context.m_log, NiflectUtil::FormatString("Accessor type must be derived from %s, %s", NiflectGenDefinition::NiflectFramework::AccessorTypeName::Field, str.c_str()));
 				break;
 			}
 		}
@@ -738,11 +740,40 @@ namespace NiflectGen
 		//#2, 检查BindingType是否重定义, 生成BindingType的查找表
 		//todo: 1. 多维BindingType; 2. 特化; 3. 部分特化;
 		auto& mapCursorToIndex = accessorBindingMapping->m_mapCursorToIndex;
+		auto& mapCXTypeToIndex = accessorBindingMapping->m_mapCXTypeToIndex;
 		for (uint32 idx0 = 0; idx0 < vecSetting.size(); ++idx0)
 		{
 			auto& it0 = vecSetting[idx0];
+			bool ok = true;
 			auto& bSubcursor = it0.GetBindingTypeDecl();//此处b不是bool前缀
+			uint32 idxDupWith = INDEX_NONE;
+			if (clang_getCursorKind(bSubcursor.m_cursorDecl) == CXCursor_NoDeclFound)
+			{
+				auto ret = mapCXTypeToIndex.insert({ bSubcursor.m_CXType, idx0 });
+				ok = ret.second;
+				idxDupWith = ret.first->second;
+			}
+			else
+			{
+				//不支持多维BindingType以非1维cursor查重, 原因
+				//1. 多维cursor构成的复合key显复杂化
+				//2. 所谓的维, 是一种避免特殊处理多维结构的定义方式, 如由用户指定第2维的类型为std::pair的Accessor, 可避免解析std::map的定义, 其std::pair类型在allocator的模板参数中指定
+				//	因此1维外的BindingType, 在概念上是与1维的BindingType一体的
+				auto ret = mapCursorToIndex.insert({ bSubcursor.m_cursorDecl, idx0 });
+				ok = ret.second;
+				idxDupWith = ret.first->second;
+			}
+			if (!ok)
+			{
+				Niflect::CString str0;
+				GenerateTemplateInstanceCode(it0.m_subcursorRoot, str0);
+				Niflect::CString str1;
+				GenerateTemplateInstanceCode(vecSetting[idxDupWith].m_subcursorRoot, str1);
+				GenLogError(context.m_log, NiflectUtil::FormatString("Duplicated accessor binding %s with %s. Additionally, partial template specialization is not supported for binding types.", str0.c_str(), str1.c_str()));
 
+				if (!context.m_log->m_opt.m_cachedItems)
+					break;
+			}
 		}
 
 		collectionData.m_aliasChain = aliasChain;

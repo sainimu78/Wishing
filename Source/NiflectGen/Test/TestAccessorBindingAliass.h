@@ -20,13 +20,13 @@ namespace EngineTypeBindingSettingScope
 
 	NIF_BS() TBindingSetting<TestAccessor2::TMyTransformAccessor<float>, TestAccessor2::TMyTransform<float> >;
 	using CNihao = TestAccessor2::TMyTransformAccessor<float>;
-	NIF_BS() TBindingSetting<CNihao, TestAccessor2::TMyTransform<float> >;
+	NIF_BS() TBindingSetting<CNihao, int8>;
 	template <typename T>
-	NIF_BS() TBindingSetting<TestAccessor2::TMyTransformAccessor<T>, TestAccessor2::TMyTransform<float> >;
+	NIF_BS() TBindingSetting<TestAccessor2::TMyTransformAccessor<T>, int16>;
 	template <typename T>
 	using TMyAccessorAlias = TestAccessor2::TMSSSSSSSSSSSSSSSSS<T>;
 	template <typename T>
-	NIF_BS() TBindingSetting<TMyAccessorAlias<T>, TestAccessor2::TMyTransform<float> >;
+	NIF_BS() TBindingSetting<TMyAccessorAlias<T>, int32>;
 
 	template <typename T0, typename T1>
 	class TSomeBinaryType

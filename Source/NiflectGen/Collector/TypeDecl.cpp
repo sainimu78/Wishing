@@ -204,7 +204,18 @@ namespace NiflectGen
 			name = GetNameFromCursorOrTypeDeclaration(parentSubcursor.m_cursorDecl, parentSubcursor.m_CXType);
 		}
 		text += name;
-		if (parentSubcursor.m_vecChild.size() > 0)
+		bool canRecurs = true;
+		if (parentSubcursor.m_vecAaaaaaaaaa.size() > 0)
+		{
+			//m_vecChild为模板参数所引用的decl, 如TypedefAliasDecl, m_vecAaaaaaaaaa[0]中为模板参数的Spelling类型, 非模板为TypeRef, 模板为TemplateRef, 因此TypeRef不应继续递归
+			if (clang_getCursorKind(parentSubcursor.m_vecAaaaaaaaaa[0]) == CXCursor_TypeRef)
+			{
+				ASSERT(parentSubcursor.m_vecAaaaaaaaaa.size() == 1);
+				canRecurs = false;
+				withRightAngleBracket = false;
+			}
+		}
+		if ((canRecurs) && (parentSubcursor.m_vecChild.size() > 0))
 		{
 			bool isLastChildWithRightAngleBracket = false;
 			text += "<";

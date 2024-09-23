@@ -37,13 +37,36 @@ namespace TestGen
 				});
 		}
 	}
-	static void TestSuccess_BindingTypes()
+	static void TestSuccess_BindingTypesAllUnique()
 	{
 		auto memTest = Niflect::GetDefaultMemoryStats();
 		{
 			auto gen = CreateGenerator();
 			CModuleRegInfo info;
-			info.m_vecBindingSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestAccessorBindingAliass.h"));
+			info.m_vecBindingSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestBindingTypesNoDup.h"));
+			NiflectGenDefinition::Test::AddBasicHeaderSearchPaths(info.m_vecHeaderSearchPath);
+			gen->SetModuleRegInfo(info);
+			gen->Generate([](void* cursorAddr)
+				{
+					auto& cursor = *static_cast<CXCursor*>(cursorAddr);
+					CTaggedNode2 taggedRoot;
+					CGenLog log;
+					CCollectingContext context(&log);
+					CCollectionData collectionData;
+					CDataCollector collector;
+					collector.Collect(cursor, &taggedRoot, context, collectionData);
+					auto& vec = collectionData.m_accessorBindingMapping->m_vecAccessorBindingSetting;
+					ASSERT(log.m_vecText.size() == 0);
+				});
+		}
+	}
+	static void TestFailure_BindingTypesDuplicated()
+	{
+		auto memTest = Niflect::GetDefaultMemoryStats();
+		{
+			auto gen = CreateGenerator();
+			CModuleRegInfo info;
+			info.m_vecBindingSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestBindingTypesDup.h"));
 			NiflectGenDefinition::Test::AddBasicHeaderSearchPaths(info.m_vecHeaderSearchPath);
 			gen->SetModuleRegInfo(info);
 			gen->Generate([](void* cursorAddr)
@@ -57,18 +80,14 @@ namespace TestGen
 					CDataCollector collector;
 					collector.Collect(cursor, &taggedRoot, context, collectionData);
 					auto& vec = collectionData.m_accessorBindingMapping->m_vecAccessorBindingSetting;
-					ASSERT(log.m_vecText.size() == 0);
-					//ASSERT(vec.size() == 1);
-					//auto accessorTypeName = CXStringToCString(clang_getTypeSpelling(vec.back().m_subcursorRoot.m_vecChild[0].m_CXType));
-					//ASSERT(accessorTypeName == "TMyAccessorAlias<T>");
-					//auto bindingTypeName = CXStringToCString(clang_getTypeSpelling(vec.back().m_subcursorRoot.m_vecChild[1].m_CXType));
-					//ASSERT(bindingTypeName == "TestAccessor2::TMyTransform<float>");
+					ASSERT(log.m_vecText.size() == 4);
 				});
 		}
 	}
 	void TestCollector()
 	{
 		//TestSuccess_AccessorBindingWithAlias();
-		TestSuccess_BindingTypes();
+		//TestSuccess_BindingTypesAllUnique();
+		TestFailure_BindingTypesDuplicated();
 	}
 }
