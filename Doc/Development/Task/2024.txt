@@ -23,7 +23,8 @@
 10. Done, NiflectGen, (设想)确认BindingSetting的BindingType与Member的Type是否具有唯一性, 整理一个专门的类处理此繁琐解析过程
 11. NiflectGen, Resolve, 遍历所有TaggedType, 收集需要生成的UntaggedType, 如float, TArrayNif
 12. NiflectGen, Resolve, AccessorBinding对非1维收集需要生成的UntaggedType, 如pair
-	1. 检查成员是否都为public
+	1. 检查成员, 如类中未指定为TypeReg的friend, 则是否都为public
 13. NiflectGen, Resolve, 生成Field类型与m_vecAccessorBindingSetting的查找表, 方便在Write阶段查找
 	1. 对于模板嵌套, 需要解析模板实例, 查找每一层模板对应的AccessorBinding, 因此需要考虑是否为特化的完整模板实例生成对应的AccessorBinding索引序列
 	2. 向Field类型的别名方向遍历每一级定义是否存在对应的BindingType, 或可只支持一一对应的匹配方式
+14. NiflectGen, 用BindingType在收集到的UntaggedTemplate中查找, 整理查找方法
