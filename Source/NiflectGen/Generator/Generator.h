@@ -3,6 +3,9 @@
 #include "NiflectGen/Generator/SourceInMemory.h"
 #include "NiflectGen/CodeWriter/ModuleReg/ModuleRegCode.h"
 
+//仅为避免引用clang头文件将cursor类型定义为void*
+typedef std::function<void(void* cursorAddr)> TestInterfaceFunc;
+
 namespace NiflectGen
 {
 	class CDataCollector;
@@ -19,12 +22,12 @@ namespace NiflectGen
 		NIFLECTGEN_API void AddIncludePath(const Niflect::CString& dirPath);
 		NIFLECTGEN_API void ParseSourceFiles();
 		NIFLECTGEN_API void SetModuleRegInfo(const CModuleRegInfo& moduleRegInfo);
-		NIFLECTGEN_API void Generate();
+		NIFLECTGEN_API void Generate(TestInterfaceFunc TestFunc = NULL);
 		NIFLECTGEN_API void Save() const;
 
 	private:
 		void PrepareSourceFiles();
-		void GetUnsavedSourceFiles(Niflect::TArrayNif<CXUnsavedFile>& vecUnsavedFileHandle);
+		//void GetUnsavedSourceFiles(Niflect::TArrayNif<CXUnsavedFile>& vecUnsavedFileHandle);
 
 	private:
 		Niflect::TArrayNif<Niflect::CString> m_vecTypeBindingSettingFilePath;

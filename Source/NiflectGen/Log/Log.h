@@ -29,17 +29,33 @@ namespace NiflectGen
 
 	class CGenLogOption
 	{
+		using CThis = CGenLogOption;
 	public:
 		CGenLogOption()
-			: m_assertOnAddingItem(true)
-			, m_printAddingItem(true)
-			, m_cacheItems(false)
+			: m_assertionOnAddingItem(true)
+			, m_printingAddingItem(true)
+			, m_cachedItems(false)
 		{
 
 		}
-		bool m_assertOnAddingItem;
-		bool m_printAddingItem;
-		bool m_cacheItems;
+		CThis& SetAssertionOnAddingItem(bool b)
+		{
+			m_assertionOnAddingItem = b;
+			return *this;
+		}
+		CThis& SetPrintingAddingItem(bool b)
+		{
+			m_printingAddingItem = b;
+			return *this;
+		}
+		CThis& SetCachedItems(bool b)
+		{
+			m_cachedItems = b;
+			return *this;
+		}
+		bool m_assertionOnAddingItem;
+		bool m_printingAddingItem;
+		bool m_cachedItems;
 	};
 
 	class CGenLog

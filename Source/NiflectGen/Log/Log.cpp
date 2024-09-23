@@ -33,15 +33,15 @@ namespace NiflectGen
 			break;
 		}
 
-		if (m_opt.m_printAddingItem)
+		if (m_opt.m_printingAddingItem)
 		{
 			printf("[%s] %s\n", pszTextType, text.c_str());
 		}
-		if (m_opt.m_assertOnAddingItem)
+		if (m_opt.m_assertionOnAddingItem)
 		{
 			ASSERT(false);
 		}
-		if (m_opt.m_cacheItems)
+		if (m_opt.m_cachedItems)
 		{
 			this->AllocItem(type).m_text = text;
 		}

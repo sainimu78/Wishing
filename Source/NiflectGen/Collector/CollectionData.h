@@ -1,68 +1,27 @@
 #pragma once
-#include "NiflectGen/Collector/TypeDecl.h"
-#include "NiflectGen/Collector/AccessorData.h"
 #include "NiflectGen/Util/CursorMap.h"
+#include "NiflectGen/Collector/AccessorBindingMapping.h"
 
 namespace NiflectGen
 {
-	class CBindingSettingData
+	class CAliasChain
 	{
-		enum ESetting
-		{
-			Field,
-			BindingTypeChildStartIndex,
-			ElementBindingTypeChildStartIndex,
-			Count,
-		};
 	public:
-		CBindingSettingData()
-			: m_accessorBaseCursorDecl(g_invalidCursor)
-			, m_actualFieldDeclCursor(g_invalidCursor)
-		{
-		}
-		const CSubcursor& GetAccessorTypeDecl() const
-		{
-			return m_subcursorRoot.m_vecChild[Field];
-		}
-		const CSubcursor& GetBindingTypeDecl() const
-		{
-			return m_subcursorRoot.m_vecChild[BindingTypeChildStartIndex];
-		}
-		uint32 GetDimensionalBindingTypeDeclsCount() const
-		{
-			return static_cast<uint32>(m_subcursorRoot.m_vecChild.size()) - BindingTypeChildStartIndex;
-		}
-		const CSubcursor& GetDimensionalBindingTypeDecl(uint32 idx) const
-		{
-			return m_subcursorRoot.m_vecChild[BindingTypeChildStartIndex + idx];
-		}
-		uint32 GetELementBindingTypeDeclsCountOld() const
-		{
-			return static_cast<uint32>(m_subcursorRoot.m_vecChild.size()) - ElementBindingTypeChildStartIndex;
-		}
-		const CSubcursor& GetElementBindingTypeDeclOld(uint32 idx) const
-		{
-			return m_subcursorRoot.m_vecChild[ElementBindingTypeChildStartIndex + idx];
-		}
-		bool IsValidBindingSetting() const
-		{
-			bool valid = false;
-			if (m_subcursorRoot.m_vecChild.size() >= ElementBindingTypeChildStartIndex && m_subcursorRoot.m_vecChild.size() <= Count)
-				valid = true;
-			return valid;
-		}
+		void AddLinkDecl(const CXCursor& decl);
+		void LinkToReferenced(const CXCursor& decl, const CXCursor& alias);
+		CXCursor FindOriginalDecl(CXCursor decl) const;
 
-	public:
-		CXCursor m_accessorBaseCursorDecl;
-		CXCursor m_actualFieldDeclCursor;
-		CSubcursor m_subcursorRoot;
-		CAccessorData m_accessorData;
+	private:
+		TCursorMap<CXCursor> m_mapDeclToReferenced;
 	};
+	using CSharedAliasChain = Niflect::TSharedPtr<CAliasChain>;
 
 	class CCollectionData
 	{
 	public:
-		Niflect::TArrayNif<CBindingSettingData> m_vecBindingSetting;
-		TCursorMap<CXCursor> m_mapAliasTemplateDeclToClassTemplateCursor;
+		Niflect::TArrayNif<CBindingSettingData> deprecated_m_vecBindingSetting;
+		TCursorMap<CXCursor> deprecated_m_mapAliasTemplateDeclToClassTemplateCursor;
+		CSharedAliasChain m_aliasChain;
+		CSharedAccessorBindingMapping m_accessorBindingMapping;
 	};
 }

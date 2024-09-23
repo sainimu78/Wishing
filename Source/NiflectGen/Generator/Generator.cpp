@@ -54,11 +54,11 @@ namespace NiflectGen
         for (auto& it : m_vecFileForSearchingH)
             writer.AddInclude(it);
     }
-    void CGenerator::GetUnsavedSourceFiles(Niflect::TArrayNif<CXUnsavedFile>& vecUnsavedFileHandle)
+    static void GetUnsavedSourceFiles(Niflect::TArrayNif<CXUnsavedFile>& vecUnsavedFileHandle, CSourceInMemory& tempSource)
     {
         vecUnsavedFileHandle.resize(1);
 
-        m_tempSource.FillData(&vecUnsavedFileHandle.back());
+        tempSource.FillData(&vecUnsavedFileHandle.back());
     }
     static void AddSourceFile(const CString& filePath, TArrayNif<CString>& vecCpp, TArrayNif<CString>& vecH)
     {
@@ -84,7 +84,7 @@ namespace NiflectGen
     {
         this->PrepareSourceFiles();
         Niflect::TArrayNif<CXUnsavedFile> vecUnsavedFileHandle;
-        this->GetUnsavedSourceFiles(vecUnsavedFileHandle);
+        GetUnsavedSourceFiles(vecUnsavedFileHandle, m_tempSource);
 
         CCompilerOption opt;
         opt.InitDefault();
@@ -186,7 +186,7 @@ namespace NiflectGen
     {
         m_moduleRegInfo = moduleRegInfo;
     }
-    void CGenerator::Generate()
+    void CGenerator::Generate(TestInterfaceFunc TestFunc)
     {
         //#1, Cleanup & Prepare
         CModuleRegInfoValidated validatedModuleRegInfo(m_moduleRegInfo);
@@ -197,8 +197,9 @@ namespace NiflectGen
 
         //预留清理module, 从module输出目录中的缓存可获取生成的所有文件
 
-        m_tempSource.m_filePath = "TempSource.cpp";
-        CSimpleCppWriter writer(m_tempSource.m_data);
+        CSourceInMemory tempSource;
+        tempSource.m_filePath = "TempSource.cpp";
+        CSimpleCppWriter writer(tempSource.m_data);
         writer.AddHeaderFirstLine();
         for (auto& it1 : userProvided.m_vecBindingSettingHeader)
             writer.AddInclude(it1);
@@ -211,17 +212,17 @@ namespace NiflectGen
 
         //#2, Parse headers
         Niflect::TArrayNif<CXUnsavedFile> vecUnsavedFileHandle;
-        this->GetUnsavedSourceFiles(vecUnsavedFileHandle);
+        GetUnsavedSourceFiles(vecUnsavedFileHandle, tempSource);
 
         const bool displayDiagnostics = true;
         auto index = clang_createIndex(true, displayDiagnostics);
 
-        auto translation_unit = clang_parseTranslationUnit(index, m_tempSource.m_filePath.c_str(), opt.GetArgV(),
+        auto translation_unit = clang_parseTranslationUnit(index, tempSource.m_filePath.c_str(), opt.GetArgV(),
             opt.GetArgC(), vecUnsavedFileHandle.data(),
             static_cast<uint32>(vecUnsavedFileHandle.size()), CXTranslationUnit_DetailedPreprocessingRecord | CXTranslationUnit_SkipFunctionBodies
         );
 
-        if (false)//if (true)//
+        if (true)//if (false)//
         {
             auto cursor = clang_getTranslationUnitCursor(translation_unit);
 #pragma warning( disable : 4996 )
@@ -246,32 +247,40 @@ namespace NiflectGen
         if (true)//if (false)//
         {
             auto cursor = clang_getTranslationUnitCursor(translation_unit);
-            CTaggedNode2 taggedRoot;
-#pragma warning( disable : 4996 )
-            FILE* fp = fopen("E:/b.txt", "w");
-#pragma warning( default : 4996 )
-            CGenLog log;
-            CCollectingContext context(&log);
-            CVisitingDebugData debugData;
-            debugData.Init(cursor, fp);
-            context.m_debugData = &debugData;
-            CCollectionData collectionData;
-            m_collector.Collect(cursor, &taggedRoot, context, collectionData);
-            if (true)
-            {
-                CResolvingContext resolvingContext(&log);
-                CResolver resolver(collectionData, m_vecHeaderSearchPath);
-                CResolvedData resolvedData;
-                resolver.Resolve2(&taggedRoot, resolvingContext, resolvedData);
 
-                //#3, Generate code
-                CTemplateBasedCppWriter writer(resolvedData, validatedModuleRegInfo);
-                CWritingContext writingContext(&log);
-                writer.Write2(writingContext, m_genData);
+            if (TestFunc == NULL)
+            {
+                CTaggedNode2 taggedRoot;
+#pragma warning( disable : 4996 )
+                FILE* fp = fopen("E:/b.txt", "w");
+#pragma warning( default : 4996 )
+                CGenLog log;
+                CCollectingContext context(&log);
+                CVisitingDebugData debugData;
+                debugData.Init(cursor, fp);
+                context.m_debugData = &debugData;
+                CCollectionData collectionData;
+                m_collector.Collect(cursor, &taggedRoot, context, collectionData);
+                if (true)
+                {
+                    CResolvingContext resolvingContext(&log);
+                    CResolver resolver(collectionData, m_vecHeaderSearchPath);
+                    CResolvedData resolvedData;
+                    resolver.Resolve2(&taggedRoot, resolvingContext, resolvedData);
+
+                    //#3, Generate code
+                    CTemplateBasedCppWriter writer(resolvedData, validatedModuleRegInfo);
+                    CWritingContext writingContext(&log);
+                    writer.Write2(writingContext, m_genData);
+                }
+                debugData.Check();
+                //m_collector.DebugFinish2(&taggedRoot, collectionData);
+                fclose(fp);
             }
-            debugData.Check();
-            //m_collector.DebugFinish2(&taggedRoot, collectionData);
-            fclose(fp);
+            else
+            {
+                TestFunc(&cursor);
+            }
         }
 
         if (translation_unit)

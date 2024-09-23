@@ -310,19 +310,21 @@ namespace NiflectGen
 	class CScopeBindingSetting
 	{
 	public:
-		CScopeBindingSetting(CDataCollector& collection, const CXCursor& cursor, const CCursorArray& vecChild, const CCollectingContext& context, CCollectionData& collectionData)
+		CScopeBindingSetting(CDataCollector& collection, const CXCursor& cursor, const CCursorArray& vecChild, const CCollectingContext& context, SRecursCollectingData& recursCollectiingData)
 			: m_collection(collection)
 			, m_cursor(cursor)
 			, m_vecChild(vecChild)
 			, m_context(context)
-			, m_collectionData(collectionData)
+			, m_recursCollectiingData(recursCollectiingData)
 			, m_entered(false)
 		{
 			if (m_collection.GetNamespaceDepth() <= 1)//TypeBinding仅支持定义在全局或1层深的namespace中
 			{
 				m_entered = FindTagByKindAndDisplayName(m_cursor, CXCursor_TypeAliasDecl, NiflectGenDefinition::CodeTag::BindingSetting);
-				if (m_entered)
-					m_collection.m_collectingClassBaseCursorDecl = false;//逻辑为遍历到BindingSetting配置头文件中的cursor之前一定已经遍历完所有Accessor类型
+				
+				//2024.09.23, TAccessorBinding的量不可能大, 另为可顺便支持任意符合语法的别名, 因此不限制必须在首个AccessorBinding之前定义好所有类型或别名
+				//if (m_entered)
+				//	m_collection.m_collectingClassBaseCursorDecl = false;//逻辑为遍历到BindingSetting配置头文件中的cursor之前一定已经遍历完所有Accessor类型
 			}
 		}
 		~CScopeBindingSetting()
@@ -350,7 +352,7 @@ namespace NiflectGen
 				//GenerateTemplateInstanceCode(data.m_subcursorRoot.m_vecChild[0], str0);
 				//Niflect::CString str1;
 				//GenerateTemplateInstanceCode(data.m_subcursorRoot.m_vecChild[1], str1);
-				m_collectionData.m_vecBindingSetting.emplace_back(data);
+				m_recursCollectiingData.m_vecAccessorBindingSetting.push_back(data);
 			}
 		}
 
@@ -359,7 +361,7 @@ namespace NiflectGen
 		const CXCursor& m_cursor;
 		const CCursorArray& m_vecChild;
 		const CCollectingContext& m_context;
-		CCollectionData& m_collectionData;
+		SRecursCollectingData& m_recursCollectiingData;
 		bool m_entered;
 	};
 
@@ -383,18 +385,23 @@ namespace NiflectGen
 		{
 			if (m_entered)
 			{
-				for (auto& it : m_vecChild)
+				CXCursor foundCursor = g_invalidCursor;
+				for (uint32 idx = 0; idx < m_vecChild.size(); ++idx)
 				{
-					if (clang_getCursorKind(it) == CXCursor_CXXBaseSpecifier)
+					//似乎可遍历获取多继承定义, 但多继承的支持不在规划中
+					if (clang_getCursorKind(m_vecChild[idx]) == CXCursor_CXXBaseSpecifier)
 					{
-						auto itFound = m_collection.m_mapCursorDeclToBaseCursorDecl.find(m_cursor);
-						if (itFound != m_collection.m_mapCursorDeclToBaseCursorDecl.end())
-						{
-							ASSERT(clang_Cursor_isNull(itFound->second));
-							itFound->second = it;
-						}
+						foundCursor = m_vecChild[idx];
 						break;
 					}
+				}
+				bool canAdd = !clang_Cursor_isNull(foundCursor);
+				if (!canAdd)
+					canAdd = IsCAccessorClassDecl(m_cursor);//现second用于表示链接的基类, 为避免记录太多无关cursor, 因此检查只保留特殊类的cursor
+				if (canAdd)
+				{
+					auto ret = m_collection.m_mapCursorDeclToBaseCursorDecl.insert({ m_cursor, foundCursor });
+					ASSERT(ret.second);
 				}
 			}
 		}
@@ -406,14 +413,15 @@ namespace NiflectGen
 		bool m_entered;
 	};
 
+	//todo: 应改为 ScopeAliasChainLinking ?
 	class CScopeTemplateDecl
 	{
 	public:
-		CScopeTemplateDecl(CDataCollector& collection, const CXCursor& cursor, const CXCursor& parentCursor, const CCursorArray& vecChild)
-			: m_collection(collection)
-			, m_cursor(cursor)
-			, m_parentCursor(parentCursor)
+		CScopeTemplateDecl(const CXCursor& cursor, const CCursorArray& vecChild, const CXCursor& parentCursor, CAliasChain* aliasChain)
+			: m_cursor(cursor)
 			, m_vecChild(vecChild)
+			, m_parentCursor(parentCursor)
+			, m_aliasChain(aliasChain)
 			, m_entered(false)
 		{
 			m_entered = clang_getCursorKind(cursor) == CXCursor_TypeAliasDecl;
@@ -449,9 +457,7 @@ namespace NiflectGen
 						}
 						if (ok)
 						{
-							auto itFound = m_collection.m_mapCursorDeclToAliasDecl.find(dsssssssss);
-							if (itFound != m_collection.m_mapCursorDeclToAliasDecl.end())
-								itFound->second = clang_getCursorReferenced(cursor);
+							m_aliasChain->LinkToReferenced(dsssssssss, cursor);
 						}
 						break;
 					}
@@ -460,10 +466,10 @@ namespace NiflectGen
 		}
 
 	private:
-		CDataCollector& m_collection;
 		const CXCursor& m_cursor;
 		const CXCursor& m_parentCursor;
 		const CCursorArray& m_vecChild;
+		CAliasChain* m_aliasChain;
 		bool m_entered;
 	};
 
@@ -574,10 +580,11 @@ namespace NiflectGen
 		CDataCollector* m_this;
 		CTaggedNode2* m_taggedParent;
 		CCollectingContext& m_context;
+		CAliasChain* m_aliasChain;
 		CCursorArray m_vecCursorChild;
 		SVisitingData m_visitingData;
 	};
-	void CDataCollector::Visit(const CXCursor& cursor, CTaggedNode2* taggedParent, CCollectingContext& context, SVisitingData& data)
+	void CDataCollector::Visit(const CXCursor& cursor, CTaggedNode2* taggedParent, CCollectingContext& context, CAliasChain* aliasChain, SVisitingData& data)
 	{
 		uint32 taggedChildIndex = taggedParent->GetChildrenCount();
 		bool addedTaggedChild = false;
@@ -587,24 +594,24 @@ namespace NiflectGen
 			{
 				auto kind = clang_getCursorKind(cursor);
 
-				if (IsTypeForBaseClassVerifying(kind))
-				{
-					auto ret = m_mapCursorDeclToBaseCursorDecl.insert({ cursor, g_invalidCursor });
-					ASSERT(ret.second);
-				}
+				//if (IsTypeForBaseClassVerifying(kind))
+				//{
+				//	auto ret = m_mapCursorDeclToBaseCursorDecl.insert({ cursor, g_invalidCursor });
+				//	ASSERT(ret.second);
+				//}
 
 				if (kind == CXCursor_TypeAliasTemplateDecl)
 				{
-					m_mapCursorDeclToAliasDecl.insert({ cursor, g_invalidCursor });
+					aliasChain->AddLinkDecl(cursor);
 					addedTaggedChild = m_templateCollector.Collect(cursor, taggedParent, context.m_log);
 				}
 				else if (kind == CXCursor_TypeAliasDecl)
 				{
-					m_mapCursorDeclToAliasDecl.insert({ cursor, g_invalidCursor });
+					aliasChain->AddLinkDecl(cursor);
 				}
 				else if (kind == CXCursor_ClassTemplate)
 				{
-					m_mapCursorDeclToAliasDecl.insert({ cursor, g_invalidCursor });
+					aliasChain->AddLinkDecl(cursor);
 					addedTaggedChild = m_templateCollector.Collect(cursor, taggedParent, context.m_log);
 				}
 			}
@@ -626,38 +633,67 @@ namespace NiflectGen
 	static CXChildVisitResult VisitorCallback(CXCursor cursor, CXCursor parent, CXClientData data)
 	{
 		auto& d = *static_cast<SVisitorCallbackData*>(data);
-		d.m_this->Visit(cursor, d.m_taggedParent, d.m_context, d.m_visitingData);
+		d.m_this->Visit(cursor, d.m_taggedParent, d.m_context, d.m_aliasChain, d.m_visitingData);
 		d.m_vecCursorChild.push_back(cursor);
 
 		return CXChildVisit_Continue;
 	}
-	bool CDataCollector::CheckDeclDerivedFromFieldBaseClass(CXCursor p) const
+	bool CDataCollector::VerifyDerivedFromCAccessor(CXCursor p, CAliasChain* aliasChain) const
 	{
-		bool isDerivedFromField = false;
+		//todo: 可考虑收集到树型结构中, 避免使用接口临时获取
+		bool ok = false;
 		while (true)
 		{
-			auto name = CXStringToCString(clang_getCursorSpelling(p));
-			if (name == NiflectGenDefinition::NiflectFramework::AccessorTypeName::Field)
+			if (IsCAccessorClassDecl(p))
 			{
-				isDerivedFromField = true;
+				ok = true;
 				break;
 			}
+			p = aliasChain->FindOriginalDecl(p);
 			auto itFound = m_mapCursorDeclToBaseCursorDecl.find(p);
 			if (itFound != m_mapCursorDeclToBaseCursorDecl.end())
-				p = clang_getTypeDeclaration(clang_getCursorType(itFound->second));
+			{
+				if (!clang_Cursor_isNull(itFound->second))
+				{
+					p = clang_getTypeDeclaration(clang_getCursorType(itFound->second));
+				}
+				else
+				{
+					if (IsCAccessorClassDecl(p))
+						ok = true;
+					break;//second为基类cursor, 为空则表明不需要再继续, 因此break
+				}
+			}
 			else
+			{
 				break;
+			}
 		}
-		return isDerivedFromField;
+		return ok;
 	}
-	CXCursor CDataCollector::FindAliasDecl(CXCursor decl) const
+	void CAliasChain::AddLinkDecl(const CXCursor& decl)
+	{
+		m_mapDeclToReferenced.insert({ decl, g_invalidCursor });
+	}
+	void CAliasChain::LinkToReferenced(const CXCursor& decl, const CXCursor& alias)
+	{
+		auto itFound = m_mapDeclToReferenced.find(decl);
+		if (itFound != m_mapDeclToReferenced.end())
+			itFound->second = clang_getCursorReferenced(alias);
+	}
+	CXCursor CAliasChain::FindOriginalDecl(CXCursor decl) const
 	{
 		CXCursor lastValidDecl = decl;
 		while (true)
 		{
 			auto a = CXStringToCString(clang_getCursorSpelling(decl));
-			auto itFound = m_mapCursorDeclToAliasDecl.find(decl);
-			if (itFound != m_mapCursorDeclToAliasDecl.end())
+			auto templateDecl = clang_getSpecializedCursorTemplate(decl);
+			if (!clang_Cursor_isNull(templateDecl))
+				decl = templateDecl;
+			if (!IsCursorAliasDecl(decl))
+				return decl;
+			auto itFound = m_mapDeclToReferenced.find(decl);
+			if (itFound != m_mapDeclToReferenced.end())
 				decl = itFound->second;
 			else
 				break;
@@ -667,87 +703,128 @@ namespace NiflectGen
 		}
 		return lastValidDecl;
 	}
+	CXCursor CDataCollector::FindAliasDeclOld(CXCursor decl) const
+	{
+		ASSERT(false);
+		return g_invalidCursor;
+		//return m_aliasChain->FindOriginalDecl(decl);
+	}
 	void CDataCollector::Collect(const CXCursor& cursor, CTaggedNode2* taggedParent, CCollectingContext& context, CCollectionData& collectionData)
 	{
-		this->CollectDataRecurs2(cursor, g_invalidCursor, taggedParent, context, collectionData);
+		auto aliasChain = Niflect::MakeShared<CAliasChain>();
+		auto accessorBindingMapping = Niflect::MakeShared<CAccessorBindingMapping2>();
+		auto& vecSetting = accessorBindingMapping->m_vecAccessorBindingSetting;
+		SRecursCollectingData recursCollectiingData{ aliasChain.Get(), vecSetting };
+		this->CollectDataRecurs2(cursor, g_invalidCursor, taggedParent, context, recursCollectiingData);
 
-		for (auto& it : collectionData.m_vecBindingSetting)
+		//#1, 检查AccessorType定义是否继承自CAccessor
+		for (uint32 idx0 = 0; idx0 < vecSetting.size(); ++idx0)
 		{
-			auto& typeDecl = it.GetBindingTypeDecl();
-			if (clang_getCursorKind(typeDecl.m_cursorDecl) != CXCursor_NoDeclFound)
-			{
-				auto decl = this->FindAliasDecl(typeDecl.m_cursorDecl);
-				auto ret = collectionData.m_mapAliasTemplateDeclToClassTemplateCursor.insert({ typeDecl.m_cursorDecl, decl });
-				if (!ret.second)
-				{
-					GenLogError(context.m_log, NiflectUtil::FormatString("Duplicated binding type specified for %s. Additionally, partial template specialization is not supported for binding types.", CXStringToCString(clang_getCursorSpelling(typeDecl.m_cursorDecl)).c_str()));
-					break;//todo: 处于2层for, 需要有另外的逻辑检查有错误则不遍历sibling
-				}
-			}
-		}
-
-		for (auto& it : collectionData.m_vecBindingSetting)
-		{
-			//auto a = it.GetBindingTypeDecl().GetTypeName();
-			//printf("%s\n", a.c_str());
-
-			auto& accessorCursorDecl = it.GetAccessorTypeDecl().m_cursorDecl;
-			//auto itFound = m_mapCursorDeclToBaseCursorDecl.find(accessorCursorDecl);
-			//ASSERT(itFound != m_mapCursorDeclToBaseCursorDecl.end());
-			//it.m_accessorBaseCursorDecl = clang_getTypeDeclaration(clang_getCursorType(itFound->second));
-
-			//auto p = it.m_accessorBaseCursorDecl;
-			//bool isDerivedFromField = false;
-			//while (true)
+			auto& it0 = vecSetting[idx0];
+			auto& aSubcursor = it0.GetAccessorTypeDecl();
+			bool ok = this->VerifyDerivedFromCAccessor(aSubcursor.m_cursorDecl, aliasChain.Get());
+			//if (!found)
 			//{
-			//	auto name = CXStringToCString(clang_getCursorSpelling(p));
-			//	if (name == NiflectGenDefinition::NiflectFramework::AccessorTypeName::Field)
-			//	{
-			//		isDerivedFromField = true;
-			//		break;
-			//	}
-			//	auto itFound = m_mapCursorDeclToBaseCursorDecl.find(p);
-			//	if (itFound != m_mapCursorDeclToBaseCursorDecl.end())
-			//		p = clang_getTypeDeclaration(clang_getCursorType(itFound->second));
-			//	else
-			//		break;
+			//	auto templateDecl = clang_getSpecializedCursorTemplate(foundDecl);//预留支持特化模板作Accessor, 还需要实现特化模板声明指定标记
+			//	found = this->CheckDeclDerivedFromFieldBaseClass(templateDecl);
 			//}
-			//if (!isDerivedFromField)
-			//{
-			//	GenLogError(context.m_log, NiflectUtil::FormatString("Accessor type must be derived from %s", NiflectGenDefinition::NiflectFramework::AccessorTypeName::Field));
-			//	break;
-			//}
-
-			auto decl = this->FindAliasDecl(accessorCursorDecl);
-			bool found = this->CheckDeclDerivedFromFieldBaseClass(decl);
-			if (!found)
-			{
-				auto templateDecl = clang_getSpecializedCursorTemplate(decl);//预留支持特化模板作Accessor, 还需要实现特化模板声明指定标记
-				found = this->CheckDeclDerivedFromFieldBaseClass(templateDecl);
-			}
-			if (!found)
+			if (!ok)
 			{
 				GenLogError(context.m_log, NiflectUtil::FormatString("Field type must be derived from %s", NiflectGenDefinition::NiflectFramework::AccessorTypeName::Field));
 				break;
 			}
-
-			it.m_actualFieldDeclCursor = decl;
-
-			ASSERT(!it.m_accessorData.m_isNotATemplate);
-			it.m_accessorData.m_isNotATemplate = !IsCursorTemplateDecl(it.GetBindingTypeDecl().m_cursorDecl);
-
-			for (uint32 idx1 = 0; idx1 < it.GetDimensionalBindingTypeDeclsCount(); ++idx1)
-			{
-				auto& bindingTypeDecl = it.GetDimensionalBindingTypeDecl(idx1);
-				if (bindingTypeDecl.m_CXType.kind == CXType_Pointer)
-				{
-					GenLogError(context.m_log, "Pointer is not supported");//todo: 支持任意指针类型无实际用途, 应支持特定类型的指针, 需要获取的信息如几维指针与原始类型, 计划加到如m_mapUserTypePointer1D中, 即将指针解释为专门的类型, 这种专门的指针需要Runtime内存管理
-					break;
-				}
-			}
 		}
+		
+		//#2, 检查BindingType是否重定义, 生成BindingType的查找表
+		//todo: 1. 多维BindingType; 2. 特化; 3. 部分特化;
+		auto& mapCursorToIndex = accessorBindingMapping->m_mapCursorToIndex;
+		for (uint32 idx0 = 0; idx0 < vecSetting.size(); ++idx0)
+		{
+			auto& it0 = vecSetting[idx0];
+			auto& bSubcursor = it0.GetBindingTypeDecl();//此处b不是bool前缀
+
+		}
+
+		collectionData.m_aliasChain = aliasChain;
+		collectionData.m_accessorBindingMapping = accessorBindingMapping;
+
+		//for (auto& it : collectionData.m_vecBindingSetting)
+		//{
+		//	auto& typeDecl = it.GetBindingTypeDecl();
+		//	if (clang_getCursorKind(typeDecl.m_cursorDecl) != CXCursor_NoDeclFound)
+		//	{
+		//		auto decl = this->FindAliasDecl(typeDecl.m_cursorDecl);
+		//		auto ret = collectionData.m_mapAliasTemplateDeclToClassTemplateCursor.insert({ typeDecl.m_cursorDecl, decl });
+		//		if (!ret.second)
+		//		{
+		//			GenLogError(context.m_log, NiflectUtil::FormatString("Duplicated binding type specified for %s. Additionally, partial template specialization is not supported for binding types.", CXStringToCString(clang_getCursorSpelling(typeDecl.m_cursorDecl)).c_str()));
+		//			break;//todo: 处于2层for, 需要有另外的逻辑检查有错误则不遍历sibling
+		//		}
+		//	}
+		//}
+
+		//for (auto& it : collectionData.m_vecBindingSetting)
+		//{
+		//	//auto a = it.GetBindingTypeDecl().GetTypeName();
+		//	//printf("%s\n", a.c_str());
+
+		//	auto& accessorCursorDecl = it.GetAccessorTypeDecl().m_cursorDecl;
+		//	//auto itFound = m_mapCursorDeclToBaseCursorDecl.find(accessorCursorDecl);
+		//	//ASSERT(itFound != m_mapCursorDeclToBaseCursorDecl.end());
+		//	//it.m_accessorBaseCursorDecl = clang_getTypeDeclaration(clang_getCursorType(itFound->second));
+
+		//	//auto p = it.m_accessorBaseCursorDecl;
+		//	//bool isDerivedFromField = false;
+		//	//while (true)
+		//	//{
+		//	//	auto name = CXStringToCString(clang_getCursorSpelling(p));
+		//	//	if (name == NiflectGenDefinition::NiflectFramework::AccessorTypeName::Field)
+		//	//	{
+		//	//		isDerivedFromField = true;
+		//	//		break;
+		//	//	}
+		//	//	auto itFound = m_mapCursorDeclToBaseCursorDecl.find(p);
+		//	//	if (itFound != m_mapCursorDeclToBaseCursorDecl.end())
+		//	//		p = clang_getTypeDeclaration(clang_getCursorType(itFound->second));
+		//	//	else
+		//	//		break;
+		//	//}
+		//	//if (!isDerivedFromField)
+		//	//{
+		//	//	GenLogError(context.m_log, NiflectUtil::FormatString("Accessor type must be derived from %s", NiflectGenDefinition::NiflectFramework::AccessorTypeName::Field));
+		//	//	break;
+		//	//}
+
+		//	auto decl = this->FindAliasDecl(accessorCursorDecl);
+		//	bool found = this->CheckDeclDerivedFromFieldBaseClass(decl);
+		//	if (!found)
+		//	{
+		//		auto templateDecl = clang_getSpecializedCursorTemplate(decl);//预留支持特化模板作Accessor, 还需要实现特化模板声明指定标记
+		//		found = this->CheckDeclDerivedFromFieldBaseClass(templateDecl);
+		//	}
+		//	if (!found)
+		//	{
+		//		GenLogError(context.m_log, NiflectUtil::FormatString("Field type must be derived from %s", NiflectGenDefinition::NiflectFramework::AccessorTypeName::Field));
+		//		break;
+		//	}
+
+		//	it.m_actualFieldDeclCursor = decl;
+
+		//	ASSERT(!it.m_accessorData.m_isNotATemplate);
+		//	it.m_accessorData.m_isNotATemplate = !IsCursorTemplateDecl(it.GetBindingTypeDecl().m_cursorDecl);
+
+		//	for (uint32 idx1 = 0; idx1 < it.GetDimensionalBindingTypeDeclsCount(); ++idx1)
+		//	{
+		//		auto& bindingTypeDecl = it.GetDimensionalBindingTypeDecl(idx1);
+		//		if (bindingTypeDecl.m_CXType.kind == CXType_Pointer)
+		//		{
+		//			GenLogError(context.m_log, "Pointer is not supported");//todo: 支持任意指针类型无实际用途, 应支持特定类型的指针, 需要获取的信息如几维指针与原始类型, 计划加到如m_mapUserTypePointer1D中, 即将指针解释为专门的类型, 这种专门的指针需要Runtime内存管理
+		//			break;
+		//		}
+		//	}
+		//}
 	}
-	void CDataCollector::CollectDataRecurs2(const CXCursor& cursor, const CXCursor& parentCursor, CTaggedNode2* taggedParent, CCollectingContext& context, CCollectionData& collectionData)
+	void CDataCollector::CollectDataRecurs2(const CXCursor& cursor, const CXCursor& parentCursor, CTaggedNode2* taggedParent, CCollectingContext& context, SRecursCollectingData& recursCollectiingData)
 	{
 		if (auto debugData = context.m_debugData)
 		{
@@ -755,17 +832,17 @@ namespace NiflectGen
 			DebugPrintCursor(debugData->m_fp, cursor, debugData->m_level);
 		}
 
-		SVisitorCallbackData visitorCbData{this, taggedParent, context };
+		SVisitorCallbackData visitorCbData{this, taggedParent, context, recursCollectiingData.m_aliasChain };
 		clang_visitChildren(cursor, &VisitorCallback, &visitorCbData);
 
-		CScopeBindingSetting scopeBindingSetting(*this, cursor, visitorCbData.m_vecCursorChild, context, collectionData);
+		CScopeBindingSetting scopeBindingSetting(*this, cursor, visitorCbData.m_vecCursorChild, context, recursCollectiingData);
 
 		TSharedPtr<CScopeAccessorBaseCursorDecl> scopeCollectingClassBaseCursorDecl;
 		TSharedPtr<CScopeTemplateDecl> scopeCollectingAliasTemplateAndClassTemplateDecl;
 		if (m_collectingClassBaseCursorDecl)
 		{
 			scopeCollectingClassBaseCursorDecl = MakeShared<CScopeAccessorBaseCursorDecl>(*this, cursor, visitorCbData.m_vecCursorChild);
-			scopeCollectingAliasTemplateAndClassTemplateDecl = MakeShared<CScopeTemplateDecl>(*this, cursor, parentCursor, visitorCbData.m_vecCursorChild);
+			scopeCollectingAliasTemplateAndClassTemplateDecl = MakeShared<CScopeTemplateDecl>(cursor, visitorCbData.m_vecCursorChild, parentCursor, recursCollectiingData.m_aliasChain);
 		}
 
 		if (auto debugData = context.m_debugData)
@@ -777,7 +854,7 @@ namespace NiflectGen
 			auto& taggedChildIndex = visitorCbData.m_visitingData.m_vecTaggedChildIndex[idx];
 			if (taggedChildIndex != INDEX_NONE)
 				taggedChild = taggedParent->GetChild(taggedChildIndex);
-			this->CollectDataRecurs2(visitorCbData.m_vecCursorChild[idx], cursor, taggedChild, context, collectionData);
+			this->CollectDataRecurs2(visitorCbData.m_vecCursorChild[idx], cursor, taggedChild, context, recursCollectiingData);
 		}
 
 		if (auto debugData = context.m_debugData)

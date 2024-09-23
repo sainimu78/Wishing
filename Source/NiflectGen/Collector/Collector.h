@@ -69,6 +69,12 @@ namespace NiflectGen
 		Niflect::TArrayNif<uint32> m_vecTaggedChildIndex;
 	};
 
+	struct SRecursCollectingData
+	{
+		CAliasChain* m_aliasChain;
+		Niflect::TArrayNif<CBindingSettingData>& m_vecAccessorBindingSetting;
+	};
+
 	class CDataCollector
 	{
 		friend class CScopeNamespace;
@@ -84,12 +90,12 @@ namespace NiflectGen
 		void DebugFinish2(CTaggedNode2* taggedParent, const CCollectionData& collectionData) const;
 
 	private:
-		void CollectDataRecurs2(const CXCursor& cursor, const CXCursor& parentCursor, CTaggedNode2* taggedParent, CCollectingContext& context, CCollectionData& collectionData);
-		void Visit(const CXCursor& cursor, CTaggedNode2* taggedParent, CCollectingContext& context, SVisitingData& data);
+		void CollectDataRecurs2(const CXCursor& cursor, const CXCursor& parentCursor, CTaggedNode2* taggedParent, CCollectingContext& context, SRecursCollectingData& recursCollectiingData);
+		void Visit(const CXCursor& cursor, CTaggedNode2* taggedParent, CCollectingContext& context, CAliasChain* aliasChain, SVisitingData& data);
 
 	private:
-		bool CheckDeclDerivedFromFieldBaseClass(CXCursor p) const;
-		CXCursor FindAliasDecl(CXCursor decl) const;
+		bool VerifyDerivedFromCAccessor(CXCursor p, CAliasChain* aliasChain) const;
+		CXCursor FindAliasDeclOld(CXCursor decl) const;
 
 	private:
 		uint32 GetNamespaceDepth() const;
@@ -101,7 +107,8 @@ namespace NiflectGen
 		CTaggedTypeCollector m_taggedTypeCollector;
 		CTemplateCollector m_templateCollector;
 		TCursorMap<CXCursor> m_mapCursorDeclToBaseCursorDecl;
-		TCursorMap<CXCursor> m_mapCursorDeclToAliasDecl;
+		//TCursorMap<CXCursor> m_mapCursorDeclToAliasDecl;
+		//CSharedAliasChain m_aliasChain;
 		//CCursorSet m_setAliasTemplateOrClassTemplateDecl;
 		bool m_collectingClassBaseCursorDecl;
 	};

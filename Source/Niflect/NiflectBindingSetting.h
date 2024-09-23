@@ -1,3 +1,4 @@
+//todo: 计划文件名改为 NiflectAccessorBinding.h
 #pragma once
 
 #define NIFLECTGENINTERNAL_COMBINE_INNER(A,B,C) A##B##C
@@ -9,8 +10,8 @@ namespace Niflect
 {
 	using BindingTypePlaceholder = void*;
 
-	template <typename TField, typename TBindingType, typename TElementBindingType = BindingTypePlaceholder>
-	class TBindingSetting
+	template <typename TAccessorType, typename TBindingType, typename TNextBindingType = BindingTypePlaceholder>
+	class TBindingSetting//todo: 计划改名为 TAccessorBinding
 	{
 	};
 }

@@ -188,10 +188,12 @@ namespace NiflectGen
 	//		this->ResolveRecurs(it0.Get(), context, data);
 	//	}
 	//}
+	extern const Niflect::TArrayNif<CBindingSettingData>* g_debug0;
 	void CResolver::Resolve2(CTaggedNode2* taggedRoot, CResolvingContext& context, CResolvedData& data)
 	{
+		g_debug0 = &m_collectionData.deprecated_m_vecBindingSetting;
 		auto& accessorBindingMapping = data.m_mapping.m_accessorBindingMapping;
-		for (auto& it0 : m_collectionData.m_vecBindingSetting)
+		for (auto& it0 : m_collectionData.deprecated_m_vecBindingSetting)
 		{
 			if (!it0.IsValidBindingSetting())
 			{
@@ -214,8 +216,8 @@ namespace NiflectGen
 				auto kind = clang_getCursorKind(cursorDecl);
 				if ((kind == CXCursor_TypeAliasTemplateDecl) || (kind == CXCursor_TypeAliasDecl))
 				{
-					auto itFound = m_collectionData.m_mapAliasTemplateDeclToClassTemplateCursor.find(cursorDecl);
-					if (itFound != m_collectionData.m_mapAliasTemplateDeclToClassTemplateCursor.end())
+					auto itFound = m_collectionData.deprecated_m_mapAliasTemplateDeclToClassTemplateCursor.find(cursorDecl);
+					if (itFound != m_collectionData.deprecated_m_mapAliasTemplateDeclToClassTemplateCursor.end())
 					{
 						cursorDecl = itFound->second;
 					}

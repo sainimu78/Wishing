@@ -41,7 +41,7 @@ namespace NiflectGen
 		CSubcursor()
 		{
 		}
-		Niflect::TArrayNif<CXCursor> m_vecAaaaaaaaaa;
+		Niflect::TArrayNif<CXCursor> m_vecAaaaaaaaaa;//todo: 计划改名为m_vecDetailCursor
 		Niflect::TArrayNif<CSubcursor> m_vecChild;
 	};
 

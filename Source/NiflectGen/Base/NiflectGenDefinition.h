@@ -3,6 +3,7 @@
 #include "Niflect/Util/ConstCharConcat.h"
 
 #define DEVELOPMENT_ROOT_SOURCE_PATH "E:/S3/S3ResourceEditor_another/engine_ref"
+#define ROOT_TEST_PATH "../../../../../../Source/NiflectGen/Test"
 
 namespace NiflectGenDefinition
 {
@@ -96,6 +97,19 @@ namespace NiflectGenDefinition
 #ifdef USER_PROVIDED_CCOMPONENTFIELD_CLASS_DEFINITION
 			constexpr const char* CompoundFieldHeader = "Niflect/Field/CompoundField.h";
 #endif
+		}
+	}
+	namespace Test
+	{
+		static void AddBasicHeaderSearchPaths(Niflect::TArrayNif<Niflect::CString>& vec)
+		{
+			//begin, 解析的头文件源码搜索目录
+			vec.push_back("F:/Fts/Proj/Test/Interedit/Source");
+			//end
+			//begin, 用于旁路clang_parseTranslationUnit过程中STL头文件解析, 可大幅减少耗时
+			//todo: 旁路代码极简单, 可只在内存中生成
+			vec.push_back("F:/Fts/Proj/Test/Interedit/Source/BypassCode/NiflectSTL");
+			//end
 		}
 	}
 }

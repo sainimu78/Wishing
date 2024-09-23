@@ -1,5 +1,18 @@
 #include "Niflect/NiflectBindingSetting.h"
 #include "Engine/BuiltinAccessor.h"
+#include "Engine/Test/TestMyTransform.h"
+
+namespace TestAccessor2
+{
+	using DDDDDDDDDDD = Niflect::CAccessor;
+	using SSSSS = DDDDDDDDDDD;
+
+	template <typename T>
+	class TMSSSSSSSSSSSSSSSSS : public SSSSS
+	{
+
+	};
+}
 
 namespace EngineTypeBindingSettingScope
 {
@@ -87,17 +100,43 @@ namespace EngineTypeBindingSettingScope
 	//NIF_BS() TBindingSetting<TUnary_1D<CSomeClass2>, std::vector<bool> >;
 	//NIF_BS() TBindingSetting<TUnary_1D<CSomeClass2>, Niflect::TArrayNif<bool> >;
 
-	NIF_BS() TBindingSetting<CBoolAccessor, bool>;
-	NIF_BS() TBindingSetting<CFloatAccessor, float>;
-	NIF_BS() TBindingSetting<CStringAccessor, Niflect::CString>;
-	template <typename TInstance, typename T>
-	NIF_BS() TBindingSetting<TStlArrayAccessor<TInstance>, Niflect::TArrayNif<T> >;
+
+
+
+
+
+
+	//NIF_BS() TBindingSetting<CBoolAccessor, bool>;
+	//NIF_BS() TBindingSetting<CFloatAccessor, float>;
+	//NIF_BS() TBindingSetting<CStringAccessor, Niflect::CString>;
+	//NIF_BS() TBindingSetting<CStdStringAccessor, std::string>;
+	//template <typename TInstance, typename T>
+	//NIF_BS() TBindingSetting<TStlArrayAccessor<TInstance>, Niflect::TArrayNif<T> >;
+	//template <typename TInstance, typename T>
+	//NIF_BS() TBindingSetting<TStlArrayAccessor<TInstance>, std::vector<T> >;
 	//template <typename TInstance>
-	//NIF_BS() TBindingSetting<TStlBitsArrayAccessor<TInstance>, std::vector<bool> >;
-	template <typename T0, typename T1>
-	NIF_BS() TBindingSetting<CCompoundAccessor, std::pair<T0, T1> >;
-	template <typename TInstance, typename T0, typename T1>
-	NIF_BS() TBindingSetting<TStlMapAccessor<TInstance>, Niflect::TMap<T0, T1>, std::pair<T0, T1> >;
+	//NIF_BS() TBindingSetting<TStlBitsArrayAccessor<TInstance>, Niflect::TArrayNif<bool> >;
+	////template <typename TInstance>
+	////NIF_BS() TBindingSetting<TStlBitsArrayAccessor<TInstance>, std::vector<bool> >;
+	//template <typename T0, typename T1>
+	//NIF_BS() TBindingSetting<CCompoundAccessor, std::pair<T0, T1> >;
+	//template <typename TInstance, typename T0, typename T1>
+	//NIF_BS() TBindingSetting<TStlMapAccessor<TInstance>, Niflect::TMap<T0, T1>, std::pair<T0, T1> >;
+
+
+	//NIF_BS() TBindingSetting<TestAccessor2::TMyTransformAccessor<float>, TestAccessor2::TMyTransform<float> >;
+	//using CNihao = TestAccessor2::TMyTransformAccessor<float>;
+	//NIF_BS() TBindingSetting<CNihao, TestAccessor2::TMyTransform<float> >;
+	//template <typename T>
+	//NIF_BS() TBindingSetting<TestAccessor2::TMyTransformAccessor<T>, TestAccessor2::TMyTransform<float> >;
+	template <typename T>
+	using TNihao = TestAccessor2::TMSSSSSSSSSSSSSSSSS<T>;
+	template <typename T>
+	NIF_BS() TBindingSetting<TNihao<T>, TestAccessor2::TMyTransform<float> >;
+
+
+
+
 
 	class CMyClass
 	{

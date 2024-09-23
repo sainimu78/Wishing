@@ -188,10 +188,9 @@ namespace NiflectGen
 		else
 			vecNamespace.erase(vecNamespace.begin(), vecNamespace.begin() + commonScopesCount);
 	}
-	bool IsCursorTemplateDecl(const CXCursor& cursor)
+	bool IsCursorKindTemplateDecl(const CXCursorKind& kind)
 	{
 		bool isTemplate = false;
-		auto kind = clang_getCursorKind(cursor);
 		switch (kind)
 		{
 		case CXCursor_TypeAliasTemplateDecl:
@@ -202,6 +201,25 @@ namespace NiflectGen
 			break;
 		}
 		return isTemplate;
+	}
+	bool IsCursorTemplateDecl(const CXCursor& cursor)
+	{
+		auto kind = clang_getCursorKind(cursor);
+		return IsCursorKindTemplateDecl(kind);
+	}
+	bool IsCursorKindAliasDecl(const CXCursorKind& kind)
+	{
+		return kind == CXCursor_TypeAliasDecl || kind == CXCursor_TypeAliasTemplateDecl;
+	}
+	bool IsCursorAliasDecl(const CXCursor& cursor)
+	{
+		auto kind = clang_getCursorKind(cursor);
+		return IsCursorKindAliasDecl(kind);
+	}
+	bool IsCAccessorClassDecl(const CXCursor& cursor)
+	{
+		auto name = CXStringToCString(clang_getCursorSpelling(cursor));
+		return name == NiflectGenDefinition::NiflectFramework::AccessorTypeName::Field;
 	}
 	Niflect::CString GetCursorFilePath(const CXCursor& cursor)
 	{

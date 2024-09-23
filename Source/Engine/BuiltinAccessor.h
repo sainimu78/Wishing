@@ -33,6 +33,7 @@ namespace Engine
 	using CFloatAccessor = TBasicTypeAccessor<float>;
 	//typedef TBasicTypeAccessor<float> CFloatAccessor;
 	using CStringAccessor = TBasicTypeAccessor<Niflect::CString>;
+	using CStdStringAccessor = TBasicTypeAccessor<std::string>;
 
 	class CArrayAccessor : public Niflect::CAccessor
 	{
