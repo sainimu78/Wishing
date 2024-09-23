@@ -21,3 +21,8 @@
 8. NiflectGen, Builtin与实例化的模板生成FieldLayout创建函数可统一流程
 9. NiflectGen, Builtin与实例化的模板在InitialReg中注册到MiscTable中
 10. NiflectGen, 确认BindingSetting的BindingType与Member的Type是否具有唯一性, 整理一个专门的类处理此繁琐解析过程
+11. NiflectGen, Resolve, 遍历所有TaggedType, 收集需要生成的UntaggedType, 如float, TArrayNif
+12. NiflectGen, AccessorBinding对非1维收集需要生成的UntaggedType, 如pair
+	1. 检查成员是否都为public
+13. NiflectGen, 生成Field类型与AccessorType的查找表, 方便在Write阶段查找
+	1. 向Field类型的别名方向遍历每一级定义是否存在对应的BindingType

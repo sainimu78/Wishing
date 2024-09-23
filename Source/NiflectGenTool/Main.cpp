@@ -22,12 +22,12 @@
 
 int main()
 {
-	if (true)
+	if (false)
 	{
 		TestGen::TestCollector();
 	}
 
-	if (false)
+	if (true)
 	{
 		using namespace NiflectGen;
 
