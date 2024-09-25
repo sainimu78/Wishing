@@ -212,10 +212,10 @@ namespace TestGen
 	}
 	void TestCollector()
 	{
-		//TestSuccess_AccessorBindingWithAlias();
-		//TestSuccess_BindingTypesAllUnique();
-		//TestFailure_BindingTypesDuplicated();
-		//TestSuccess_FullScopes();
-		TestSuccess_FieldsFinding();
+		TestSuccess_AccessorBindingWithAlias();
+		TestSuccess_BindingTypesAllUnique();
+		TestFailure_BindingTypesDuplicated();
+		TestSuccess_FullScopes();
+		//TestSuccess_FieldsFinding();
 	}
 }
