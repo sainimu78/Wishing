@@ -3,6 +3,7 @@
 #include "NiflectGen/Base/NiflectGenDefinition.h"
 #include "Niflect/Memory/Default/DefaultMemory.h"
 #include "NiflectGen/Collector/Collector.h"
+#include "NiflectGen/Resolver/Resolver.h"
 
 namespace TestGen
 {
@@ -84,10 +85,137 @@ namespace TestGen
 				});
 		}
 	}
+	static void TestSuccess_FullScopes()
+	{
+		auto memTest = Niflect::GetDefaultMemoryStats();
+		{
+			auto gen = CreateGenerator();
+			CModuleRegInfo info;
+			info.m_vecBindingSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestBindingTypesFullScopes.h"));
+			NiflectGenDefinition::Test::AddBasicHeaderSearchPaths(info.m_vecHeaderSearchPath);
+			gen->SetModuleRegInfo(info);
+			gen->Generate([](void* cursorAddr)
+				{
+					auto& cursor = *static_cast<CXCursor*>(cursorAddr);
+					CTaggedNode2 taggedRoot;
+					CGenLog log;
+					CCollectingContext context(&log);
+					CCollectionData collectionData;
+					CDataCollector collector;
+					collector.Collect(cursor, &taggedRoot, context, collectionData);
+					ASSERT(log.m_vecText.size() == 0);
+					auto& vec0 = collectionData.m_accessorBindingMapping->m_vecAccessorBindingSetting;
+					ASSERT(vec0.size() > 0);
+
+					Niflect::TArrayNif<Niflect::CString> vecExpected;
+					vecExpected.push_back("EngineTypeBindingSettingScope::CMyTM");
+					vecExpected.push_back("Niflect::TArrayNif<float>");
+					vecExpected.push_back("Niflect::TArrayNif<EngineTypeBindingSettingScope::CMyTM>");
+					vecExpected.push_back("TestGenMyScope::MyAliasInt8_0");
+					vecExpected.push_back("TestGenMyScope::MyAliasInt8_1");
+					vecExpected.push_back("Niflect::TMap<Niflect::CString, EngineTypeBindingSettingScope::CMyTM>");
+					vecExpected.push_back("Niflect::TMap<float, EngineTypeBindingSettingScope::CMyTM>");
+					vecExpected.push_back("Niflect::TMap<bool, EngineTypeBindingSettingScope::CMyTM>");
+					vecExpected.push_back("Niflect::TMap<float, bool>");
+					vecExpected.push_back("Niflect::TMap<std::string, bool>");
+					vecExpected.push_back("std::map<std::string, int8>");
+					vecExpected.push_back("TestGenMyScope::MyAliasInt8_2");
+					vecExpected.push_back("TestGenMyScope::SubScope::SubMyAliasInt8_0");
+					vecExpected.push_back("TestGenMyScope::CSub_0::CSubSub_0");
+					vecExpected.push_back("TestGenMyScope::CSub_1::CSubSub_0");
+					vecExpected.push_back("TestGenMyScope::MyAliasInt8_3");
+					vecExpected.push_back("TestGenMyScope::MyAliasInt8_4");
+					vecExpected.push_back("TestGenMyScope::MyAliasSub_0");
+					vecExpected.push_back("TestGenMyScope::MyAliasSub_1");
+					vecExpected.push_back("TestGenMyScope::MyAliasSub_2");
+#ifdef TEMPLATE_INSTANCE_SCOPE
+					vecExpected.push_back("TestGenMyScope::TSub_2<float>::CSubSub_0");
+#endif
+
+					uint32 testedIdx = 0;
+					for (uint32 idx0 = 0; idx0 < vec0.size(); ++idx0)
+					{
+						auto& bSubcursor = vec0[idx0].GetBindingTypeDecl();
+
+						//auto kind = clang_getCursorKind(bSubcursor.m_cursorDecl);
+						//if (!IsCursorKindTemplateDecl(kind))//非模板或暂不在范围, 如需要应确认模板参数排除生成namespace流程(可能已支持, 未测试)
+						//{
+						//	Niflect::CString resolvedName;
+						//	if (kind == CXCursor_ClassDecl)
+						//	{
+						//		//特化模板
+						//		if (clang_Type_getNumTemplateArguments(bSubcursor.m_CXType) > 0)
+						//		{
+						//			GenerateTemplateInstanceCode(bSubcursor, resolvedName, CGenerateTemplateInstanceCodeOption().SetWithFullScope(true));
+						//		}
+						//		else
+						//		{
+						//			//类型Scope中的类型, 如 TestGenMyScope::CSub::CSubSub
+						//			resolvedName += GenerateNamespacesAndScopesCode(bSubcursor.m_cursorDecl);
+						//			resolvedName += CXStringToCString(clang_getCursorSpelling(bSubcursor.m_cursorDecl));
+						//		}
+						//	}
+						//	else
+						//	{
+						//		if ((kind == CXCursor_TypeAliasDecl)//using 别名
+						//			|| (kind == CXCursor_TypedefDecl)//typedef 别名
+						//			)
+						//		{
+						//			resolvedName += GenerateNamespacesAndScopesCode(bSubcursor.m_cursorDecl);
+						//			resolvedName += CXStringToCString(clang_getCursorSpelling(bSubcursor.m_cursorDecl));
+						//		}
+						//		else
+						//		{
+						//			//Builtin类型
+						//			ASSERT(kind == CXCursor_NoDeclFound);
+						//			resolvedName += CXStringToCString(clang_getTypeSpelling(bSubcursor.m_CXType));
+						//		}
+						//	}
+						//	ASSERT(vecExpected[testedIdx] == resolvedName);
+						//	testedIdx++;
+						//}
+
+						auto instanceTypeName = GenerateFullScopeTypeName(bSubcursor);
+						ASSERT(vecExpected[testedIdx] == instanceTypeName);
+						testedIdx++;
+					}
+					ASSERT(testedIdx == vecExpected.size());
+				});
+		}
+	}
+	static void TestSuccess_FieldsFinding()
+	{
+		auto memTest = Niflect::GetDefaultMemoryStats();
+		{
+			auto gen = CreateGenerator();
+			CModuleRegInfo info;
+			info.m_vecBindingSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestBindingTypesFullScopes.h"));
+			NiflectGenDefinition::Test::AddBasicHeaderSearchPaths(info.m_vecHeaderSearchPath);
+			gen->SetModuleRegInfo(info);
+			gen->Generate([](void* cursorAddr)
+				{
+					auto& cursor = *static_cast<CXCursor*>(cursorAddr);
+					CTaggedNode2 taggedRoot;
+					CGenLog log;
+					CCollectingContext context(&log);
+					CCollectionData collectionData;
+					CDataCollector collector;
+					collector.Collect(cursor, &taggedRoot, context, collectionData);
+					ASSERT(log.m_vecText.size() == 0);
+					CResolvingContext resolvingContext(&log);
+					CResolver resolver(collectionData);
+					CResolvedData resolvedData;
+					resolver.Resolve2(&taggedRoot, resolvingContext, resolvedData);
+					ASSERT(log.m_vecText.size() == 0);
+				});
+		}
+	}
 	void TestCollector()
 	{
 		//TestSuccess_AccessorBindingWithAlias();
 		//TestSuccess_BindingTypesAllUnique();
-		TestFailure_BindingTypesDuplicated();
+		//TestFailure_BindingTypesDuplicated();
+		//TestSuccess_FullScopes();
+		TestSuccess_FieldsFinding();
 	}
 }

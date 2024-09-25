@@ -11,3 +11,6 @@
 //生成的SplittedModuleReg中调用TypeReg时需要专门namespace
 //2024.08.23, 现为简化不需要namespace
 //#define INVOKE_TYPEREG_WITH_NAMESPACE
+
+//现流程实现模板实例的Scope太繁琐, 如需要传入Detail的Cursor, 不确定BuildSubcursor能否正确处理namespace与类嵌套的Scope, 因此放弃
+//#define TEMPLATE_INSTANCE_SCOPE

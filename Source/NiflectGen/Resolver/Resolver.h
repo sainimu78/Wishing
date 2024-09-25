@@ -52,7 +52,7 @@ namespace NiflectGen
 	class CResolver
 	{
 	public:
-		CResolver(const CCollectionData& collectionData, const Niflect::TArrayNif<Niflect::CString>& vecHeaderSearchPath);
+		CResolver(const CCollectionData& collectionData);
 		//void Resolve(CTaggedNode2* taggedRoot, CResolvingContext& context, CResolvedData& data);
 		void Resolve2(CTaggedNode2* taggedRoot, CResolvingContext& context, CResolvedData& data);
 

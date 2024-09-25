@@ -3,6 +3,7 @@
 #include "NiflectGen/Base/NiflectGenDefinition.h"
 #include <iostream>
 #include <algorithm>//for std::replace
+#include "NiflectGen/Collector/TypeDecl.h"
 
 namespace NiflectGen
 {
@@ -141,13 +142,13 @@ namespace NiflectGen
 			}
 		}
 	}
-	void FindNamespaceAndScopeNameRecurs(const CXCursor& cursor, Niflect::TArrayNif<Niflect::CString>& vecNamespace, Niflect::TArrayNif<Niflect::CString>& vecScope)
+	void FindNamespaceAndScopeNameRecursOld(const CXCursor& cursor, Niflect::TArrayNif<Niflect::CString>& vecNamespace, Niflect::TArrayNif<Niflect::CString>& vecScope)
 	{
 		CXCursor parentCursor;
 		if (clang_getCursorKind(cursor) == CXCursor_TemplateRef)
 		{
 			parentCursor = clang_getCursorReferenced(cursor);
-			FindNamespaceAndScopeNameRecurs(parentCursor, vecNamespace, vecScope);
+			FindNamespaceAndScopeNameRecursOld(parentCursor, vecNamespace, vecScope);
 		}
 		else
 		{
@@ -156,18 +157,83 @@ namespace NiflectGen
 
 		if (clang_getCursorKind(parentCursor) == CXCursor_Namespace)
 		{
-			FindNamespaceAndScopeNameRecurs(parentCursor, vecNamespace, vecScope);
+			FindNamespaceAndScopeNameRecursOld(parentCursor, vecNamespace, vecScope);
 			vecNamespace.push_back(CXStringToCString(clang_getCursorSpelling(parentCursor)));
 		}
 		else if (clang_getCursorKind(parentCursor) == CXCursor_ClassDecl)
 		{
-			FindNamespaceAndScopeNameRecurs(parentCursor, vecNamespace, vecScope);
+			FindNamespaceAndScopeNameRecursOld(parentCursor, vecNamespace, vecScope);
 			vecScope.push_back(CXStringToCString(clang_getCursorSpelling(parentCursor)));
 		}
 		else if (clang_getCursorKind(parentCursor) == CXCursor_TranslationUnit)
 		{
 			return;
 		}
+	}
+	void FindNamespaceAndScopeNameRecurs2(const CXCursor& cursor, Niflect::TArrayNif<Niflect::CString>& vecScope)
+	{
+		CXCursor parentCursor;
+		if (clang_getCursorKind(cursor) == CXCursor_TemplateRef)
+		{
+			parentCursor = clang_getCursorReferenced(cursor);
+			FindNamespaceAndScopeNameRecurs2(parentCursor, vecScope);
+		}
+		else
+		{
+			parentCursor = clang_getCursorSemanticParent(cursor);
+		}
+
+		if (clang_getCursorKind(parentCursor) == CXCursor_Namespace)
+		{
+			FindNamespaceAndScopeNameRecurs2(parentCursor, vecScope);
+			vecScope.push_back(CXStringToCString(clang_getCursorSpelling(parentCursor)));
+		}
+		else if (clang_getCursorKind(parentCursor) == CXCursor_ClassDecl)
+		{
+#ifdef TEMPLATE_INSTANCE_SCOPE
+			auto argsCount = clang_Cursor_getNumTemplateArguments(parentCursor);
+			if (argsCount > 0)
+			{
+				auto cxtype = clang_getCursorType(parentCursor);
+				for (int idx = 0; idx < argsCount; ++idx)
+				{
+					auto argType = clang_Type_getTemplateArgumentAsType(cxtype, idx);
+					printf("");
+				}
+				text += "<";
+				for (int idx = 0; idx < argsCount; ++idx)
+				{
+					Niflect::CString childText;
+					GenerateTemplateInstanceCodeRecurs(parentSubcursor.m_vecChild[idx], childText);
+					text += childText;
+					if (idx != parentSubcursor.m_vecChild.size() - 1)
+						text += ", ";
+				}
+				if (parentSubcursor.m_vecChild.back().m_vecChild.size() > 1)
+					text += " ";
+				text += ">";
+			}
+			else
+#endif
+			{
+				ASSERT(clang_Cursor_getNumTemplateArguments(parentCursor) == -1);
+				FindNamespaceAndScopeNameRecurs2(parentCursor, vecScope);
+				vecScope.push_back(CXStringToCString(clang_getCursorSpelling(parentCursor)));
+			}
+		}
+		else if (clang_getCursorKind(parentCursor) == CXCursor_TranslationUnit)
+		{
+			return;
+		}
+	}
+	Niflect::CString GenerateNamespacesAndScopesCode(const CXCursor& cursor)
+	{
+		Niflect::TArrayNif<Niflect::CString> vecScope;
+		FindNamespaceAndScopeNameRecurs2(cursor, vecScope);
+		Niflect::CString strScope;
+		for (uint32 idx2 = 0; idx2 < vecScope.size(); ++idx2)
+			strScope += vecScope[idx2] + "::";
+		return strScope;
 	}
 	void RemoveUnnessesaryNamespacees(const Niflect::TArrayNif<Niflect::CString>& vecNamespaceReference, Niflect::TArrayNif<Niflect::CString>& vecNamespace)
 	{

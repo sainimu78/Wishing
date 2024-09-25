@@ -27,4 +27,4 @@
 13. NiflectGen, Resolve, 生成Field类型与m_vecAccessorBindingSetting的查找表, 方便在Write阶段查找
 	1. 对于模板嵌套, 需要解析模板实例, 查找每一层模板对应的AccessorBinding, 因此需要考虑是否为特化的完整模板实例生成对应的AccessorBinding索引序列
 	2. 向Field类型的别名方向遍历每一级定义是否存在对应的BindingType, 或可只支持一一对应的匹配方式
-14. NiflectGen, 用BindingType在收集到的UntaggedTemplate中查找, 整理查找方法
+14. NiflectGen, 只有非1维BindingType需要实际定义的结构, 用BindingType在收集到的UntaggedTemplate中查找, 整理查找方法

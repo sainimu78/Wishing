@@ -14,7 +14,7 @@ namespace NiflectGen
 		m_typeName = CXStringToCString(clang_getCursorSpelling(m_cursor));
 		m_typeNameWithScope = CXStringToCString(clang_getTypeSpelling(clang_getCursorType(m_cursor)));
 		Niflect::TArrayNif<Niflect::CString> vecDeclScope;
-		FindNamespaceAndScopeNameRecurs(m_cursor, m_vecNamespace, vecDeclScope);
+		FindNamespaceAndScopeNameRecursOld(m_cursor, m_vecNamespace, vecDeclScope);
 	}
 	void CTypeRegCodeWriter::Init()
 	{

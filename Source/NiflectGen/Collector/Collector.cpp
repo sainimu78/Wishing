@@ -555,6 +555,7 @@ namespace NiflectGen
 	}
 	bool CTemplateCollector::Collect(const CXCursor& cursor, CTaggedNode2* taggedParent, CGenLog* log)
 	{
+		//由于clang_visitChildren是深度优先遍历, 进入AccessorBinding设置头文件时, 先继续向引用的头文件递归, 因此不能提前确定需要记录实际用到的UntaggedTemplate, 如能控制遍历方式为广度优先, 则可提前确定实际使用的非1维BindingType的UntaggedTemplate
 		taggedParent->AddChildAndInitDefault(MakeShared<CUntaggedTemplate>(), cursor, g_invalidCursor);
 		return true;
 	}

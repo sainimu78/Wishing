@@ -7,7 +7,7 @@ namespace NiflectGen
 {
 	using namespace Niflect;
 
-	CResolver::CResolver(const CCollectionData& collectionData, const Niflect::TArrayNif<Niflect::CString>& vecHeaderSearchPath)
+	CResolver::CResolver(const CCollectionData& collectionData)
 		: m_collectionData(collectionData)
 		//, m_vecHeaderSearchPath(vecHeaderSearchPath)
 		, m_foundCursorsCount(0)
@@ -294,6 +294,94 @@ namespace NiflectGen
 		//未实现按CursorDeclaration依赖顺序遍历, 因此在最后ResolveDependcies
 		for (auto& it : data.m_vecResolvedTypes2)
 			it.m_taggedType->ResolveDependcies(data.m_mapping.m_mapCursorDeclToTaggedType);
+
+		//for (auto& it : data.m_mapping.m_mapCursorDeclToUntaggedTemplate)
+		//{
+		//	auto a = CXStringToCString(clang_getCursorSpelling(it.first));
+		//	if (a == "TMyTransform")
+		//		printf("");
+		//	printf("%s\n", a.c_str());
+		//}
+
+		auto& vec0 = m_collectionData.m_accessorBindingMapping->m_vecAccessorBindingSetting;
+
+		for (uint32 idx0 = 0; idx0 < vec0.size(); ++idx0)
+		{
+			auto& bSubcursor = vec0[idx0].GetBindingTypeDecl();
+
+			if (false)
+			{
+				auto kind = clang_getCursorKind(bSubcursor.m_cursorDecl);
+				if (!IsCursorKindTemplateDecl(kind))
+				{
+					CXCursor resolvedCursor = g_invalidCursor;
+					if (kind != CXCursor_NoDeclFound)
+						resolvedCursor = m_collectionData.m_aliasChain->FindOriginalDecl(bSubcursor.m_cursorDecl);
+					auto resolvedType = bSubcursor.m_CXType;
+					if (IsCursorAliasDecl(resolvedCursor))
+						resolvedType = clang_getTypedefDeclUnderlyingType(resolvedCursor);//可获取到别名指向的类型, 如 using FFF = float; 中的float
+					auto name = CXStringToCString(clang_getTypeSpelling(resolvedType));
+					printf("");
+				}
+			}
+
+			if (true)
+			{
+				auto kind = clang_getCursorKind(bSubcursor.m_cursorDecl);
+				if (!IsCursorKindTemplateDecl(kind))//非模板或无效
+				{
+					Niflect::CString resolvedName;
+					if (kind == CXCursor_ClassDecl)
+					{
+						//特化模板
+
+						ASSERT(clang_Type_getNumTemplateArguments(bSubcursor.m_CXType) > 0);
+						GenerateTemplateInstanceCode(bSubcursor, resolvedName, CGenerateTemplateInstanceCodeOption().SetWithFullScope(true));
+					}
+					else
+					{
+						//Builtin类型与别名
+
+						ASSERT(kind == CXCursor_NoDeclFound || kind == CXCursor_TypeAliasDecl);
+						resolvedName = CXStringToCString(clang_getTypeSpelling(bSubcursor.m_CXType));
+					}
+					printf("");
+				}
+			}
+		}
+
+		for (uint32 idx0 = 0; idx0 < vec0.size(); ++idx0)
+		{
+			auto& bSubcursor = vec0[idx0].GetBindingTypeDecl();
+			auto a = CXStringToCString(clang_getCursorSpelling(bSubcursor.m_cursorDecl));
+
+			Niflect::CString dddddd;
+			GenerateTemplateInstanceCode(bSubcursor, dddddd);
+			auto ddddddd = clang_getSpecializedCursorTemplate(bSubcursor.m_cursorDecl);
+
+			auto itFound0 = data.m_mapping.m_mapCursorDeclToUntaggedTemplate.find(bSubcursor.m_cursorDecl);
+			if (itFound0 != data.m_mapping.m_mapCursorDeclToUntaggedTemplate.end())
+			{
+				auto b = CXStringToCString(clang_getCursorSpelling(itFound0->second->GetCursor()));
+				printf("");
+			}
+			else
+			{
+				printf("");
+			}
+
+			//特化的原定义, 即从ClassDecl获取到ClassTemplate
+			auto itFound1 = data.m_mapping.m_mapCursorDeclToUntaggedTemplate.find(ddddddd);
+			if (itFound1 != data.m_mapping.m_mapCursorDeclToUntaggedTemplate.end())
+			{
+				auto b = CXStringToCString(clang_getCursorSpelling(itFound1->second->GetCursor()));
+				printf("");
+			}
+			else
+			{
+				printf("");
+			}
+		}
 	}
 	void CResolver::ResolveRecurs2(CTaggedNode2* taggedParent, CResolvingContext& context, CResolvedData& data)
 	{

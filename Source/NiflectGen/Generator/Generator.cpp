@@ -146,7 +146,7 @@ namespace NiflectGen
             if (true)
             {
                 CResolvingContext resolvingContext(&log);
-                CResolver resolver(collectionData, m_vecHeaderSearchPath);
+                CResolver resolver(collectionData);
                 CResolvedData resolvedData;
                 resolver.Resolve2(&taggedRoot, resolvingContext, resolvedData);
                 //resolver.DebugFinish(resolvedData);
@@ -264,7 +264,7 @@ namespace NiflectGen
                 if (true)
                 {
                     CResolvingContext resolvingContext(&log);
-                    CResolver resolver(collectionData, m_vecHeaderSearchPath);
+                    CResolver resolver(collectionData);
                     CResolvedData resolvedData;
                     resolver.Resolve2(&taggedRoot, resolvingContext, resolvedData);
 

@@ -116,21 +116,31 @@ namespace NiflectGen
 
 		depth++;
 
-		if (!skipAlias || (clang_getCursorKind(parentSubcursor.m_cursorDecl) != CXCursor_TypeAliasDecl))
+		auto kind = clang_getCursorKind(parentSubcursor.m_cursorDecl);
+		if (!skipAlias || (kind != CXCursor_TypeAliasDecl))
 		{
 			auto templateArgsCount = clang_Type_getNumTemplateArguments(parentType);
 			if (templateArgsCount > 0)
 			{
 				if (maxDepth == INDEX_NONE || depth < maxDepth)
 					parentSubcursor.m_vecChild.resize(templateArgsCount);
+				for (int idx = 0; idx < templateArgsCount; ++idx)
+				{
+					CXType argType = clang_Type_getTemplateArgumentAsType(parentType, idx);
+					CSubcursor* p = &parentSubcursor;
+					if (idx < parentSubcursor.m_vecChild.size())
+						p = &parentSubcursor.m_vecChild[idx];
+					BuildSubcursorRecurs2(argType, maxDepth, vecAAAAAAA, frontIndex, *p, depth, skipAlias);
+				}
 			}
-			for (int idx = 0; idx < templateArgsCount; ++idx)
+			else if (kind == CXCursor_ClassDecl)
 			{
-				CXType argType = clang_Type_getTemplateArgumentAsType(parentType, idx);
-				CSubcursor* p = &parentSubcursor;
-				if (idx < parentSubcursor.m_vecChild.size())
-					p = &parentSubcursor.m_vecChild[idx];
-				BuildSubcursorRecurs2(argType, maxDepth, vecAAAAAAA, frontIndex, *p, depth, skipAlias);
+				//为支持类型作为Scope, 如TestGenMyScope::CSub_1::CSubSub_0
+				while (frontIndex < vecAAAAAAA.size())
+				{
+					parentSubcursor.m_vecAaaaaaaaaa.push_back(vecAAAAAAA[frontIndex]);
+					frontIndex++;
+				}
 			}
 		}
 	}
@@ -177,7 +187,7 @@ namespace NiflectGen
 			text += ">";
 		}
 	}
-	void GenerateTemplateInstanceCodeRecurs2(const CSubcursor& parentSubcursor, Niflect::CString& text, bool& withRightAngleBracket, const Niflect::TArrayNif<Niflect::CString>& vecTemplateArgReplacementString)
+	void GenerateTemplateInstanceCodeRecurs2(const CSubcursor& parentSubcursor, Niflect::CString& text, bool& withRightAngleBracket, const CGenerateTemplateInstanceCodeOption& opt)
 	{
 		Niflect::CString name;
 		if (parentSubcursor.m_vecAaaaaaaaaa.size() > 0)
@@ -186,34 +196,65 @@ namespace NiflectGen
 			{
 				auto& it = parentSubcursor.m_vecAaaaaaaaaa[idx];
 				auto kind = clang_getCursorKind(it);
-				if (clang_isReference(kind))
+				if (!opt.m_withFullScope)
 				{
-					auto decl = clang_getCursorReferenced(it);
-					name += CXStringToCString(clang_getCursorSpelling(decl));
-					if (idx != parentSubcursor.m_vecAaaaaaaaaa.size() - 1)
-						name += "::";
+					if (clang_isReference(kind))
+					{
+						auto decl = clang_getCursorReferenced(it);
+						name += CXStringToCString(clang_getCursorSpelling(decl));
+						if (idx != parentSubcursor.m_vecAaaaaaaaaa.size() - 1)
+							name += "::";
+					}
+					else
+					{
+						ASSERT(false);
+					}
 				}
 				else
 				{
-					ASSERT(false);
+					if (kind != CXCursor_NamespaceRef)
+					{
+						if (clang_isReference(kind))
+						{
+							auto decl = clang_getCursorReferenced(it);
+							auto strScope = GenerateNamespacesAndScopesCode(decl);
+							name += strScope;
+							name += CXStringToCString(clang_getCursorSpelling(decl));
+							if (idx != parentSubcursor.m_vecAaaaaaaaaa.size() - 1)
+								name += "::";
+						}
+						else
+						{
+							ASSERT(false);
+						}
+					}
 				}
 			}
 		}
 		else
 		{
-			name = GetNameFromCursorOrTypeDeclaration(parentSubcursor.m_cursorDecl, parentSubcursor.m_CXType);
+			if (opt.m_withFullScope)
+			{
+				auto strScope = GenerateNamespacesAndScopesCode(parentSubcursor.m_cursorDecl);
+				name += strScope;
+			}
+			name += GetNameFromCursorOrTypeDeclaration(parentSubcursor.m_cursorDecl, parentSubcursor.m_CXType);
 		}
+
 		text += name;
 		bool canRecurs = true;
 		if (parentSubcursor.m_vecAaaaaaaaaa.size() > 0)
 		{
-			//m_vecChild为模板参数所引用的decl, 如TypedefAliasDecl, m_vecAaaaaaaaaa[0]中为模板参数的Spelling类型, 非模板为TypeRef, 模板为TemplateRef, 因此TypeRef不应继续递归
-			if (clang_getCursorKind(parentSubcursor.m_vecAaaaaaaaaa[0]) == CXCursor_TypeRef)
+			//m_vecChild为模板参数所引用的decl, 如TypedefAliasDecl, m_vecAaaaaaaaaa.back()中为模板参数的Spelling类型, 非模板为TypeRef, 模板为TemplateRef, 因此TypeRef不应继续递归
+			if (clang_getCursorKind(parentSubcursor.m_vecAaaaaaaaaa.back()) == CXCursor_TypeRef)
 			{
-				ASSERT(parentSubcursor.m_vecAaaaaaaaaa.size() == 1);
 				canRecurs = false;
 				withRightAngleBracket = false;
 			}
+		}
+		else
+		{
+			canRecurs = clang_getCursorKind(parentSubcursor.m_cursorDecl) != CXCursor_TypeAliasDecl;
 		}
 		if ((canRecurs) && (parentSubcursor.m_vecChild.size() > 0))
 		{
@@ -222,16 +263,16 @@ namespace NiflectGen
 			for (uint32 idx = 0; idx < parentSubcursor.m_vecChild.size(); ++idx)
 			{
 				Niflect::CString childText;
-				if (vecTemplateArgReplacementString.size() > 0)
+				if (opt.m_vecTemplateArgReplacementString != NULL && (opt.m_vecTemplateArgReplacementString->size() > 0))
 				{
-					ASSERT(vecTemplateArgReplacementString.size() == parentSubcursor.m_vecChild.size());
-					childText = vecTemplateArgReplacementString[idx];
+					ASSERT(opt.m_vecTemplateArgReplacementString->size() == parentSubcursor.m_vecChild.size());
+					childText = opt.m_vecTemplateArgReplacementString->at(idx);
 					if (childText.back() == '>')
 						isLastChildWithRightAngleBracket = true;
 				}
 				else
 				{
-					GenerateTemplateInstanceCodeRecurs2(parentSubcursor.m_vecChild[idx], childText, isLastChildWithRightAngleBracket, vecTemplateArgReplacementString);
+					GenerateTemplateInstanceCodeRecurs2(parentSubcursor.m_vecChild[idx], childText, isLastChildWithRightAngleBracket, opt);
 				}
 				text += childText;
 				if (idx != parentSubcursor.m_vecChild.size() - 1)
@@ -243,9 +284,48 @@ namespace NiflectGen
 			withRightAngleBracket = true;
 		}
 	}
-	void GenerateTemplateInstanceCode(const CSubcursor& parentSubcursor, Niflect::CString& text, const Niflect::TArrayNif<Niflect::CString>& vecTemplateArgReplacementString)
+	void GenerateTemplateInstanceCode(const CSubcursor& parentSubcursor, Niflect::CString& text, const CGenerateTemplateInstanceCodeOption& opt)
 	{
 		bool withRightAngleBracket = false;
-		GenerateTemplateInstanceCodeRecurs2(parentSubcursor, text, withRightAngleBracket, vecTemplateArgReplacementString);
+		GenerateTemplateInstanceCodeRecurs2(parentSubcursor, text, withRightAngleBracket, opt);
+	}
+	Niflect::CString GenerateFullScopeTypeName(const CSubcursor& bSubcursor)
+	{
+		Niflect::CString resolvedName;
+		auto kind = clang_getCursorKind(bSubcursor.m_cursorDecl);
+		if (!IsCursorKindTemplateDecl(kind))//非模板或暂不在范围, 如需要应确认模板参数排除生成namespace流程(可能已支持, 未测试)
+		{
+			if (kind == CXCursor_ClassDecl)
+			{
+				//特化模板
+				if (clang_Type_getNumTemplateArguments(bSubcursor.m_CXType) > 0)
+				{
+					GenerateTemplateInstanceCode(bSubcursor, resolvedName, CGenerateTemplateInstanceCodeOption().SetWithFullScope(true));
+				}
+				else
+				{
+					//类型Scope中的类型, 如 TestGenMyScope::CSub::CSubSub
+					resolvedName += GenerateNamespacesAndScopesCode(bSubcursor.m_cursorDecl);
+					resolvedName += CXStringToCString(clang_getCursorSpelling(bSubcursor.m_cursorDecl));
+				}
+			}
+			else
+			{
+				if ((kind == CXCursor_TypeAliasDecl)//using 别名
+					|| (kind == CXCursor_TypedefDecl)//typedef 别名
+					)
+				{
+					resolvedName += GenerateNamespacesAndScopesCode(bSubcursor.m_cursorDecl);
+					resolvedName += CXStringToCString(clang_getCursorSpelling(bSubcursor.m_cursorDecl));
+				}
+				else
+				{
+					//Builtin类型
+					ASSERT(kind == CXCursor_NoDeclFound);
+					resolvedName += CXStringToCString(clang_getTypeSpelling(bSubcursor.m_CXType));
+				}
+			}
+		}
+		return resolvedName;
 	}
 }

@@ -95,7 +95,7 @@ namespace NiflectGen
 	{
 		Niflect::TArrayNif<Niflect::CString> vecFieldNamespace;
 		Niflect::TArrayNif<Niflect::CString> vecTypeScope;
-		FindNamespaceAndScopeNameRecurs(cursor, vecFieldNamespace, vecTypeScope);
+		FindNamespaceAndScopeNameRecursOld(cursor, vecFieldNamespace, vecTypeScope);
 		RemoveUnnessesaryNamespacees(vecNamespaceEntered, vecFieldNamespace);
 		Niflect::CString strScope;
 		for (uint32 idx2 = 0; idx2 < vecFieldNamespace.size(); ++idx2)
