@@ -103,10 +103,11 @@ namespace EngineTypeBindingSettingScope
 
 
 
-
+	using namespace TestAccessor2;
 
 
 	//NIF_BS() TBindingSetting<CBoolAccessor, bool>;
+	//NIF_BS() TBindingSetting<CBoolAccessor, FFF>;
 	//NIF_BS() TBindingSetting<CFloatAccessor, float>;
 	//NIF_BS() TBindingSetting<CStringAccessor, Niflect::CString>;
 	//NIF_BS() TBindingSetting<CStdStringAccessor, std::string>;
@@ -114,8 +115,8 @@ namespace EngineTypeBindingSettingScope
 	//NIF_BS() TBindingSetting<TStlArrayAccessor<TInstance>, Niflect::TArrayNif<T> >;
 	//template <typename TInstance, typename T>
 	//NIF_BS() TBindingSetting<TStlArrayAccessor<TInstance>, std::vector<T> >;
-	//template <typename TInstance>
-	//NIF_BS() TBindingSetting<TStlBitsArrayAccessor<TInstance>, Niflect::TArrayNif<bool> >;
+	template <typename TInstance>
+	NIF_BS() TBindingSetting<TStlBitsArrayAccessor<TInstance>, Niflect::TArrayNif<DDDDDDDDDDD> >;
 	////template <typename TInstance>
 	////NIF_BS() TBindingSetting<TStlBitsArrayAccessor<TInstance>, std::vector<bool> >;
 	//template <typename T0, typename T1>
@@ -129,10 +130,10 @@ namespace EngineTypeBindingSettingScope
 	//NIF_BS() TBindingSetting<CNihao, TestAccessor2::TMyTransform<float> >;
 	//template <typename T>
 	//NIF_BS() TBindingSetting<TestAccessor2::TMyTransformAccessor<T>, TestAccessor2::TMyTransform<float> >;
-	template <typename T>
-	using TNihao = TestAccessor2::TMSSSSSSSSSSSSSSSSS<T>;
-	template <typename T>
-	NIF_BS() TBindingSetting<TNihao<T>, TestAccessor2::TMyTransform<float> >;
+	//template <typename T>
+	//using TNihao = TestAccessor2::TMSSSSSSSSSSSSSSSSS<T>;
+	//template <typename T>
+	//NIF_BS() TBindingSetting<TNihao<T>, TestAccessor2::TMyTransform<float> >;
 
 
 

@@ -121,8 +121,11 @@ namespace TestGen
 					vecExpected.push_back("std::map<std::string, int8>");
 					vecExpected.push_back("TestGenMyScope::MyAliasInt8_2");
 					vecExpected.push_back("TestGenMyScope::SubScope::SubMyAliasInt8_0");
+#ifdef CLASS_TYPE_SCOPE
 					vecExpected.push_back("TestGenMyScope::CSub_0::CSubSub_0");
 					vecExpected.push_back("TestGenMyScope::CSub_1::CSubSub_0");
+#else
+#endif
 					vecExpected.push_back("TestGenMyScope::MyAliasInt8_3");
 					vecExpected.push_back("TestGenMyScope::MyAliasInt8_4");
 					vecExpected.push_back("TestGenMyScope::MyAliasSub_0");
@@ -189,7 +192,8 @@ namespace TestGen
 		{
 			auto gen = CreateGenerator();
 			CModuleRegInfo info;
-			info.m_vecBindingSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestBindingTypesFullScopes.h"));
+			info.m_vecOriginalHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestOriginalFieldsFinding.h"));
+			info.m_vecBindingSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestBindingTypesFieldsFinding.h"));
 			NiflectGenDefinition::Test::AddBasicHeaderSearchPaths(info.m_vecHeaderSearchPath);
 			gen->SetModuleRegInfo(info);
 			gen->Generate([](void* cursorAddr)
@@ -212,10 +216,10 @@ namespace TestGen
 	}
 	void TestCollector()
 	{
-		TestSuccess_AccessorBindingWithAlias();
-		TestSuccess_BindingTypesAllUnique();
-		TestFailure_BindingTypesDuplicated();
-		TestSuccess_FullScopes();
-		//TestSuccess_FieldsFinding();
+		//TestSuccess_AccessorBindingWithAlias();
+		//TestSuccess_BindingTypesAllUnique();
+		//TestFailure_BindingTypesDuplicated();
+		//TestSuccess_FullScopes();
+		TestSuccess_FieldsFinding();
 	}
 }

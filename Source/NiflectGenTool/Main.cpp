@@ -18,7 +18,7 @@
 //8. FieldLayout, 由Accessor构成的树型结构, 表示Native对象所有被标记成员变量(Field)的读写方式
 //9. AccessorBinding, Field类型对应的Accessor类, 用于生成代码时指定对应的Accessor
 //10. NiflectType, 表示运行时的类的信息, 或称作反射信息类, 可通过该信息构造对应的Native对象
-//11. NativeMeta, 通过C++ Native风格定义的Meta信息, 如用于定义反射类的信息, 反射属性的信息
+//11. NativeMeta, 通过C++ Native风格定义的Meta信息, 如用于定义类的反射信息, 属性的反射信息
 
 int main()
 {

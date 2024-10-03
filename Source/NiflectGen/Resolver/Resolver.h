@@ -59,6 +59,7 @@ namespace NiflectGen
 	private:
 		//void ResolveRecurs(CTaggedNode2* taggedParent, CResolvingContext& context, CResolvedData& data);
 		void ResolveRecurs2(CTaggedNode2* taggedParent, CResolvingContext& context, CResolvedData& data);
+		void TestResolveRecurs3(CTaggedNode2* taggedParent, CResolvingContext& context, CResolvedData& data, int lv = 0);
 
 	//public:
 	//	void DebugFinish(const CResolvedData& data) const;

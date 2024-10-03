@@ -338,7 +338,9 @@ namespace NiflectGen
 				CBindingSettingData data;
 				if (!BuildSubcursor(templateType, m_vecChild, data.m_subcursorRoot))
 				{
-					GenLogError(m_context.m_log, "Fail to apply the BindingSetting");
+					Niflect::CString str0;
+					GenerateTemplateInstanceCode(data.m_subcursorRoot, str0);
+					GenLogError(m_context.m_log, NiflectUtil::FormatString("Fail to apply the BindingSetting, %s", str0.c_str()));
 					return;
 				}
 				//auto a = CXStringToCString(clang_getTypeSpelling(templateType));
@@ -710,6 +712,44 @@ namespace NiflectGen
 		return g_invalidCursor;
 		//return m_aliasChain->FindOriginalDecl(decl);
 	}
+	static bool ContainsTemplateTypeParameterRecurs(const CSubcursor& par)
+	{
+		bool yes = false;
+		//if (par.m_vecAaaaaaaaaa.size() == 0)
+		//{
+		//	yes = (clang_getCursorKind(par.m_cursorDecl) == CXCursor_NoDeclFound) &&
+		//		(par.m_CXType.kind == CXType_Unexposed);
+		//}
+		//else
+		{
+			for (auto& it : par.m_vecAaaaaaaaaa)
+			{
+				auto kind = clang_getCursorKind(it);
+				if (kind == CXCursor_TypeRef)
+				{
+					auto cursor = clang_getCursorReferenced(it);
+					if (clang_getCursorKind(cursor) == CXCursor_TemplateTypeParameter)
+					{
+						yes = true;
+						break;
+					}
+				}
+			}
+		}
+		if (!yes)
+		{
+			for (auto& it : par.m_vecChild)
+			{
+				bool yesForChild = ContainsTemplateTypeParameterRecurs(it);
+				if (yesForChild)
+				{
+					yes = true;
+					break;
+				}
+			}
+		}
+		return yes;
+	}
 	void CDataCollector::Collect(const CXCursor& cursor, CTaggedNode2* taggedParent, CCollectingContext& context, CCollectionData& collectionData)
 	{
 		auto aliasChain = Niflect::MakeShared<CAliasChain>();
@@ -739,8 +779,8 @@ namespace NiflectGen
 		}
 		
 		//#2, 检查BindingType是否重定义, 生成BindingType的查找表
-		//todo: 1. 多维BindingType; 2. 特化; 3. 部分特化;
 		auto& mapCursorToIndex = accessorBindingMapping->m_mapCursorToIndex;
+		auto& mapSpecializedCursorToIndex = accessorBindingMapping->m_mapSpecializedCursorToIndex;//特化作单独容器是为减少FieldFinding时的查找规模
 		auto& mapCXTypeToIndex = accessorBindingMapping->m_mapCXTypeToIndex;
 		for (uint32 idx0 = 0; idx0 < vecSetting.size(); ++idx0)
 		{
@@ -760,7 +800,20 @@ namespace NiflectGen
 				//1. 多维cursor构成的复合key显复杂化
 				//2. 所谓的维, 是一种避免特殊处理多维结构的定义方式, 如由用户指定第2维的类型为std::pair的Accessor, 可避免解析std::map的定义, 其std::pair类型在allocator的模板参数中指定
 				//	因此1维外的BindingType, 在概念上是与1维的BindingType一体的
-				auto ret = mapCursorToIndex.insert({ bSubcursor.m_cursorDecl, idx0 });
+				auto p = &mapCursorToIndex;
+				//if (clang_Type_getNumTemplateArguments(bSubcursor.m_CXType) > 0)
+				//{
+				//	if (!ContainsTemplateTypeParameterRecurs(bSubcursor))
+				//		p = &mapSpecializedCursorToIndex;
+				//}
+				auto kind = clang_getCursorKind(bSubcursor.m_cursorDecl);
+				if ((kind != CXCursor_TypeAliasDecl) && (kind != CXCursor_TypedefDecl))
+				{
+					if (!ContainsTemplateTypeParameterRecurs(bSubcursor))
+						p = &mapSpecializedCursorToIndex;
+				}
+				auto& map = *p;
+				auto ret = map.insert({ bSubcursor.m_cursorDecl, idx0 });
 				ok = ret.second;
 				idxDupWith = ret.first->second;
 			}
@@ -780,9 +833,9 @@ namespace NiflectGen
 		for (uint32 idx0 = 0; idx0 < vecSetting.size(); ++idx0)
 		{
 			auto& it0 = vecSetting[idx0];
-			for (uint32 idx1 = 0; idx1 < it0.GetDimensionalBindingTypeDeclsCount(); ++idx1)
+			for (uint32 idx1 = 0; idx1 < it0.GetBindingTypeDeclsCount(); ++idx1)
 			{
-				auto& bindingTypeDecl = it0.GetDimensionalBindingTypeDecl(idx1);
+				auto& bindingTypeDecl = it0.GetBindingTypeDecl(idx1);
 				if (bindingTypeDecl.m_CXType.kind == CXType_Pointer)
 				{
 					GenLogError(context.m_log, "Pointer is not supported");//todo: 支持任意指针类型无实际用途, 应支持特定类型的指针, 需要获取的信息如几维指针与原始类型, 计划加到如m_mapUserTypePointer1D中, 即将指针解释为专门的类型, 这种专门的指针需要Runtime内存管理

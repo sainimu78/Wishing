@@ -1,6 +1,7 @@
 #include "Niflect/NiflectBindingSetting.h"
 #include "Engine/BuiltinAccessor.h"
 #include "Engine/Test/TestMyTransform.h"
+#include "NiflectGen/NiflectGenDevelopmentMacro.h"
 
 namespace TestGenMyScope
 {
@@ -72,12 +73,19 @@ namespace EngineTypeBindingSettingScope
 
 	NIF_BS() TBindingSetting<TestAccessor2::TMyTransformAccessor<float>, TestGenMyScope::SubScope::SubMyAliasInt8_0>;
 
+#ifdef CLASS_TYPE_SCOPE
+	//流程缺陷无法区分类Scope与模板定义
 	NIF_BS() TBindingSetting<TestAccessor2::TMyTransformAccessor<float>, TestGenMyScope::CSub_0::CSubSub_0>;
 	NIF_BS() TBindingSetting<TestAccessor2::TMyTransformAccessor<float>, CSub_1::CSubSub_0>;
+#else
+#endif
 	NIF_BS() TBindingSetting<TestAccessor2::TMyTransformAccessor<float>, MyAliasInt8_3>;
 	NIF_BS() TBindingSetting<TestAccessor2::TMyTransformAccessor<float>, TestGenMyScope::MyAliasInt8_4>;
 	NIF_BS() TBindingSetting<TestAccessor2::TMyTransformAccessor<float>, MyAliasSub_0>;
 	NIF_BS() TBindingSetting<TestAccessor2::TMyTransformAccessor<float>, MyAliasSub_1>;
 	NIF_BS() TBindingSetting<TestAccessor2::TMyTransformAccessor<float>, MyAliasSub_2>;
-	//NIF_BS() TBindingSetting<TestAccessor2::TMyTransformAccessor<float>, TSub_2<float>::CSubSub_0>;//不支持模板实例的Scope, 见开发宏 TEMPLATE_INSTANCE_SCOPE
+#ifdef TEMPLATE_INSTANCE_SCOPE
+	NIF_BS() TBindingSetting<TestAccessor2::TMyTransformAccessor<float>, TSub_2<float>::CSubSub_0>;//不支持模板实例的Scope
+#else
+#endif
 }

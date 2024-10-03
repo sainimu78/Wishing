@@ -133,6 +133,7 @@ namespace NiflectGen
 					BuildSubcursorRecurs2(argType, maxDepth, vecAAAAAAA, frontIndex, *p, depth, skipAlias);
 				}
 			}
+#ifdef CLASS_TYPE_SCOPE
 			else if (kind == CXCursor_ClassDecl)
 			{
 				//为支持类型作为Scope, 如TestGenMyScope::CSub_1::CSubSub_0
@@ -142,6 +143,8 @@ namespace NiflectGen
 					frontIndex++;
 				}
 			}
+#else
+#endif
 		}
 	}
 	bool BuildSubcursor(const CXType& parentType, const Niflect::TArrayNif<CXCursor>& vecAAAAAAA, CSubcursor& parentSubcursor, bool skipAlias)
