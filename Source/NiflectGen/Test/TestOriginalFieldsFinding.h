@@ -25,7 +25,7 @@ namespace TestMyFinding
 		Niflect::TArrayNif<float> m_array_float_2;
 		//NIF_F()
 		Niflect::TArrayNif<bool> m_bits_3;
-		NIF_F()
+		//NIF_F()
 		Niflect::TArrayNif<Niflect::TArrayNif<float> > m_array_array_float_4;
 		//NIF_F()
 		Niflect::TArrayNif<Niflect::TArrayNif<bool> > m_array_bits_5;
@@ -35,7 +35,7 @@ namespace TestMyFinding
 		std::vector<bool> m_std_bits_7;
 		//NIF_F()
 		Niflect::CString m_string_8;
-		//NIF_F()
+		NIF_F()
 		Niflect::TMap<Niflect::CString, float> m_map_string_float_9;
 		//NIF_F()
 		int32 m_int32_10;

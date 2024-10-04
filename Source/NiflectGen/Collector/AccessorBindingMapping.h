@@ -2,6 +2,7 @@
 #include "Niflect/NiflectBase.h"
 #include "NiflectGen/Collector/TypeDecl.h"
 #include "NiflectGen/Collector/AccessorData.h"
+#include "NiflectGen/Util/CursorMap.h"
 
 namespace NiflectGen
 {
@@ -67,8 +68,30 @@ namespace NiflectGen
 		CAccessorData m_accessorData;//todo: 应废弃, 改为通过AccessorBindingMapping查找并获取对应信息
 	};
 
+	class CFoundResult
+	{
+	public:
+		CFoundResult(Niflect::TArrayNif<uint32>& vecFoundIdx)
+			: m_vecFoundIdx(vecFoundIdx)
+			, m_foundIdx(INDEX_NONE)
+			, m_continuing(true)
+		{
+		}
+		Niflect::TArrayNif<uint32>& m_vecFoundIdx;
+		uint32 m_foundIdx;
+		bool m_continuing;
+	};
+
 	class CAccessorBindingMapping2
 	{
+	public:
+		void FindBindingTypeForField(const CXCursor& fieldCursor, const Niflect::TArrayNif<CXCursor>& vecDetailCursor, Niflect::TArrayNif<uint32>& vecFoundIdx) const;
+
+	private:
+		void IterateForTemplate(const CXType& fieldOrArgCXType, const Niflect::TArrayNif<CXCursor>& vecDetailCursor, Niflect::TArrayNif<uint32>& vecFoundIdx, uint32& detailIteratingIdx) const;
+		bool FindBindingTypesSSSSSSSSSSS(const CXType& fieldOrArgCXType, const Niflect::TArrayNif<CXCursor>& vecDetailCursor, uint32& detailIteratingIdx, CFoundResult& result) const;
+		void FindBindingTypeRecurs(const CXType& fieldOrArgCXType, const Niflect::TArrayNif<CXCursor>& vecDetailCursor, Niflect::TArrayNif<uint32>& vecFoundIdx, uint32& detailIteratingIdx) const;
+
 	public:
 		Niflect::TArrayNif<CBindingSettingData> m_vecAccessorBindingSetting;
 		TCursorMap<uint32> m_mapCursorToIndex;
