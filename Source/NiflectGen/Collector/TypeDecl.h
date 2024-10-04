@@ -60,15 +60,49 @@ namespace NiflectGen
 		{
 
 		}
+		CThis& SetTemplateArgReplacementStrings(const Niflect::TArrayNif<Niflect::CString>* vecString)
+		{
+			m_vecTemplateArgReplacementString = vecString;
+			return *this;
+		}
 		CThis& SetWithFullScope(bool b)
 		{
 			m_withFullScope = b;
 			return *this;
 		}
+		CThis& SetTemplateArgsReplacementPattern(const Niflect::CString& pattern)
+		{
+			m_templateArgsReplacementPattern = pattern;
+			return *this;
+		}
 		const Niflect::TArrayNif<Niflect::CString>* m_vecTemplateArgReplacementString;
 		bool m_withFullScope;
+		Niflect::CString m_templateArgsReplacementPattern;
 	};
 	void GenerateTemplateInstanceCode(const CSubcursor& parentSubcursor, Niflect::CString& text, const CGenerateTemplateInstanceCodeOption& opt = CGenerateTemplateInstanceCodeOption());
 
-	Niflect::CString GenerateFullScopeTypeName(const CSubcursor& bSubcursor);
+	class CGenerateTemplateInstanceTypeNameOption
+	{
+		typedef CGenerateTemplateInstanceTypeNameOption CThis;
+	public:
+		CGenerateTemplateInstanceTypeNameOption()
+			: m_vecTemplateArgReplacementString(NULL)
+		{
+		}
+		CThis& SetTemplateArgReplacementStrings(const Niflect::TArrayNif<Niflect::CString>* vecString)
+		{
+			m_vecTemplateArgReplacementString = vecString;
+			return *this;
+		}
+		//必须包含用于转为索引的格式 %u
+		CThis& SetTemplateArgsReplacementPattern(const Niflect::CString& pattern)
+		{
+			ASSERT(pattern.find_last_of("%u"));
+			m_templateArgsReplacementPattern = pattern;
+			return *this;
+		}
+		const Niflect::TArrayNif<Niflect::CString>* m_vecTemplateArgReplacementString;
+		Niflect::CString m_templateArgsReplacementPattern;
+	};
+	Niflect::CString GenerateFullScopeTypeName(const CSubcursor& bSubcursor, const CGenerateTemplateInstanceTypeNameOption& opt = CGenerateTemplateInstanceTypeNameOption());
 }

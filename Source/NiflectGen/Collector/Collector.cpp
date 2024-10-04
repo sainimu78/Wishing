@@ -844,20 +844,6 @@ namespace NiflectGen
 			}
 		}
 
-		//for (uint32 idx0 = 0; idx0 < vecSetting.size(); ++idx0)
-		//{
-		//	auto& it0 = vecSetting[idx0];
-		//	auto a = GenerateFullScopeTypeName(it0.GetAccessorTypeDecl());
-		//	printf("%s\n", a.c_str());
-
-		//	//for (uint32 idx1 = 0; idx1 < it0.GetBindingTypeDeclsCount(); ++idx1)
-		//	//{
-		//	//	auto& it1 = it0.GetBindingTypeDecl(idx1);
-		//	//	auto a = CXStringToCString(clang_getCursorSpelling(it1.m_cursorDecl));
-		//	//	printf("%s\n", a.c_str());
-		//	//}
-		//}
-
 		collectionData.m_aliasChain = aliasChain;
 		collectionData.m_accessorBindingMapping = accessorBindingMapping;
 

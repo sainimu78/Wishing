@@ -190,7 +190,7 @@ namespace NiflectGen
 			text += ">";
 		}
 	}
-	void GenerateTemplateInstanceCodeRecurs2(const CSubcursor& parentSubcursor, Niflect::CString& text, bool& withRightAngleBracket, const CGenerateTemplateInstanceCodeOption& opt)
+	static void GenerateTemplateInstanceCodeRecurs2(const CSubcursor& parentSubcursor, Niflect::TMap<Niflect::CString, uint32>& mapArgNameToCount, Niflect::CString& text, bool& withRightAngleBracket, const CGenerateTemplateInstanceCodeOption& opt)
 	{
 		Niflect::CString name;
 		if (parentSubcursor.m_vecAaaaaaaaaa.size() > 0)
@@ -220,9 +220,28 @@ namespace NiflectGen
 						if (clang_isReference(kind))
 						{
 							auto decl = clang_getCursorReferenced(it);
-							auto strScope = GenerateNamespacesAndScopesCode(decl);
-							name += strScope;
-							name += CXStringToCString(clang_getCursorSpelling(decl));
+
+							//原不区分是否为模板参数
+							//auto strScope = GenerateNamespacesAndScopesCode(decl);
+							//name += strScope;
+							//name += CXStringToCString(clang_getCursorSpelling(decl));
+							//实际使用中, 通过递归总是能够先获取到需要替换的Arg Spelling, 在简化用法的约定下, 无须通过区分cursor是否为模板参数再确定如何替换
+							bool isArgName = clang_getCursorKind(decl) == CXCursor_TemplateTypeParameter;
+							if (!isArgName)
+							{
+								auto strScope = GenerateNamespacesAndScopesCode(decl);
+								name += strScope;
+							}
+							auto spelling = CXStringToCString(clang_getCursorSpelling(decl));
+							if (isArgName && (!opt.m_templateArgsReplacementPattern.empty()))
+							{
+								auto& cnt = mapArgNameToCount[spelling];
+								spelling = NiflectUtil::FormatString(opt.m_templateArgsReplacementPattern.c_str(), cnt);
+								cnt++;
+							}
+							name += spelling;
+							//endif
+
 							if (idx != parentSubcursor.m_vecAaaaaaaaaa.size() - 1)
 								name += "::";
 						}
@@ -275,7 +294,7 @@ namespace NiflectGen
 				}
 				else
 				{
-					GenerateTemplateInstanceCodeRecurs2(parentSubcursor.m_vecChild[idx], childText, isLastChildWithRightAngleBracket, opt);
+					GenerateTemplateInstanceCodeRecurs2(parentSubcursor.m_vecChild[idx], mapArgNameToCount, childText, isLastChildWithRightAngleBracket, opt);
 				}
 				text += childText;
 				if (idx != parentSubcursor.m_vecChild.size() - 1)
@@ -290,9 +309,10 @@ namespace NiflectGen
 	void GenerateTemplateInstanceCode(const CSubcursor& parentSubcursor, Niflect::CString& text, const CGenerateTemplateInstanceCodeOption& opt)
 	{
 		bool withRightAngleBracket = false;
-		GenerateTemplateInstanceCodeRecurs2(parentSubcursor, text, withRightAngleBracket, opt);
+		Niflect::TMap<Niflect::CString, uint32> mapArgNameToCount;
+		GenerateTemplateInstanceCodeRecurs2(parentSubcursor, mapArgNameToCount, text, withRightAngleBracket, opt);
 	}
-	Niflect::CString GenerateFullScopeTypeName(const CSubcursor& bSubcursor)
+	Niflect::CString GenerateFullScopeTypeName(const CSubcursor& bSubcursor, const CGenerateTemplateInstanceTypeNameOption& opt)
 	{
 		Niflect::CString resolvedName;
 		auto kind = clang_getCursorKind(bSubcursor.m_cursorDecl);
@@ -303,7 +323,10 @@ namespace NiflectGen
 				//特化模板
 				if (clang_Type_getNumTemplateArguments(bSubcursor.m_CXType) > 0)
 				{
-					GenerateTemplateInstanceCode(bSubcursor, resolvedName, CGenerateTemplateInstanceCodeOption().SetWithFullScope(true));
+					GenerateTemplateInstanceCode(bSubcursor, resolvedName, CGenerateTemplateInstanceCodeOption()
+						.SetTemplateArgReplacementStrings(opt.m_vecTemplateArgReplacementString)
+						.SetTemplateArgsReplacementPattern(opt.m_templateArgsReplacementPattern)
+						.SetWithFullScope(true));
 				}
 				else
 				{
@@ -328,6 +351,13 @@ namespace NiflectGen
 					resolvedName += CXStringToCString(clang_getTypeSpelling(bSubcursor.m_CXType));
 				}
 			}
+		}
+		else
+		{
+			GenerateTemplateInstanceCode(bSubcursor, resolvedName, CGenerateTemplateInstanceCodeOption()
+				.SetTemplateArgReplacementStrings(opt.m_vecTemplateArgReplacementString)
+				.SetTemplateArgsReplacementPattern(opt.m_templateArgsReplacementPattern)
+				.SetWithFullScope(true));
 		}
 		return resolvedName;
 	}
