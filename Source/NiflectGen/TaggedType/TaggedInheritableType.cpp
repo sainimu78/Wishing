@@ -2,6 +2,7 @@
 #include "NiflectGen/Util/CursorUtil.h"
 #include "NiflectGen/CodeWriter/TypeReg/InheritableTypeRegCodeWriter.h"
 #include "Niflect/Util/TypeUtil.h"
+#include "Niflect/Util/DebugUtil.h"
 
 namespace NiflectGen
 {
@@ -15,7 +16,7 @@ namespace NiflectGen
 		ASSERT(clang_Cursor_isNull(m_baseTypeSpecifierCursor));
 		m_baseTypeSpecifierCursor = cursor;
 	}
-	void CTaggedInheritableType::ResolveDependcies(const TCursorMap<CTaggedType*>& mapCursorDeclToTaggedType)
+	void CTaggedInheritableType::Deprecated_ResolveDependcies(const TCursorMap<CTaggedType*>& mapCursorDeclToTaggedType)
 	{
 		ASSERT(m_baseTaggedType == NULL);
 		auto baseTypeCursorDecl = clang_getTypeDeclaration(clang_getCursorType(m_baseTypeSpecifierCursor));
@@ -23,255 +24,210 @@ namespace NiflectGen
 		if (itFound != mapCursorDeclToTaggedType.end())
 			m_baseTaggedType = itFound->second;
 	}
-	const Niflect::TArrayNif<CBindingSettingData>* g_debug0 = NULL;
-	CSharedTypeRegCodeWriter CTaggedInheritableType::CreateCodeWriter(const STypeRegClassWritingSetting& setting) const
+#ifdef EMBEDDING_ELEMENT_BINDING_TYPE_INDEXED_NODE
+	static void DebugPrintIndexedNodeRecurs(const CBindingAccessorIndexedNode& indexedParent, const CBindingAccessorIndexedNode& childrenOwner, const CAccessorBindingMapping2& mapping, uint32 lv)
 	{
-		TCXTypeMap<uint32> mapCXTypeToIndex;
-		for (uint32 idx = 0; idx < g_debug0->size(); ++idx)
+		auto strLv = NiflectUtil::DebugIndentToString(lv);
+		auto& cxType = mapping.m_vecAccessorBindingSetting[indexedParent.m_settingIdx].GetAccessorTypeDecl().m_CXType;
+		auto a = CXStringToCString(clang_getTypeSpelling(cxType));
+		printf("%s%s\n", strLv.c_str(), a.c_str());
+
+		lv++;
+		for (auto& it : childrenOwner.m_vecChild)
+			DebugPrintIndexedNodeRecurs(it, it, mapping, lv);
+
+		if (auto next = indexedParent.m_next.Get())
 		{
-			if (!mapCXTypeToIndex.insert({ (*g_debug0)[idx].m_subcursorRoot.m_vecChild[1].m_CXType, idx }).second)
-				ASSERT(false);
+			lv--;
+			printf("---------------\n");
+			DebugPrintIndexedNodeRecurs(*next, indexedParent, mapping, lv);
 		}
-		TCursorMap<uint32> mapCursorToIndex;
-		for (uint32 idx = 0; idx < g_debug0->size(); ++idx)
-		{
-			auto cursor = clang_getTypeDeclaration((*g_debug0)[idx].m_subcursorRoot.m_vecChild[1].m_CXType);
-			if (clang_getCursorKind(cursor) != CXCursor_NoDeclFound)
-			{
-				auto c = CXStringToCString(clang_getCursorSpelling(cursor));
+	}
+#else
+	static void DebugPrintIndexedNodeRecurs(const CBindingAccessorIndexedNode& indexedParent, const CAccessorBindingMapping2& mapping, uint32 lv)
+	{
+		auto strLv = NiflectUtil::DebugIndentToString(lv);
+		auto& cxType = mapping.m_vecAccessorBindingSetting[indexedParent.m_settingIdx].GetAccessorTypeDecl().m_CXType;
+		auto a = CXStringToCString(clang_getTypeSpelling(cxType));
+		printf("%s%s\n", strLv.c_str(), a.c_str());
 
-				if (!mapCursorToIndex.insert({ cursor, idx }).second)
-					ASSERT(false);
-			}
+		lv++;
+		for (auto& it : indexedParent.m_vecChild)
+			DebugPrintIndexedNodeRecurs(it, mapping, lv);
+	}
+	static Niflect::CString GenerateSignatureFromIndexedNodeRecurs(const CBindingAccessorIndexedNode& indexedParent, const CAccessorBindingMapping2& mapping)
+	{
+		Niflect::CString strArgs;
+		auto& subcursor = mapping.m_vecAccessorBindingSetting[indexedParent.m_settingIdx].GetBindingTypeDecl();
+
+		if (indexedParent.IsBindingTypeTemplate())
+			strArgs += '<';
+		for (uint32 idx = 0; idx < indexedParent.m_vecChild.size(); ++idx)
+		{
+			auto& it = indexedParent.m_vecChild[idx];
+			auto strChild = GenerateSignatureFromIndexedNodeRecurs(it, mapping);
+			strArgs += strChild;
+			if (idx != indexedParent.m_vecChild.size() - 1)
+				strArgs += ", ";
 		}
-
-		for (uint32 idx0 = 0; idx0 < m_vecChild.size(); ++idx0)
+		if (indexedParent.IsBindingTypeTemplate())
 		{
-			auto& it0 = m_vecChild[idx0];
-			auto& fieldCursor = it0->GetCursor();
-			auto a = CXStringToCString(clang_getCursorSpelling(fieldCursor));
-			auto fieldCXType = clang_getCursorType(fieldCursor);
-			auto b = CXStringToCString(clang_getTypeSpelling(fieldCXType));
-			auto typeRefCursor = clang_getTypeDeclaration(fieldCXType);
-			auto typeRefCursorKind = clang_getCursorKind(typeRefCursor);
-			auto c = CXStringToCString(clang_getCursorSpelling(typeRefCursor));
-			printf("%s, %s, %s\n", a.c_str(), b.c_str(), c.c_str());
-
-			auto& vec1 = *g_debug0;
-			//uint32 foundIdx1 = INDEX_NONE;
-			//for (uint32 idx1 = 0; idx1 < vec1.size(); ++idx1)
-			//{
-			//	auto& it1 = vec1[idx1];
-			//	auto& bindingCXType = it1.m_subcursorRoot.m_vecChild[1].m_CXType;
-			//	if (clang_equalTypes(fieldCXType, bindingCXType))
-			//	{
-			//		ASSERT(foundIdx1 == INDEX_NONE);
-			//		foundIdx1 = idx1;
-			//	}
-			//}
-
-			//if (foundIdx1 != INDEX_NONE)
-			//{
-			//	auto& found1 = vec1[foundIdx1];
-			//	printf("");
-			//}
-
-			{
-				//特化, <Niflect::TArrayNif<bool>, 可直接通过field本身CXType的cursor查找到BindingType的cursor
-				auto itFound = mapCursorToIndex.find(typeRefCursor);
-				if (itFound != mapCursorToIndex.end())
-				{
-					auto underlyingType = clang_getCursorType(fieldCursor);
-					auto d2 = clang_getTypeDeclaration(underlyingType);
-					if ((!clang_Cursor_isNull(d2)) && clang_getCursorKind(d2) != CXCursor_NoDeclFound)
-					{
-						ASSERT(clang_equalCursors(typeRefCursor, d2));
-
-						//通过该函数获取到的cursor是实际定义的cursor, 实际定义是std::vector, 因此查找到的结果是错的
-						auto d3 = clang_getSpecializedCursorTemplate(d2);
-						auto itFound2 = mapCursorToIndex.find(d3);
-						if (itFound2 != mapCursorToIndex.end())
-						{
-							auto& found1 = vec1[itFound2->second];
-							auto& bindingCursor = clang_getTypeDeclaration(found1.m_subcursorRoot.m_vecChild[0].m_CXType);
-							auto d = CXStringToCString(clang_getCursorSpelling(bindingCursor));
-							printf("");
-						}
-					}
-
-					auto& found1 = vec1[itFound->second];
-					auto& bindingCursor = clang_getTypeDeclaration(found1.m_subcursorRoot.m_vecChild[0].m_CXType);
-					auto d = CXStringToCString(clang_getCursorSpelling(bindingCursor));
-					printf("");
-				}
-			}
-
-			{
-				//模板套特化, Niflect::TArrayNif<Niflect::TArrayNif<bool> >
-				auto cnt1 = clang_Type_getNumTemplateArguments(fieldCXType);
-				for (int32 idx1 = 0; idx1 < cnt1; ++idx1)
-				{
-					CXType argType = clang_Type_getTemplateArgumentAsType(fieldCXType, idx1);
-					auto argCursor = clang_getTypeDeclaration(argType);
-					auto aaa = CXStringToCString(clang_getTypeSpelling(argType));
-
-					{
-						auto itFound = mapCXTypeToIndex.find(argType);
-						if (itFound != mapCXTypeToIndex.end())
-						{
-							ASSERT(false);//不能通过argType找到特化
-							auto& found1 = vec1[itFound->second];
-							auto& bindingCXType = found1.m_subcursorRoot.m_vecChild[1].m_CXType;
-							auto d = CXStringToCString(clang_getTypeSpelling(bindingCXType));
-							auto typeRefCursor = clang_getTypeDeclaration(bindingCXType);
-							auto e = CXStringToCString(clang_getCursorSpelling(typeRefCursor));
-							printf("");
-						}
-					}
-					{
-						auto itFound = mapCursorToIndex.find(argCursor);
-						if (itFound != mapCursorToIndex.end())
-						{
-							auto& found1 = vec1[itFound->second];
-							auto& bindingCursor = clang_getTypeDeclaration(found1.m_subcursorRoot.m_vecChild[0].m_CXType);
-							auto d = CXStringToCString(clang_getCursorSpelling(bindingCursor));
-							printf("");
-						}
-					}
-					printf("");
-				}
-			}
-
-			{
-				if (auto member = dynamic_cast<CTaggedInheritableTypeMember*>(it0.Get()))
-				{
-					//if (member->m_vecDetailCursor.size() > 0)
-					//{
-					//	//ASSERT(clang_isReference(member->m_vecDetailCursor[0].kind));
-					//	//auto c = clang_getCursorReferenced(member->m_vecDetailCursor[0]);
-					//	//if (clang_getCursorKind(c) == CXCursor_TypeAliasDecl)
-					//	//{
-					//	//	auto d = clang_getCursorType(c);
-					//	//	auto ddddd = CXStringToCString(clang_getTypeSpelling(d));
-					//	//	c = clang_getTypeDeclaration(d);
-					//	//	auto itFound = mapCursorToIndex.find(c);
-					//	//	if (itFound != mapCursorToIndex.end())
-					//	//	{
-					//	//		auto& found1 = vec1[itFound->second];
-					//	//		auto& bindingCursor = clang_getTypeDeclaration(found1.m_subcursorRoot.m_vecChild[0].m_CXType);
-					//	//		auto d = CXStringToCString(clang_getCursorSpelling(bindingCursor));
-					//	//		printf("");
-					//	//	}
-					//	//}
-
-					//	ASSERT(clang_isReference(member->m_vecDetailCursor[0].kind));
-					//	auto c = clang_getCursorReferenced(member->m_vecDetailCursor[0]);
-					//	if (clang_getCursorKind(c) == CXCursor_TypeAliasDecl)
-					//	{
-					//		auto d = clang_getCursorType(c);
-					//		auto ddddd = CXStringToCString(clang_getTypeSpelling(d));
-					//		c = clang_getCursorReferenced(c);
-					//		d = clang_getCursorType(c);
-					//		ddddd = CXStringToCString(clang_getTypeSpelling(d));
-					//		auto itFound = mapCursorToIndex.find(c);
-					//		if (itFound != mapCursorToIndex.end())
-					//		{
-					//			auto& found1 = vec1[itFound->second];
-					//			auto& bindingCursor = clang_getTypeDeclaration(found1.m_subcursorRoot.m_vecChild[0].m_CXType);
-					//			auto d = CXStringToCString(clang_getCursorSpelling(bindingCursor));
-					//			printf("");
-					//		}
-					//	}
-					//}
-					if (member->m_vecDetailCursor.size() > 1)
-					{
-						ASSERT(clang_isReference(member->m_vecDetailCursor[1].kind));
-						auto c = clang_getCursorReferenced(member->m_vecDetailCursor[1]);
-						//auto aaa = CXStringToCString(clang_getCursorSpelling(c));
-
-						//auto ddddd = clang_getCursorType(c);
-						//auto ffff = clang_getCursorType(member->m_vecDetailCursor[1]);
-
-						//auto d = clang_getSpecializedCursorTemplate(typeRefCursor);
-						//if ((!clang_Cursor_isNull(d)) && clang_getCursorKind(d) != CXCursor_NoDeclFound)
-						//{
-						//	//auto aadda = CXStringToCString(clang_getCursorSpelling(d));
-						//	//auto dddddd = clang_getCursorType(d);
-						//	//auto dfasdf = CXStringToCString(clang_getTypeSpelling(dddddd));
-						//	ASSERT(clang_equalCursors(c, d));
-						//}
-
-						auto itFound = mapCursorToIndex.find(c);
-						if (itFound != mapCursorToIndex.end())
-						{
-							auto& found1 = vec1[itFound->second];
-							auto& bindingCursor = clang_getTypeDeclaration(found1.m_subcursorRoot.m_vecChild[0].m_CXType);
-							auto d = CXStringToCString(clang_getCursorSpelling(bindingCursor));
-							printf("");
-						}
-					}
-					//if (member->m_vecDetailCursor.size() > 1)
-					//{
-					//	ASSERT(clang_isReference(member->m_vecDetailCursor[3].kind));
-					//	auto c = clang_getCursorReferenced(member->m_vecDetailCursor[3]);
-					//	//auto d = clang_getSpecializedCursorTemplate(typeRefCursor);
-					//	//if ((!clang_Cursor_isNull(d)) && clang_getCursorKind(d) != CXCursor_NoDeclFound)
-					//	//{
-					//	//	c = d;
-					//	//}
-					//	auto dddd = clang_getCursorType(c);
-
-					//	auto itFound = mapCursorToIndex.find(c);
-					//	if (itFound != mapCursorToIndex.end())
-					//	{
-					//		auto& found1 = vec1[itFound->second];
-					//		auto& bindingCursor = clang_getTypeDeclaration(found1.m_subcursorRoot.m_vecChild[0].m_CXType);
-					//		auto d = CXStringToCString(clang_getCursorSpelling(bindingCursor));
-					//		printf("");
-					//	}
-					//}
-				}
-			}
-
-			{
-				auto itFound = mapCXTypeToIndex.find(fieldCXType);
-				if (itFound != mapCXTypeToIndex.end())
-				{
-					auto& found1 = vec1[itFound->second];
-					auto& bindingCXType = found1.m_subcursorRoot.m_vecChild[1].m_CXType;
-					auto d = CXStringToCString(clang_getTypeSpelling(bindingCXType));
-					auto typeRefCursor = clang_getTypeDeclaration(bindingCXType);
-					auto e = CXStringToCString(clang_getCursorSpelling(typeRefCursor));
-					printf("");
-				}
-			}
-
-			//{
-			//	if (typeRefCursorKind == CXCursor_ClassDecl)
-			//	{
-			//		auto templateCursor = clang_getSpecializedCursorTemplate(typeRefCursor);
-			//		auto templateCursorKind = clang_getCursorKind(templateCursor);
-			//		if ((templateCursorKind != CXCursor_FirstInvalid) && (templateCursorKind != CXCursor_NoDeclFound))
-			//		{
-			//			typeRefCursor = templateCursor;
-			//			typeRefCursorKind = templateCursorKind;
-
-			//			auto d = CXStringToCString(clang_getCursorSpelling(typeRefCursor));
-			//			printf("");
-			//		}
-			//	}
-
-			//	auto itFound = mapCursorToIndex.find(typeRefCursor);
-			//	if (itFound != mapCursorToIndex.end())
-			//	{
-			//		auto& found1 = vec1[itFound->second];
-			//		auto& bindingCursor = clang_getTypeDeclaration(found1.m_subcursorRoot.m_vecChild[1].m_CXType);
-			//		auto d = CXStringToCString(clang_getCursorSpelling(bindingCursor));
-			//		printf("");
-			//	}
-			//}
+			if (indexedParent.m_vecChild.size() > 0 && indexedParent.m_vecChild.back().IsBindingTypeTemplate())
+				strArgs += ' ';
+			strArgs += '>';
 		}
 
+		auto strName = GenerateNamespacesAndScopesCode(subcursor.m_cursorDecl);
+		strName += subcursor.GetTypeName();
+		return strName + strArgs;
+	}
+#endif
+	static Niflect::CString NSSSSSSSSS(const CXCursor& cursor, const CXType& type)
+	{
+		Niflect::CString name;
+		auto kind = clang_getCursorKind(cursor);
+		if ((kind != CXCursor_NoDeclFound) && (kind != CXCursor_ClassDecl))
+		{
+			name = GenerateNamespacesAndScopesCode(cursor);
+			name += CXStringToCString(clang_getCursorSpelling(cursor));
+		}
+		else
+		{
+			name = CXStringToCString(clang_getTypeSpelling(type));
+		}
+		return name;
+	}
+	//static Niflect::CString GenerateSignatureFromIndexedNodeRecurs(const CBindingAccessorIndexedNode& indexedParent, const CBindingAccessorIndexedNode& childrenOwner, const CAccessorBindingMapping2& mapping, Niflect::TArrayNif<Niflect::CString>& vecSignature)
+	//{
+	//	if (auto next = indexedParent.m_next.Get())
+	//		GenerateSignatureFromIndexedNodeRecurs(*next, indexedParent, mapping, vecSignature);
+
+	//	Niflect::CString strArgs;
+	//	if (childrenOwner.IsBindingTypeTemplate())
+	//		strArgs += '<';
+	//	for (uint32 idx = 0; idx < childrenOwner.m_vecChild.size(); ++idx)
+	//	{
+	//		auto& it = childrenOwner.m_vecChild[idx];
+	//		auto strChild = GenerateSignatureFromIndexedNodeRecurs(it, it, mapping, vecSignature);
+	//		strArgs += strChild;
+	//		if (idx != childrenOwner.m_vecChild.size() - 1)
+	//			strArgs += ", ";
+	//	}
+	//	if (childrenOwner.IsBindingTypeTemplate())
+	//	{
+	//		if ((strArgs.size() > 0 && strArgs.back() == '>')//特化无 Children, 但一定以 > 结尾, 同时又兼容生成的模板代码
+	//			//|| (childrenOwner.m_vecChild.size() > 0 && childrenOwner.m_vecChild.back().IsBindingTypeTemplate())
+	//			)
+	//		{
+	//			//可加选项决定生成风格, 是否加空格
+	//			strArgs += ' ';
+	//		}
+	//		strArgs += '>';
+	//	}
+
+	//	auto& subcursor = mapping.m_vecAccessorBindingSetting[indexedParent.m_settingIdx].GetBindingTypeDecl();
+	//	auto strName = NSSSSSSSSS(subcursor.m_cursorDecl, subcursor.m_CXType);
+	//	auto signature = strName + strArgs;
+	//	vecSignature.push_back(signature);
+	//	return signature;
+	//}
+	static Niflect::CString MakeSignatureForFieldRecurs(const CBindingAccessorIndexedNode& indexedParent, const CBindingAccessorIndexedNode& childrenOwner, const CAccessorBindingMapping2& mapping, CSignatureCodeMapping& signatureMapping)
+	{
+		Niflect::CString signature;
+		auto ret = signatureMapping.m_mapSignatureToIndex.insert({ indexedParent.m_key, static_cast<uint32>(signatureMapping.m_vecCode.size())});
+		if (ret.second)
+		{
+			Niflect::CString strArgs;
+			if (childrenOwner.IsBindingTypeTemplate())
+				strArgs += '<';
+			for (uint32 idx = 0; idx < childrenOwner.m_vecChild.size(); ++idx)
+			{
+				auto& it = childrenOwner.m_vecChild[idx];
+				auto strChild = MakeSignatureForFieldRecurs(it, it, mapping, signatureMapping);
+				strArgs += strChild;
+				if (idx != childrenOwner.m_vecChild.size() - 1)
+					strArgs += ", ";
+			}
+			if (childrenOwner.IsBindingTypeTemplate())
+			{
+				if ((strArgs.size() > 0 && strArgs.back() == '>')//特化无 Children, 但一定以 > 结尾, 同时又兼容生成的模板代码
+					//|| (childrenOwner.m_vecChild.size() > 0 && childrenOwner.m_vecChild.back().IsBindingTypeTemplate())
+					)
+				{
+					//可加选项决定生成风格, 是否加空格
+					strArgs += ' ';
+				}
+				strArgs += '>';
+			}
+			auto& subcursor = mapping.m_vecAccessorBindingSetting[indexedParent.m_settingIdx].GetBindingTypeDecl();
+			auto strName = NSSSSSSSSS(subcursor.m_cursorDecl, subcursor.m_CXType);
+			signature = strName + strArgs;
+			signatureMapping.m_vecCode.push_back(CSignatureCode(signature));
+		}
+		else
+		{
+			signature = signatureMapping.m_vecCode[ret.first->second].m_signatureStr;
+		}
+
+		for (auto& it : childrenOwner.m_vecChild)
+			MakeSignatureForFieldRecurs(it, it, mapping, signatureMapping);
+
+		if (auto next = indexedParent.m_next.Get())
+			MakeSignatureForFieldRecurs(*next, indexedParent, mapping, signatureMapping);
+
+		return signature;
+	}
+	static void MakeSignatureForClassDecl(const CBindingAccessorIndexedNode& indexedParent, const CResolvedTaggedTypesMapping& mapping, CSignatureCodeMapping& signatureMapping)
+	{
+		auto ret = signatureMapping.m_mapSignatureToIndex.insert({ indexedParent.m_key, static_cast<uint32>(signatureMapping.m_vecCode.size()) });
+		ASSERT(ret.second);
+		auto& cursor = mapping.m_vecType[indexedParent.m_taggedIdx]->GetCursor();
+		auto signature = GenerateNamespacesAndScopesCode(cursor);
+		signature += CXStringToCString(clang_getCursorSpelling(cursor));
+		signatureMapping.m_vecCode.push_back(CSignatureCode(signature));
+	}
+	void CTaggedInheritableType::ResolveDependcies(const SResolvingDependenciesContext& context, SResolvingDependenciesData& data)
+	{
+		//基类
+		ASSERT(m_baseTaggedType == NULL);
+		auto baseTypeCursorDecl = clang_getTypeDeclaration(clang_getCursorType(m_baseTypeSpecifierCursor));
+		auto itFound = context.m_resolvedTaggedTypeMapping.m_mapCursorToIndex.find(baseTypeCursorDecl);
+		if (itFound != context.m_resolvedTaggedTypeMapping.m_mapCursorToIndex.end())
+			m_baseTaggedType = context.m_resolvedTaggedTypeMapping.m_vecType[itFound->second];
+
+		//成员变量
+		ASSERT(m_vecMember.size() == 0);
+		for (auto& it : m_vecChild)
+		{
+			//嵌套类型也为taggedType的子节点
+			if (auto member = CTaggedInheritableTypeMember::CastChecked(it.Get()))
+				m_vecMember.push_back(member);
+		}
+
+		auto& cursor = this->GetCursor();
+		ASSERT(!m_classDeclIndexedRoot.IsValid());
+		if (!context.m_resolvedTaggedTypeMapping.FindForClassDecl(cursor, m_classDeclIndexedRoot))
+		{
+			ASSERT(false);
+		}
+		MakeSignatureForClassDecl(m_classDeclIndexedRoot, context.m_resolvedTaggedTypeMapping, data.m_signatureMapping);
+
+		m_vecMemberIndexedRoot.resize(m_vecMember.size());
+		for (uint32 idx0 = 0; idx0 < m_vecMember.size(); ++idx0)
+		{
+			auto& it0 = m_vecMember[idx0];
+			auto& indexedRoot = m_vecMemberIndexedRoot[idx0];
+			auto& dddd = it0->GetCursor();
+			context.m_bindingAccessorMapping.FindBindingTypeForField(dddd, it0->m_vecDetailCursor, indexedRoot);
+			ASSERT(indexedRoot.IsValid());
+			//DebugPrintIndexedNodeRecurs(indexedRoot, indexedRoot, context.m_bindingAccessorMapping, 0);
+			MakeSignatureForFieldRecurs(indexedRoot, indexedRoot, context.m_bindingAccessorMapping, data.m_signatureMapping);
+			for (auto& it1 : data.m_signatureMapping.m_vecCode)
+				printf("=%s=\n", it1.m_signatureStr.c_str());
+		}
+	}
+	CSharedTypeRegCodeWriter CTaggedInheritableType::Deprecated_CreateCodeWriter(const STypeRegClassWritingSetting& setting) const
+	{
 		CXCursor baseTypeCursorDecl = g_invalidCursor;
 		if (m_baseTaggedType != NULL)
 			baseTypeCursorDecl = m_baseTaggedType->GetCursor();
@@ -283,6 +239,13 @@ namespace NiflectGen
 				vecMember.push_back(member);
 		}
 		return Niflect::MakeShared<CInheritableTypeRegCodeWriter_ObjectAccessor>(this->GetCursor(), setting, baseTypeCursorDecl, vecMember);
+	}
+	CSharedTypeRegCodeWriter CTaggedInheritableType::CreateCodeWriter(const STypeRegClassWritingSetting& setting) const
+	{
+		CXCursor baseTypeCursorDecl = g_invalidCursor;
+		if (m_baseTaggedType != NULL)
+			baseTypeCursorDecl = m_baseTaggedType->GetCursor();
+		return Niflect::MakeShared<CInheritableTypeRegCodeWriter_ObjectAccessor>(this->GetCursor(), setting, baseTypeCursorDecl, m_vecMember);
 	}
 	void CTaggedInheritableType::DebugDerivedPrint(FILE* fp) const
 	{

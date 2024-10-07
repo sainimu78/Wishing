@@ -293,6 +293,12 @@ namespace NiflectGen
 		CXFile file;
 		clang_getSpellingLocation(loc, &file, NULL, NULL, NULL);
 		auto filePathAbs = CXStringToCString(clang_getFileName(file));
+		//不确定为何出现./, 因此暂专门处理
+		if (filePathAbs.size() >= 2)
+		{
+			if (filePathAbs[0] == '.' && filePathAbs[1] == '/')
+				filePathAbs.erase(filePathAbs.begin(), filePathAbs.begin() + 2);
+		}
 		std::replace(filePathAbs.begin(), filePathAbs.end(), '\\', '/');
 		return filePathAbs;
 	}

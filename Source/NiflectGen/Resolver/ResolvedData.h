@@ -117,6 +117,33 @@ namespace NiflectGen
 		TCursorMap<CUntaggedTemplate*> m_mapCursorDeclToUntaggedTemplate;
 	};
 
+	struct SModuleRegIndicesAndIncludePath
+	{
+		Niflect::CString m_includePath_reserved;
+		uint32 m_includePathPrivateHIndex;
+	};
+
+	struct SModuleRegAndTypeRegMapping
+	{
+		Niflect::TMap<Niflect::CString, SModuleRegIndicesAndIncludePath> m_mapOriginalFilePathToModuleRegIndicesAndIncPath;
+		Niflect::TArrayNif<uint32> m_vecTypeRegIndices;
+		Niflect::TArrayNif<const Niflect::CString*> m_vecTypeRegIncludePathPrivateHRef;
+	};
+
+	class CTypeRegGenFileInfo
+	{
+	public:
+		CTypeRegGenFileInfo(const Niflect::CString& prevateHIncludePath, const Niflect::CString& genHIncludePath)
+			: m_prevateHIncludePath(prevateHIncludePath)
+			, m_genHIncludePath(genHIncludePath)
+		{
+
+		}
+		Niflect::CString m_prevateHIncludePath;
+		Niflect::CString m_genHIncludePath;
+		Niflect::TArrayNif<uint32> m_vecTypeRegDataIndex;
+	};
+
 	class CResolvedData
 	{
 	public:
@@ -128,6 +155,14 @@ namespace NiflectGen
 		Niflect::TArrayNif<CResolvedTaggedType> m_vecResolvedTypes2;
 		//Niflect::TArrayNif<CAccessorBinding> m_vecAccessorBinding;
 		//TCursorMap<CTaggedType*> m_mapCusorDeclToTaggedType;
-		CResolvedMapping m_mapping;
+		CResolvedMapping deprecated_m_mapping;
+
+
+		SModuleRegAndTypeRegMapping m_regMapping;
+
+		TCursorMap<CUntaggedTemplate*> m_mapCursorDeclToUntaggedTemplate;
+		Niflect::TArrayNif<CSharedTypeRegCodeWriter> m_vecWriter;
+		Niflect::TArrayNif<CTypeRegGenFileInfo> m_vecTypeRegGenFileInfo;
+		CSignatureCodeMapping m_signatureMapping;
 	};
 }

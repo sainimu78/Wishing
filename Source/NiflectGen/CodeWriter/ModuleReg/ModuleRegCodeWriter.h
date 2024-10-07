@@ -7,33 +7,6 @@
 
 namespace NiflectGen
 {
-	struct SModuleRegIndicesAndIncludePath
-	{
-		Niflect::CString m_includePath_reserved;
-		uint32 m_includePathPrivateHIndex;
-	};
-
-	class CTypeRegGenFileInfo
-	{
-	public:
-		CTypeRegGenFileInfo(const Niflect::CString& prevateHIncludePath, const Niflect::CString& genHIncludePath)
-			: m_prevateHIncludePath(prevateHIncludePath)
-			, m_genHIncludePath(genHIncludePath)
-		{
-
-		}
-		Niflect::CString m_prevateHIncludePath;
-		Niflect::CString m_genHIncludePath;
-		Niflect::TArrayNif<uint32> m_vecTypeRegDataIndex;
-	};
-
-	struct SModuleRegAndTypeRegMapping
-	{
-		Niflect::TMap<Niflect::CString, SModuleRegIndicesAndIncludePath> m_mapOriginalFilePathToModuleRegIndicesAndIncPath;
-		Niflect::TArrayNif<uint32> m_vecTypeRegIndices;
-		Niflect::TArrayNif<const Niflect::CString*> m_vecTypeRegIncludePathPrivateHRef;
-	};
-
 	class CModuleRegGenData
 	{
 	public:
@@ -65,7 +38,8 @@ namespace NiflectGen
 
 	public:
 		//void Write();
-		void Write2(const CWritingContext& context, CCodeGenData& data);
+		void Deprecated_Write2(const CWritingContext& context, CCodeGenData& data);
+		void Write3(const CWritingContext& context, CCodeGenData& data);
 
 	private:
 		void WriteTypeRegs(const CWritingContext& context, Niflect::TArrayNif<CTypeRegWritingData>& vecTypeRegData);

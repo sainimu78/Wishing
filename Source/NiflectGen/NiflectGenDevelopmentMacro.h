@@ -17,3 +17,6 @@
 
 //类作为Scope
 //#define CLASS_TYPE_SCOPE
+
+//嵌套 elementBindingTYpe, 不与 children 混用
+#define EMBEDDING_ELEMENT_BINDING_TYPE_INDEXED_NODE

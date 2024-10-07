@@ -12,9 +12,6 @@ namespace NiflectGen
 		: inherited(cursor, writingSetting)
 	{
 	}
-	void CInheritableTypeRegCodeWriter::Init()
-	{
-	}
 	void CInheritableTypeRegCodeWriter::WriteDecl(const CWritingContext& context, CTypeRegDeclWrittingData& data) const
 	{
 		CCodeTemplate tpl;

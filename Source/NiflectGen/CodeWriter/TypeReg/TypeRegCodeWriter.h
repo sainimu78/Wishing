@@ -58,7 +58,7 @@ namespace NiflectGen
 		CTypeRegCodeWriter(const CXCursor& cursor, const STypeRegClassWritingSetting& writingSetting);
 
 	public:
-		virtual void Init();//预留缓存模板, 获取namespace等
+		virtual void Deprecated_Init() {}
 		virtual void WriteDecl(const CWritingContext& context, CTypeRegDeclWrittingData& data) const
 		{
 		}

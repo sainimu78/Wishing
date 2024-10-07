@@ -196,7 +196,7 @@ namespace TestGen
 			info.m_vecBindingSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestBindingTypesFieldsFinding.h"));
 			NiflectGenDefinition::Test::AddBasicHeaderSearchPaths(info.m_vecHeaderSearchPath);
 			gen->SetModuleRegInfo(info);
-			gen->Generate([](void* cursorAddr)
+			gen->Generate([&info](void* cursorAddr)
 				{
 					auto& cursor = *static_cast<CXCursor*>(cursorAddr);
 					CTaggedNode2 taggedRoot;
@@ -207,10 +207,12 @@ namespace TestGen
 					collector.Collect(cursor, &taggedRoot, context, collectionData);
 					ASSERT(log.m_vecText.size() == 0);
 					CResolvingContext resolvingContext(&log);
-					CResolver resolver(collectionData);
+					CModuleRegInfoValidated validatedModuleRegInfo(info);
+					CResolver resolver(collectionData, validatedModuleRegInfo);
 					CResolvedData resolvedData;
-					resolver.Resolve2(&taggedRoot, resolvingContext, resolvedData);
+					resolver.Resolve4(&taggedRoot, resolvingContext, resolvedData);
 					ASSERT(log.m_vecText.size() == 0);
+					ASSERT(resolvedData.m_signatureMapping.m_vecCode.size() == 5);
 				});
 		}
 	}

@@ -2,9 +2,61 @@
 #include "NiflectGen/Collector/TaggedNode.h"
 #include "NiflectGen/CodeWriter/TypeReg/TypeRegCodeWriter.h"
 #include "NiflectGen/Util/CursorMap.h"
+#include "NiflectGen/Collector/AccessorBindingMapping.h"
 
 namespace NiflectGen
 {
+	class CTaggedType;
+
+	class CResolvedTaggedTypesMapping
+	{
+	public:
+		bool FindForClassDecl(const CXCursor& cursor, CBindingAccessorIndexedNode& indexedParent) const
+		{
+			auto itFound = m_mapCursorToIndex.find(cursor);
+			if (itFound != m_mapCursorToIndex.end())
+			{
+				ASSERT(!indexedParent.IsValid());
+				indexedParent.InitForClassDecl(itFound->second);
+				return true;
+			}
+			return false;
+		}
+		TCursorMap<uint32> m_mapCursorToIndex;
+		Niflect::TArrayNif<CTaggedType*> m_vecType;
+	};
+
+	struct SResolvingDependenciesContext
+	{
+		const CAccessorBindingMapping2& m_bindingAccessorMapping;
+		const CResolvedTaggedTypesMapping& m_resolvedTaggedTypeMapping;
+	};
+
+	class CSignatureCode
+	{
+	public:
+		CSignatureCode()
+		{
+		}
+		CSignatureCode(const Niflect::CString& signatureStr)
+			: m_signatureStr(signatureStr)
+		{
+		}
+		Niflect::CString m_signatureStr;
+	};
+
+	class CSignatureCodeMapping
+	{
+	public:
+		Niflect::TArrayNif<CSignatureCode> m_vecCode;
+		Niflect::TMap<Niflect::CString, uint32> m_mapSignatureToIndex;
+	};
+
+	struct SResolvingDependenciesData
+	{
+		CSignatureCodeMapping& m_signatureMapping;
+	};
+
 	class CTaggedType : public CTaggedNode2
 	{
 	public:
@@ -13,9 +65,18 @@ namespace NiflectGen
 		}
 
 	public:
-		virtual void ResolveDependcies(const TCursorMap<CTaggedType*>& mapCursorDeclToTaggedType)
+		virtual void Deprecated_ResolveDependcies(const TCursorMap<CTaggedType*>& mapCursorDeclToTaggedType)
 		{
 
+		}
+		virtual void ResolveDependcies(const SResolvingDependenciesContext& context, SResolvingDependenciesData& data)
+		{
+
+		}
+		virtual CSharedTypeRegCodeWriter Deprecated_CreateCodeWriter(const STypeRegClassWritingSetting& setting) const
+		{
+			ASSERT(false);
+			return NULL;
 		}
 		virtual CSharedTypeRegCodeWriter CreateCodeWriter(const STypeRegClassWritingSetting& setting) const
 		{

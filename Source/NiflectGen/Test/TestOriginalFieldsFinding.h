@@ -5,6 +5,8 @@
 
 namespace TestMyFinding
 {
+	using namespace Niflect;
+
 	NIF_T()
 	class CMyClass_0
 	{
@@ -22,7 +24,7 @@ namespace TestMyFinding
 		//NIF_F()
 		bool m_bool_1;
 		//NIF_F()
-		Niflect::TArrayNif<float> m_array_float_2;
+		TArrayNif<float> m_array_float_2;
 		//NIF_F()
 		Niflect::TArrayNif<bool> m_bits_3;
 		//NIF_F()

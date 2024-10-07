@@ -11,7 +11,6 @@ namespace NiflectGen
 		typedef CTypeRegCodeWriter inherited;
 	public:
 		CInheritableTypeRegCodeWriter(const CXCursor& cursor, const STypeRegClassWritingSetting& writingSetting);
-		virtual void Init() override;
 
 	public:
 		virtual void WriteDecl(const CWritingContext& context, CTypeRegDeclWrittingData& data) const override;

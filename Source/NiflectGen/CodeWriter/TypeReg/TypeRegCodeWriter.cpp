@@ -16,9 +16,6 @@ namespace NiflectGen
 		Niflect::TArrayNif<Niflect::CString> vecDeclScope;
 		FindNamespaceAndScopeNameRecursOld(m_cursor, m_vecNamespace, vecDeclScope);
 	}
-	void CTypeRegCodeWriter::Init()
-	{
-	}
 	void CTypeRegCodeWriter::WriteGenHeaderDeclaration(const CWritingContext& context, STypeRegGenHeaderDeclarationWritingData& data) const
 	{
 		data.m_linesTypeDeclaration.push_back(ReplaceLabelToText1(HardCodedTemplate::TypeRegGenHeader_TypeDecl, LABEL_0, m_typeName));

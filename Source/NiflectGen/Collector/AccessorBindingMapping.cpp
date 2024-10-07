@@ -2,20 +2,22 @@
 
 namespace NiflectGen
 {
-	void CAccessorBindingMapping2::IterateForTemplate(const CXType& fieldOrArgCXType, const Niflect::TArrayNif<CXCursor>& vecDetailCursor, Niflect::TArrayNif<uint32>& vecFoundIdx, uint32& detailIteratingIdx) const
+	void CAccessorBindingMapping2::IterateForTemplate(const CXType& fieldOrArgCXType, const Niflect::TArrayNif<CXCursor>& vecDetailCursor, CBindingAccessorIndexedNode& resultIndexedParent, uint32& detailIteratingIdx) const
 	{
 		auto argsCount = clang_Type_getNumTemplateArguments(fieldOrArgCXType);
 		for (int32 idx1 = 0; idx1 < argsCount; ++idx1)
 		{
 			CXType argType = clang_Type_getTemplateArgumentAsType(fieldOrArgCXType, idx1);
-			this->FindBindingTypeRecurs(argType, vecDetailCursor, vecFoundIdx, detailIteratingIdx);
+			CBindingAccessorIndexedNode indexedChild;
+			this->FindBindingTypeRecurs(argType, vecDetailCursor, indexedChild, detailIteratingIdx);
+			resultIndexedParent.m_vecChild.push_back(indexedChild);
 		}
 	}
 	bool CAccessorBindingMapping2::FindBindingTypesSSSSSSSSSSS(const CXType& fieldOrArgCXType, const Niflect::TArrayNif<CXCursor>& vecDetailCursor, uint32& detailIteratingIdx, CFoundResult& result) const
 	{
 		auto& foundIdx = result.m_foundIdx;
 		auto& continuing = result.m_continuing;
-		auto& vecFoundIdx = result.m_vecFoundIdx;
+		auto& indexedParent = result.m_indexedParent;
 		{
 			auto itFound = m_mapCXTypeToIndex.find(fieldOrArgCXType);
 			if (itFound != m_mapCXTypeToIndex.end())
@@ -35,9 +37,10 @@ namespace NiflectGen
 		if (foundIdx == INDEX_NONE)
 		{
 			const CXCursor* refCursor = NULL;
-			while ((detailIteratingIdx++) < vecDetailCursor.size())
+			while (detailIteratingIdx < vecDetailCursor.size())
 			{
 				auto& it = vecDetailCursor[detailIteratingIdx];
+				detailIteratingIdx++;
 				auto kind = clang_getCursorKind(it);
 				//查找首个可处理的类型的Ref
 				if (kind == CXCursor_TemplateRef || kind == CXCursor_TypeRef)
@@ -59,52 +62,111 @@ namespace NiflectGen
 		}
 		if (foundIdx != INDEX_NONE)
 		{
-			vecFoundIdx.push_back(foundIdx);
+			indexedParent.m_settingIdx = foundIdx;
+
 			return true;
 		}
 		return false;
 	}
-	void CAccessorBindingMapping2::FindBindingTypeRecurs(const CXType& fieldOrArgCXType, const Niflect::TArrayNif<CXCursor>& vecDetailCursor, Niflect::TArrayNif<uint32>& vecFoundIdx, uint32& detailIteratingIdx) const
+	void CBindingAccessorIndexedNode::InitForTemplateBegin(uint32 foundIdx)
 	{
-		CFoundResult result(vecFoundIdx);
-		if (this->FindBindingTypesSSSSSSSSSSS(fieldOrArgCXType, vecDetailCursor, detailIteratingIdx, result))
+		ASSERT(m_key.empty());
+		m_key += '(';
+		m_key += std::to_string(foundIdx).c_str();
+	}
+	void CBindingAccessorIndexedNode::InitForTemplateArguments(const CBindingAccessorIndexedNode& childrenOwner)
+	{
+		for (auto& it : childrenOwner.m_vecChild)
+			m_key += it.m_key;
+	}
+	void CBindingAccessorIndexedNode::InitForTemplateEnd()
+	{
+		m_key += ')';
+	}
+	void CBindingAccessorIndexedNode::InitForTemplate(uint32 foundIdx, const CBindingAccessorIndexedNode& childrenOwner)
+	{
+		this->InitForTemplateBegin(foundIdx);
+		this->InitForTemplateArguments(childrenOwner);
+		this->InitForTemplateEnd();
+	}
+	void CBindingAccessorIndexedNode::InitForClassDecl(uint32 foundIdx)
+	{
+		ASSERT(m_key.empty());
+		m_key += '[';
+		m_key += std::to_string(foundIdx).c_str();
+		m_key += ']';
+		m_taggedIdx = foundIdx;
+	}
+	void CAccessorBindingMapping2::FindBindingTypeRecurs(const CXType& fieldOrArgCXType, const Niflect::TArrayNif<CXCursor>& vecDetailCursor, CBindingAccessorIndexedNode& resultIndexedParent, uint32& detailIteratingIdx) const
+	{
+		CFoundResult result(resultIndexedParent);
+		if (!this->FindBindingTypesSSSSSSSSSSS(fieldOrArgCXType, vecDetailCursor, detailIteratingIdx, result))
 		{
-			if (result.m_continuing)
+			ASSERT(false);//todo: 报错, 每维BindingType都需要指定AccessorType
+		}
+
+		resultIndexedParent.InitForTemplateBegin(result.m_foundIdx);
+
+		if (result.m_continuing)
+		{
+
+#ifdef EMBEDDING_ELEMENT_BINDING_TYPE_INDEXED_NODE
+			auto& bindingSetting = m_vecAccessorBindingSetting[result.m_foundIdx];
+			//模板套特化的 BindingType, 成员类型如 Niflect::TArrayNif<Niflect::TArrayNif<bool> >
+			this->IterateForTemplate(fieldOrArgCXType, vecDetailCursor, resultIndexedParent, detailIteratingIdx);
+			resultIndexedParent.InitForTemplateArguments(resultIndexedParent);
+
+			auto elemDeclsCount = bindingSetting.GetELementBindingTypeDeclsCount();
+			if (elemDeclsCount > 0)
 			{
-				auto& bindingSetting = m_vecAccessorBindingSetting[result.m_foundIdx];
-				auto elemDeclsCount = bindingSetting.GetELementBindingTypeDeclsCount();
-				if (elemDeclsCount == 0)
+				auto pIndexedParent = &resultIndexedParent;
+				//多维 BindingType, 如典型的 TStlMapAccessor 设置, 第0维为 TMap, 第1维为 sd::pair
+				for (uint32 idx0 = 0; idx0 < elemDeclsCount; ++idx0)
 				{
-					//模板套特化, Niflect::TArrayNif<Niflect::TArrayNif<bool> >
-					this->IterateForTemplate(fieldOrArgCXType, vecDetailCursor, vecFoundIdx, detailIteratingIdx);
-				}
-				else
-				{
-					//多维BindingType
-					for (uint32 idx0 = 0; idx0 < elemDeclsCount; ++idx0)
+					auto& elemSubcursor = bindingSetting.GetELementBindingTypeDecl(idx0);
+					pIndexedParent->m_next = Niflect::MakeShared<CBindingAccessorIndexedNode>();
+					pIndexedParent = pIndexedParent->m_next.Get();
+					CFoundResult result2222(*pIndexedParent);
+					uint32 aaaa = 0;
+					if (!this->FindBindingTypesSSSSSSSSSSS(elemSubcursor.m_CXType, elemSubcursor.m_vecAaaaaaaaaa, aaaa, result2222))
 					{
-						auto& elemSubcursor = bindingSetting.GetELementBindingTypeDecl(idx0);
-						CFoundResult result2222(vecFoundIdx);
-						uint32 aaaa = 0;
-						if (!this->FindBindingTypesSSSSSSSSSSS(elemSubcursor.m_CXType, elemSubcursor.m_vecAaaaaaaaaa, aaaa, result2222))
-						{
-							ASSERT(false);//todo: 报错
-							break;
-						}
-						auto p = &detailIteratingIdx;
-						auto idxForRepeatedDetail = detailIteratingIdx;
-						if (idx0 > 0)
-							p = &idxForRepeatedDetail;
-						this->IterateForTemplate(fieldOrArgCXType, vecDetailCursor, vecFoundIdx, *p);
+						ASSERT(false);//todo: 报错, 每维BindingType都需要指定AccessorType
+						break;
+					}
+					pIndexedParent->InitForTemplate(result2222.m_foundIdx, resultIndexedParent);
+				}
+			}
+#else
+			auto& bindingSetting = m_vecAccessorBindingSetting[result.m_foundIdx];
+			auto elemDeclsCount = bindingSetting.GetELementBindingTypeDeclsCount();
+			auto pIndexedParent = &resultIndexedParent;
+			if (elemDeclsCount > 0)
+			{
+				//多维 BindingType, 如典型的 TStlMapAccessor 设置, 第0维为 TMap, 第1维为 sd::pair
+				for (uint32 idx0 = 0; idx0 < elemDeclsCount; ++idx0)
+				{
+					auto& elemSubcursor = bindingSetting.GetELementBindingTypeDecl(idx0);
+					pIndexedParent->m_vecChild.push_back(CBindingAccessorIndexedNode());
+					pIndexedParent = &pIndexedParent->m_vecChild.back();
+					CFoundResult result2222(*pIndexedParent);
+					uint32 aaaa = 0;
+					if (!this->FindBindingTypesSSSSSSSSSSS(elemSubcursor.m_CXType, elemSubcursor.m_vecAaaaaaaaaa, aaaa, result2222))
+					{
+						ASSERT(false);//todo: 报错, 每维BindingType都需要指定AccessorType
+						break;
 					}
 				}
 			}
+			//模板套特化的 BindingType, 成员类型如 Niflect::TArrayNif<Niflect::TArrayNif<bool> >
+			this->IterateForTemplate(fieldOrArgCXType, vecDetailCursor, *pIndexedParent, detailIteratingIdx);
+#endif
 		}
+		resultIndexedParent.InitForTemplateEnd();
 	}
-	void CAccessorBindingMapping2::FindBindingTypeForField(const CXCursor& fieldCursor, const Niflect::TArrayNif<CXCursor>& vecDetailCursor, Niflect::TArrayNif<uint32>& vecFoundIdx) const
+	void CAccessorBindingMapping2::FindBindingTypeForField(const CXCursor& fieldCursor, const Niflect::TArrayNif<CXCursor>& vecDetailCursor, CBindingAccessorIndexedNode& resultIndexedParent) const
 	{
 		auto fieldCXType = clang_getCursorType(fieldCursor);
 		uint32 detailIteratingIdx = 0;
-		this->FindBindingTypeRecurs(fieldCXType, vecDetailCursor, vecFoundIdx, detailIteratingIdx);
+		this->FindBindingTypeRecurs(fieldCXType, vecDetailCursor, resultIndexedParent, detailIteratingIdx);
 	}
 }

@@ -2,15 +2,19 @@
 #include "Niflect/Util/DebugUtil.h"
 #include <algorithm>
 #include "Niflect/Util/TypeUtil.h"
+#include "NiflectGen/CodeWriter/ModuleReg/ModuleRegCodeWriter.h"
+#include "NiflectGen/Base/NiflectGenDefinition.h"
+#include "NiflectGen/CodeWriter/CppWriter.h"
 
 namespace NiflectGen
 {
 	using namespace Niflect;
 
-	CResolver::CResolver(const CCollectionData& collectionData)
+	CResolver::CResolver(const CCollectionData& collectionData, const CModuleRegInfoValidated& moduleRegInfo)
 		: m_collectionData(collectionData)
 		//, m_vecHeaderSearchPath(vecHeaderSearchPath)
 		, m_foundCursorsCount(0)
+		, m_moduleRegInfo(moduleRegInfo)
 	{
 	}
 	//void CResolver::Resolve(CTaggedNode2* taggedRoot, CResolvingContext& context, CResolvedData& data)
@@ -188,11 +192,9 @@ namespace NiflectGen
 	//		this->ResolveRecurs(it0.Get(), context, data);
 	//	}
 	//}
-	extern const Niflect::TArrayNif<CBindingSettingData>* g_debug0;
-	void CResolver::Resolve2(CTaggedNode2* taggedRoot, CResolvingContext& context, CResolvedData& data)
+	void CResolver::Deprecated_Resolve2(CTaggedNode2* taggedRoot, CResolvingContext& context, CResolvedData& data)
 	{
-		g_debug0 = &m_collectionData.deprecated_m_vecBindingSetting;
-		auto& accessorBindingMapping = data.m_mapping.m_accessorBindingMapping;
+		auto& accessorBindingMapping = data.deprecated_m_mapping.m_accessorBindingMapping;
 		for (auto& it0 : m_collectionData.deprecated_m_vecBindingSetting)
 		{
 			if (!it0.IsValidBindingSetting())
@@ -293,7 +295,7 @@ namespace NiflectGen
 
 		//未实现按CursorDeclaration依赖顺序遍历, 因此在最后ResolveDependcies
 		for (auto& it : data.m_vecResolvedTypes2)
-			it.m_taggedType->ResolveDependcies(data.m_mapping.m_mapCursorDeclToTaggedType);
+			it.m_taggedType->Deprecated_ResolveDependcies(data.deprecated_m_mapping.m_mapCursorDeclToTaggedType);
 
 		//for (auto& it : data.m_mapping.m_mapCursorDeclToUntaggedTemplate)
 		//{
@@ -316,8 +318,8 @@ namespace NiflectGen
 			GenerateTemplateInstanceCode(bSubcursor, dddddd);
 			auto ddddddd = clang_getSpecializedCursorTemplate(bSubcursor.m_cursorDecl);
 
-			auto itFound0 = data.m_mapping.m_mapCursorDeclToUntaggedTemplate.find(bSubcursor.m_cursorDecl);
-			if (itFound0 != data.m_mapping.m_mapCursorDeclToUntaggedTemplate.end())
+			auto itFound0 = data.deprecated_m_mapping.m_mapCursorDeclToUntaggedTemplate.find(bSubcursor.m_cursorDecl);
+			if (itFound0 != data.deprecated_m_mapping.m_mapCursorDeclToUntaggedTemplate.end())
 			{
 				auto b = CXStringToCString(clang_getCursorSpelling(itFound0->second->GetCursor()));
 				printf("");
@@ -328,8 +330,8 @@ namespace NiflectGen
 			}
 
 			//特化的原定义, 即从ClassDecl获取到ClassTemplate
-			auto itFound1 = data.m_mapping.m_mapCursorDeclToUntaggedTemplate.find(ddddddd);
-			if (itFound1 != data.m_mapping.m_mapCursorDeclToUntaggedTemplate.end())
+			auto itFound1 = data.deprecated_m_mapping.m_mapCursorDeclToUntaggedTemplate.find(ddddddd);
+			if (itFound1 != data.deprecated_m_mapping.m_mapCursorDeclToUntaggedTemplate.end())
 			{
 				auto b = CXStringToCString(clang_getCursorSpelling(itFound1->second->GetCursor()));
 				printf("");
@@ -480,7 +482,8 @@ namespace NiflectGen
 			{
 				auto& fieldCursor = taggedParent->GetCursor();
 				Niflect::TArrayNif<uint32> vecFoundIdx;
-				m_collectionData.m_accessorBindingMapping->FindBindingTypeForField(fieldCursor, taggedType->m_vecDetailCursor, vecFoundIdx);
+				ASSERT(false);//下函数已改写
+				//m_collectionData.m_accessorBindingMapping->FindBindingTypeForField(fieldCursor, taggedType->m_vecDetailCursor, vecFoundIdx);
 				ASSERT(vecFoundIdx.size() > 0);
 				printf("");
 			}
@@ -544,12 +547,12 @@ namespace NiflectGen
 			}
 			//auto a = CXStringToCString(clang_getCursorSpelling(cursor));
 			//printf("%s\n", a.c_str());
-			data.m_mapping.m_mapCursorDeclToTaggedType.insert({ cursor, taggedType });
+			data.deprecated_m_mapping.m_mapCursorDeclToTaggedType.insert({ cursor, taggedType });
 		}
 		else if (auto untaggedType = CUntaggedTemplate::CastChecked(taggedParent))
 		{
 			auto& cursor = untaggedType->GetCursor();
-			data.m_mapping.m_mapCursorDeclToUntaggedTemplate.insert({ cursor, untaggedType });
+			data.deprecated_m_mapping.m_mapCursorDeclToUntaggedTemplate.insert({ cursor, untaggedType });
 		}
 
 		for (auto& it0 : taggedParent->DebugGetChildren())
@@ -574,6 +577,108 @@ namespace NiflectGen
 	//	}
 	//	printf("");
 	//}
+
+	void CResolver::Resolve4(CTaggedNode2* taggedRoot, CResolvingContext& context, CResolvedData& data)
+	{
+		CResolvedTaggedTypesMapping resolvedTagTypesMapping;
+		this->ResolveRecurs4(taggedRoot, data, resolvedTagTypesMapping);
+
+		SResolvingDependenciesContext resolvingDepCtx{ *m_collectionData.m_accessorBindingMapping, resolvedTagTypesMapping };
+		SResolvingDependenciesData resolvingDepData{ data.m_signatureMapping };
+		//未实现按CursorDeclaration依赖顺序遍历, 因此在最后ResolveDependcies
+		for (auto& it : resolvedTagTypesMapping.m_vecType)
+			it->ResolveDependcies(resolvingDepCtx, resolvingDepData);
+
+		Niflect::TMap<Niflect::CString, SModuleRegIndicesAndIncludePath> mapOriginalFilePathToModuleRegIndicesAndIncPath;
+		{
+			ASSERT(data.m_vecWriter.size() == 0);
+			{
+				auto& userProvided = m_moduleRegInfo.m_userProvided;
+				for (auto& it1 : userProvided.m_vecOriginalHeader)
+				{
+					auto ret = mapOriginalFilePathToModuleRegIndicesAndIncPath.insert({ it1, SModuleRegIndicesAndIncludePath() });
+					auto& item = ret.first->second;
+					if (ret.second)
+					{
+						auto incPath = CIncludesHelper::ConvertToIncludePath(it1, userProvided.m_vecHeaderSearchPath);
+						item.m_includePath_reserved = incPath;
+						auto orgIncPathPrivateH = NiflectUtil::ReplaceFilePathExt(incPath, NiflectGenDefinition::FileExt::H, NiflectGenDefinition::FileExt::PrivateH);
+						auto genIncPathPrivateH = NiflectUtil::ConcatPath(m_moduleRegInfo.m_typeRegBasePath, orgIncPathPrivateH);
+						auto orgIncPathGenH = NiflectUtil::ReplaceFilePathExt(incPath, NiflectGenDefinition::FileExt::H, NiflectGenDefinition::FileExt::GenH);
+						auto genIncPathGenH = NiflectUtil::ConcatPath(m_moduleRegInfo.m_typeRegBasePath, orgIncPathGenH);
+						item.m_includePathPrivateHIndex = static_cast<uint32>(data.m_vecTypeRegGenFileInfo.size());
+						data.m_vecTypeRegGenFileInfo.push_back(CTypeRegGenFileInfo(genIncPathPrivateH, genIncPathGenH));
+					}
+					else
+					{
+						ASSERT(false);//todo: 一次调用只能输出一个ModuleReg, 计划废弃ModuleReg数组, 如果将ModuleReg混在一起处理可能导致一些Module依赖配错却能输出正确结果
+					}
+				}
+			}
+
+			//auto& accessorBindingMapping = m_resolvedData.m_mapping.m_accessorBindingMapping;
+			//for (auto& it0 : accessorBindingMapping.m_vecAccessorBinding2)
+			//{
+			//	if (it0.m_accessorData.m_isNotATemplate)
+			//	{
+			//		auto filePath = GetCursorFilePath(it0.m_accessorSubcursor.m_cursorDecl);
+			//		auto itFound = m_mapping.m_mapOriginalFilePathToModuleRegIndicesAndIncPath.find(filePath);
+			//		if (itFound != m_mapping.m_mapOriginalFilePathToModuleRegIndicesAndIncPath.end())
+			//		{
+			//			auto& item = itFound->second;
+			//			uint32 writerIndex = static_cast<uint32>(m_vecWriter.size());
+			//			m_mapping.m_vecTypeRegIndices.push_back(writerIndex);
+			//			auto& privateHeaderData = vecTypeRegGenFileInfo[item.m_includePathPrivateHIndex];
+			//			privateHeaderData.m_vecTypeRegDataIndex.push_back(writerIndex);
+			//			ASSERT(it0.Is1D());//不支持模板, 因此只能为1D, 对应的Binding类型可能为builtin, 类型Decl或别名
+			//			STypeRegClassWritingSetting setting = { m_moduleRegInfo.m_userProvided.m_vecHeaderSearchPath, m_resolvedData.m_mapping };
+			//			m_vecWriter.push_back(Niflect::MakeShared<CInheritableTypeRegCodeWriter_FieldAccessor>(it0.m_accessorSubcursor.m_cursorDecl, setting, it0.m_actualFieldDeclCursor, it0.m_vecWWWW[0].m_subcursor));
+			//			m_mapping.m_vecTypeRegIncludePathPrivateHRef.push_back(&privateHeaderData.m_prevateHIncludePath);
+			//		}
+			//	}
+			//}
+
+			for (auto& it0 : resolvedTagTypesMapping.m_vecType)
+			{
+				auto& cursor = it0->GetCursor();
+				auto filePath = GetCursorFilePath(cursor);
+				//在此处挑选实际需要生成的类型是为避免在Resolve或之前的流程中可能出现的大量路径查找, 在此处虽查找量未减少, 但可通过如并行实现一定优化
+				auto itFound = mapOriginalFilePathToModuleRegIndicesAndIncPath.find(filePath);
+				if (itFound != mapOriginalFilePathToModuleRegIndicesAndIncPath.end())
+				{
+					auto& item = itFound->second;
+					auto& privateHeaderData = data.m_vecTypeRegGenFileInfo[item.m_includePathPrivateHIndex];
+					uint32 writerIndex = static_cast<uint32>(data.m_vecWriter.size());
+					data.m_regMapping.m_vecTypeRegIndices.push_back(writerIndex);
+					privateHeaderData.m_vecTypeRegDataIndex.push_back(writerIndex);
+					STypeRegClassWritingSetting setting = { m_moduleRegInfo.m_userProvided.m_vecHeaderSearchPath, data.deprecated_m_mapping };
+					auto writer = it0->CreateCodeWriter(setting);
+					data.m_vecWriter.push_back(writer);
+					data.m_regMapping.m_vecTypeRegIncludePathPrivateHRef.push_back(&privateHeaderData.m_prevateHIncludePath);
+				}
+			}
+		}
+	}
+	void CResolver::ResolveRecurs4(CTaggedNode2* taggedParent, CResolvedData& data, CResolvedTaggedTypesMapping& resolvedMapping)
+	{
+		if (auto taggedType = CTaggedType::CastChecked(taggedParent))
+		{
+			auto& cursor = taggedType->GetCursor();
+			ASSERT(clang_isDeclaration(clang_getCursorKind(cursor)));
+			resolvedMapping.m_mapCursorToIndex.insert({ cursor, static_cast<uint32>(resolvedMapping.m_vecType.size())});
+			resolvedMapping.m_vecType.push_back(taggedType);
+		}
+		else if (auto untaggedType = CUntaggedTemplate::CastChecked(taggedParent))
+		{
+			auto& cursor = untaggedType->GetCursor();
+			data.m_mapCursorDeclToUntaggedTemplate.insert({ cursor, untaggedType });
+		}
+
+		for (auto& it0 : taggedParent->DebugGetChildren())
+		{
+			this->ResolveRecurs4(it0.Get(), data, resolvedMapping);
+		}
+	}
 
 	// 预想的Resolve功能是解决类型依赖, 或其它生成代码的准备功能, 如将TaggedNode按依赖顺序排序
 	// C++语法中仅枚举支持只声明即可使用, 但这种用法完全无必要支持

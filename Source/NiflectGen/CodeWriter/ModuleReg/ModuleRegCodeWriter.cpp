@@ -129,7 +129,7 @@ namespace NiflectGen
             }
         }
 
-        auto& accessorBindingMapping = m_resolvedData.m_mapping.m_accessorBindingMapping;
+        auto& accessorBindingMapping = m_resolvedData.deprecated_m_mapping.m_accessorBindingMapping;
         for (auto& it0 : accessorBindingMapping.m_vecAccessorBinding2)
         {
             if (it0.m_accessorData.m_isNotATemplate)
@@ -144,7 +144,7 @@ namespace NiflectGen
                     auto& privateHeaderData = vecTypeRegGenFileInfo[item.m_includePathPrivateHIndex];
                     privateHeaderData.m_vecTypeRegDataIndex.push_back(writerIndex);
                     ASSERT(it0.Is1D());//不支持模板, 因此只能为1D, 对应的Binding类型可能为builtin, 类型Decl或别名
-                    STypeRegClassWritingSetting setting = { m_moduleRegInfo.m_userProvided.m_vecHeaderSearchPath, m_resolvedData.m_mapping };
+                    STypeRegClassWritingSetting setting = { m_moduleRegInfo.m_userProvided.m_vecHeaderSearchPath, m_resolvedData.deprecated_m_mapping };
                     m_vecWriter.push_back(Niflect::MakeShared<CInheritableTypeRegCodeWriter_FieldAccessor>(it0.m_accessorSubcursor.m_cursorDecl, setting, it0.m_actualFieldDeclCursor, it0.m_vecWWWW[0].m_subcursor));
                     m_mapping.m_vecTypeRegIncludePathPrivateHRef.push_back(&privateHeaderData.m_prevateHIncludePath);
                 }
@@ -164,13 +164,13 @@ namespace NiflectGen
                 m_mapping.m_vecTypeRegIndices.push_back(writerIndex);
                 auto& privateHeaderData = vecTypeRegGenFileInfo[item.m_includePathPrivateHIndex];
                 privateHeaderData.m_vecTypeRegDataIndex.push_back(writerIndex);
-                STypeRegClassWritingSetting setting = { m_moduleRegInfo.m_userProvided.m_vecHeaderSearchPath, m_resolvedData.m_mapping };
+                STypeRegClassWritingSetting setting = { m_moduleRegInfo.m_userProvided.m_vecHeaderSearchPath, m_resolvedData.deprecated_m_mapping };
                 m_vecWriter.push_back(it0.m_taggedType->CreateCodeWriter(setting));
                 m_mapping.m_vecTypeRegIncludePathPrivateHRef.push_back(&privateHeaderData.m_prevateHIncludePath);
             }
         }
     }
-    void CTemplateBasedCppWriter::Write2(const CWritingContext& context, CCodeGenData& data)
+    void CTemplateBasedCppWriter::Deprecated_Write2(const CWritingContext& context, CCodeGenData& data)
     {
         Niflect::TArrayNif<CTypeRegGenFileInfo> vecTypeRegGenFileInfo;
         this->CreateWriters(context, vecTypeRegGenFileInfo);
@@ -219,10 +219,14 @@ namespace NiflectGen
             WriteTypeRegsGenHeader(context, writingCtx, writingData);
         }
     }
+    void CTemplateBasedCppWriter::Write3(const CWritingContext& context, CCodeGenData& data)
+    {
+        ASSERT(false);
+    }
     void CTemplateBasedCppWriter::WriteTypeRegs(const CWritingContext& context, Niflect::TArrayNif<CTypeRegWritingData>& vecTypeRegData)
     {
         for (auto& it : m_vecWriter)
-            it->Init();
+            it->Deprecated_Init();
 
         vecTypeRegData.resize(m_vecWriter.size());
         for (uint32 idx0 = 0; idx0 < m_vecWriter.size(); ++idx0)

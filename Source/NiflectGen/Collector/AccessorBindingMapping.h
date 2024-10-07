@@ -68,16 +68,53 @@ namespace NiflectGen
 		CAccessorData m_accessorData;//todo: 应废弃, 改为通过AccessorBindingMapping查找并获取对应信息
 	};
 
+#ifdef EMBEDDING_ELEMENT_BINDING_TYPE_INDEXED_NODE
+	class CBindingAccessorIndexedNode;
+	using CSharedBindingAccessorIndexedNode = Niflect::TSharedPtr<CBindingAccessorIndexedNode>;
+#else
+#endif
+
+	class CBindingAccessorIndexedNode
+	{
+	public:
+		CBindingAccessorIndexedNode()
+			: m_settingIdx(INDEX_NONE)
+			, m_taggedIdx(INDEX_NONE)
+		{
+		}
+		void InitForTemplateBegin(uint32 foundIdx);
+		void InitForTemplateArguments(const CBindingAccessorIndexedNode& childrenOwner);
+		void InitForTemplateEnd();
+		void InitForTemplate(uint32 foundIdx, const CBindingAccessorIndexedNode& childrenOwner);
+		void InitForClassDecl(uint32 foundIdx);
+		bool IsBindingTypeTemplate() const
+		{
+			return m_vecChild.size() > 0;
+		}
+		bool IsValid() const
+		{
+			return m_settingIdx != INDEX_NONE || m_taggedIdx != INDEX_NONE;
+		}
+		uint32 m_settingIdx;
+		uint32 m_taggedIdx;
+		Niflect::TArrayNif<CBindingAccessorIndexedNode> m_vecChild;
+		Niflect::CString m_key;
+#ifdef EMBEDDING_ELEMENT_BINDING_TYPE_INDEXED_NODE
+		CSharedBindingAccessorIndexedNode m_next;
+#else
+#endif
+	};
+
 	class CFoundResult
 	{
 	public:
-		CFoundResult(Niflect::TArrayNif<uint32>& vecFoundIdx)
-			: m_vecFoundIdx(vecFoundIdx)
+		CFoundResult(CBindingAccessorIndexedNode& indexedParent)
+			: m_indexedParent(indexedParent)
 			, m_foundIdx(INDEX_NONE)
 			, m_continuing(true)
 		{
 		}
-		Niflect::TArrayNif<uint32>& m_vecFoundIdx;
+		CBindingAccessorIndexedNode& m_indexedParent;
 		uint32 m_foundIdx;
 		bool m_continuing;
 	};
@@ -85,12 +122,12 @@ namespace NiflectGen
 	class CAccessorBindingMapping2
 	{
 	public:
-		void FindBindingTypeForField(const CXCursor& fieldCursor, const Niflect::TArrayNif<CXCursor>& vecDetailCursor, Niflect::TArrayNif<uint32>& vecFoundIdx) const;
+		void FindBindingTypeForField(const CXCursor& fieldCursor, const Niflect::TArrayNif<CXCursor>& vecDetailCursor, CBindingAccessorIndexedNode& resultIndexedParent) const;
 
 	private:
-		void IterateForTemplate(const CXType& fieldOrArgCXType, const Niflect::TArrayNif<CXCursor>& vecDetailCursor, Niflect::TArrayNif<uint32>& vecFoundIdx, uint32& detailIteratingIdx) const;
+		void IterateForTemplate(const CXType& fieldOrArgCXType, const Niflect::TArrayNif<CXCursor>& vecDetailCursor, CBindingAccessorIndexedNode& resultIndexedParent, uint32& detailIteratingIdx) const;
 		bool FindBindingTypesSSSSSSSSSSS(const CXType& fieldOrArgCXType, const Niflect::TArrayNif<CXCursor>& vecDetailCursor, uint32& detailIteratingIdx, CFoundResult& result) const;
-		void FindBindingTypeRecurs(const CXType& fieldOrArgCXType, const Niflect::TArrayNif<CXCursor>& vecDetailCursor, Niflect::TArrayNif<uint32>& vecFoundIdx, uint32& detailIteratingIdx) const;
+		void FindBindingTypeRecurs(const CXType& fieldOrArgCXType, const Niflect::TArrayNif<CXCursor>& vecDetailCursor, CBindingAccessorIndexedNode& resultIndexedParent, uint32& detailIteratingIdx) const;
 
 	public:
 		Niflect::TArrayNif<CBindingSettingData> m_vecAccessorBindingSetting;
@@ -99,4 +136,6 @@ namespace NiflectGen
 		TCursorMap<uint32> m_mapSpecializedCursorToIndex;
 	};
 	using CSharedAccessorBindingMapping = Niflect::TSharedPtr<CAccessorBindingMapping2>;
+
+	void MakeKeyForClassDecl(CBindingAccessorIndexedNode& resultIndexedParent, uint32 foundIdx);
 }

@@ -262,4 +262,7 @@ namespace Engine
 			return true;
 		}
 	};
+
+	template <typename T0, typename T1>
+	using TMyPair = std::pair<T0, T1>;
 }

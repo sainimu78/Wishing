@@ -146,14 +146,16 @@ namespace NiflectGen
             if (true)
             {
                 CResolvingContext resolvingContext(&log);
-                CResolver resolver(collectionData);
+                CModuleRegInfo moduleRegInfo_reserved;
+                CModuleRegInfoValidated validatedModuleRegInfo_reserved(moduleRegInfo_reserved);
+                CResolver resolver(collectionData, validatedModuleRegInfo_reserved);
                 CResolvedData resolvedData;
-                resolver.Resolve2(&taggedRoot, resolvingContext, resolvedData);
+                resolver.Deprecated_Resolve2(&taggedRoot, resolvingContext, resolvedData);
                 //resolver.DebugFinish(resolvedData);
-                CTemplateBasedCppWriter writer(resolvedData, CModuleRegInfoValidated(CModuleRegInfo()));
+                CTemplateBasedCppWriter writer(resolvedData, validatedModuleRegInfo_reserved);
                 CWritingContext writingContext(&log);
                 CCodeGenData genData;
-                writer.Write2(writingContext, genData);
+                writer.Deprecated_Write2(writingContext, genData);
                 printf("");
             }
             if (false)
@@ -264,14 +266,14 @@ namespace NiflectGen
                 if (true)
                 {
                     CResolvingContext resolvingContext(&log);
-                    CResolver resolver(collectionData);
+                    CResolver resolver(collectionData, validatedModuleRegInfo);
                     CResolvedData resolvedData;
-                    resolver.Resolve2(&taggedRoot, resolvingContext, resolvedData);
+                    resolver.Resolve4(&taggedRoot, resolvingContext, resolvedData);
 
                     //#3, Generate code
                     CTemplateBasedCppWriter writer(resolvedData, validatedModuleRegInfo);
                     CWritingContext writingContext(&log);
-                    writer.Write2(writingContext, m_genData);
+                    writer.Write3(writingContext, m_genData);
                 }
                 debugData.Check();
                 //m_collector.DebugFinish2(&taggedRoot, collectionData);
