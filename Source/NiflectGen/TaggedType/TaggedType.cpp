@@ -34,10 +34,10 @@ namespace NiflectGen
 
 		lv++;
 		auto& childrenOwner = indexedParent;
-		if (auto next = indexedParent.m_next.Get())
+		if (auto elem = indexedParent.m_elem.Get())
 		{
 			ASSERT(childrenOwner.m_vecChild.size() == 0);
-			DebugPrintSSSSSSSSSSSSSSSSSSAAAAAAAAA(*next, lv, "+");
+			DebugPrintSSSSSSSSSSSSSSSSSSAAAAAAAAA(*elem, lv, "+");
 		}
 		else
 		{

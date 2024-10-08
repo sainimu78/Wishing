@@ -45,7 +45,7 @@ namespace NiflectGen
 		Niflect::CString m_signature;
 #ifdef EMBEDDING_ELEMENT_BINDING_TYPE_INDEXED_NODE
 		//要求与 m_vecChild 互斥, 即无法支持容器模板含成员变量, 而结构模板可含成员变量
-		CSharedBindingAccessorIndexedNode m_next;
+		CSharedBindingAccessorIndexedNode m_elem;
 #else
 #endif
 	};

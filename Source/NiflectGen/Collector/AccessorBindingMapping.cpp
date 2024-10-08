@@ -19,11 +19,11 @@ namespace NiflectGen
 		for (int32 idx1 = 0; idx1 < argsCount; ++idx1)
 		{
 			CXType argType = clang_Type_getTemplateArgumentAsType(fieldOrArgCXType, idx1);
-			CBindingAccessorIndexedNode* indexedChild = NULL;
+			CBindingAccessorIndexedNode* indexedNext = NULL;
 			if (argsCount > 1)
 			{
 				resultIndexedParent.m_vecChild.push_back(CBindingAccessorIndexedNode());
-				indexedChild = &resultIndexedParent.m_vecChild.back();
+				indexedNext = &resultIndexedParent.m_vecChild.back();
 			}
 			else
 			{
@@ -51,10 +51,10 @@ namespace NiflectGen
 				//2. 当BindingType是多维模板, 则一定将最后维的BindingType认定为结构模板, 其余为容器模板
 				//另见 Main.cpp 中 12, 13 与 14 说明
 
-				resultIndexedParent.m_next = Niflect::MakeShared<CBindingAccessorIndexedNode>();
-				indexedChild = resultIndexedParent.m_next.Get();
+				resultIndexedParent.m_elem = Niflect::MakeShared<CBindingAccessorIndexedNode>();
+				indexedNext = resultIndexedParent.m_elem.Get();
 			}
-			this->FindBindingTypeRecurs(argType, vecDetailCursor, taggedMapping, untaggedTemplateMapping, *indexedChild, detailIteratingIdx);
+			this->FindBindingTypeRecurs(argType, vecDetailCursor, taggedMapping, untaggedTemplateMapping, *indexedNext, detailIteratingIdx);
 		}
 	}
 	bool CAccessorBindingMapping2::FindBindingTypesSSSSSSSSSSS(const CXType& fieldOrArgCXType, const Niflect::TArrayNif<CXCursor>& vecDetailCursor, uint32& detailIteratingIdx, CFoundResult& result) const
@@ -136,9 +136,9 @@ namespace NiflectGen
 	//}
 	void CBindingAccessorIndexedNode::InitForTemplateArguments(const CBindingAccessorIndexedNode& childrenOwner)
 	{
-		if (auto next = childrenOwner.m_next.Get())
+		if (auto elem = childrenOwner.m_elem.Get())
 		{
-			m_key += next->m_key;
+			m_key += elem->m_key;
 			ASSERT(childrenOwner.m_vecChild.size() == 0);
 		}
 		else
@@ -150,11 +150,10 @@ namespace NiflectGen
 		{
 			m_signature += '<';
 			Niflect::TArrayNif<const CBindingAccessorIndexedNode*> vec;
-			const CBindingAccessorIndexedNode* p = childrenOwner.m_next.Get();
-			if (p != NULL)
+			if (auto elem = childrenOwner.m_elem.Get())
 			{
 				ASSERT(childrenOwner.m_vecChild.size() == 0);
-				m_signature += p->m_signature;
+				m_signature += elem->m_signature;
 			}
 			else
 			{
@@ -238,8 +237,8 @@ namespace NiflectGen
 					for (uint32 idx0 = 0; idx0 < elemDeclsCount; ++idx0)
 					{
 						auto& elemSubcursor = bindingSetting.GetELementBindingTypeDecl(idx0);
-						pIndexedParent->m_next = Niflect::MakeShared<CBindingAccessorIndexedNode>();
-						pIndexedParent = pIndexedParent->m_next.Get();
+						pIndexedParent->m_elem = Niflect::MakeShared<CBindingAccessorIndexedNode>();
+						pIndexedParent = pIndexedParent->m_elem.Get();
 						CFoundResult result2222(*pIndexedParent);
 						uint32 aaaa = 0;
 						if (!this->FindBindingTypesSSSSSSSSSSS(elemSubcursor.m_CXType, elemSubcursor.m_vecAaaaaaaaaa, aaaa, result2222))

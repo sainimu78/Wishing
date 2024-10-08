@@ -36,11 +36,11 @@ namespace NiflectGen
 		for (auto& it : childrenOwner.m_vecChild)
 			DebugPrintIndexedNodeRecurs(it, it, mapping, lv);
 
-		if (auto next = indexedParent.m_next.Get())
+		if (auto elem = indexedParent.m_elem.Get())
 		{
 			lv--;
 			printf("---------------\n");
-			DebugPrintIndexedNodeRecurs(*next, indexedParent, mapping, lv);
+			DebugPrintIndexedNodeRecurs(*elem, indexedParent, mapping, lv);
 		}
 	}
 #else
@@ -154,10 +154,10 @@ namespace NiflectGen
 				//	auto& it = childrenOwner.m_vecChild[idx];
 				//	MakeSignatureForFieldRecurs(it, it, ctx, signatureMapping);
 				//}
-				if (auto next = indexedParent.m_next.Get())
+				if (auto elem = indexedParent.m_elem.Get())
 				{
 					ASSERT(childrenOwner.m_vecChild.size() == 0);
-					ResolveSignatureRecurs(*next, *next, ctx, signatureMapping);
+					ResolveSignatureRecurs(*elem, *elem, ctx, signatureMapping);
 				}
 				else
 				{
@@ -168,7 +168,7 @@ namespace NiflectGen
 			else if (indexedParent.m_taggedIdx != INDEX_NONE)
 			{
 				ASSERT(childrenOwner.m_vecChild.size() == 0);
-				ASSERT(indexedParent.m_next == NULL);
+				ASSERT(indexedParent.m_elem == NULL);
 			}
 			else
 			{
