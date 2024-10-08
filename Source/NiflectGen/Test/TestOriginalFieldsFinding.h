@@ -55,6 +55,8 @@ namespace TestMyFinding
 		Niflect::TArrayNif<Niflect::TMap<Niflect::CString, float> > m_array_map_string_float_16;
 		//NIF_F()
 		Niflect::TArrayNif<Niflect::TMap<Niflect::CString, Niflect::TArrayNif<float> > > m_array_map_string_array_float_17;
+		//NIF_F()
+		//TestAccessor2::TMyTransform<bool> m_tm_18;
 	};
 
 	//NIF_T()

@@ -19,6 +19,9 @@
 //9. AccessorBinding, Field类型对应的Accessor类, 用于生成代码时指定对应的Accessor
 //10. NiflectType, 表示运行时的类的信息, 或称作反射信息类, 可通过该信息构造对应的Native对象
 //11. NativeMeta, 通过C++ Native风格定义的Meta信息, 如用于定义类的反射信息, 属性的反射信息
+//12. ContainerTemplate1D, 1维容器模板, 代码生成逻辑上的模板参数只有1个, 如std::vector, std::shared_ptr, 对于std::map, 在代码生成逻辑上std::pair作为其模板参数, 而非first与second作为模板参数, 因此std::map在代码生成逻辑上也属于1维容器模板
+//13. StructuralTemplateND, N维结构模板, 其中N>=2, 每个模板参数对应一个Field, 如std::pair
+//14. TAccesorBinding, Accessor与解析类型的绑定配置, 对于模板的绑定, 1维BindingType认定为ContainerTemplate1D, 大于1维的BindingType其最后一个BindingType认定为StructuralTemplateND, 其余认定为ContainerTemplate1D
 
 int main()
 {

@@ -22,4 +22,6 @@ namespace EngineTypeBindingSettingScope
 	NIF_BS() TBindingSetting<TStlArrayAccessor<TInstance>, std::vector<T> >;
 	NIF_BS() TBindingSetting<TBasicTypeAccessor<int32>, int32>;
 	NIF_BS() TBindingSetting<TestAccessor2::TMyTransformAccessor<float>, TestAccessor2::TMyTransform<float> >;
+	//template <typename T0>
+	//NIF_BS() TBindingSetting<CCompoundAccessor, TestAccessor2::TMyTransform<T0> >;
 }

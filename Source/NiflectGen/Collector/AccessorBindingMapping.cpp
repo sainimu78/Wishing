@@ -27,7 +27,30 @@ namespace NiflectGen
 			}
 			else
 			{
-				//现无其它方式区分是否为结构模板, 当结构模板的模板参数确实为1个时, 流程错误, 如认为有必要支持1个模板参数的结构模板, 应使用一种区分方式, 如通过在 UntaggedType 表中查找是否定义相应模板类, 且模板参数数量相同, 则可认定为结构模板
+				//现无其它方式区分是否为结构模板, 当结构模板的模板参数确实为1个时, 流程错误
+				//如认为有必要支持1个模板参数的结构模板, 应使用一种区分方式, 如通过在 UntaggedType 表中查找是否定义相应模板类, 且模板参数数量相同, 则可认定为结构模板
+				//1维结构模板如
+				//AccessorBindingSetting
+				//template <typename T0>
+				//NIF_BS() TBindingSetting<CCompoundAccessor, TestAccessor2::TMyTransform<T0> >;
+				//成员
+				//NIF_F()
+				//TestAccessor2::TMyTransform<bool> m_tm_18;
+				//可通过如下方式查找
+				//auto c = clang_getTypeDeclaration(fieldOrArgCXType);
+				//auto d = clang_getSpecializedCursorTemplate(c);
+				//auto itFound = untaggedTemplateMapping.m_mapCursorToIndex.find(d);
+				//if (itFound != untaggedTemplateMapping.m_mapCursorToIndex.end())
+				//{
+				//	//进一步检查模板参数对应的成员数量是否与模板参数相同, 是则为正确指定的结构模板, 否则为错误的容器模板
+				//	printf("");
+				//}
+				//但仅通过某些结构特点认定, 是无法保证正确区分容器模板或结构模板, 因为类的用途是无法通过结构定义推断的
+				//因此建议考虑限制框架功能
+				//1. 当BindingType是1维模板, 则一定被认定为容器模板
+				//2. 当BindingType是多维模板, 则一定将最后维的BindingType认定为结构模板, 其余为容器模板
+				//另见 Main.cpp 中 12, 13 与 14 说明
+
 				resultIndexedParent.m_next = Niflect::MakeShared<CBindingAccessorIndexedNode>();
 				indexedChild = resultIndexedParent.m_next.Get();
 			}
