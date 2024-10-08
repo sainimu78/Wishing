@@ -580,15 +580,16 @@ namespace NiflectGen
 
 	void CResolver::Resolve4(CTaggedNode2* taggedRoot, CResolvingContext& context, CResolvedData& data)
 	{
-		CResolvedTaggedTypesMapping resolvedTagTypesMapping;
-		this->ResolveRecurs4(taggedRoot, data, resolvedTagTypesMapping);
+		CTaggedTypesMapping taggedMapping;
+		CUntaggedTemplateTypesMapping untaggedTemplateMapping;
+		this->ResolveRecurs4(taggedRoot, data, taggedMapping, untaggedTemplateMapping);
 
-		resolvedTagTypesMapping.InitPatterns();
+		taggedMapping.InitPatterns();
 
-		SResolvingDependenciesContext resolvingDepCtx{ *m_collectionData.m_accessorBindingMapping, resolvedTagTypesMapping };
+		SResolvingDependenciesContext resolvingDepCtx{ *m_collectionData.m_accessorBindingMapping, taggedMapping, untaggedTemplateMapping };
 		SResolvingDependenciesData resolvingDepData{ data.m_signatureMapping };
 		//未实现按CursorDeclaration依赖顺序遍历, 因此在最后ResolveDependcies
-		for (auto& it : resolvedTagTypesMapping.m_vecType)
+		for (auto& it : taggedMapping.m_vecType)
 			it->ResolveDependcies(resolvingDepCtx, resolvingDepData);
 
 		Niflect::TMap<Niflect::CString, SModuleRegIndicesAndIncludePath> mapOriginalFilePathToModuleRegIndicesAndIncPath;
@@ -640,7 +641,7 @@ namespace NiflectGen
 			//	}
 			//}
 
-			for (auto& it0 : resolvedTagTypesMapping.m_vecType)
+			for (auto& it0 : taggedMapping.m_vecType)
 			{
 				auto& cursor = it0->GetCursor();
 				auto filePath = GetCursorFilePath(cursor);
@@ -661,7 +662,7 @@ namespace NiflectGen
 			}
 		}
 	}
-	void CResolver::ResolveRecurs4(CTaggedNode2* taggedParent, CResolvedData& data, CResolvedTaggedTypesMapping& resolvedMapping)
+	void CResolver::ResolveRecurs4(CTaggedNode2* taggedParent, CResolvedData& data, CTaggedTypesMapping& resolvedMapping, CUntaggedTemplateTypesMapping& untaggedTemplateMapping)
 	{
 		if (auto taggedType = CTaggedType::CastChecked(taggedParent))
 		{
@@ -673,12 +674,14 @@ namespace NiflectGen
 		else if (auto untaggedType = CUntaggedTemplate::CastChecked(taggedParent))
 		{
 			auto& cursor = untaggedType->GetCursor();
-			data.m_mapCursorDeclToUntaggedTemplate.insert({ cursor, untaggedType });
+			untaggedTemplateMapping.m_mapCursorToIndex.insert({ cursor, static_cast<uint32>(untaggedTemplateMapping.m_vecType.size())});
+			untaggedTemplateMapping.m_vecType.push_back(untaggedType);
+			data.deprecated_m_mapCursorDeclToUntaggedTemplate.insert({ cursor, untaggedType });
 		}
 
 		for (auto& it0 : taggedParent->DebugGetChildren())
 		{
-			this->ResolveRecurs4(it0.Get(), data, resolvedMapping);
+			this->ResolveRecurs4(it0.Get(), data, resolvedMapping, untaggedTemplateMapping);
 		}
 	}
 

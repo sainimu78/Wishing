@@ -141,7 +141,7 @@ namespace NiflectGen
 	//	return signature;
 	//}
 
-	static Niflect::CString MakeSignatureForFieldRecurs(const CBindingAccessorIndexedNode& indexedParent, const CBindingAccessorIndexedNode& childrenOwnerOld, const SResolvingDependenciesContext& ctx, CSignatureCodeMapping& signatureMapping)
+	static Niflect::CString ResolveSignatureRecurs(const CBindingAccessorIndexedNode& indexedParent, const CBindingAccessorIndexedNode& childrenOwnerOld, const SResolvingDependenciesContext& ctx, CSignatureCodeMapping& signatureMapping)
 	{
 		auto ret = signatureMapping.m_mapSignatureToIndex.insert({ indexedParent.m_key, static_cast<uint32>(signatureMapping.m_vecCode.size()) });
 		if (ret.second)
@@ -157,12 +157,12 @@ namespace NiflectGen
 				if (auto next = indexedParent.m_next.Get())
 				{
 					ASSERT(childrenOwner.m_vecChild.size() == 0);
-					MakeSignatureForFieldRecurs(*next, *next, ctx, signatureMapping);
+					ResolveSignatureRecurs(*next, *next, ctx, signatureMapping);
 				}
 				else
 				{
 					for (auto& it : childrenOwner.m_vecChild)
-						MakeSignatureForFieldRecurs(it, it, ctx, signatureMapping);
+						ResolveSignatureRecurs(it, it, ctx, signatureMapping);
 				}
 			}
 			else if (indexedParent.m_taggedIdx != INDEX_NONE)
@@ -183,9 +183,9 @@ namespace NiflectGen
 		return Niflect::CString();
 	}
 
-	static Niflect::CString MakeSignatureForField(const CBindingAccessorIndexedNode& indexedParent, const SResolvingDependenciesContext& ctx, CSignatureCodeMapping& signatureMapping)
+	static Niflect::CString ResolveSignature(const CBindingAccessorIndexedNode& indexedParent, const SResolvingDependenciesContext& ctx, CSignatureCodeMapping& signatureMapping)
 	{
-		return MakeSignatureForFieldRecurs(indexedParent, indexedParent, ctx, signatureMapping);
+		return ResolveSignatureRecurs(indexedParent, indexedParent, ctx, signatureMapping);
 	}
 	//static void MakeSignatureForClassDecl(const CBindingAccessorIndexedNode& indexedParent, const CResolvedTaggedTypesMapping& mapping, CSignatureCodeMapping& signatureMapping)
 	//{
@@ -199,9 +199,10 @@ namespace NiflectGen
 		//基类
 		ASSERT(m_baseTaggedType == NULL);
 		auto baseTypeCursorDecl = clang_getTypeDeclaration(clang_getCursorType(m_baseTypeSpecifierCursor));
-		auto itFound = context.m_resolvedTaggedTypeMapping.m_mapCursorToIndex.find(baseTypeCursorDecl);
-		if (itFound != context.m_resolvedTaggedTypeMapping.m_mapCursorToIndex.end())
-			m_baseTaggedType = context.m_resolvedTaggedTypeMapping.m_vecType[itFound->second];
+		auto& taggedMapping = context.m_taggedMapping;
+		auto itFound = taggedMapping.m_mapCursorToIndex.find(baseTypeCursorDecl);
+		if (itFound != taggedMapping.m_mapCursorToIndex.end())
+			m_baseTaggedType = taggedMapping.m_vecType[itFound->second];
 
 		//成员变量
 		ASSERT(m_vecMember.size() == 0);
@@ -214,11 +215,11 @@ namespace NiflectGen
 
 		auto& cursor = this->GetCursor();
 		ASSERT(!m_classDeclIndexedRoot.IsValid());
-		if (!context.m_resolvedTaggedTypeMapping.InitIndexedNodeForClassDecl(cursor, m_classDeclIndexedRoot))
+		if (!taggedMapping.InitIndexedNodeForClassDecl(cursor, m_classDeclIndexedRoot))
 		{
 			ASSERT(false);
 		}
-		MakeSignatureForField(m_classDeclIndexedRoot, context, data.m_signatureMapping);
+		ResolveSignature(m_classDeclIndexedRoot, context, data.m_signatureMapping);
 
 		m_vecMemberIndexedRoot.resize(m_vecMember.size());
 		for (uint32 idx0 = 0; idx0 < m_vecMember.size(); ++idx0)
@@ -226,14 +227,14 @@ namespace NiflectGen
 			auto& it0 = m_vecMember[idx0];
 			auto& indexedRoot = m_vecMemberIndexedRoot[idx0];
 			auto& cursor = it0->GetCursor();
-			context.m_bindingAccessorMapping.InitIndexedNodeForField(cursor, it0->m_vecDetailCursor, context.m_resolvedTaggedTypeMapping, indexedRoot);
+			context.m_accessorBindingMapping.InitIndexedNodeForField(cursor, it0->m_vecDetailCursor, taggedMapping, context.m_untaggedTemplateMapping, indexedRoot);
 			if (!indexedRoot.IsValid())
 			{
 				ASSERT(false);//todo: 报错
 				break;
 			}
 			//DebugPrintIndexedNodeRecurs(indexedRoot, indexedRoot, context.m_bindingAccessorMapping, 0);
-			MakeSignatureForField(indexedRoot, context, data.m_signatureMapping);
+			ResolveSignature(indexedRoot, context, data.m_signatureMapping);
 		}
 	}
 	CSharedTypeRegCodeWriter CTaggedInheritableType::Deprecated_CreateCodeWriter(const STypeRegClassWritingSetting& setting) const

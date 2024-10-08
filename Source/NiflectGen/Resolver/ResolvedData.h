@@ -160,7 +160,7 @@ namespace NiflectGen
 
 		SModuleRegAndTypeRegMapping m_regMapping;
 
-		TCursorMap<CUntaggedTemplate*> m_mapCursorDeclToUntaggedTemplate;
+		TCursorMap<CUntaggedTemplate*> deprecated_m_mapCursorDeclToUntaggedTemplate;
 		Niflect::TArrayNif<CSharedTypeRegCodeWriter> m_vecWriter;
 		Niflect::TArrayNif<CTypeRegGenFileInfo> m_vecTypeRegGenFileInfo;
 		CSignatureCodeMapping m_signatureMapping;

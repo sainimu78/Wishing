@@ -8,8 +8,9 @@ namespace NiflectGen
 {
 	struct SResolvingDependenciesContext
 	{
-		const CAccessorBindingMapping2& m_bindingAccessorMapping;
-		const CResolvedTaggedTypesMapping& m_resolvedTaggedTypeMapping;
+		const CAccessorBindingMapping2& m_accessorBindingMapping;
+		const CTaggedTypesMapping& m_taggedMapping;
+		const CUntaggedTemplateTypesMapping& m_untaggedTemplateMapping;
 	};
 
 	class CSignatureCode
@@ -115,6 +116,7 @@ namespace NiflectGen
 		Niflect::TArrayNif<CXCursor> m_vecDetailCursor;
 	};
 
+	//todo: 计划改名为 CUntaggedType
 	class CUntaggedTemplate : public CTaggedNode2
 	{
 		typedef CTaggedNode2 inherited;

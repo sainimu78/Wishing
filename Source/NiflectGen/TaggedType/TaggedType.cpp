@@ -4,12 +4,12 @@
 
 namespace NiflectGen
 {
-	void CResolvedTaggedTypesMapping::InitPatterns()
+	void CTaggedTypesMapping::InitPatterns()
 	{
 		for (auto& it : m_vecType)
 			it->InitPattern();
 	}
-	bool CResolvedTaggedTypesMapping::InitIndexedNodeForClassDecl(const CXCursor& cursor, CBindingAccessorIndexedNode& indexedParent) const
+	bool CTaggedTypesMapping::InitIndexedNodeForClassDecl(const CXCursor& cursor, CBindingAccessorIndexedNode& indexedParent) const
 	{
 		auto itFound = m_mapCursorToIndex.find(cursor);
 		if (itFound != m_mapCursorToIndex.end())
