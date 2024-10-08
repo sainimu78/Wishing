@@ -167,6 +167,7 @@ namespace NiflectGen
 			}
 			else if (indexedParent.m_taggedIdx != INDEX_NONE)
 			{
+				//类或结构体定义不继续递归, 计划在生成阶段遍历member
 				ASSERT(childrenOwner.m_vecChild.size() == 0);
 				ASSERT(indexedParent.m_elem == NULL);
 			}

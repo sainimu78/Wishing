@@ -59,28 +59,28 @@ namespace TestMyFinding
 		//TestAccessor2::TMyTransform<bool> m_tm_18;
 	};
 
-	//NIF_T()
-	//class CMyClass_1
-	//{
-	//public:
-	//	CMyClass_1()
-	//		: m_float_0(0.0f)
-	//	{
+	NIF_T()
+	class CMyClass_1
+	{
+	public:
+		CMyClass_1()
+			: m_float_0(0.0f)
+		{
 
-	//	}
-	//	NIF_F()
-	//	float m_float_0;
-	//	NIF_F()
-	//	CMyClass_0 m_my_1;
-	//	NIF_F()
-	//	std::pair<Niflect::CString, CMyClass_0> m_pair_string_my_2;
-	//	NIF_F()
-	//	Niflect::TArrayNif<CMyClass_0> m_array_my_3;
-	//	NIF_F()
-	//	Niflect::TMap<Niflect::CString, CMyClass_0> m_map_string_my_4;
-	//	NIF_F()
-	//	Niflect::TArrayNif<Niflect::TMap<Niflect::CString, Niflect::TArrayNif<CMyClass_0> > > m_array_map_string_array_my_5;
-	//	NIF_F()
-	//	Niflect::TMap<Niflect::CString, Niflect::TArrayNif<Niflect::TMap<Niflect::CString, CMyClass_0> > > m_map_string_array_map_string_my_6;
-	//};
+		}
+		NIF_F()
+		float m_float_0;
+		NIF_F()
+		CMyClass_0 m_my_1;
+		NIF_F()
+		std::pair<Niflect::CString, CMyClass_0> m_pair_string_my_2;
+		NIF_F()
+		Niflect::TArrayNif<CMyClass_0> m_array_my_3;
+		NIF_F()
+		Niflect::TMap<Niflect::CString, CMyClass_0> m_map_string_my_4;
+		NIF_F()
+		Niflect::TArrayNif<Niflect::TMap<Niflect::CString, Niflect::TArrayNif<CMyClass_0> > > m_array_map_string_array_my_5;
+		NIF_F()
+		Niflect::TMap<Niflect::CString, Niflect::TArrayNif<Niflect::TMap<Niflect::CString, CMyClass_0> > > m_map_string_array_map_string_my_6;
+	};
 }

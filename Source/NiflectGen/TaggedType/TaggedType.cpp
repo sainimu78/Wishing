@@ -54,8 +54,12 @@ namespace NiflectGen
 	{
 		for (auto& it : m_vecCode)
 		{
+			Niflect::CString s = "#";
+			//表明可以此区分是否需要在生成阶段遍历member以生成代码或其它处理
+			if (it.m_indexedRoot.m_taggedIdx != INDEX_NONE)
+				s = " Tagged Type ";
+			printf("#######%s##########\n", s.c_str());
 			DebugPrint(it.m_indexedRoot);
-			printf("#################\n");
 		}
 	}
 
