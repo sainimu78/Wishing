@@ -40,6 +40,8 @@ namespace NiflectGen
 		}
 		return type;
 	}
+	Niflect::CString NSSSSSSSSS(const CXCursor& cursor, const CXType& type);
+
 	void FindNamespaceAndScopeNameRecursOld(const CXCursor& cursor, Niflect::TArrayNif<Niflect::CString>& vecNamespace, Niflect::TArrayNif<Niflect::CString>& vecScope);
 	void FindNamespaceAndScopeNameRecurs2(const CXCursor& cursor, Niflect::TArrayNif<Niflect::CString>& vecScope);
 	Niflect::CString GenerateNamespacesAndScopesCode(const CXCursor& cursor);

@@ -583,6 +583,8 @@ namespace NiflectGen
 		CResolvedTaggedTypesMapping resolvedTagTypesMapping;
 		this->ResolveRecurs4(taggedRoot, data, resolvedTagTypesMapping);
 
+		resolvedTagTypesMapping.InitPatterns();
+
 		SResolvingDependenciesContext resolvingDepCtx{ *m_collectionData.m_accessorBindingMapping, resolvedTagTypesMapping };
 		SResolvingDependenciesData resolvingDepData{ data.m_signatureMapping };
 		//未实现按CursorDeclaration依赖顺序遍历, 因此在最后ResolveDependcies

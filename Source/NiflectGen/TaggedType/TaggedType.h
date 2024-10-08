@@ -6,26 +6,6 @@
 
 namespace NiflectGen
 {
-	class CTaggedType;
-
-	class CResolvedTaggedTypesMapping
-	{
-	public:
-		bool FindForClassDecl(const CXCursor& cursor, CBindingAccessorIndexedNode& indexedParent) const
-		{
-			auto itFound = m_mapCursorToIndex.find(cursor);
-			if (itFound != m_mapCursorToIndex.end())
-			{
-				ASSERT(!indexedParent.IsValid());
-				indexedParent.InitForClassDecl(itFound->second);
-				return true;
-			}
-			return false;
-		}
-		TCursorMap<uint32> m_mapCursorToIndex;
-		Niflect::TArrayNif<CTaggedType*> m_vecType;
-	};
-
 	struct SResolvingDependenciesContext
 	{
 		const CAccessorBindingMapping2& m_bindingAccessorMapping;
@@ -38,16 +18,19 @@ namespace NiflectGen
 		CSignatureCode()
 		{
 		}
-		CSignatureCode(const Niflect::CString& signatureStr)
+		CSignatureCode(const Niflect::CString& signatureStr, const CBindingAccessorIndexedNode& indexedRoot)
 			: m_signatureStr(signatureStr)
+			, m_indexedRoot(indexedRoot)
 		{
 		}
 		Niflect::CString m_signatureStr;
+		CBindingAccessorIndexedNode m_indexedRoot;
 	};
 
 	class CSignatureCodeMapping
 	{
 	public:
+		void SSSSSSSS();
 		Niflect::TArrayNif<CSignatureCode> m_vecCode;
 		Niflect::TMap<Niflect::CString, uint32> m_mapSignatureToIndex;
 	};
@@ -63,6 +46,9 @@ namespace NiflectGen
 		CTaggedType()
 		{
 		}
+
+	public:
+		void InitPattern();
 
 	public:
 		virtual void Deprecated_ResolveDependcies(const TCursorMap<CTaggedType*>& mapCursorDeclToTaggedType)
@@ -89,6 +75,9 @@ namespace NiflectGen
 		{
 			return dynamic_cast<CTaggedType*>(base);
 		}
+
+	public:
+		Niflect::CString m_typeNamePattern;
 	};
 
 	class CTaggedInheritableTypeMember : public CTaggedNode2

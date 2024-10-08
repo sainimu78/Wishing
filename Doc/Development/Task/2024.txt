@@ -31,3 +31,4 @@
 15. Done, NiflectGen, Field查找测试, 即遍历测试类的各类Field, 验证在AccessorBindingMapping中都能找到对应项, 完成后即具备重构后的生成代码基础
 16. NiflectGen, 生成CSubcursor的CodePattern, 用于代码生成阶段快速获取固定的Pattern
 17. NiflectGen, 确认相同member的cursor其hash是否相同, 是则可用作特化FieldLayout函数signature的key
+18. NiflectGen, 改进缺陷, 无法认定1参数结构模板, 见 CAccessorBindingMapping2::IterateForTemplate

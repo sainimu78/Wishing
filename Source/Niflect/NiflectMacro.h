@@ -1,6 +1,6 @@
 #pragma once
 
-//todo: 支持类型反射的选项, 如默认反射所有成员变量以方便使用(考虑UE为何不支持这种用法)
+//todo: 支持类型反射的选项, 如默认反射所有成员变量以方便使用
 
 #ifdef NIFLECTGEN
 #define NIFLECTGENTAG_TYPE typedef void* __NiflectGen_Type;

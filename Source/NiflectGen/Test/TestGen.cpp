@@ -212,6 +212,9 @@ namespace TestGen
 					CResolvedData resolvedData;
 					resolver.Resolve4(&taggedRoot, resolvingContext, resolvedData);
 					ASSERT(log.m_vecText.size() == 0);
+					resolvedData.m_signatureMapping.SSSSSSSS();
+					//for (auto& it1 : resolvedData.m_signatureMapping.m_vecCode)
+					//	printf("=%s=\n", it1.m_signatureStr.c_str());
 					ASSERT(resolvedData.m_signatureMapping.m_vecCode.size() == 5);
 				});
 		}

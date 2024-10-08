@@ -844,6 +844,8 @@ namespace NiflectGen
 			}
 		}
 
+		accessorBindingMapping->InitPatterns();
+
 		collectionData.m_aliasChain = aliasChain;
 		collectionData.m_accessorBindingMapping = accessorBindingMapping;
 
