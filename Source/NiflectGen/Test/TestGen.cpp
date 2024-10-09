@@ -4,6 +4,7 @@
 #include "Niflect/Memory/Default/DefaultMemory.h"
 #include "NiflectGen/Collector/Collector.h"
 #include "NiflectGen/Resolver/Resolver.h"
+#include "NiflectGen/Test/TestTypeRegSignature.h"
 
 namespace TestGen
 {
@@ -186,14 +187,14 @@ namespace TestGen
 				});
 		}
 	}
-	static void TestSuccess_FieldsFinding()
+	static void TestSuccess_GenMy()
 	{
 		auto memTest = Niflect::GetDefaultMemoryStats();
 		{
 			auto gen = CreateGenerator();
 			CModuleRegInfo info;
-			info.m_vecOriginalHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestOriginalFieldsFinding.h"));
-			info.m_vecBindingSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestBindingTypesFieldsFinding.h"));
+			info.m_vecOriginalHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestOriginalTypeRegSignature13.h"));
+			info.m_vecBindingSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestAccessorBindingTypeRegSignature.h"));
 			NiflectGenDefinition::Test::AddBasicHeaderSearchPaths(info.m_vecHeaderSearchPath);
 			gen->SetModuleRegInfo(info);
 			gen->Generate([&info](void* cursorAddr)
@@ -212,10 +213,7 @@ namespace TestGen
 					CResolvedData resolvedData;
 					resolver.Resolve4(&taggedRoot, resolvingContext, resolvedData);
 					ASSERT(log.m_vecText.size() == 0);
-					resolvedData.m_signatureMapping.SSSSSSSS();
-					//for (auto& it1 : resolvedData.m_signatureMapping.m_vecCode)
-					//	printf("=%s=\n", it1.m_signatureStr.c_str());
-					ASSERT(resolvedData.m_signatureMapping.m_vecCode.size() == 5);
+
 				});
 		}
 	}
@@ -225,6 +223,7 @@ namespace TestGen
 		//TestSuccess_BindingTypesAllUnique();
 		//TestFailure_BindingTypesDuplicated();
 		//TestSuccess_FullScopes();
-		TestSuccess_FieldsFinding();
+		TestSuccess_TypeRegSignature();
+		//TestSuccess_GenMy();
 	}
 }

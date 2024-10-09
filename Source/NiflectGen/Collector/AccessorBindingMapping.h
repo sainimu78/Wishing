@@ -3,52 +3,12 @@
 #include "NiflectGen/Collector/TypeDecl.h"
 #include "NiflectGen/Collector/AccessorData.h"
 #include "NiflectGen/Util/CursorMap.h"
+#include "NiflectGen/Resolver/TypeRegSignature.h"
 
 namespace NiflectGen
 {
 	class CTaggedType;
 	class CUntaggedTemplate;
-
-#ifdef EMBEDDING_ELEMENT_BINDING_TYPE_INDEXED_NODE
-	class CBindingAccessorIndexedNode;
-	using CSharedBindingAccessorIndexedNode = Niflect::TSharedPtr<CBindingAccessorIndexedNode>;
-#else
-#endif
-
-	class CBindingAccessorIndexedNode
-	{
-	public:
-		CBindingAccessorIndexedNode()
-			: m_settingIdx(INDEX_NONE)
-			, m_taggedIdx(INDEX_NONE)
-			, m_isTemplateFormat(false)
-		{
-		}
-		void InitForTemplateBegin(const Niflect::CString& signature, uint32 foundIdx);
-		void InitForTemplateArguments(const CBindingAccessorIndexedNode& childrenOwner);
-		void InitForTemplateEnd();
-		void InitForTemplate(const Niflect::CString& signature, uint32 foundIdx, const CBindingAccessorIndexedNode& childrenOwner);
-		void InitForClassDecl(const Niflect::CString& signature, uint32 foundIdx);
-		bool IsTemplateFormat() const
-		{
-			return m_isTemplateFormat;
-		}
-		bool IsValid() const
-		{
-			return m_settingIdx != INDEX_NONE || m_taggedIdx != INDEX_NONE;
-		}
-		bool m_isTemplateFormat;
-		uint32 m_settingIdx;
-		uint32 m_taggedIdx;
-		Niflect::TArrayNif<CBindingAccessorIndexedNode> m_vecChild;
-		Niflect::CString m_key;
-		Niflect::CString m_signature;
-#ifdef EMBEDDING_ELEMENT_BINDING_TYPE_INDEXED_NODE
-		//要求与 m_vecChild 互斥, 即无法支持容器模板含成员变量, 而结构模板可含成员变量
-		CSharedBindingAccessorIndexedNode m_elem;
-#else
-#endif
-	};
 
 	class CTaggedTypesMapping
 	{

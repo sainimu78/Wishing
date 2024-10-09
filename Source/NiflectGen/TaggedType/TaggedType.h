@@ -13,29 +13,6 @@ namespace NiflectGen
 		const CUntaggedTemplateTypesMapping& m_untaggedTemplateMapping;
 	};
 
-	class CSignatureCode
-	{
-	public:
-		CSignatureCode()
-		{
-		}
-		CSignatureCode(const Niflect::CString& signatureStr, const CBindingAccessorIndexedNode& indexedRoot)
-			: m_signatureStr(signatureStr)
-			, m_indexedRoot(indexedRoot)
-		{
-		}
-		Niflect::CString m_signatureStr;
-		CBindingAccessorIndexedNode m_indexedRoot;
-	};
-
-	class CSignatureCodeMapping
-	{
-	public:
-		void SSSSSSSS();
-		Niflect::TArrayNif<CSignatureCode> m_vecCode;
-		Niflect::TMap<Niflect::CString, uint32> m_mapSignatureToIndex;
-	};
-
 	struct SResolvingDependenciesData
 	{
 		CSignatureCodeMapping& m_signatureMapping;

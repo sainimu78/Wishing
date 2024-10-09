@@ -10,6 +10,7 @@ namespace EngineTypeBindingSettingScope
 	NIF_BS() TBindingSetting<CBoolAccessor, bool>;
 	NIF_BS() TBindingSetting<CFloatAccessor, float>;
 	NIF_BS() TBindingSetting<CStringAccessor, Niflect::CString>;
+	NIF_BS() TBindingSetting<CStdStringAccessor, std::string>;
 	template <typename TInstance, typename T>
 	NIF_BS() TBindingSetting<TStlArrayAccessor<TInstance>, Niflect::TArrayNif<T> >;
 	NIF_BS() TBindingSetting<CBitsArrayAccessor, Niflect::TArrayNif<bool> >;
