@@ -470,7 +470,7 @@ namespace NiflectGen
 		const CAccessorBinding* accessorBinding = NULL;
 		if (cursorDeclKind != CXCursor_NoDeclFound)
 		{
-			accessorBinding = m_writingSetting.m_mapping.m_accessorBindingMapping.FindByCursorDecl(cursorDecl);
+			accessorBinding = m_writingSetting.deprecated_m_mapping.m_accessorBindingMapping.FindByCursorDecl(cursorDecl);
 			if (accessorBinding == NULL)
 			{
 				if (parentSubcursor.m_vecAaaaaaaaaa.size() > 0)
@@ -480,7 +480,7 @@ namespace NiflectGen
 					auto refDecl = clang_getCursorReferenced(parentSubcursor.m_vecAaaaaaaaaa.back());
 					if (clang_getCursorKind(refDecl) != CXCursor_NoDeclFound)
 					{
-						accessorBinding = m_writingSetting.m_mapping.m_accessorBindingMapping.FindByCursorDecl(refDecl);
+						accessorBinding = m_writingSetting.deprecated_m_mapping.m_accessorBindingMapping.FindByCursorDecl(refDecl);
 						if (accessorBinding != NULL)
 							cursorDecl = refDecl;
 					}
@@ -491,7 +491,7 @@ namespace NiflectGen
 					{
 						auto templateDecl = clang_getSpecializedCursorTemplate(cursorDecl);
 						if ((!clang_Cursor_isNull(templateDecl)) && clang_getCursorKind(templateDecl) != CXCursor_NoDeclFound)
-							accessorBinding = m_writingSetting.m_mapping.m_accessorBindingMapping.FindByCursorDecl(templateDecl);
+							accessorBinding = m_writingSetting.deprecated_m_mapping.m_accessorBindingMapping.FindByCursorDecl(templateDecl);
 					}
 				}
 			}
@@ -504,7 +504,7 @@ namespace NiflectGen
 				GenLogError(context.m_log, "Pointer field is not supported");
 				ok = false;
 			}
-			accessorBinding = m_writingSetting.m_mapping.m_accessorBindingMapping.FindByCXType(underlyingType);
+			accessorBinding = m_writingSetting.deprecated_m_mapping.m_accessorBindingMapping.FindByCXType(underlyingType);
 		}
 
 		Niflect::CString myTypeName;
@@ -562,8 +562,8 @@ namespace NiflectGen
 					auto& aaaaaa = wwwwww.m_subcursor.m_cursorDecl;
 					//auto a = CXStringToCString(clang_getTypeSpelling(wwwwww.m_subcursor.m_CXType));
 					//auto b = CXStringToCString(clang_getCursorSpelling(aaaaaa));
-					auto itFound = m_writingSetting.m_mapping.m_mapCursorDeclToUntaggedTemplate.find(aaaaaa);
-					if (itFound != m_writingSetting.m_mapping.m_mapCursorDeclToUntaggedTemplate.end())
+					auto itFound = m_writingSetting.deprecated_m_mapping.m_mapCursorDeclToUntaggedTemplate.find(aaaaaa);
+					if (itFound != m_writingSetting.deprecated_m_mapping.m_mapCursorDeclToUntaggedTemplate.end())
 					{
 						auto elemFieldsOwnerTypeName = ReplaceTemplateTypeNameAndGenerateCode(underlyingType, vecDetailCursor, wwwwww.m_subcursor);
 
@@ -600,7 +600,7 @@ namespace NiflectGen
 							CTypeRegClassWrittingData dataInitFieldLayout2ForCompoundType(linesScope2, data.m_includePathRequirement);
 							this->WriteInitFieldLayoutCompoundType(elemFieldsOwnerTypeName, parentAccessorLevel + 2, dimension, textForTemplateInstance, vecMemberInfo, context, dataInitFieldLayout2ForCompoundType);
 
-							if (auto sssssssssss = m_writingSetting.m_mapping.m_accessorBindingMapping.FindByCursorDecl(wwwwww.m_subcursor.m_cursorDecl))
+							if (auto sssssssssss = m_writingSetting.deprecated_m_mapping.m_accessorBindingMapping.FindByCursorDecl(wwwwww.m_subcursor.m_cursorDecl))
 							{
 								CCodeLines linesScope1;
 								//auto a = CXStringToCString(clang_getCursorSpelling(sssssssssss->m_accessorCursorDecl));
@@ -661,8 +661,8 @@ namespace NiflectGen
 				bool canWrite = false;
 				if (isTopLevelField)
 				{
-					auto itFound = m_writingSetting.m_mapping.m_mapCursorDeclToTaggedType.find(cursorDecl);
-					if (itFound != m_writingSetting.m_mapping.m_mapCursorDeclToTaggedType.end())
+					auto itFound = m_writingSetting.deprecated_m_mapping.m_mapCursorDeclToTaggedType.find(cursorDecl);
+					if (itFound != m_writingSetting.deprecated_m_mapping.m_mapCursorDeclToTaggedType.end())
 					{
 						canWrite = true;
 					}

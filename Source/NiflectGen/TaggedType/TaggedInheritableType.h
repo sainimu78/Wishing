@@ -13,7 +13,7 @@ namespace NiflectGen
 
 	public:
 		virtual void Deprecated_ResolveDependcies(const TCursorMap<CTaggedType*>& mapCursorDeclToTaggedType) override;
-		virtual void ResolveDependcies(const SResolvingDependenciesContext& context, SResolvingDependenciesData& data) override;
+		virtual void ResolveDependcies(const CResolvingDependenciesContext& context, SResolvingDependenciesData& data) override;
 		virtual CSharedTypeRegCodeWriter Deprecated_CreateCodeWriter(const STypeRegClassWritingSetting& setting) const override;
 		virtual CSharedTypeRegCodeWriter CreateCodeWriter(const STypeRegClassWritingSetting& setting) const override;
 

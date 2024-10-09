@@ -6,11 +6,17 @@
 
 namespace NiflectGen
 {
-	struct SResolvingDependenciesContext
+	class CResolvingDependenciesContext
 	{
-		const CAccessorBindingMapping2& m_accessorBindingMapping;
-		const CTaggedTypesMapping& m_taggedMapping;
-		const CUntaggedTemplateTypesMapping& m_untaggedTemplateMapping;
+	public:
+		CResolvingDependenciesContext(const SResolvedMappings& mappings, CGenLog* log)
+			: m_mappings(mappings)
+			, m_log(log)
+		{
+
+		}
+		const SResolvedMappings& m_mappings;
+		CGenLog* m_log;
 	};
 
 	struct SResolvingDependenciesData
@@ -33,7 +39,7 @@ namespace NiflectGen
 		{
 
 		}
-		virtual void ResolveDependcies(const SResolvingDependenciesContext& context, SResolvingDependenciesData& data)
+		virtual void ResolveDependcies(const CResolvingDependenciesContext& context, SResolvingDependenciesData& data)
 		{
 
 		}

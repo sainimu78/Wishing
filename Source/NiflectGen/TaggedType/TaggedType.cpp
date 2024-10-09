@@ -15,7 +15,9 @@ namespace NiflectGen
 		if (itFound != m_mapCursorToIndex.end())
 		{
 			ASSERT(!indexedParent.IsValid());
-			indexedParent.InitForClassDecl(m_vecType[itFound->second]->m_typeNamePattern, itFound->second);
+			auto headerFilePath = GetCursorFilePath(cursor);
+			ASSERT(!headerFilePath.empty());
+			indexedParent.InitForClassDecl(m_vecType[itFound->second]->m_typeNamePattern, itFound->second, headerFilePath);
 			return true;
 		}
 		return false;

@@ -580,12 +580,14 @@ namespace NiflectGen
 
 	void CResolver::Resolve4(CTaggedNode2* taggedRoot, CResolvingContext& context, CResolvedData& data)
 	{
-		CUntaggedTemplateTypesMapping untaggedTemplateMapping;
-		this->ResolveRecurs4(taggedRoot, data, data.m_taggedMapping, untaggedTemplateMapping);
+		data.m_accessorBindingMapping = m_collectionData.m_accessorBindingMapping;
+
+		this->ResolveRecurs4(taggedRoot, data, data.m_taggedMapping, data.m_untaggedTemplateMapping);
 
 		data.m_taggedMapping.InitPatterns();
 
-		SResolvingDependenciesContext resolvingDepCtx{ *m_collectionData.m_accessorBindingMapping, data.m_taggedMapping, untaggedTemplateMapping };
+		SResolvedMappings mappings{ *data.m_accessorBindingMapping, data.m_taggedMapping, data.m_untaggedTemplateMapping };
+		CResolvingDependenciesContext resolvingDepCtx(mappings, context.m_log);
 		SResolvingDependenciesData resolvingDepData{ data.m_signatureMapping };
 		//未实现按CursorDeclaration依赖顺序遍历, 因此在最后ResolveDependcies
 		for (auto& it : data.m_taggedMapping.m_vecType)

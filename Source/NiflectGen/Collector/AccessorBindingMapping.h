@@ -122,4 +122,11 @@ namespace NiflectGen
 		TCursorMap<uint32> m_mapSpecializedCursorToIndex;
 	};
 	using CSharedAccessorBindingMapping = Niflect::TSharedPtr<CAccessorBindingMapping2>;
+
+	struct SResolvedMappings
+	{
+		const CAccessorBindingMapping2& m_accessorBinding;
+		const CTaggedTypesMapping& m_tagged;
+		const CUntaggedTemplateTypesMapping& m_untaggedTemplate;
+	};
 }

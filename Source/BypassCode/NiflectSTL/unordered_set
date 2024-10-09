@@ -1,1 +1,13 @@
-#include "NiflectSTLDeclaration.h"
+#pragma once
+#include <xmemory>
+#include <type_traits>
+#include <utility>
+
+namespace std
+{
+template <class _Kty, class _Hasher = hash<_Kty>, class _Keyeq = equal_to<_Kty>,
+    class _Alloc = allocator<_Kty>>
+	class unordered_set
+	{
+	};
+}

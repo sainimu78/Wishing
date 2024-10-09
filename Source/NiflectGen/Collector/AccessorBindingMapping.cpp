@@ -62,6 +62,7 @@ namespace NiflectGen
 		auto& foundIdx = result.m_foundIdx;
 		auto& continuing = result.m_continuing;
 		auto& indexedParent = result.m_indexedParent;
+		Niflect::CString header;
 		{
 			auto itFound = m_mapCXTypeToIndex.find(fieldOrArgCXType);
 			if (itFound != m_mapCXTypeToIndex.end())
@@ -75,6 +76,7 @@ namespace NiflectGen
 			if (itFound != m_mapSpecializedCursorToIndex.end())
 			{
 				foundIdx = itFound->second;
+				header = GetCursorFilePath(cursor);
 				continuing = false;
 			}
 		}
@@ -100,13 +102,14 @@ namespace NiflectGen
 				if (itFound != m_mapCursorToIndex.end())
 				{
 					foundIdx = itFound->second;
+					header = GetCursorFilePath(cursor);
 					continuing = IsCursorTemplateDecl(cursor);
 				}
 			}
 		}
 		if (foundIdx != INDEX_NONE)
 		{
-			indexedParent.m_settingIdx = foundIdx;
+			indexedParent.InitForAccessorBinding(foundIdx, header);
 			return true;
 		}
 		return false;

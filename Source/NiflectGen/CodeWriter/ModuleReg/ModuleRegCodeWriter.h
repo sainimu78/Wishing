@@ -45,11 +45,13 @@ namespace NiflectGen
 		void WriteTypeRegs(const CWritingContext& context, Niflect::TArrayNif<CTypeRegWritingData>& vecTypeRegData);
 		//void WriteModuleRegs(const CWritingContext& context, const Niflect::TArrayNif<CTypeRegWritingData>& vecTypeRegData, Niflect::TArrayNif<CModuleRegWritingData>& vecModuleRegData);
 		void CreateWriters(const CWritingContext& context, Niflect::TArrayNif<CTypeRegGenFileInfo>& vecTypeRegGenFileInfo);
+		void CreateWriters3(const CWritingContext& context, Niflect::TArrayNif<CTypeRegGenFileInfo>& vecTypeRegGenFileInfo);
 
 	private:
 		const CResolvedData& m_resolvedData;
 		const CModuleRegInfoValidated& m_moduleRegInfo;
 		Niflect::TArrayNif<Niflect::TSharedPtr<CTypeRegCodeWriter> > m_vecWriter;
 		SModuleRegAndTypeRegMapping m_mapping;
+		Niflect::TArrayNif<CSharedTypeRegCodeWriter2> m_vecWriter2;
 	};
 }

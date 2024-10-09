@@ -37,14 +37,16 @@ namespace TestGen
 					ASSERT(log.m_vecText.size() == 0);
 					Niflect::TArrayNif<Niflect::CString> vecSignature;
 					resolvedData.m_signatureMapping.DebugGenSignatures(vecSignature);
-					ASSERT(vecSignature.size() == 6);
+					ASSERT(vecSignature.size() == 7);
 					auto it = vecSignature.begin();
+					//单一类型
 					ASSERT(*(it++) == "TestMyFinding::CMyClass_0");
 					ASSERT(*(it++) == "float");
 					ASSERT(*(it++) == "bool");
 					ASSERT(*(it++) == "Niflect::CString");
 					ASSERT(*(it++) == "int32");
 					ASSERT(*(it++) == "TestAccessor2::TMyTransform<float>");
+					ASSERT(*(it++) == "TestMyFinding::EMyOption");
 					ASSERT(it == vecSignature.end());
 				});
 		}
@@ -79,6 +81,7 @@ namespace TestGen
 					resolvedData.m_signatureMapping.DebugGenSignatures(vecSignature);
 					ASSERT(vecSignature.size() == 4);
 					auto it = vecSignature.begin();
+					//特化
 					ASSERT(*(it++) == "TestMyFinding::CMyClass_0");
 					ASSERT(*(it++) == "TestAccessor2::TMyTransform<float>");
 					ASSERT(*(it++) == "Niflect::TArrayNif<bool>");
@@ -117,6 +120,7 @@ namespace TestGen
 					resolvedData.m_signatureMapping.DebugGenSignatures(vecSignature);
 					ASSERT(vecSignature.size() == 4);
 					auto it = vecSignature.begin();
+					//1维容器模板
 					ASSERT(*(it++) == "TestMyFinding::CMyClass_0");
 					ASSERT(*(it++) == "float");
 					ASSERT(*(it++) == "Niflect::TArrayNif<float>");
@@ -155,6 +159,7 @@ namespace TestGen
 					resolvedData.m_signatureMapping.DebugGenSignatures(vecSignature);
 					ASSERT(vecSignature.size() == 6);
 					auto it = vecSignature.begin();
+					//嵌套1维容器模板
 					ASSERT(*(it++) == "TestMyFinding::CMyClass_0");
 					ASSERT(*(it++) == "float");
 					ASSERT(*(it++) == "Niflect::TArrayNif<float>");
@@ -195,6 +200,7 @@ namespace TestGen
 					resolvedData.m_signatureMapping.DebugGenSignatures(vecSignature);
 					ASSERT(vecSignature.size() == 6);
 					auto it = vecSignature.begin();
+					//结构模板
 					ASSERT(*(it++) == "TestMyFinding::CMyClass_0");
 					ASSERT(*(it++) == "Niflect::CString");
 					ASSERT(*(it++) == "float");
@@ -235,6 +241,7 @@ namespace TestGen
 					resolvedData.m_signatureMapping.DebugGenSignatures(vecSignature);
 					ASSERT(vecSignature.size() == 8);
 					auto it = vecSignature.begin();
+					//1维容器模板与结构模板
 					ASSERT(*(it++) == "TestMyFinding::CMyClass_0");
 					ASSERT(*(it++) == "Niflect::CString");
 					ASSERT(*(it++) == "float");
@@ -277,6 +284,7 @@ namespace TestGen
 					resolvedData.m_signatureMapping.DebugGenSignatures(vecSignature);
 					ASSERT(vecSignature.size() == 10);
 					auto it = vecSignature.begin();
+					//不同的1容器模板嵌套
 					ASSERT(*(it++) == "TestMyFinding::CMyClass_0");
 					ASSERT(*(it++) == "Niflect::CString");
 					ASSERT(*(it++) == "float");
@@ -321,6 +329,7 @@ namespace TestGen
 					resolvedData.m_signatureMapping.DebugGenSignatures(vecSignature);
 					ASSERT(vecSignature.size() == 8);
 					auto it = vecSignature.begin();
+					//1维容器模板套特化
 					ASSERT(*(it++) == "TestMyFinding::CMyClass_0");
 					ASSERT(*(it++) == "Niflect::CString");
 					ASSERT(*(it++) == "Niflect::TArrayNif<bool>");
@@ -363,6 +372,7 @@ namespace TestGen
 					resolvedData.m_signatureMapping.DebugGenSignatures(vecSignature);
 					ASSERT(vecSignature.size() == 10);
 					auto it = vecSignature.begin();
+					//不同的1维容器模板嵌套
 					ASSERT(*(it++) == "TestMyFinding::CMyClass_0");
 					ASSERT(*(it++) == "Niflect::CString");
 					ASSERT(*(it++) == "float");
@@ -407,6 +417,7 @@ namespace TestGen
 					resolvedData.m_signatureMapping.DebugGenSignatures(vecSignature);
 					ASSERT(vecSignature.size() == 12);
 					auto it = vecSignature.begin();
+					//不同的1维容器模板嵌套
 					ASSERT(*(it++) == "TestMyFinding::CMyClass_0");
 					ASSERT(*(it++) == "Niflect::CString");
 					ASSERT(*(it++) == "float");
@@ -453,6 +464,7 @@ namespace TestGen
 					resolvedData.m_signatureMapping.DebugGenSignatures(vecSignature);
 					ASSERT(vecSignature.size() == 15);
 					auto it = vecSignature.begin();
+					//位置在后的成员不产生重复Signature
 					ASSERT(*(it++) == "TestMyFinding::CMyClass_0");
 					ASSERT(*(it++) == "Niflect::CString");
 					ASSERT(*(it++) == "float");
@@ -502,6 +514,7 @@ namespace TestGen
 					resolvedData.m_signatureMapping.DebugGenSignatures(vecSignature);
 					ASSERT(vecSignature.size() == 40);
 					auto it = vecSignature.begin();
+					//综合测试
 					ASSERT(*(it++) == "TestMyFinding::CMyClass_0");
 					ASSERT(*(it++) == "float");
 					ASSERT(*(it++) == "bool");
@@ -576,6 +589,7 @@ namespace TestGen
 					resolvedData.m_signatureMapping.DebugGenSignatures(vecSignature);
 					ASSERT(vecSignature.size() == 4);
 					auto it = vecSignature.begin();
+					//成员为TaggedType
 					ASSERT(*(it++) == "TestMyFinding::CMyClass_0");
 					ASSERT(*(it++) == "bool");
 					ASSERT(*(it++) == "TestMyFinding::CMyClass_1");
@@ -614,6 +628,7 @@ namespace TestGen
 					resolvedData.m_signatureMapping.DebugGenSignatures(vecSignature);
 					ASSERT(vecSignature.size() == 26);
 					auto it = vecSignature.begin();
+					//成员含TaggedType的综合测试
 					ASSERT(*(it++) == "TestMyFinding::CMyClass_0");
 					ASSERT(*(it++) == "bool");
 					ASSERT(*(it++) == "float");

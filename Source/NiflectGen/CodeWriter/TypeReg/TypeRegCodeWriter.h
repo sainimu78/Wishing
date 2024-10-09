@@ -45,11 +45,13 @@ namespace NiflectGen
 	};
 
 	class CResolvedMapping;
+	class CResolvingDependenciesContext;
 
 	struct STypeRegClassWritingSetting
 	{
 		const Niflect::TArrayNif<Niflect::CString>& m_vecHeaderSearchPath;
-		const CResolvedMapping& m_mapping;
+		const CResolvedMapping& deprecated_m_mapping;
+		const CResolvingDependenciesContext& m_resolvedMappings;
 	};
 
 	class CTypeRegCodeWriter
@@ -88,4 +90,11 @@ namespace NiflectGen
 	};
 
 	using CSharedTypeRegCodeWriter = Niflect::TSharedPtr<CTypeRegCodeWriter>;
+
+	class CTypeRegCodeWriter2
+	{
+	public:
+
+	};
+	using CSharedTypeRegCodeWriter2 = Niflect::TSharedPtr<CTypeRegCodeWriter2>;
 }

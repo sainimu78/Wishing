@@ -4,6 +4,16 @@
 
 namespace NiflectGen
 {
+	void CBindingAccessorIndexedNode::InitForAccessorBinding(uint32 foundIdx, const Niflect::CString& headerFilePath)
+	{
+		ASSERT(m_settingIdx == INDEX_NONE);
+		m_settingIdx = foundIdx;
+		if (!headerFilePath.empty())
+		{
+			ASSERT(m_vecRequiredHeaderFilePath.size() == 0);
+			m_vecRequiredHeaderFilePath.push_back(headerFilePath);
+		}
+	}
 	void CBindingAccessorIndexedNode::InitForTemplateBegin(const Niflect::CString& signature, uint32 foundIdx)
 	{
 		ASSERT(m_key.empty());
@@ -42,7 +52,6 @@ namespace NiflectGen
 		if (childrenOwner.IsTemplateFormat())
 		{
 			m_signature += '<';
-			Niflect::TArrayNif<const CBindingAccessorIndexedNode*> vec;
 			if (auto elem = childrenOwner.m_elem.Get())
 			{
 				ASSERT(childrenOwner.m_vecChild.size() == 0);
@@ -61,6 +70,19 @@ namespace NiflectGen
 				m_signature += ' ';
 			m_signature += '>';
 		}
+		if (auto elem = childrenOwner.m_elem.Get())
+		{
+			for (auto& it : elem->m_vecRequiredHeaderFilePath)
+				m_vecRequiredHeaderFilePath.push_back(it);
+		}
+		else
+		{
+			for (auto& it0 : childrenOwner.m_vecChild)
+			{
+				for (auto& it1 : it0.m_vecRequiredHeaderFilePath)
+					m_vecRequiredHeaderFilePath.push_back(it1);
+			}
+		}
 	}
 	void CBindingAccessorIndexedNode::InitForTemplateEnd()
 	{
@@ -72,7 +94,7 @@ namespace NiflectGen
 		this->InitForTemplateArguments(childrenOwner);
 		this->InitForTemplateEnd();
 	}
-	void CBindingAccessorIndexedNode::InitForClassDecl(const Niflect::CString& signature, uint32 foundIdx)
+	void CBindingAccessorIndexedNode::InitForClassDecl(const Niflect::CString& signature, uint32 foundIdx, const Niflect::CString& headerFilePath)
 	{
 		ASSERT(m_key.empty());
 		m_key += '[';
@@ -82,6 +104,9 @@ namespace NiflectGen
 
 		ASSERT(m_signature.empty());
 		m_signature = signature;
+
+		ASSERT(m_vecRequiredHeaderFilePath.size() == 0);
+		m_vecRequiredHeaderFilePath.push_back(headerFilePath);
 	}
 
 	static void DebugGenSignature2222(const CBindingAccessorIndexedNode& indexedParent, uint32 lv, const char* pszLv, Niflect::TArrayNif<Niflect::CString>& vecSignature)
@@ -112,7 +137,7 @@ namespace NiflectGen
 
 	void CSignatureCodeMapping::DebugGenSignatures(Niflect::TArrayNif<Niflect::CString>& vecSignature)
 	{
-		for (auto& it : m_vecCode)
+		for (auto& it : m_vecItem)
 			DebugGenSignature(it.m_indexedRoot, vecSignature);
 	}
 
@@ -147,7 +172,7 @@ namespace NiflectGen
 
 	void CSignatureCodeMapping::SSSSSSSS()
 	{
-		for (auto& it : m_vecCode)
+		for (auto& it : m_vecItem)
 		{
 			Niflect::CString s = "#";
 			//表明可以此区分是否需要在生成阶段遍历member以生成代码或其它处理

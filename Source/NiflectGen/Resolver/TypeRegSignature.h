@@ -18,11 +18,12 @@ namespace NiflectGen
 			, m_isTemplateFormat(false)
 		{
 		}
+		void InitForAccessorBinding(uint32 foundIdx, const Niflect::CString& headerFilePath);
 		void InitForTemplateBegin(const Niflect::CString& signature, uint32 foundIdx);
 		void InitForTemplateArguments(const CBindingAccessorIndexedNode& childrenOwner);
 		void InitForTemplateEnd();
 		void InitForTemplate(const Niflect::CString& signature, uint32 foundIdx, const CBindingAccessorIndexedNode& childrenOwner);
-		void InitForClassDecl(const Niflect::CString& signature, uint32 foundIdx);
+		void InitForClassDecl(const Niflect::CString& signature, uint32 foundIdx, const Niflect::CString& headerFilePath);
 		bool IsTemplateFormat() const
 		{
 			return m_isTemplateFormat;
@@ -42,6 +43,7 @@ namespace NiflectGen
 		CSharedBindingAccessorIndexedNode m_elem;
 #else
 #endif
+		Niflect::TArrayNif<Niflect::CString> m_vecRequiredHeaderFilePath;
 	};
 
 	class CSignatureCode
@@ -64,7 +66,7 @@ namespace NiflectGen
 	public:
 		void SSSSSSSS();
 		void DebugGenSignatures(Niflect::TArrayNif<Niflect::CString>& vecSignature);
-		Niflect::TArrayNif<CSignatureCode> m_vecCode;
+		Niflect::TArrayNif<CSignatureCode> m_vecItem;
 		Niflect::TMap<Niflect::CString, uint32> m_mapSignatureToIndex;
 	};
 }

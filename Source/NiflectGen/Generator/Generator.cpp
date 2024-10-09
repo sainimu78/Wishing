@@ -194,8 +194,6 @@ namespace NiflectGen
         CModuleRegInfoValidated validatedModuleRegInfo(m_moduleRegInfo);
         //todo: 路径有效性检查, 重复路径剔除等
         const auto& userProvided = validatedModuleRegInfo.m_userProvided;
-        validatedModuleRegInfo.m_moduleRegBasePath = NiflectUtil::ConcatPath(NiflectGenDefinition::RelativeDirPath::ModuleReg, userProvided.m_moduleName);
-        validatedModuleRegInfo.m_typeRegBasePath = NiflectGenDefinition::RelativeDirPath::TypeReg;
 
         //预留清理module, 从module输出目录中的缓存可获取生成的所有文件
 

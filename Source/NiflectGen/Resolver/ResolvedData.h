@@ -164,6 +164,8 @@ namespace NiflectGen
 		Niflect::TArrayNif<CSharedTypeRegCodeWriter> m_vecWriter;
 		Niflect::TArrayNif<CTypeRegGenFileInfo> m_vecTypeRegGenFileInfo;
 		CSignatureCodeMapping m_signatureMapping;
+		CSharedAccessorBindingMapping m_accessorBindingMapping;
 		CTaggedTypesMapping m_taggedMapping;
+		CUntaggedTemplateTypesMapping m_untaggedTemplateMapping;
 	};
 }

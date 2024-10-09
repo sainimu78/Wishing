@@ -113,4 +113,10 @@ namespace NiflectGen
 		Niflect::CString m_baseTypeNameWithScope;
 		Niflect::CString m_infoTypeNameOfBaseType;
 	};
+
+	class CInheritableTypeRegCodeWriter2 : public CTypeRegCodeWriter2
+	{
+		typedef CTypeRegCodeWriter2 inherited;
+	public:
+	};
 }

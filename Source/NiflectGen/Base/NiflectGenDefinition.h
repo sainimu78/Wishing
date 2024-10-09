@@ -3,7 +3,7 @@
 #include "Niflect/Util/ConstCharConcat.h"
 
 #define DEVELOPMENT_ROOT_SOURCE_PATH "E:/S3/S3ResourceEditor_another/engine_ref"
-#define ROOT_TEST_PATH "../../../../../../Source/NiflectGen/Test"
+#define ROOT_TEST_PATH "F:/Fts/Proj/Test/Interedit/Source/NiflectGen/Test"
 
 namespace NiflectGenDefinition
 {

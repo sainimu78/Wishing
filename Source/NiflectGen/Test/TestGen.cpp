@@ -188,13 +188,68 @@ namespace TestGen
 				});
 		}
 	}
+	static void TestSuccess_RequiredHeader()
+	{
+		auto memTest = Niflect::GetDefaultMemoryStats();
+		{
+			auto gen = CreateGenerator();
+			CModuleRegInfo info;
+			info.m_vecOriginalHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestOriginalRequiredHeader.h"));
+			info.m_vecBindingSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestAccessorBindingRequiredHeader.h"));
+			NiflectGenDefinition::Test::AddBasicHeaderSearchPaths(info.m_vecHeaderSearchPath);
+			gen->SetModuleRegInfo(info);
+			gen->Generate([&info](void* cursorAddr)
+				{
+					auto& cursor = *static_cast<CXCursor*>(cursorAddr);
+					CTaggedNode2 taggedRoot;
+					CGenLog log;
+					CCollectingContext context(&log);
+					CCollectionData collectionData;
+					CDataCollector collector;
+					collector.Collect(cursor, &taggedRoot, context, collectionData);
+					ASSERT(log.m_vecText.size() == 0);
+					CResolvingContext resolvingContext(&log);
+					CModuleRegInfoValidated validatedModuleRegInfo(info);
+					CResolver resolver(collectionData, validatedModuleRegInfo);
+					CResolvedData resolvedData;
+					resolver.Resolve4(&taggedRoot, resolvingContext, resolvedData);
+					ASSERT(log.m_vecText.size() == 0);
+					Niflect::TArrayNif<Niflect::CString> vecExpected;
+					vecExpected.push_back("NiflectGen/Test/TestOriginalRequiredHeader.h");//类本身indexedRoot所在头文件
+					vecExpected.push_back("Niflect/NiflectBase.h");
+					vecExpected.push_back("Engine/Test/TestMyTransform.h");
+					vecExpected.push_back("BypassCode/NiflectSTL/string");
+					vecExpected.push_back("NiflectGen/Test/TestOriginalRequiredHeader.h");//自定义TMyArray所在头文件
+					vecExpected.push_back("NiflectGen/Test/TestSomeTypes.h");
+					uint32 idxExpected = 0;
+					for (auto& it0 : resolvedData.m_signatureMapping.m_vecItem)
+					{
+						if (it0.m_indexedRoot.m_vecRequiredHeaderFilePath.size() > 0)
+						{
+							for (auto& it1 : it0.m_indexedRoot.m_vecRequiredHeaderFilePath)
+							{
+								auto pos = it1.find(vecExpected[idxExpected]);
+								ASSERT(pos != std::string::npos);
+								idxExpected++;
+								//printf("%s\n", it1.c_str());
+							}
+							//printf("################\n");
+						}
+					}
+					ASSERT(idxExpected == vecExpected.size());
+				});
+		}
+	}
 	static void TestSuccess_GenMy()
 	{
 		auto memTest = Niflect::GetDefaultMemoryStats();
 		{
 			auto gen = CreateGenerator();
 			CModuleRegInfo info;
-			info.m_vecOriginalHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestOriginalTypeRegSignature13.h"));
+			//info.m_moduleName = "Engine";
+			//info.m_genIncludeBasePath = "NiflectGenerated";
+			//info.m_genBasePath = "F:/Fts/Proj/Test/Interedit/Generated";
+			info.m_vecOriginalHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestOriginalTypeRegSignature0.h"));
 			info.m_vecBindingSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestAccessorBindingTypeRegSignature.h"));
 			NiflectGenDefinition::Test::AddBasicHeaderSearchPaths(info.m_vecHeaderSearchPath);
 			gen->SetModuleRegInfo(info);
@@ -228,6 +283,7 @@ namespace TestGen
 		//TestFailure_BindingTypesDuplicated();
 		//TestSuccess_FullScopes();
 		//TestSuccess_TypeRegSignature();
+		//TestSuccess_RequiredHeader();
 		TestSuccess_GenMy();
 	}
 }

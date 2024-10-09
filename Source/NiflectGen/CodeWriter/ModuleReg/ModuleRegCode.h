@@ -18,10 +18,7 @@ namespace NiflectGen
 	class CModuleRegInfoValidated
 	{
 	public:
-		CModuleRegInfoValidated(const CModuleRegInfo& info)
-			: m_userProvided(info)
-		{
-		}
+		CModuleRegInfoValidated(const CModuleRegInfo& info);
 		//void Validate();
 		//void Init(const CModuleInfo& info);
 

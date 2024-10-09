@@ -11,6 +11,18 @@
 #include <sys/stat.h> // for mkdir
 #endif
 
+//#ifdef _WIN32
+//#include <direct.h> // for _getcwd
+//#define GETCWD _getcwd
+//#include <Windows.h> // for MAX_PATH
+//#define MY_PATH_MAX MAX_PATH
+//#else
+//#include <unistd.h> // for getcwd
+//#include <limits.h>
+//#define GETCWD getcwd
+//#define MY_PATH_MAX PATH_MAX
+//#endif
+
 namespace NiflectUtil
 {
     bool create_directory(const Niflect::CString& path) {
@@ -71,4 +83,20 @@ namespace NiflectUtil
             }
         }
     }
+
+    //Niflect::CString GetCurrentWorkingDir()
+    //{
+    //    char buffer[MY_PATH_MAX];
+    //    char* cwd = GETCWD(buffer, sizeof(buffer));
+
+    //    Niflect::CString result;
+    //    if (cwd) {
+    //        result = cwd;
+    //    }
+    //    else {
+    //        std::cerr << "Error getting current working directory." << std::endl;
+    //    }
+
+    //    return result;
+    //}
 }

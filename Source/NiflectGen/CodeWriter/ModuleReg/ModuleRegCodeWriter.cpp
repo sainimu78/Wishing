@@ -144,7 +144,12 @@ namespace NiflectGen
                     auto& privateHeaderData = vecTypeRegGenFileInfo[item.m_includePathPrivateHIndex];
                     privateHeaderData.m_vecTypeRegDataIndex.push_back(writerIndex);
                     ASSERT(it0.Is1D());//不支持模板, 因此只能为1D, 对应的Binding类型可能为builtin, 类型Decl或别名
-                    STypeRegClassWritingSetting setting = { m_moduleRegInfo.m_userProvided.m_vecHeaderSearchPath, m_resolvedData.deprecated_m_mapping };
+                    CAccessorBindingMapping2 placeholder0;
+                    CTaggedTypesMapping placeholder1;
+                    CUntaggedTemplateTypesMapping placeholder2;
+                    SResolvedMappings placeholderMappings{ placeholder0, placeholder1, placeholder2 };
+                    CResolvingDependenciesContext placeholderCtx(placeholderMappings, NULL);
+                    STypeRegClassWritingSetting setting = { m_moduleRegInfo.m_userProvided.m_vecHeaderSearchPath, m_resolvedData.deprecated_m_mapping, placeholderCtx };
                     m_vecWriter.push_back(Niflect::MakeShared<CInheritableTypeRegCodeWriter_FieldAccessor>(it0.m_accessorSubcursor.m_cursorDecl, setting, it0.m_actualFieldDeclCursor, it0.m_vecWWWW[0].m_subcursor));
                     m_mapping.m_vecTypeRegIncludePathPrivateHRef.push_back(&privateHeaderData.m_prevateHIncludePath);
                 }
@@ -164,9 +169,94 @@ namespace NiflectGen
                 m_mapping.m_vecTypeRegIndices.push_back(writerIndex);
                 auto& privateHeaderData = vecTypeRegGenFileInfo[item.m_includePathPrivateHIndex];
                 privateHeaderData.m_vecTypeRegDataIndex.push_back(writerIndex);
-                STypeRegClassWritingSetting setting = { m_moduleRegInfo.m_userProvided.m_vecHeaderSearchPath, m_resolvedData.deprecated_m_mapping };
+                CAccessorBindingMapping2 placeholder0;
+                CTaggedTypesMapping placeholder1;
+                CUntaggedTemplateTypesMapping placeholder2;
+                SResolvedMappings placeholderMappings{ placeholder0, placeholder1, placeholder2 };
+                CResolvingDependenciesContext placeholderCtx(placeholderMappings, NULL);
+                STypeRegClassWritingSetting setting = { m_moduleRegInfo.m_userProvided.m_vecHeaderSearchPath, m_resolvedData.deprecated_m_mapping, placeholderCtx };
                 m_vecWriter.push_back(it0.m_taggedType->CreateCodeWriter(setting));
                 m_mapping.m_vecTypeRegIncludePathPrivateHRef.push_back(&privateHeaderData.m_prevateHIncludePath);
+            }
+        }
+    }
+    void CTemplateBasedCppWriter::CreateWriters3(const CWritingContext& context, Niflect::TArrayNif<CTypeRegGenFileInfo>& vecTypeRegGenFileInfo)
+    {
+        //Niflect::TMap<Niflect::CString, SModuleRegIndicesAndIncludePath> mapOriginalFilePathToModuleRegIndicesAndIncPath;
+        //{
+        //    ASSERT(m_vecWriter.size() == 0);
+        //    {
+        //        auto& userProvided = m_moduleRegInfo.m_userProvided;
+        //        for (auto& it1 : userProvided.m_vecOriginalHeader)
+        //        {
+        //            auto ret = mapOriginalFilePathToModuleRegIndicesAndIncPath.insert({ it1, SModuleRegIndicesAndIncludePath() });
+        //            auto& item = ret.first->second;
+        //            if (ret.second)
+        //            {
+        //                auto incPath = CIncludesHelper::ConvertToIncludePath(it1, userProvided.m_vecHeaderSearchPath);
+        //                item.m_includePath_reserved = incPath;
+        //                auto orgIncPathPrivateH = NiflectUtil::ReplaceFilePathExt(incPath, NiflectGenDefinition::FileExt::H, NiflectGenDefinition::FileExt::PrivateH);
+        //                auto genIncPathPrivateH = NiflectUtil::ConcatPath(m_moduleRegInfo.m_typeRegBasePath, orgIncPathPrivateH);
+        //                auto orgIncPathGenH = NiflectUtil::ReplaceFilePathExt(incPath, NiflectGenDefinition::FileExt::H, NiflectGenDefinition::FileExt::GenH);
+        //                auto genIncPathGenH = NiflectUtil::ConcatPath(m_moduleRegInfo.m_typeRegBasePath, orgIncPathGenH);
+        //                item.m_includePathPrivateHIndex = static_cast<uint32>(vecTypeRegGenFileInfo.size());
+        //                vecTypeRegGenFileInfo.push_back(CTypeRegGenFileInfo(genIncPathPrivateH, genIncPathGenH));
+        //            }
+        //            else
+        //            {
+        //                ASSERT(false);//todo: 一次调用只能输出一个ModuleReg, 计划废弃ModuleReg数组, 如果将ModuleReg混在一起处理可能导致一些Module依赖配错却能输出正确结果
+        //            }
+        //        }
+        //    }
+
+        //    for (auto& it0 : m_resolvedData.m_taggedMapping.m_vecType)
+        //    {
+        //        auto& cursor = it0->GetCursor();
+        //        auto filePath = GetCursorFilePath(cursor);
+        //        //在此处挑选实际需要生成的类型是为避免在Resolve或之前的流程中可能出现的大量路径查找, 在此处虽查找量未减少, 但可通过如并行实现一定优化
+        //        auto itFound = mapOriginalFilePathToModuleRegIndicesAndIncPath.find(filePath);
+        //        if (itFound != mapOriginalFilePathToModuleRegIndicesAndIncPath.end())
+        //        {
+        //            auto& item = itFound->second;
+        //            auto& privateHeaderData = vecTypeRegGenFileInfo[item.m_includePathPrivateHIndex];
+        //            uint32 writerIndex = static_cast<uint32>(m_vecWriter.size());
+        //            m_mapping.m_vecTypeRegIndices.push_back(writerIndex);
+        //            privateHeaderData.m_vecTypeRegDataIndex.push_back(writerIndex);
+        //            CResolvedMapping placeholder;
+        //            SResolvedMappings mappings{ *m_resolvedData.m_accessorBindingMapping, m_resolvedData.m_taggedMapping, m_resolvedData.m_untaggedTemplateMapping };
+        //            CResolvingDependenciesContext creationCtx(mappings, context.m_log);
+        //            STypeRegClassWritingSetting setting = { m_moduleRegInfo.m_userProvided.m_vecHeaderSearchPath, placeholder, creationCtx };
+        //            auto writer = it0->CreateCodeWriter(setting);
+        //            m_vecWriter.push_back(writer);
+        //            m_mapping.m_vecTypeRegIncludePathPrivateHRef.push_back(&privateHeaderData.m_prevateHIncludePath);
+        //        }
+        //    }
+        //}
+
+        //printf("");
+
+        for (auto& it0 : m_resolvedData.m_signatureMapping.m_vecItem)
+        {
+            if (it0.m_indexedRoot.m_settingIdx != INDEX_NONE)
+            {
+                auto writer = Niflect::MakeShared<CInheritableTypeRegCodeWriter2>();
+                m_vecWriter2.push_back(writer);
+            }
+            else if (it0.m_indexedRoot.m_taggedIdx != INDEX_NONE)
+            {
+                ASSERT(false);//writer基类已改
+                auto& taggedType = m_resolvedData.m_taggedMapping.m_vecType[it0.m_indexedRoot.m_taggedIdx];
+
+                CResolvedMapping placeholder;
+                SResolvedMappings mappings{ *m_resolvedData.m_accessorBindingMapping, m_resolvedData.m_taggedMapping, m_resolvedData.m_untaggedTemplateMapping };
+                CResolvingDependenciesContext creationCtx(mappings, context.m_log);
+                STypeRegClassWritingSetting setting = { m_moduleRegInfo.m_userProvided.m_vecHeaderSearchPath, placeholder, creationCtx };
+                auto writer = taggedType->CreateCodeWriter(setting);
+                m_vecWriter.push_back(writer);
+            }
+            else
+            {
+                ASSERT(false);
             }
         }
     }
@@ -221,7 +311,10 @@ namespace NiflectGen
     }
     void CTemplateBasedCppWriter::Write3(const CWritingContext& context, CCodeGenData& data)
     {
-        ASSERT(false);
+        Niflect::TArrayNif<CTypeRegGenFileInfo> vecTypeRegGenFileInfo;
+        this->CreateWriters3(context, vecTypeRegGenFileInfo);
+
+        printf("");
     }
     void CTemplateBasedCppWriter::WriteTypeRegs(const CWritingContext& context, Niflect::TArrayNif<CTypeRegWritingData>& vecTypeRegData)
     {
