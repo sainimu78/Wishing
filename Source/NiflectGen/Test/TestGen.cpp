@@ -5,6 +5,7 @@
 #include "NiflectGen/Collector/Collector.h"
 #include "NiflectGen/Resolver/Resolver.h"
 #include "NiflectGen/Test/TestTypeRegSignature.h"
+#include "NiflectGen/CodeWriter/ModuleReg/ModuleRegCodeWriter.h"
 
 namespace TestGen
 {
@@ -213,7 +214,10 @@ namespace TestGen
 					CResolvedData resolvedData;
 					resolver.Resolve4(&taggedRoot, resolvingContext, resolvedData);
 					ASSERT(log.m_vecText.size() == 0);
-
+					CTemplateBasedCppWriter writer(resolvedData, validatedModuleRegInfo);
+					CWritingContext writingContext(&log);
+					CCodeGenData writtenData;
+					writer.Write3(writingContext, writtenData);
 				});
 		}
 	}
@@ -223,7 +227,7 @@ namespace TestGen
 		//TestSuccess_BindingTypesAllUnique();
 		//TestFailure_BindingTypesDuplicated();
 		//TestSuccess_FullScopes();
-		TestSuccess_TypeRegSignature();
-		//TestSuccess_GenMy();
+		//TestSuccess_TypeRegSignature();
+		TestSuccess_GenMy();
 	}
 }
