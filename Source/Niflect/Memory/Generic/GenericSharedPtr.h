@@ -98,7 +98,7 @@ namespace Niflect
 			this->IncRef();
 		}
 		//支持子类赋值到父类指针
-		template <typename TDerived>
+		template <typename TDerived, std::enable_if_t<std::is_convertible<TDerived*, CClass*>::value, int> = 0>
 		TGenericSharedPtr(const TGenericSharedPtr<TDerived, CMemory>& rhs)
 			: m_pointer(rhs.m_pointer)
 			, m_data(rhs.m_data)
@@ -455,12 +455,12 @@ namespace Niflect
 		template <typename T>
 		inline static TTestSharedPtr<T> TestMakeSharable(T* rawPtr)
 		{
-			return GenericMakeSharable<T, CTestMemory>(rawPtr, &GenericInstanceInvokeDestructor<T>);
+			return GenericPlacementMakeSharable<T, CTestMemory>(rawPtr, &GenericInstanceInvokeDestructor<T>);
 		}
 		template <typename T, typename ...TArgs>
 		inline static TTestSharedPtr<T> TestMakeShared(TArgs&& ...args)
 		{
-			return GenericMakeShared<T, CTestMemory>(sizeof(T), &GenericInstanceInvokeDestructor<T>, &GenericInstanceInvokeConstructor<T, TArgs...>, std::forward<TArgs>(args)...);
+			return GenericPlacementMakeShared<T, CTestMemory>(sizeof(T), &GenericInstanceInvokeDestructor<T>, &GenericInstanceInvokeConstructor<T, TArgs...>, std::forward<TArgs>(args)...);
 		}
 
 		static void TestSharedPtrConstRef(const TTestSharedPtr<CMyClass1>& obj)

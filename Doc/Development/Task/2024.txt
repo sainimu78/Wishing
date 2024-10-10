@@ -35,3 +35,4 @@
 	1. 考虑限制模板用途认定规则, 见Main.cpp, 12, 13, 14
 19. NiflectGen, using与typedef支持NIF_T, 仅注册不提供结构的用法
 20, NiflectGen, 生成时无任何member则FieldLayout为NULL
+21, NiflectGen, 增加一种AccessorBinding用于指定枚举的Accessor, 且不可重复指定
