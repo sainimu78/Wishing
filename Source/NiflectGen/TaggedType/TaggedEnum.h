@@ -11,5 +11,6 @@ namespace NiflectGen
 
 	public:
 		virtual CSharedTypeRegCodeWriter CreateCodeWriter(const STypeRegClassWritingSetting& setting) const override;
+		virtual CSharedTypeRegCodeWriter2 CreateCodeWriter2() const override;
 	};
 }

@@ -25,6 +25,16 @@ namespace NiflectGen
 		Niflect::CString m_includePath;
 	};
 
+	class CSplittedGenData
+	{
+	public:
+		CCodeLines m_h_or_genH;
+		CCodeLines m_cpp_or_privateH;
+		Niflect::CString m_h_or_genH_filePath;
+		Niflect::CString m_cpp_or_privateH_filePath;
+		Niflect::CString m_includePath;
+	};
+
 	class CSplittedModuleRegInvokationData
 	{
 	public:

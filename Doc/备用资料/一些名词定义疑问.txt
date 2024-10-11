@@ -1,0 +1,36 @@
+下为3种Accessor示意
+class CCompoundAccessor
+{
+};
+class CFloatAccessor
+{
+};
+class CBoolAccessor
+{
+};
+
+下为被解析的类定义
+class CMyClass
+{
+public:
+	bool m_bool_0;
+	float m_float_1;
+};
+
+下为反射代码生成工具所生成的成员结构创建代码示例
+void CreateFieldLayout()
+{
+	auto root = new CCompoundAccessor;
+	{
+		auto node = new CBoolAccessor;
+		node->Init("m_bool_0");
+		root->AddChild(node);
+	}
+	{
+		auto node = new CFloatAccessor;
+		node->Init("m_float_1");
+		root->AddChild(node);
+	}
+}
+
+请问题 CreateFieldLayout 作为函数名合适吗

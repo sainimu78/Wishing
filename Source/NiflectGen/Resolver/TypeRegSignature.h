@@ -34,7 +34,7 @@ namespace NiflectGen
 		}
 		bool m_isTemplateFormat;
 		uint32 m_settingIdx;
-		uint32 m_taggedIdx;
+		uint32 m_taggedIdx;//该索引对应的类型一定不是模板, 现可为 class, struct, enum
 		Niflect::TArrayNif<CBindingAccessorIndexedNode> m_vecChild;
 		Niflect::CString m_key;
 		Niflect::CString m_signature;

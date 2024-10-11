@@ -11,4 +11,10 @@ template<class _Kty>
 	struct hash
 	{
 	};
+
+template <class _From, class _To>
+	struct is_convertible
+	{
+		// determine whether _From is convertible to _To
+	};	
 }

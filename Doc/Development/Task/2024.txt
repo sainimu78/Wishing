@@ -36,3 +36,11 @@
 19. NiflectGen, using与typedef支持NIF_T, 仅注册不提供结构的用法
 20, NiflectGen, 生成时无任何member则FieldLayout为NULL
 21, NiflectGen, 增加一种AccessorBinding用于指定枚举的Accessor, 且不可重复指定
+22. NiflectGen, Splitted模式, cmake设置不添加到VS中
+	1. 示例
+		# 单个文件
+		set_source_files_properties(hidden_file.cpp PROPERTIES HEADER_FILE_ONLY TRUE)
+		# 目录中的文件
+		foreach(source_file ${HIDDEN_SOURCE_FILES})
+			set_source_files_properties(${source_file} PROPERTIES HEADER_FILE_ONLY TRUE)
+		endforeach()

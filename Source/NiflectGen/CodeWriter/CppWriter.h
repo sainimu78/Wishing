@@ -97,6 +97,5 @@ namespace NiflectGen
 		CCppWriter writer;
 		writer.WriteLines(lines);
 		printf("%s", writer.m_code.c_str());
-		printf("--------------------\n");
 	}
 }

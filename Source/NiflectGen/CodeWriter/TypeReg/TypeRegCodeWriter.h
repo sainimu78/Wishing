@@ -91,10 +91,48 @@ namespace NiflectGen
 
 	using CSharedTypeRegCodeWriter = Niflect::TSharedPtr<CTypeRegCodeWriter>;
 
+	class CTypeRegClassWritingData2
+	{
+	public:
+		CCodeLines m_linesImpl;
+	};
+
+	class CTypeRegRegisterAndFieldLayoutWritingData
+	{
+	public:
+		CCodeLines m_linesRegisterType;
+		CCodeLines m_linesFieldLayoutDecl;
+		CCodeLines m_linesFieldLayoutImpl;
+		Niflect::CString m_fieldLayoutFuncName;
+		Niflect::TArrayNif<const Niflect::CString*> m_vecHeaderFilePathRef;//只需要引用缓存在IndexedNode中的路径地址, 在生成无重复includes时才需要获取实际字符串
+	};
+
+	class CTypeRegTaggedTypeInitWritingData2
+	{
+	public:
+		CCodeLines m_lines;
+	};
+
+	class CTypeRegWritingData2
+	{
+	public:
+		CTypeRegRegisterAndFieldLayoutWritingData m_registerTypeAndfieldLayout;
+		CTypeRegTaggedTypeInitWritingData2 m_taggedTypeInit;
+	};
+
+	struct STypeRegClassWritingContext
+	{
+		const CCodeLines& m_linesRegisterType;
+		const Niflect::CString& m_fieldLayoutFuncName;
+		CGenLog* m_log;
+	};
+
 	class CTypeRegCodeWriter2
 	{
 	public:
-
+		virtual void WriteTypeRegRegisterTypeAndFieldLayout(const CWritingContext& context, CTypeRegRegisterAndFieldLayoutWritingData& data) const = 0;
+		virtual void WriteTypeRegClass(const STypeRegClassWritingContext& context, CTypeRegClassWritingData2& data) const {}
+		virtual void WriteTaggedTypeInit(const STypeRegClassWritingContext& context, CTypeRegTaggedTypeInitWritingData2& data) const {}
 	};
 	using CSharedTypeRegCodeWriter2 = Niflect::TSharedPtr<CTypeRegCodeWriter2>;
 }

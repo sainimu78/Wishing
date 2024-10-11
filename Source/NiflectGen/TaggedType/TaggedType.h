@@ -39,16 +39,18 @@ namespace NiflectGen
 		{
 
 		}
-		virtual void ResolveDependcies(const CResolvingDependenciesContext& context, SResolvingDependenciesData& data)
-		{
-
-		}
+		virtual void ResolveDependcies(const CResolvingDependenciesContext& context, SResolvingDependenciesData& data);
 		virtual CSharedTypeRegCodeWriter Deprecated_CreateCodeWriter(const STypeRegClassWritingSetting& setting) const
 		{
 			ASSERT(false);
 			return NULL;
 		}
 		virtual CSharedTypeRegCodeWriter CreateCodeWriter(const STypeRegClassWritingSetting& setting) const
+		{
+			ASSERT(false);
+			return NULL;
+		}
+		virtual CSharedTypeRegCodeWriter2 CreateCodeWriter2() const
 		{
 			ASSERT(false);
 			return NULL;
@@ -62,6 +64,7 @@ namespace NiflectGen
 
 	public:
 		Niflect::CString m_typeNamePattern;
+		CBindingAccessorIndexedNode m_classDeclIndexedRoot;
 	};
 
 	class CTaggedInheritableTypeMember : public CTaggedNode2
@@ -115,4 +118,6 @@ namespace NiflectGen
 			return dynamic_cast<CUntaggedTemplate*>(base);
 		}
 	};
+
+	Niflect::CString ResolveSignature(const CBindingAccessorIndexedNode& indexedParent, const CResolvingDependenciesContext& ctx, CSignatureCodeMapping& signatureMapping);
 }

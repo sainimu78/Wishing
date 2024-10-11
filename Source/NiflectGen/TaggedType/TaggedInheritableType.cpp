@@ -141,53 +141,6 @@ namespace NiflectGen
 	//	return signature;
 	//}
 
-	static Niflect::CString ResolveSignatureRecurs(const CBindingAccessorIndexedNode& indexedParent, const CBindingAccessorIndexedNode& childrenOwnerOld, const CResolvingDependenciesContext& ctx, CSignatureCodeMapping& signatureMapping)
-	{
-		auto ret = signatureMapping.m_mapSignatureToIndex.insert({ indexedParent.m_key, static_cast<uint32>(signatureMapping.m_vecItem.size()) });
-		if (ret.second)
-		{
-			auto& childrenOwner = indexedParent;
-			if (indexedParent.m_settingIdx != INDEX_NONE)
-			{
-				//for (uint32 idx = 0; idx < childrenOwner.m_vecChild.size(); ++idx)
-				//{
-				//	auto& it = childrenOwner.m_vecChild[idx];
-				//	MakeSignatureForFieldRecurs(it, it, ctx, signatureMapping);
-				//}
-				if (auto elem = indexedParent.m_elem.Get())
-				{
-					ASSERT(childrenOwner.m_vecChild.size() == 0);
-					ResolveSignatureRecurs(*elem, *elem, ctx, signatureMapping);
-				}
-				else
-				{
-					for (auto& it : childrenOwner.m_vecChild)
-						ResolveSignatureRecurs(it, it, ctx, signatureMapping);
-				}
-			}
-			else if (indexedParent.m_taggedIdx != INDEX_NONE)
-			{
-				//类或结构体定义不继续递归, 计划在生成阶段遍历member
-				ASSERT(childrenOwner.m_vecChild.size() == 0);
-				ASSERT(indexedParent.m_elem == NULL);
-			}
-			else
-			{
-				ASSERT(false);
-			}
-			signatureMapping.m_vecItem.push_back(CSignatureCode(Niflect::CString(), indexedParent));
-		}
-		else
-		{
-		}
-
-		return Niflect::CString();
-	}
-
-	static Niflect::CString ResolveSignature(const CBindingAccessorIndexedNode& indexedParent, const CResolvingDependenciesContext& ctx, CSignatureCodeMapping& signatureMapping)
-	{
-		return ResolveSignatureRecurs(indexedParent, indexedParent, ctx, signatureMapping);
-	}
 	//static void MakeSignatureForClassDecl(const CBindingAccessorIndexedNode& indexedParent, const CResolvedTaggedTypesMapping& mapping, CSignatureCodeMapping& signatureMapping)
 	//{
 	//	auto ret = signatureMapping.m_mapSignatureToIndex.insert({ indexedParent.m_key, static_cast<uint32>(signatureMapping.m_vecCode.size()) });
@@ -197,6 +150,8 @@ namespace NiflectGen
 	//}
 	void CTaggedInheritableType::ResolveDependcies(const CResolvingDependenciesContext& context, SResolvingDependenciesData& data)
 	{
+		inherited::ResolveDependcies(context, data);
+
 		//基类
 		ASSERT(m_baseTaggedType == NULL);
 		auto baseTypeCursorDecl = clang_getTypeDeclaration(clang_getCursorType(m_baseTypeSpecifierCursor));
@@ -213,14 +168,6 @@ namespace NiflectGen
 			if (auto member = CTaggedInheritableTypeMember::CastChecked(it.Get()))
 				m_vecMember.push_back(member);
 		}
-
-		auto& cursor = this->GetCursor();
-		ASSERT(!m_classDeclIndexedRoot.IsValid());
-		if (!taggedMapping.InitIndexedNodeForClassDecl(cursor, m_classDeclIndexedRoot))
-		{
-			ASSERT(false);
-		}
-		ResolveSignature(m_classDeclIndexedRoot, context, data.m_signatureMapping);
 
 		m_vecMemberIndexedRoot.resize(m_vecMember.size());
 		for (uint32 idx0 = 0; idx0 < m_vecMember.size(); ++idx0)
@@ -258,6 +205,15 @@ namespace NiflectGen
 		if (m_baseTaggedType != NULL)
 			baseTypeCursorDecl = m_baseTaggedType->GetCursor();
 		return Niflect::MakeShared<CInheritableTypeRegCodeWriter_ObjectAccessor>(this->GetCursor(), setting, baseTypeCursorDecl, m_vecMember);
+	}
+	CSharedTypeRegCodeWriter2 CTaggedInheritableType::CreateCodeWriter2() const
+	{
+		//CXCursor baseTypeCursorDecl = g_invalidCursor;
+		//if (m_baseTaggedType != NULL)
+		//	baseTypeCursorDecl = m_baseTaggedType->GetCursor();
+		//return Niflect::MakeShared<CInheritableTypeRegCodeWriter_ObjectAccessor>(this->GetCursor(), setting, baseTypeCursorDecl, m_vecMember);
+
+		return Niflect::MakeShared<CInheritableTypeRegCodeWriter2>(m_classDeclIndexedRoot, m_vecMemberIndexedRoot, m_baseTaggedType);
 	}
 	void CTaggedInheritableType::DebugDerivedPrint(FILE* fp) const
 	{

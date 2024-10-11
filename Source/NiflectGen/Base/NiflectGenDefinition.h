@@ -11,8 +11,8 @@ namespace NiflectGenDefinition
 	{
 		constexpr const char* Cpp = ".cpp";
 		constexpr const char* H = ".h";
-		constexpr const char* PrivateH = ".private.h";
-		constexpr const char* GenH = ".gen.h";
+		constexpr const char* PrivateH = "_private.h";
+		constexpr const char* GenH = "_gen.h";
 
 		static bool IsCpp(const Niflect::CString& text)
 		{
@@ -53,6 +53,24 @@ namespace NiflectGenDefinition
 		static bool IsMethod(const Niflect::CString& text)
 		{
 			return NiflectUtil::StartsWith(text, NiflectGenDefinition::CodeTag::Method);
+		}
+	}
+
+	namespace CodeStyle
+	{
+		constexpr const bool AddingSpaceBetweenNestedTemplateRightAngleBrackets = true;
+		static void TemplateAngleBracketL(Niflect::CString& str)
+		{
+			str += '<';
+		}
+		static void TemplateAngleBracketR(Niflect::CString& str)
+		{
+			if (AddingSpaceBetweenNestedTemplateRightAngleBrackets)
+			{
+				if (str.back() == '>')
+					str += ' ';
+			}
+			str += '>';
 		}
 	}
 
@@ -97,6 +115,11 @@ namespace NiflectGenDefinition
 #ifdef USER_PROVIDED_CCOMPONENTFIELD_CLASS_DEFINITION
 			constexpr const char* CompoundFieldHeader = "Niflect/Field/CompoundField.h";
 #endif
+		}
+
+		namespace Setting
+		{
+			constexpr uint32 ThresholdLinesCountForModuleRegSplitting = 10;
 		}
 	}
 	namespace Test

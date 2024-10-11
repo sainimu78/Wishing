@@ -20,3 +20,9 @@
 
 //嵌套 elementBindingTYpe, 不与 children 混用
 #define EMBEDDING_ELEMENT_BINDING_TYPE_INDEXED_NODE
+
+//简化 TaggedType 的 IndexedRoot 初始化流程
+//#define TODO_SIMPLIFY_TAGGED_TYPE_INDEXED_ROOT_INITIALIZATION
+
+//实现枚举的代码生成流程, 如专门的 AccessorBinding, CodeWriter
+//#define TODO_ENUM_CODE_GEN_PIPELINE

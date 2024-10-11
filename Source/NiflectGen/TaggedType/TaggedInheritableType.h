@@ -5,6 +5,7 @@ namespace NiflectGen
 {
 	class CTaggedInheritableType : public CTaggedType
 	{
+		typedef CTaggedType inherited;
 	public:
 		CTaggedInheritableType();
 
@@ -16,6 +17,7 @@ namespace NiflectGen
 		virtual void ResolveDependcies(const CResolvingDependenciesContext& context, SResolvingDependenciesData& data) override;
 		virtual CSharedTypeRegCodeWriter Deprecated_CreateCodeWriter(const STypeRegClassWritingSetting& setting) const override;
 		virtual CSharedTypeRegCodeWriter CreateCodeWriter(const STypeRegClassWritingSetting& setting) const override;
+		virtual CSharedTypeRegCodeWriter2 CreateCodeWriter2() const override;
 
 	protected:
 		virtual void DebugDerivedPrint(FILE* fp) const override;
@@ -24,7 +26,6 @@ namespace NiflectGen
 		CXCursor m_baseTypeSpecifierCursor;
 		CTaggedType* m_baseTaggedType;
 		Niflect::TArrayNif<CTaggedInheritableTypeMember*> m_vecMember;
-		CBindingAccessorIndexedNode m_classDeclIndexedRoot;
 		Niflect::TArrayNif<CBindingAccessorIndexedNode> m_vecMemberIndexedRoot;
 	};
 }

@@ -40,13 +40,13 @@ namespace TestGen
 					ASSERT(vecSignature.size() == 7);
 					auto it = vecSignature.begin();
 					//单一类型
+					ASSERT(*(it++) == "TestMyFinding::EMyOption");
 					ASSERT(*(it++) == "TestMyFinding::CMyClass_0");
 					ASSERT(*(it++) == "float");
 					ASSERT(*(it++) == "bool");
 					ASSERT(*(it++) == "Niflect::CString");
 					ASSERT(*(it++) == "int32");
 					ASSERT(*(it++) == "TestAccessor2::TMyTransform<float>");
-					ASSERT(*(it++) == "TestMyFinding::EMyOption");
 					ASSERT(it == vecSignature.end());
 				});
 		}

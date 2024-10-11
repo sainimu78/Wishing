@@ -1,6 +1,7 @@
 #include "NiflectGen/Resolver/TypeRegSignature.h"
 #include "Niflect/Util/DebugUtil.h"
 #include "Niflect/Util/StringUtil.h"
+#include "NiflectGen/Base/NiflectGenDefinition.h"
 
 namespace NiflectGen
 {
@@ -51,7 +52,7 @@ namespace NiflectGen
 		}
 		if (childrenOwner.IsTemplateFormat())
 		{
-			m_signature += '<';
+			NiflectGenDefinition::CodeStyle::TemplateAngleBracketL(m_signature);
 			if (auto elem = childrenOwner.m_elem.Get())
 			{
 				ASSERT(childrenOwner.m_vecChild.size() == 0);
@@ -66,9 +67,7 @@ namespace NiflectGen
 						m_signature += ", ";
 				}
 			}
-			if (m_signature.back() == '>')
-				m_signature += ' ';
-			m_signature += '>';
+			NiflectGenDefinition::CodeStyle::TemplateAngleBracketR(m_signature);
 		}
 		if (auto elem = childrenOwner.m_elem.Get())
 		{
