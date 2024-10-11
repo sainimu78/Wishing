@@ -44,3 +44,13 @@
 		foreach(source_file ${HIDDEN_SOURCE_FILES})
 			set_source_files_properties(${source_file} PROPERTIES HEADER_FILE_ONLY TRUE)
 		endforeach()
+23, NiflectGen, 根据行数分配MiscTypeReg, 保存一个模块的MiscTypeReg的分配信息, 可确保每次生成MiscTypeReg不影响其它SplittedModuleReg
+	1. 下次生成时获取, 先按信息中指定的分配, 剩余的追加
+	2. 在检测到保存的信息中对应类型已不存在, 则只删除对应的SplittedModuleReg中的信息
+24. NiflectGen, 生成的文件是否有差异, 是则写无则不写
+	1. 需要先确认是否直接写, 即使无差异, 在Build时也会执行编译
+25. NiflectGen, 生成正确的TypeReg
+26. NiflectGen, 头文件路径统一为绝对路径, 只对Module中的OriginalHeader生成代码
+	1. 对绝对路径的头文件搜索时, 应实现一种简单优化, 从末尾开始查找
+	2. 大概在代码位置 CTaggedInheritableType::ResolveDependcies, 改为只对Module内的TaggedType成员进一步生成IndexedNode
+27. NiflectGen, 
