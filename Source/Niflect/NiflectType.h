@@ -33,8 +33,6 @@ namespace Niflect
 	};
 	using CSharedNatimeta = TSharedPtr<CNatimeta>;
 
-	//todo: 可能需要绑factory或由factory创建, 而factory中绑module, 如此即可以树型组织, 以便获取各种信息
-	//todo: 考虑是否需要定义带const的CNiflectType, 方便外部使用
 	class CNiflectType
 	{
 	public:
@@ -46,11 +44,6 @@ namespace Niflect
 		}
 
 	public:
-		//template <typename T>
-		//void InitStaticType()
-		//{
-		//	TInternalRegisteredType<T>::s_type = this;
-		//}
 		void InitTypeMeta(uint32 niflectTypeSize, size_t typeHash, const CString& name, CTypeIndex index, const CTypeInvokations& cb)
 		{
 			m_name = name;
@@ -58,6 +51,14 @@ namespace Niflect
 			m_niflectTypeSize = niflectTypeSize;
 			m_cb = cb;
 			m_typeHash = typeHash;
+		}
+		void InitTypeMeta2(uint32 nativeTypeSize, size_t typeHash, CTypeIndex tableIdx, const CTypeInvokations& typeFuncs, const CString& nativeTypeName)
+		{
+			m_niflectTypeSize = nativeTypeSize;
+			m_typeHash = typeHash;
+			m_index = tableIdx;
+			m_cb = typeFuncs;
+			m_name = nativeTypeName;
 		}
 		
 	public:
@@ -69,15 +70,15 @@ namespace Niflect
 		//{
 		//	return m_accessorRoot;
 		//}
-		const CTypeIndex& GetTypeIndex() const
+		const CTypeIndex& GetTypeIndex() const//todo: 计划改名为 GetTableIndex
 		{
 			return m_index;
 		}
-		const CString& GetTypeName() const
+		const CString& GetTypeName() const//todo: 计划改名为 GetNativeTypeName
 		{
 			return m_name;
 		}
-		const uint32& GetTypeSize() const
+		const uint32& GetTypeSize() const//todo: 计划改名为 GetNativeTypeSize
 		{
 			return m_niflectTypeSize;//对于C++ Built in类型, 返回类型为const ref是为了方便赋值类型用auto
 		}
@@ -101,6 +102,7 @@ namespace Niflect
 		}
 		void InitFieldLayout()
 		{
+			ASSERT(false);//todo: 计划废弃, 缓存应包含所有继承链上的layout, 另外layout也必须根据完整layout进行相应的初始化
 			//todo: 未确定方案, 用到再创建还是在Module初始化时统一遍历创建, 现用后者实验
 			ASSERT(m_fieldRoot == NULL);
 			m_fieldRoot = this->CreateFieldLayout();
@@ -164,12 +166,11 @@ namespace Niflect
 		virtual void DebugFuncForDynamicCast() {}//仅为动态检查类型避免错误, 如已定义非调试用的virtual函数则可移除, 备注: error C2683: 'dynamic_cast': 'XXX' is not a polymorphic type 
 
 	private:
-		CString m_name;
-		CTypeIndex m_index;
-		uint32 m_niflectTypeSize;
+		CString m_name;//todo: 计划改名为 m_nativeTypeName
+		CTypeIndex m_index;//todo: 计划改名为 m_tableIdx;
+		uint32 m_niflectTypeSize;//todo: 计划改名为 m_nativeTypeSize;
 		CSharedAccessor m_fieldRoot;
-		//todo: 实现成员函数反射(CFunction), 考虑是否有可能与有必要实现支持任意构造函数
-		CTypeInvokations m_cb;
+		CTypeInvokations m_cb;//todo: 计划改名为 m_typeFuncs
 		size_t m_typeHash;
 		CSharedNatimeta m_natimeta;
 	};

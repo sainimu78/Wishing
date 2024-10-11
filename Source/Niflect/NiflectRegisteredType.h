@@ -6,7 +6,7 @@ namespace Niflect
 	class CNiflectType;
 
 	template <typename T>
-	class TInternalRegisteredType
+	class TRegisteredType
 	{
 		template <typename T2>
 		friend CNiflectType* StaticGetType();
@@ -31,23 +31,28 @@ namespace Niflect
 	};
 
 	template <typename T>
-	CNiflectType* TInternalRegisteredType<T>::s_type = NULL;
+	CNiflectType* TRegisteredType<T>::s_type = NULL;
 
 	template <typename T>
 	CNiflectType* StaticGetType()
 	{
-		return TInternalRegisteredType<T>::s_type;
+		return TRegisteredType<T>::s_type;
 	}
+
+	template <typename T>
+	using TInternalRegisteredType = TRegisteredType<T>;//旧代码兼容, 一定阶段后移除
+	
+
 	////begin, 已验证无法通过特化区分原始类型与别名(using和typedef定义的别名)
 	//template <typename T>
 	//void __InternalStaticSetType(CNiflectType* type)
 	//{
-	//	TInternalRegisteredType<T>::s_type = type;
+	//	TRegisteredType<T>::s_type = type;
 	//}
 	//template <typename T>
 	//bool __InternalStaticIsValid()
 	//{
-	//	return TInternalRegisteredType<T>::s_type != NULL;
+	//	return TRegisteredType<T>::s_type != NULL;
 	//}
 	////end
 }

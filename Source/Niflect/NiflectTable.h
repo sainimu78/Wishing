@@ -3,7 +3,33 @@
 
 namespace Niflect
 {
-	//为Module中所有CType的容器, 不需要被继承
+	class CNiflectRegisterTypeOption
+	{
+		typedef CNiflectRegisterTypeOption CThis;
+	public:
+		CNiflectRegisterTypeOption()
+			: m_CreateFieldLayoutFunc(NULL)
+		{
+		}
+
+	public:
+		CThis& SetCreateFieldLayoutFunc(const InvokeCreateFieldLayoutFunc& Func)
+		{
+			m_CreateFieldLayoutFunc = Func;
+			return *this;
+		}
+		CThis& SetNativeTypeName(const Niflect::CString& name)
+		{
+			m_nativeTypeName = name;
+			return *this;
+		}
+
+	public:
+		InvokeCreateFieldLayoutFunc m_CreateFieldLayoutFunc;
+		Niflect::CString m_nativeTypeName;
+	};
+
+	//为Module中所有CNiflectType的容器, 不需要被继承
 	class CNiflectTable
 	{
 		friend class CNiflectModule;
@@ -29,9 +55,25 @@ namespace Niflect
 			type->InitTypeMeta(sizeof(TType), CNiflectType::GetTypeHash<TType>(), typeName, idx, typeFuncs);
 			ASSERT(TInternalRegisteredType<TType>::IsValid());
 		}
+		template <typename TType, typename TInfo = CNiflectType>
+		void RegisterType2(const CNiflectRegisterTypeOption& opt)
+		{
+			CTypeInvokations typeFuncs;
+			typeFuncs.m_InvokeConstructorFunc = &GenericInstanceInvokeConstructor<TType>;
+			typeFuncs.m_InvokeDestructorFunc = &GenericInstanceInvokeDestructor<TType>;
+			typeFuncs.m_InvokeCreateFieldLayoutFunc = Func;
+
+			auto shared = Niflect::MakeShared<TInfo>();
+			CNiflectType* type = shared.Get();
+			auto idx = this->AddType(shared);
+			ASSERT(!TegisteredType<TType>::IsValid());
+			TRegisteredType<TType>::s_type = type;
+			type->InitTypeMeta2(sizeof(TType), CNiflectType::GetTypeHash<TType>(), idx, typeFuncs, opt.m_nativeTypeName);
+			ASSERT(TRegisteredType<TType>::IsValid());
+		}
 		uint32 GetTypesCount() const
 		{
-			return static_cast<uint32>(m_vecType.size());//todo: 考虑如何避免cast
+			return static_cast<uint32>(m_vecType.size());
 		}
 		CNiflectType* GetTypeByIndex(uint32 idx) const
 		{
@@ -39,7 +81,7 @@ namespace Niflect
 		}
 		
 	private:
-		uint32 AddType(const CSharedType& type)//避免VS跳错, 暂时加My后缀
+		uint32 AddType(const CSharedType& type)
 		{
 			uint32 idx = this->GetTypesCount();
 			m_vecType.push_back(type);
@@ -50,7 +92,6 @@ namespace Niflect
 		TArrayNif<CSharedType> m_vecType;
 		CString m_name;
 	};
-
 	using CSharedTable = TSharedPtr<CNiflectTable>;
 	
 	template <typename TInfo, typename TType>
