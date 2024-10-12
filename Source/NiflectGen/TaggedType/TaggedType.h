@@ -21,7 +21,7 @@ namespace NiflectGen
 
 	struct SResolvingDependenciesData
 	{
-		CSignatureCodeMapping& m_signatureMapping;
+		CResolvedCursorRootsMapping& m_signatureMapping;
 	};
 
 	class CTaggedType : public CTaggedNode2
@@ -64,7 +64,7 @@ namespace NiflectGen
 
 	public:
 		Niflect::CString m_typeNamePattern;
-		CBindingAccessorIndexedNode m_classDeclIndexedRoot;
+		CResolvedCursorNode m_classDeclIndexedRoot;
 	};
 
 	class CTaggedInheritableTypeMember : public CTaggedNode2
@@ -119,5 +119,5 @@ namespace NiflectGen
 		}
 	};
 
-	Niflect::CString ResolveSignature(const CBindingAccessorIndexedNode& indexedParent, const CResolvingDependenciesContext& ctx, CSignatureCodeMapping& signatureMapping);
+	Niflect::CString ResolveSignature(const CResolvedCursorNode& indexedParent, const CResolvingDependenciesContext& ctx, CResolvedCursorRootsMapping& signatureMapping);
 }

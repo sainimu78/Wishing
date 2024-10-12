@@ -18,9 +18,6 @@
 //类作为Scope
 //#define CLASS_TYPE_SCOPE
 
-//嵌套 elementBindingTYpe, 不与 children 混用
-#define EMBEDDING_ELEMENT_BINDING_TYPE_INDEXED_NODE
-
 //简化 TaggedType 的 IndexedRoot 初始化流程
 //#define TODO_SIMPLIFY_TAGGED_TYPE_INDEXED_ROOT_INITIALIZATION
 

@@ -1,28 +1,28 @@
-#include "NiflectGen/Resolver/TypeRegSignature.h"
+#include "NiflectGen/Resolver/ResolvedCursorNode.h"
 #include "Niflect/Util/DebugUtil.h"
 #include "Niflect/Util/StringUtil.h"
 #include "NiflectGen/Base/NiflectGenDefinition.h"
 
 namespace NiflectGen
 {
-	void CBindingAccessorIndexedNode::InitForAccessorBinding(uint32 foundIdx, const Niflect::CString& headerFilePath)
+	void CResolvedCursorNode::InitForAccessorBinding(uint32 foundIdx, const Niflect::CString& headerFilePath)
 	{
-		ASSERT(m_settingIdx == INDEX_NONE);
-		m_settingIdx = foundIdx;
+		ASSERT(m_accessorBindingIndex == INDEX_NONE);
+		m_accessorBindingIndex = foundIdx;
 		if (!headerFilePath.empty())
 		{
 			ASSERT(m_vecRequiredHeaderFilePath.size() == 0);
 			m_vecRequiredHeaderFilePath.push_back(headerFilePath);
 		}
 	}
-	void CBindingAccessorIndexedNode::InitForTemplateBegin(const Niflect::CString& signature, uint32 foundIdx)
+	void CResolvedCursorNode::InitForTemplateBegin(const Niflect::CString& signature, uint32 foundIdx)
 	{
 		ASSERT(m_key.empty());
 		m_key += '(';
 		m_key += std::to_string(foundIdx).c_str();
 
-		ASSERT(m_signature.empty());
-		m_signature = signature;
+		ASSERT(m_resoCursorName.empty());
+		m_resoCursorName = signature;
 	}
 	//static void SADSAF(Niflect::TArrayNif<const CBindingAccessorIndexedNode*>& vec, Niflect::CString& str)
 	//{
@@ -38,7 +38,7 @@ namespace NiflectGen
 	//	SADSAF(vec, str);
 	//	str += '>';
 	//}
-	void CBindingAccessorIndexedNode::InitForTemplateArguments(const CBindingAccessorIndexedNode& childrenOwner)
+	void CResolvedCursorNode::InitForTemplateArguments(const CResolvedCursorNode& childrenOwner)
 	{
 		if (auto elem = childrenOwner.m_elem.Get())
 		{
@@ -52,22 +52,22 @@ namespace NiflectGen
 		}
 		if (childrenOwner.IsTemplateFormat())
 		{
-			NiflectGenDefinition::CodeStyle::TemplateAngleBracketL(m_signature);
+			NiflectGenDefinition::CodeStyle::TemplateAngleBracketL(m_resoCursorName);
 			if (auto elem = childrenOwner.m_elem.Get())
 			{
 				ASSERT(childrenOwner.m_vecChild.size() == 0);
-				m_signature += elem->m_signature;
+				m_resoCursorName += elem->m_resoCursorName;
 			}
 			else
 			{
 				for (uint32 idx = 0; idx < childrenOwner.m_vecChild.size(); ++idx)
 				{
-					m_signature += childrenOwner.m_vecChild[idx].m_signature;
+					m_resoCursorName += childrenOwner.m_vecChild[idx].m_resoCursorName;
 					if (idx != childrenOwner.m_vecChild.size() - 1)
-						m_signature += ", ";
+						m_resoCursorName += ", ";
 				}
 			}
-			NiflectGenDefinition::CodeStyle::TemplateAngleBracketR(m_signature);
+			NiflectGenDefinition::CodeStyle::TemplateAngleBracketR(m_resoCursorName);
 		}
 		if (auto elem = childrenOwner.m_elem.Get())
 		{
@@ -83,38 +83,38 @@ namespace NiflectGen
 			}
 		}
 	}
-	void CBindingAccessorIndexedNode::InitForTemplateEnd()
+	void CResolvedCursorNode::InitForTemplateEnd()
 	{
 		m_key += ')';
 	}
-	void CBindingAccessorIndexedNode::InitForTemplate(const Niflect::CString& signature, uint32 foundIdx, const CBindingAccessorIndexedNode& childrenOwner)
+	void CResolvedCursorNode::InitForTemplate(const Niflect::CString& signature, uint32 foundIdx, const CResolvedCursorNode& childrenOwner)
 	{
 		this->InitForTemplateBegin(signature, foundIdx);
 		this->InitForTemplateArguments(childrenOwner);
 		this->InitForTemplateEnd();
 	}
-	void CBindingAccessorIndexedNode::InitForClassDecl(const Niflect::CString& signature, uint32 foundIdx, const Niflect::CString& headerFilePath)
+	void CResolvedCursorNode::InitForClassDecl(const Niflect::CString& signature, uint32 foundIdx, const Niflect::CString& headerFilePath)
 	{
 		ASSERT(m_key.empty());
 		m_key += '[';
 		m_key += std::to_string(foundIdx).c_str();
 		m_key += ']';
-		m_taggedIdx = foundIdx;
+		m_taggedTypeIndex = foundIdx;
 
-		ASSERT(m_signature.empty());
-		m_signature = signature;
+		ASSERT(m_resoCursorName.empty());
+		m_resoCursorName = signature;
 
 		ASSERT(m_vecRequiredHeaderFilePath.size() == 0);
 		m_vecRequiredHeaderFilePath.push_back(headerFilePath);
 	}
 
-	static void DebugGenSignature2222(const CBindingAccessorIndexedNode& indexedParent, uint32 lv, const char* pszLv, Niflect::TArrayNif<Niflect::CString>& vecSignature)
+	static void DebugGenSignature2222(const CResolvedCursorNode& indexedParent, uint32 lv, const char* pszLv, Niflect::TArrayNif<Niflect::CString>& vecSignature)
 	{
 		auto strLv = NiflectUtil::DebugIndentToString(lv, pszLv);
-		auto result = NiflectUtil::FormatString("%s%s", strLv.c_str(), indexedParent.m_signature.c_str());
+		auto result = NiflectUtil::FormatString("%s%s", strLv.c_str(), indexedParent.m_resoCursorName.c_str());
 		vecSignature.push_back(result);
 	}
-	static void DebugGenSignature(const CBindingAccessorIndexedNode& indexedParent, Niflect::TArrayNif<Niflect::CString>& vecSignature)
+	static void DebugGenSignature(const CResolvedCursorNode& indexedParent, Niflect::TArrayNif<Niflect::CString>& vecSignature)
 	{
 		uint32 lv = 0;
 		const char* pszLv = "-";
@@ -134,18 +134,18 @@ namespace NiflectGen
 		}
 	}
 
-	void CSignatureCodeMapping::DebugGenSignatures(Niflect::TArrayNif<Niflect::CString>& vecSignature)
+	void CResolvedCursorRootsMapping::DebugGenSignatures(Niflect::TArrayNif<Niflect::CString>& vecSignature)
 	{
 		for (auto& it : m_vecItem)
-			DebugGenSignature(it.m_indexedRoot, vecSignature);
+			DebugGenSignature(it.m_resoRoot, vecSignature);
 	}
 
-	static void DebugPrintSSSSSSSSSSSSSSSSSSAAAAAAAAA(const CBindingAccessorIndexedNode& indexedParent, uint32 lv, const char* pszLv)
+	static void DebugPrintSSSSSSSSSSSSSSSSSSAAAAAAAAA(const CResolvedCursorNode& indexedParent, uint32 lv, const char* pszLv)
 	{
 		auto strLv = NiflectUtil::DebugIndentToString(lv, pszLv);
-		printf("%s%s\n", strLv.c_str(), indexedParent.m_signature.c_str());
+		printf("%s%s\n", strLv.c_str(), indexedParent.m_resoCursorName.c_str());
 	}
-	static void DebugPrintRecursOk(const CBindingAccessorIndexedNode& indexedParent)
+	static void DebugPrintRecursOk(const CResolvedCursorNode& indexedParent)
 	{
 		uint32 lv = 0;
 		const char* pszLv = "-";
@@ -164,21 +164,21 @@ namespace NiflectGen
 				DebugPrintSSSSSSSSSSSSSSSSSSAAAAAAAAA(it, lv, pszLv);
 		}
 	}
-	static void DebugPrint(const CBindingAccessorIndexedNode& indexedParent)
+	static void DebugPrint(const CResolvedCursorNode& indexedParent)
 	{
 		DebugPrintRecursOk(indexedParent);
 	}
 
-	void CSignatureCodeMapping::SSSSSSSS()
+	void CResolvedCursorRootsMapping::SSSSSSSS()
 	{
 		for (auto& it : m_vecItem)
 		{
 			Niflect::CString s = "#";
 			//表明可以此区分是否需要在生成阶段遍历member以生成代码或其它处理
-			if (it.m_indexedRoot.m_taggedIdx != INDEX_NONE)
+			if (it.m_resoRoot.m_taggedTypeIndex != INDEX_NONE)
 				s = " Tagged Type ";
 			printf("#######%s##########\n", s.c_str());
-			DebugPrint(it.m_indexedRoot);
+			DebugPrint(it.m_resoRoot);
 		}
 	}
 }

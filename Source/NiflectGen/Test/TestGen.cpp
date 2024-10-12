@@ -224,9 +224,9 @@ namespace TestGen
 					uint32 idxExpected = 0;
 					for (auto& it0 : resolvedData.m_signatureMapping.m_vecItem)
 					{
-						if (it0.m_indexedRoot.m_vecRequiredHeaderFilePath.size() > 0)
+						if (it0.m_resoRoot.m_vecRequiredHeaderFilePath.size() > 0)
 						{
-							for (auto& it1 : it0.m_indexedRoot.m_vecRequiredHeaderFilePath)
+							for (auto& it1 : it0.m_resoRoot.m_vecRequiredHeaderFilePath)
 							{
 								auto pos = it1.find(vecExpected[idxExpected]);
 								ASSERT(pos != std::string::npos);

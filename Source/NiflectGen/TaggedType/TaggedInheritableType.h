@@ -26,6 +26,6 @@ namespace NiflectGen
 		CXCursor m_baseTypeSpecifierCursor;
 		CTaggedType* m_baseTaggedType;
 		Niflect::TArrayNif<CTaggedInheritableTypeMember*> m_vecMember;
-		Niflect::TArrayNif<CBindingAccessorIndexedNode> m_vecMemberIndexedRoot;
+		Niflect::TArrayNif<CResolvedCursorNode> m_vecMemberIndexedRoot;
 	};
 }

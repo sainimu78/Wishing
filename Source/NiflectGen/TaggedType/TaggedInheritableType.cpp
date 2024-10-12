@@ -3,6 +3,7 @@
 #include "NiflectGen/CodeWriter/TypeReg/InheritableTypeRegCodeWriter.h"
 #include "Niflect/Util/TypeUtil.h"
 #include "Niflect/Util/DebugUtil.h"
+#include "NiflectGen/CodeWriter/TypeReg/InheritableTypeRegCodeWriter2.h"
 
 namespace NiflectGen
 {
@@ -24,11 +25,10 @@ namespace NiflectGen
 		if (itFound != mapCursorDeclToTaggedType.end())
 			m_baseTaggedType = itFound->second;
 	}
-#ifdef EMBEDDING_ELEMENT_BINDING_TYPE_INDEXED_NODE
-	static void DebugPrintIndexedNodeRecurs(const CBindingAccessorIndexedNode& indexedParent, const CBindingAccessorIndexedNode& childrenOwner, const CAccessorBindingMapping2& mapping, uint32 lv)
+	static void DebugPrintIndexedNodeRecurs(const CResolvedCursorNode& indexedParent, const CResolvedCursorNode& childrenOwner, const CAccessorBindingMapping2& mapping, uint32 lv)
 	{
 		auto strLv = NiflectUtil::DebugIndentToString(lv);
-		auto& cxType = mapping.m_vecAccessorBindingSetting[indexedParent.m_settingIdx].GetAccessorTypeDecl().m_CXType;
+		auto& cxType = mapping.m_vecAccessorBindingSetting[indexedParent.m_accessorBindingIndex].GetAccessorTypeDecl().m_CXType;
 		auto a = CXStringToCString(clang_getTypeSpelling(cxType));
 		printf("%s%s\n", strLv.c_str(), a.c_str());
 
@@ -43,111 +43,6 @@ namespace NiflectGen
 			DebugPrintIndexedNodeRecurs(*elem, indexedParent, mapping, lv);
 		}
 	}
-#else
-	static void DebugPrintIndexedNodeRecurs(const CBindingAccessorIndexedNode& indexedParent, const CAccessorBindingMapping2& mapping, uint32 lv)
-	{
-		auto strLv = NiflectUtil::DebugIndentToString(lv);
-		auto& cxType = mapping.m_vecAccessorBindingSetting[indexedParent.m_settingIdx].GetAccessorTypeDecl().m_CXType;
-		auto a = CXStringToCString(clang_getTypeSpelling(cxType));
-		printf("%s%s\n", strLv.c_str(), a.c_str());
-
-		lv++;
-		for (auto& it : indexedParent.m_vecChild)
-			DebugPrintIndexedNodeRecurs(it, mapping, lv);
-	}
-	static Niflect::CString GenerateSignatureFromIndexedNodeRecurs(const CBindingAccessorIndexedNode& indexedParent, const CAccessorBindingMapping2& mapping)
-	{
-		Niflect::CString strArgs;
-		auto& subcursor = mapping.m_vecAccessorBindingSetting[indexedParent.m_settingIdx].GetBindingTypeDecl();
-
-		if (indexedParent.IsBindingTypeTemplate())
-			strArgs += '<';
-		for (uint32 idx = 0; idx < indexedParent.m_vecChild.size(); ++idx)
-		{
-			auto& it = indexedParent.m_vecChild[idx];
-			auto strChild = GenerateSignatureFromIndexedNodeRecurs(it, mapping);
-			strArgs += strChild;
-			if (idx != indexedParent.m_vecChild.size() - 1)
-				strArgs += ", ";
-		}
-		if (indexedParent.IsBindingTypeTemplate())
-		{
-			if (indexedParent.m_vecChild.size() > 0 && indexedParent.m_vecChild.back().IsBindingTypeTemplate())
-				strArgs += ' ';
-			strArgs += '>';
-		}
-
-		auto strName = GenerateNamespacesAndScopesCode(subcursor.m_cursorDecl);
-		strName += subcursor.GetTypeName();
-		return strName + strArgs;
-	}
-#endif
-	//static Niflect::CString MakeSignatureForFieldRecurs(const CBindingAccessorIndexedNode& indexedParent, const CBindingAccessorIndexedNode& childrenOwner, const SResolvingDependenciesContext& ctx, CSignatureCodeMapping& signatureMapping)
-	//{
-	//	Niflect::CString signature;
-	//	auto ret = signatureMapping.m_mapSignatureToIndex.insert({ indexedParent.m_key, static_cast<uint32>(signatureMapping.m_vecCode.size()) });
-	//	if (ret.second)
-	//	{
-	//		if (indexedParent.m_settingIdx != INDEX_NONE)
-	//		{
-	//			Niflect::CString strArgs;
-	//			if (childrenOwner.IsBindingTypeTemplate())
-	//				strArgs += '<';
-	//			for (uint32 idx = 0; idx < childrenOwner.m_vecChild.size(); ++idx)
-	//			{
-	//				auto& it = childrenOwner.m_vecChild[idx];
-	//				auto strChild = MakeSignatureForFieldRecurs(it, it, ctx, signatureMapping);
-	//				strArgs += strChild;
-	//				if (idx != childrenOwner.m_vecChild.size() - 1)
-	//					strArgs += ", ";
-	//			}
-	//			if (childrenOwner.IsBindingTypeTemplate())
-	//			{
-	//				if ((strArgs.size() > 0 && strArgs.back() == '>')//特化无 Children, 但一定以 > 结尾, 同时又兼容生成的模板代码
-	//					//|| (childrenOwner.m_vecChild.size() > 0 && childrenOwner.m_vecChild.back().IsBindingTypeTemplate())
-	//					)
-	//				{
-	//					//可加选项决定生成风格, 是否加空格
-	//					strArgs += ' ';
-	//				}
-	//				strArgs += '>';
-	//			}
-	//			auto& strName = ctx.m_bindingAccessorMapping.m_vecAccessorBindingSetting[indexedParent.m_settingIdx].m_bindingTypePattern;
-	//			signature = strName + strArgs;
-
-	//			for (auto& it : childrenOwner.m_vecChild)
-	//				MakeSignatureForFieldRecurs(it, it, ctx, signatureMapping);
-
-	//			if (auto next = indexedParent.m_next.Get())
-	//				MakeSignatureForFieldRecurs(*next, indexedParent, ctx, signatureMapping);
-	//		}
-	//		else if (indexedParent.m_taggedIdx != INDEX_NONE)
-	//		{
-	//			signature = ctx.m_resolvedTaggedTypeMapping.m_vecType[indexedParent.m_taggedIdx]->m_typeNamePattern;
-	//			ASSERT(childrenOwner.m_vecChild.size() == 0);
-	//			ASSERT(indexedParent.m_next == NULL);
-	//		}
-	//		else
-	//		{
-	//			ASSERT(false);
-	//		}
-	//		signatureMapping.m_vecCode.push_back(CSignatureCode(signature, indexedParent));
-	//	}
-	//	else
-	//	{
-	//		signature = signatureMapping.m_vecCode[ret.first->second].m_signatureStr;
-	//	}
-
-	//	return signature;
-	//}
-
-	//static void MakeSignatureForClassDecl(const CBindingAccessorIndexedNode& indexedParent, const CResolvedTaggedTypesMapping& mapping, CSignatureCodeMapping& signatureMapping)
-	//{
-	//	auto ret = signatureMapping.m_mapSignatureToIndex.insert({ indexedParent.m_key, static_cast<uint32>(signatureMapping.m_vecCode.size()) });
-	//	ASSERT(ret.second);
-	//	auto& signature = mapping.m_vecType[indexedParent.m_taggedIdx]->m_typeNamePattern;
-	//	signatureMapping.m_vecCode.push_back(CSignatureCode(signature, indexedParent));
-	//}
 	void CTaggedInheritableType::ResolveDependcies(const CResolvingDependenciesContext& context, SResolvingDependenciesData& data)
 	{
 		inherited::ResolveDependcies(context, data);

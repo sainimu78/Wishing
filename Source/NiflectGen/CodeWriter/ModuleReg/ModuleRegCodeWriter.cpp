@@ -241,13 +241,13 @@ namespace NiflectGen
         for (auto& it0 : m_resolvedData.m_signatureMapping.m_vecItem)
         {
             CSharedTypeRegCodeWriter2 writer;
-            if (it0.m_indexedRoot.m_settingIdx != INDEX_NONE)
+            if (it0.m_resoRoot.m_accessorBindingIndex != INDEX_NONE)
             {
-                writer = Niflect::MakeShared<CMiscTypeRegCodeWriter>(it0.m_indexedRoot);
+                writer = Niflect::MakeShared<CMiscTypeRegCodeWriter>(it0.m_resoRoot);
             }
-            else if (it0.m_indexedRoot.m_taggedIdx != INDEX_NONE)
+            else if (it0.m_resoRoot.m_taggedTypeIndex != INDEX_NONE)
             {
-                auto& taggedType = m_resolvedData.m_taggedMapping.m_vecType[it0.m_indexedRoot.m_taggedIdx];
+                auto& taggedType = m_resolvedData.m_taggedMapping.m_vecType[it0.m_resoRoot.m_taggedTypeIndex];
                 writer = taggedType->CreateCodeWriter2();
 
                 //ASSERT(false);//writer基类已改

@@ -1,6 +1,6 @@
 #pragma once
 #include "NiflectGen/CodeWriter/TypeReg/TypeRegCodeWriter.h"
-#include "NiflectGen/Resolver/TypeRegSignature.h"
+#include "NiflectGen/Resolver/ResolvedCursorNode.h"
 
 namespace NiflectGen
 {
@@ -23,7 +23,7 @@ namespace NiflectGen
 	{
 		typedef CTypeRegCodeWriter2 inherited;
 	public:
-		CEnumRegCodeWriter2(const CBindingAccessorIndexedNode& bindingTypeIndexedRoot);
+		CEnumRegCodeWriter2(const CResolvedCursorNode& bindingTypeIndexedRoot);
 
 	public:
 		virtual void WriteTypeRegRegisterTypeAndFieldLayout(const CWritingContext& context, CTypeRegRegisterAndFieldLayoutWritingData& data) const override;
@@ -31,6 +31,6 @@ namespace NiflectGen
 		virtual void WriteTaggedTypeInit(const STypeRegClassWritingContext& context, CTypeRegTaggedTypeInitWritingData2& data) const override;
 
 	private:
-		const CBindingAccessorIndexedNode& m_bindingTypeIndexedRoot;
+		const CResolvedCursorNode& m_bindingTypeIndexedRoot;
 	};
 }

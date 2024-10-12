@@ -4,13 +4,13 @@
 
 namespace NiflectGen
 {
-	static Niflect::CString ResolveSignatureRecurs(const CBindingAccessorIndexedNode& indexedParent, const CBindingAccessorIndexedNode& childrenOwnerOld, const CResolvingDependenciesContext& ctx, CSignatureCodeMapping& signatureMapping)
+	static Niflect::CString ResolveSignatureRecurs(const CResolvedCursorNode& indexedParent, const CResolvedCursorNode& childrenOwnerOld, const CResolvingDependenciesContext& ctx, CResolvedCursorRootsMapping& signatureMapping)
 	{
-		auto ret = signatureMapping.m_mapSignatureToIndex.insert({ indexedParent.m_key, static_cast<uint32>(signatureMapping.m_vecItem.size()) });
+		auto ret = signatureMapping.m_mapKeyToIndex.insert({ indexedParent.m_key, static_cast<uint32>(signatureMapping.m_vecItem.size()) });
 		if (ret.second)
 		{
 			auto& childrenOwner = indexedParent;
-			if (indexedParent.m_settingIdx != INDEX_NONE)
+			if (indexedParent.m_accessorBindingIndex != INDEX_NONE)
 			{
 				//for (uint32 idx = 0; idx < childrenOwner.m_vecChild.size(); ++idx)
 				//{
@@ -28,7 +28,7 @@ namespace NiflectGen
 						ResolveSignatureRecurs(it, it, ctx, signatureMapping);
 				}
 			}
-			else if (indexedParent.m_taggedIdx != INDEX_NONE)
+			else if (indexedParent.m_taggedTypeIndex != INDEX_NONE)
 			{
 				//类或结构体定义不继续递归, 计划在生成阶段遍历member
 				ASSERT(childrenOwner.m_vecChild.size() == 0);
@@ -38,7 +38,7 @@ namespace NiflectGen
 			{
 				ASSERT(false);
 			}
-			signatureMapping.m_vecItem.push_back(CSignatureCode(Niflect::CString(), indexedParent));
+			signatureMapping.m_vecItem.push_back(CResolvedCursorRoots(Niflect::CString(), indexedParent));
 		}
 		else
 		{
@@ -47,7 +47,7 @@ namespace NiflectGen
 		return Niflect::CString();
 	}
 
-	Niflect::CString ResolveSignature(const CBindingAccessorIndexedNode& indexedParent, const CResolvingDependenciesContext& ctx, CSignatureCodeMapping& signatureMapping)
+	Niflect::CString ResolveSignature(const CResolvedCursorNode& indexedParent, const CResolvingDependenciesContext& ctx, CResolvedCursorRootsMapping& signatureMapping)
 	{
 		return ResolveSignatureRecurs(indexedParent, indexedParent, ctx, signatureMapping);
 	}
@@ -73,7 +73,7 @@ namespace NiflectGen
 		for (auto& it : m_vecType)
 			it->InitPattern();
 	}
-	bool CTaggedTypesMapping::InitIndexedNodeForClassDecl(const CXCursor& cursor, CBindingAccessorIndexedNode& indexedParent) const
+	bool CTaggedTypesMapping::InitIndexedNodeForClassDecl(const CXCursor& cursor, CResolvedCursorNode& indexedParent) const
 	{
 		auto itFound = m_mapCursorToIndex.find(cursor);
 		if (itFound != m_mapCursorToIndex.end())
