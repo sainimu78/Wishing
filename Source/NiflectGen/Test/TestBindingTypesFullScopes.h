@@ -50,6 +50,9 @@ namespace TestGenMyScope
 namespace EngineTypeBindingSettingScope
 {
 	using namespace Niflect;
+	using namespace TestAccessor2;
+
+	NIF_BS() TBindingSetting<TMyTransformAccessor<float>, TMyTransform<float> >;
 
 	using CMyTM = TestAccessor2::TMyTransform<float>;
 	NIF_BS() TBindingSetting<TestAccessor2::TMyTransformAccessor<float>, CMyTM>;

@@ -38,9 +38,6 @@ namespace Niflect
 	{
 		return TRegisteredType<T>::s_type;
 	}
-
-	template <typename T>
-	using TInternalRegisteredType = TRegisteredType<T>;//旧代码兼容, 一定阶段后移除
 	
 
 	////begin, 已验证无法通过特化区分原始类型与别名(using和typedef定义的别名)

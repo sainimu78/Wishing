@@ -3,21 +3,13 @@
 #include "NiflectGen/Collector/TypeDecl.h"
 #include "NiflectGen/Collector/AccessorData.h"
 #include "NiflectGen/Util/CursorMap.h"
-#include "NiflectGen/Resolver/ResolvedCursorNode.h"
+#include "NiflectGen/Resolver/ResocursorNode.h"
 
 namespace NiflectGen
 {
 	class CTaggedType;
 	class CUntaggedTemplate;
-
-	class CTaggedTypesMapping
-	{
-	public:
-		void InitPatterns();
-		bool InitIndexedNodeForClassDecl(const CXCursor& cursor, CResolvedCursorNode& indexedParent) const;
-		TCursorMap<uint32> m_mapCursorToIndex;
-		Niflect::TArrayNif<CTaggedType*> m_vecType;
-	};
+	class CTaggedTypesMapping;
 
 	class CUntaggedTemplateTypesMapping
 	{
@@ -86,8 +78,8 @@ namespace NiflectGen
 		CXCursor m_actualFieldDeclCursor;//todo: 应废弃, 改为通过aliasChain查找
 		CSubcursor m_subcursorRoot;
 		CAccessorData m_accessorData;//todo: 应废弃, 改为通过AccessorBindingMapping查找并获取对应信息
-		Niflect::CString m_bindingTypePattern;
-		Niflect::CString m_accessorTypePattern;
+		Niflect::CString m_bindingTypeCursorName;
+		Niflect::CString m_accessorTypeCursorName;
 	};
 
 	class CFoundResult
@@ -115,11 +107,14 @@ namespace NiflectGen
 		bool FindBindingTypesSSSSSSSSSSS(const CXType& fieldOrArgCXType, const Niflect::TArrayNif<CXCursor>& vecDetailCursor, uint32& detailIteratingIdx, CFoundResult& result) const;
 		void FindBindingTypeRecurs(const CXType& fieldOrArgCXType, const Niflect::TArrayNif<CXCursor>& vecDetailCursor, const CTaggedTypesMapping& taggedMapping, const CUntaggedTemplateTypesMapping& untaggedTemplateMapping, CResolvedCursorNode& resultIndexedParent, uint32& detailIteratingIdx) const;
 
+		void GenerateCursorName(const CXCursor& fieldCursor, const Niflect::TArrayNif<CXCursor>& vecDetailCursor, const CTaggedTypesMapping& taggedMapping, const CUntaggedTemplateTypesMapping& untaggedTemplateMapping, CResolvedCursorNode& resultIndexedParent) const;
+		void GenerateCursorNameRecurs(const CXType& fieldOrArgCXType, const Niflect::TArrayNif<CXCursor>& vecDetailCursor, const CTaggedTypesMapping& taggedMapping, const CUntaggedTemplateTypesMapping& untaggedTemplateMapping, CResolvedCursorNode& resultIndexedParent, uint32& detailIteratingIdx) const;
+
 	public:
 		Niflect::TArrayNif<CBindingSettingData> m_vecAccessorBindingSetting;
 		TCursorMap<uint32> m_mapCursorToIndex;
 		TCXTypeMap<uint32> m_mapCXTypeToIndex;
-		TCursorMap<uint32> m_mapSpecializedCursorToIndex;
+		TCursorMap<uint32> m_mapSpecializedCursorToIndex;//包括特化模板与TaggedType对应的类型
 	};
 	using CSharedAccessorBindingMapping = Niflect::TSharedPtr<CAccessorBindingMapping2>;
 

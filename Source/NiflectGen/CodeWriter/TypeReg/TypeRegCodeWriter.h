@@ -3,9 +3,12 @@
 #include "NiflectGen/CodeWriter/TypeReg/TypeRegCode.h"
 #include "clang-c/Index.h"
 #include "NiflectGen/CodeWriter/CodeRequirement.h"
+#include "NiflectGen/Resolver/ResocursorNode.h"
 
 namespace NiflectGen
 {
+	class CResolvedData;
+
 	class CTypeRegDeclWrittingData
 	{
 	public:
@@ -100,7 +103,7 @@ namespace NiflectGen
 	class CTypeRegRegisterAndFieldLayoutWritingData
 	{
 	public:
-		CCodeLines m_linesRegisterType;
+		CCodeLines m_linesInvokeRegisterType;
 		CCodeLines m_linesFieldLayoutDecl;
 		CCodeLines m_linesFieldLayoutImpl;
 		Niflect::CString m_fieldLayoutFuncName;
@@ -127,12 +130,38 @@ namespace NiflectGen
 		CGenLog* m_log;
 	};
 
+	struct STypeRegInvokeRegisterTypeWritingData
+	{
+		CCodeLines& m_linesInvokeRegisterType;
+		Niflect::CString m_createFieldLayoutOfTypeFuncName;
+	};
+
+	struct STypeRegCreateFieldLayoutOfTypeWritingContext
+	{
+		const Niflect::CString& m_createFieldLayoutOfTypeFuncName;
+		CGenLog* m_log;
+	};
+
+	struct STypeRegCreateFieldLayoutOfTypeWritingData
+	{
+		CCodeLines& m_linesCreateFieldLayoutOfTypeDecl;
+		CCodeLines& m_linesCreateFieldLayoutOfTypeImpl;
+	};
+
 	class CTypeRegCodeWriter2
 	{
 	public:
+		CTypeRegCodeWriter2();
+		void Init(const CResolvedData* resolvedData, const CResolvedCursorNode* bindingTypeIndexedRoot);
+		virtual void WriteInvokeRegisterType(const CWritingContext& context, STypeRegInvokeRegisterTypeWritingData& data) const;
+		virtual void WriteCreateFieldLayoutOfType(const STypeRegCreateFieldLayoutOfTypeWritingContext& context, STypeRegCreateFieldLayoutOfTypeWritingData& data) const;
 		virtual void WriteTypeRegRegisterTypeAndFieldLayout(const CWritingContext& context, CTypeRegRegisterAndFieldLayoutWritingData& data) const = 0;
-		virtual void WriteTypeRegClass(const STypeRegClassWritingContext& context, CTypeRegClassWritingData2& data) const {}
+		virtual void Deprecated_WriteTypeRegClass(const STypeRegClassWritingContext& context, CTypeRegClassWritingData2& data) const {}
 		virtual void WriteTaggedTypeInit(const STypeRegClassWritingContext& context, CTypeRegTaggedTypeInitWritingData2& data) const {}
+
+	protected:
+		const CResolvedCursorNode* m_bindingTypeIndexedRoot;
+		const CResolvedData* m_resolvedData;
 	};
 	using CSharedTypeRegCodeWriter2 = Niflect::TSharedPtr<CTypeRegCodeWriter2>;
 }

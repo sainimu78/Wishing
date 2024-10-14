@@ -3,30 +3,30 @@
 
 namespace Niflect
 {
-	class CNiflectRegisterTypeOption
+	class CStringRef
 	{
-		typedef CNiflectRegisterTypeOption CThis;
 	public:
-		CNiflectRegisterTypeOption()
-			: m_CreateFieldLayoutFunc(NULL)
+		CStringRef()
+			: m_p(NULL)
 		{
 		}
-
-	public:
-		CThis& SetCreateFieldLayoutFunc(const InvokeCreateFieldLayoutFunc& Func)
+		CStringRef(const Niflect::CString* p)
+			: m_p(p)
 		{
-			m_CreateFieldLayoutFunc = Func;
-			return *this;
 		}
-		CThis& SetNativeTypeName(const Niflect::CString& name)
+		CStringRef(const Niflect::CString& localScopeTmp)
+			: m_p(&localScopeTmp)
 		{
-			m_nativeTypeName = name;
-			return *this;
 		}
-
-	public:
-		InvokeCreateFieldLayoutFunc m_CreateFieldLayoutFunc;
-		Niflect::CString m_nativeTypeName;
+		bool operator<(const CStringRef& rhs) const
+		{
+			return (*m_p) < (*rhs.m_p);
+		}
+		const Niflect::CString& Get() const
+		{
+			return *m_p;
+		}
+		const Niflect::CString* m_p;
 	};
 
 	//为Module中所有CNiflectType的容器, 不需要被继承
@@ -39,36 +39,35 @@ namespace Niflect
 			m_name = name;
 		}
 		template <typename TInfo, typename TType>
-		void RegisterType(const CString& typeName, const InvokeCreateFieldLayoutFunc& Func)
+		void RegisterType(const CString& typeName, const InvokeCreateFieldLayoutOfTypeFunc& Func)
 		{
 			CTypeInvokations typeFuncs;
 			typeFuncs.m_InvokeConstructorFunc = &GenericInstanceInvokeConstructor<TType>;
 			typeFuncs.m_InvokeDestructorFunc = &GenericInstanceInvokeDestructor<TType>;
-			typeFuncs.m_InvokeCreateFieldLayoutFunc = Func;
+			typeFuncs.m_InvokeCreateFieldLayoutOfTypeFunc = Func;
 
 			auto shared = MakeShared<TInfo>();
 			auto type = shared.Get();
 			auto idx = this->AddType(shared);
-			ASSERT(!TInternalRegisteredType<TType>::IsValid());
-			TInternalRegisteredType<TType>::s_type = type;
+			ASSERT(!TRegisteredType<TType>::IsValid());
+			TRegisteredType<TType>::s_type = type;
 			//type->InitStaticType<TType>();
 			type->InitTypeMeta(sizeof(TType), CNiflectType::GetTypeHash<TType>(), typeName, idx, typeFuncs);
-			ASSERT(TInternalRegisteredType<TType>::IsValid());
+			ASSERT(TRegisteredType<TType>::IsValid());
 		}
 		template <typename TType, typename TInfo = CNiflectType>
-		void RegisterType2(const CNiflectRegisterTypeOption& opt)
+		void RegisterType2(const Niflect::CString& id, const InvokeCreateFieldLayoutOfTypeFunc& Func)
 		{
 			CTypeInvokations typeFuncs;
 			typeFuncs.m_InvokeConstructorFunc = &GenericInstanceInvokeConstructor<TType>;
 			typeFuncs.m_InvokeDestructorFunc = &GenericInstanceInvokeDestructor<TType>;
-			typeFuncs.m_InvokeCreateFieldLayoutFunc = Func;
+			typeFuncs.m_InvokeCreateFieldLayoutOfTypeFunc = Func;
 
 			auto shared = Niflect::MakeShared<TInfo>();
 			CNiflectType* type = shared.Get();
 			auto idx = this->AddType(shared);
-			ASSERT(!TegisteredType<TType>::IsValid());
-			TRegisteredType<TType>::s_type = type;
-			type->InitTypeMeta2(sizeof(TType), CNiflectType::GetTypeHash<TType>(), idx, typeFuncs, opt.m_nativeTypeName);
+			ASSERT(!TRegisteredType<TType>::IsValid());
+			type->InitTypeMeta2(sizeof(TType), CNiflectType::GetTypeHash<TType>(), idx, typeFuncs, id, &TRegisteredType<TType>::s_type);
 			ASSERT(TRegisteredType<TType>::IsValid());
 		}
 		uint32 GetTypesCount() const
@@ -79,17 +78,34 @@ namespace Niflect
 		{
 			return m_vecType[idx].Get();
 		}
+		CNiflectType* FindTypeById(const Niflect::CString& id) const
+		{
+			auto itFound = m_mapIdToIndex.find(&id);
+			if (itFound != m_mapIdToIndex.end())
+				return m_vecType[itFound->second].Get();
+			return NULL;
+		}
 		
 	private:
-		uint32 AddType(const CSharedType& type)
+		uint32 AddType(const CSharedNiflectType& type)
 		{
 			uint32 idx = this->GetTypesCount();
+			auto ret = m_mapIdToIndex.insert({ &type->GetTypeName(), idx });
+			ASSERT(ret.second);
 			m_vecType.push_back(type);
 			return idx;
 		}
+		void DeleteType(const CNiflectType* type)//备用
+		{
+			auto itFound = m_mapIdToIndex.find(&type->GetTypeName());
+			ASSERT(itFound != m_mapIdToIndex.end());
+			m_vecType.erase(m_vecType.begin() + itFound->second);
+			m_mapIdToIndex.erase(itFound);
+		}
 
-	public:
-		TArrayNif<CSharedType> m_vecType;
+	private:
+		TArrayNif<CSharedNiflectType> m_vecType;
+		TMap<CStringRef, uint32> m_mapIdToIndex;
 		CString m_name;
 	};
 	using CSharedTable = TSharedPtr<CNiflectTable>;
@@ -98,16 +114,43 @@ namespace Niflect
 	class TStaticTableTypeReg
 	{
 	public:
-		TStaticTableTypeReg(CNiflectTable* table, const CString& typeName, const InvokeCreateFieldLayoutFunc& Func)
+		TStaticTableTypeReg(CNiflectTable* table, const CString& typeName, const InvokeCreateFieldLayoutOfTypeFunc& Func)
 		{
 			table->RegisterType<TInfo, TType>(typeName, Func);
 		}
 		template <typename TNatimeta>
-		TStaticTableTypeReg(CNiflectTable* table, const CString& typeName, const InvokeCreateFieldLayoutFunc& Func, const TNatimeta& natimeta)
+		TStaticTableTypeReg(CNiflectTable* table, const CString& typeName, const InvokeCreateFieldLayoutOfTypeFunc& Func, const TNatimeta& natimeta)
 			: TStaticTableTypeReg(table, typeName, Func)
 		{
 			auto type = StaticGetType<TType>();
 			type->SetNatimeta(MakeShared<TNatimeta>(natimeta));
+		}
+	};
+
+	template <typename TNatimeta>
+	static const CSharedNatimeta& DuplicateDerivedNatimeta(const TNatimeta& derived)
+	{
+		return Niflect::MakeShared<TNatimeta(derived);
+	}
+
+	template <typename TType, typename TInfo>
+	class TStaticTypeRegger
+	{
+	public:
+		//TStaticTypeRegger(CNiflectTable* table, const Niflect::CString& id, const InvokeStaticCreateFieldLayoutFunc& Func)
+		//{
+		//	table->RegisterType2<TType, TInfo>(id, Func);
+		//}
+		template <typename TNatimeta>
+		TStaticTypeRegger(CNiflectTable* table, const Niflect::CString& id, const InvokeCreateFieldLayoutOfTypeFunc& Func, const TNatimeta& natimeta)
+			//: TStaticTypeRegger(table, id, Func)
+		{
+			table->RegisterType2<TType, TInfo>(id, Func);
+			if (sizeof(TNatimeta) > sizeof(CNatimeta))
+			{
+				auto type = StaticGetType<TType>();
+				type->InitNatimeta(Niflect::MakeShared<TNatimeta>(natimeta));
+			}
 		}
 	};
 
@@ -134,6 +177,12 @@ namespace Niflect
 //#define NIFLECT_STATIC_TYPE_REG_VAR_NAME(typeName) NIFLECT_STATIC_TYPE_REG_VAR_NAME_COMBINE(typeName, __LINE__)
 //end
 
-#define NIFLECT_REGISTER(niflectType, typeName, invokeGetTable, customDataObject)\
+#define DEPRECATED_NIFLECT_REGISTER(niflectType, typeName, invokeGetTable, customDataObject)\
 	static Niflect::TStaticTableTypeReg<niflectType, typeName> s_typeReg_##typeName(invokeGetTable, #typeName, customDataObject);
+
+#define NIFLECT_TYPE_REGISTER(typeName, niflectType, invokeGetTable, staticCreateFieldLayoutFuncAddr, natimetaType, natimetaObj)\
+	static Niflect::TStaticTypeRegger<typeName, niflectType> s_typeReg_##typeName(invokeGetTable, #typeName, staticCreateFieldLayoutFuncAddr, natimetaType(natimetaObj))
+
+#define NIFLECT_CLASS_REGISTER(typeName, invokeGetTable, staticCreateFieldLayoutFuncAddr, natimetaType, natimetaObj)\
+	NIFLECT_TYPE_REGISTER(typeName, Niflect::CClass, invokeGetTable, staticCreateFieldLayoutFuncAddr, natimetaType, natimetaObj)
 }

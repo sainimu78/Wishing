@@ -11,7 +11,7 @@ namespace Niflect
 	template <typename TType, typename TAccessor, typename TInfo>
 	static TInfo* GetOrRegisterType(CNiflectTable* table, const Niflect::CString& typeName)
 	{
-		if (!TInternalRegisteredType<TType>::IsValid())
+		if (!TRegisteredType<TType>::IsValid())
 		{
 			ASSERT(!typeName.empty());
 			table->RegisterType<TInfo, TType>(typeName, &__InternalCreateFieldLayoutForFunctionPointer<TAccessor>);
@@ -52,7 +52,7 @@ namespace Niflect
 	template <>
 	CNiflectType* StaticGetType<TestRegistration::CMyRegClass>()
 	{
-		return TInternalRegisteredType<TestRegistration::CMyRegClass>::s_type;
+		return TRegisteredType<TestRegistration::CMyRegClass>::s_type;
 	}
 }
 

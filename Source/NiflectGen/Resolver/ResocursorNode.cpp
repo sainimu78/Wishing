@@ -1,4 +1,4 @@
-#include "NiflectGen/Resolver/ResolvedCursorNode.h"
+#include "NiflectGen/Resolver/ResocursorNode.h"
 #include "Niflect/Util/DebugUtil.h"
 #include "Niflect/Util/StringUtil.h"
 #include "NiflectGen/Base/NiflectGenDefinition.h"
@@ -21,8 +21,8 @@ namespace NiflectGen
 		m_key += '(';
 		m_key += std::to_string(foundIdx).c_str();
 
-		ASSERT(m_resoCursorName.empty());
-		m_resoCursorName = signature;
+		ASSERT(m_resocursorName.empty());
+		m_resocursorName = signature;
 	}
 	//static void SADSAF(Niflect::TArrayNif<const CBindingAccessorIndexedNode*>& vec, Niflect::CString& str)
 	//{
@@ -52,22 +52,22 @@ namespace NiflectGen
 		}
 		if (childrenOwner.IsTemplateFormat())
 		{
-			NiflectGenDefinition::CodeStyle::TemplateAngleBracketL(m_resoCursorName);
+			NiflectGenDefinition::CodeStyle::TemplateAngleBracketL(m_resocursorName);
 			if (auto elem = childrenOwner.m_elem.Get())
 			{
 				ASSERT(childrenOwner.m_vecChild.size() == 0);
-				m_resoCursorName += elem->m_resoCursorName;
+				m_resocursorName += elem->m_resocursorName;
 			}
 			else
 			{
 				for (uint32 idx = 0; idx < childrenOwner.m_vecChild.size(); ++idx)
 				{
-					m_resoCursorName += childrenOwner.m_vecChild[idx].m_resoCursorName;
+					m_resocursorName += childrenOwner.m_vecChild[idx].m_resocursorName;
 					if (idx != childrenOwner.m_vecChild.size() - 1)
-						m_resoCursorName += ", ";
+						m_resocursorName += ", ";
 				}
 			}
-			NiflectGenDefinition::CodeStyle::TemplateAngleBracketR(m_resoCursorName);
+			NiflectGenDefinition::CodeStyle::TemplateAngleBracketR(m_resocursorName);
 		}
 		if (auto elem = childrenOwner.m_elem.Get())
 		{
@@ -93,16 +93,18 @@ namespace NiflectGen
 		this->InitForTemplateArguments(childrenOwner);
 		this->InitForTemplateEnd();
 	}
-	void CResolvedCursorNode::InitForClassDecl(const Niflect::CString& signature, uint32 foundIdx, const Niflect::CString& headerFilePath)
+	void CResolvedCursorNode::InitForClassDecl(const Niflect::CString& signature, uint32 taggedTypeIdx, uint32 accessorBindingIdx, const Niflect::CString& headerFilePath)
 	{
 		ASSERT(m_key.empty());
 		m_key += '[';
-		m_key += std::to_string(foundIdx).c_str();
+		m_key += std::to_string(taggedTypeIdx).c_str();
 		m_key += ']';
-		m_taggedTypeIndex = foundIdx;
+		m_taggedTypeIndex = taggedTypeIdx;
 
-		ASSERT(m_resoCursorName.empty());
-		m_resoCursorName = signature;
+		m_accessorBindingIndex = accessorBindingIdx;
+
+		ASSERT(m_resocursorName.empty());
+		m_resocursorName = signature;
 
 		ASSERT(m_vecRequiredHeaderFilePath.size() == 0);
 		m_vecRequiredHeaderFilePath.push_back(headerFilePath);
@@ -111,7 +113,7 @@ namespace NiflectGen
 	static void DebugGenSignature2222(const CResolvedCursorNode& indexedParent, uint32 lv, const char* pszLv, Niflect::TArrayNif<Niflect::CString>& vecSignature)
 	{
 		auto strLv = NiflectUtil::DebugIndentToString(lv, pszLv);
-		auto result = NiflectUtil::FormatString("%s%s", strLv.c_str(), indexedParent.m_resoCursorName.c_str());
+		auto result = NiflectUtil::FormatString("%s%s", strLv.c_str(), indexedParent.m_resocursorName.c_str());
 		vecSignature.push_back(result);
 	}
 	static void DebugGenSignature(const CResolvedCursorNode& indexedParent, Niflect::TArrayNif<Niflect::CString>& vecSignature)
@@ -143,7 +145,7 @@ namespace NiflectGen
 	static void DebugPrintSSSSSSSSSSSSSSSSSSAAAAAAAAA(const CResolvedCursorNode& indexedParent, uint32 lv, const char* pszLv)
 	{
 		auto strLv = NiflectUtil::DebugIndentToString(lv, pszLv);
-		printf("%s%s\n", strLv.c_str(), indexedParent.m_resoCursorName.c_str());
+		printf("%s%s\n", strLv.c_str(), indexedParent.m_resocursorName.c_str());
 	}
 	static void DebugPrintRecursOk(const CResolvedCursorNode& indexedParent)
 	{

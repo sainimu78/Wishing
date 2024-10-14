@@ -42,6 +42,8 @@ namespace TestMyFinding
 		Niflect::CString m_string_5;
 		NIF_F()
 		EMyOption m_ec_opt_6;
+		NIF_F()
+		Niflect::TArrayNif<float> m_array_float_7;
 	};
 
 	NIF_T()

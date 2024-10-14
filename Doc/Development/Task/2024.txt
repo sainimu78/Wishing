@@ -35,7 +35,9 @@
 	1. 考虑限制模板用途认定规则, 见Main.cpp, 12, 13, 14
 19. NiflectGen, using与typedef支持NIF_T, 仅注册不提供结构的用法
 20, NiflectGen, 生成时无任何member则FieldLayout为NULL
-21, NiflectGen, 增加一种AccessorBinding用于指定枚举的Accessor, 且不可重复指定
+21, NiflectGen, 增加其它Accessor
+	1. 一种AccessorBinding用于指定枚举的Accessor, 且不可重复指定
+	2. 一种AccessorBinding用于指定非枚举的默认Accessor (现 CCompoundAccessor), 且不可重复指定
 22. NiflectGen, Splitted模式, cmake设置不添加到VS中
 	1. 示例
 		# 单个文件

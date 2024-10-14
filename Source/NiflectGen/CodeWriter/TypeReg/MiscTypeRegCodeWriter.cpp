@@ -5,14 +5,9 @@
 
 namespace NiflectGen
 {
-	CMiscTypeRegCodeWriter::CMiscTypeRegCodeWriter(const CResolvedCursorNode& bindingTypeIndexedRoot)
-		: m_bindingTypeIndexedRoot(bindingTypeIndexedRoot)
-	{
-
-	}
 	static void WriteDDDDDDDD(const CResolvedCursorNode& indexedParent, uint32 lv, const char* pszLv, CCodeLines& lines)
 	{
-		lines.push_back(indexedParent.m_resoCursorName);
+		lines.push_back(indexedParent.m_resocursorName);
 	}
 	static void WriteNexts(const CResolvedCursorNode& indexedParent, CCodeLines& lines)
 	{
@@ -41,7 +36,7 @@ R"(AAAAAAA<${Nihao}>)"
 ;
 			CCodeTemplate tpl1;
 			tpl1.ReadFromRawData(aaaaaaaaaaaaaaaaa);
-			data.m_fieldLayoutFuncName = ReplaceLabelToText1(aaaaaaaaaaaaaaaaa, "Nihao", m_bindingTypeIndexedRoot.m_resoCursorName);
+			data.m_fieldLayoutFuncName = ReplaceLabelToText1(aaaaaaaaaaaaaaaaa, "Nihao", m_bindingTypeIndexedRoot->m_resocursorName);
 		}
 		{
 			static const char* aaaaaaaaaaaaaaaaa =
@@ -50,10 +45,10 @@ R"(table->RegisterType<${Nihao}>("${Nihao}", &${Bucuo});)"
 			CCodeTemplate tpl1;
 			tpl1.ReadFromRawData(aaaaaaaaaaaaaaaaa);
 			CLabelToCodeMapping map;
-			MapLabelToText(map, "Nihao", m_bindingTypeIndexedRoot.m_resoCursorName);
+			MapLabelToText(map, "Nihao", m_bindingTypeIndexedRoot->m_resocursorName);
 			MapLabelToText(map, "Bucuo", data.m_fieldLayoutFuncName);
 			Niflect::TSet<Niflect::CString> setReplacedLabel;
-			tpl1.ReplaceLabels(map, data.m_linesRegisterType, &setReplacedLabel);
+			tpl1.ReplaceLabels(map, data.m_linesInvokeRegisterType, &setReplacedLabel);
 		}
 		Niflect::CString funcSignature;
 		{
@@ -79,7 +74,7 @@ R"(void ${Bucuo}()
 			CLabelToCodeMapping map;
 			MapLabelToText(map, "Bucuo", data.m_fieldLayoutFuncName);
 			CCodeLines linesNexts;
-			WriteNexts(m_bindingTypeIndexedRoot, linesNexts);
+			WriteNexts(*m_bindingTypeIndexedRoot, linesNexts);
 			MapLabelToLines(map, "Shima", linesNexts);
 			Niflect::TSet<Niflect::CString> setReplacedLabel;
 			tpl1.ReplaceLabels(map, data.m_linesFieldLayoutImpl, &setReplacedLabel);

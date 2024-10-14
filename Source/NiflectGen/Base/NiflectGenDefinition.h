@@ -59,17 +59,21 @@ namespace NiflectGenDefinition
 	namespace CodeStyle
 	{
 		constexpr const bool AddingSpaceBetweenNestedTemplateRightAngleBrackets = true;
-		static void TemplateAngleBracketL(Niflect::CString& str)
-		{
-			str += '<';
-		}
-		static void TemplateAngleBracketR(Niflect::CString& str)
+		static void TryFormatNestedTemplate(Niflect::CString& str)
 		{
 			if (AddingSpaceBetweenNestedTemplateRightAngleBrackets)
 			{
 				if (str.back() == '>')
 					str += ' ';
 			}
+		}
+		static void TemplateAngleBracketL(Niflect::CString& str)
+		{
+			str += '<';
+		}
+		static void TemplateAngleBracketR(Niflect::CString& str)
+		{
+			TryFormatNestedTemplate(str);
 			str += '>';
 		}
 	}
@@ -100,6 +104,7 @@ namespace NiflectGenDefinition
 
 		namespace InfoTypeName
 		{
+			constexpr const char* NiflectType = "CNiflectType";
 			constexpr const char* Struct = "CStruct";
 			constexpr const char* Class = "CClass";
 			constexpr const char* Enum = "CEnum";

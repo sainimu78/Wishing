@@ -8,9 +8,8 @@
 
 namespace NiflectGen
 {
-	CInheritableTypeRegCodeWriter2::CInheritableTypeRegCodeWriter2(const CResolvedCursorNode& bindingTypeIndexedRoot, const Niflect::TArrayNif<CResolvedCursorNode>& vecMemberIndexedRoot, const CTaggedType* baseTaggedType)
-		: m_bindingTypeIndexedRoot(bindingTypeIndexedRoot)
-		, m_vecMemberIndexedRoot(vecMemberIndexedRoot)
+	CInheritableTypeRegCodeWriter2::CInheritableTypeRegCodeWriter2(const Niflect::TArrayNif<CResolvedCursorNode>& vecMemberIndexedRoot, const CTaggedType* baseTaggedType)
+		: m_vecMemberIndexedRoot(vecMemberIndexedRoot)
 		, m_baseTaggedType(baseTaggedType)
 	{
 
@@ -23,7 +22,7 @@ R"(BBBBBBBB<${Nihao}>)"
 ;
 			CCodeTemplate tpl1;
 			tpl1.ReadFromRawData(aaaaaaaaaaaaaaaaa);
-			data.m_fieldLayoutFuncName = ReplaceLabelToText1(aaaaaaaaaaaaaaaaa, "Nihao", m_bindingTypeIndexedRoot.m_resoCursorName);
+			data.m_fieldLayoutFuncName = ReplaceLabelToText1(aaaaaaaaaaaaaaaaa, "Nihao", m_bindingTypeIndexedRoot->m_resocursorName);
 		}
 		{
 			static const char* aaaaaaaaaaaaaaaaa =
@@ -32,10 +31,10 @@ R"(table->RegisterType<${Nihao}>("${Nihao}", &${Bucuo});)"
 			CCodeTemplate tpl1;
 			tpl1.ReadFromRawData(aaaaaaaaaaaaaaaaa);
 			CLabelToCodeMapping map;
-			MapLabelToText(map, "Nihao", m_bindingTypeIndexedRoot.m_resoCursorName);
+			MapLabelToText(map, "Nihao", m_bindingTypeIndexedRoot->m_resocursorName);
 			MapLabelToText(map, "Bucuo", data.m_fieldLayoutFuncName);
 			Niflect::TSet<Niflect::CString> setReplacedLabel;
-			tpl1.ReplaceLabels(map, data.m_linesRegisterType, &setReplacedLabel);
+			tpl1.ReplaceLabels(map, data.m_linesInvokeRegisterType, &setReplacedLabel);
 		}
 		Niflect::CString funcSignature;
 		{
@@ -62,7 +61,7 @@ R"(void ${Bucuo}()
 			MapLabelToText(map, "Bucuo", data.m_fieldLayoutFuncName);
 			CCodeLines linesMembers;
 			for (auto& it : m_vecMemberIndexedRoot)
-				linesMembers.push_back(it.m_resoCursorName);
+				linesMembers.push_back(it.m_resocursorName);
 			MapLabelToLines(map, "Shima", linesMembers);
 			Niflect::TSet<Niflect::CString> setReplacedLabel;
 			tpl1.ReplaceLabels(map, data.m_linesFieldLayoutImpl, &setReplacedLabel);
@@ -95,13 +94,13 @@ R"(static void StaticInitType()
 			CCodeTemplate tpl1;
 			tpl1.ReadFromRawData(aaaaaaaaaaaaaaaaa);
 			CLabelToCodeMapping map;
-			MapLabelToText(map, "Nihao", m_bindingTypeIndexedRoot.m_resoCursorName);
-			MapLabelToText(map, "Bucuo", m_baseTaggedType->m_classDeclIndexedRoot.m_resoCursorName);
+			MapLabelToText(map, "Nihao", m_bindingTypeIndexedRoot->m_resocursorName);
+			MapLabelToText(map, "Bucuo", m_baseTaggedType->m_taggedResoRoot.m_resocursorName);
 			Niflect::TSet<Niflect::CString> setReplacedLabel;
 			tpl1.ReplaceLabels(map, lines, &setReplacedLabel);
 		}
 	}
-	void CInheritableTypeRegCodeWriter2::WriteTypeRegClass(const STypeRegClassWritingContext& context, CTypeRegClassWritingData2& data) const
+	void CInheritableTypeRegCodeWriter2::Deprecated_WriteTypeRegClass(const STypeRegClassWritingContext& context, CTypeRegClassWritingData2& data) const
 	{
 		static const char* aaaaaaaaaaaaaaaaa =
 R"(class CMyTypeReg_${Nihao}
@@ -114,7 +113,7 @@ public:
 		CCodeTemplate tpl1;
 		tpl1.ReadFromRawData(aaaaaaaaaaaaaaaaa);
 		CLabelToCodeMapping map;
-		MapLabelToText(map, "Nihao", m_bindingTypeIndexedRoot.m_resoCursorName);
+		MapLabelToText(map, "Nihao", m_bindingTypeIndexedRoot->m_resocursorName);
 		CCodeLines linesStaticRegisterType;
 		this->WriteStaticRegisterType(context, linesStaticRegisterType);
 		MapLabelToLines(map, "Shima", linesStaticRegisterType);
@@ -135,8 +134,8 @@ type->InitInheritableTypeMeta(StaticGetType<${Bucuo}>);)";
 			CCodeTemplate tpl1;
 			tpl1.ReadFromRawData(aaaaaaaaaaaaaaaaa);
 			CLabelToCodeMapping map;
-			MapLabelToText(map, "Nihao", m_bindingTypeIndexedRoot.m_resoCursorName);
-			MapLabelToText(map, "Bucuo", m_baseTaggedType->m_classDeclIndexedRoot.m_resoCursorName);
+			MapLabelToText(map, "Nihao", m_bindingTypeIndexedRoot->m_resocursorName);
+			MapLabelToText(map, "Bucuo", m_baseTaggedType->m_taggedResoRoot.m_resocursorName);
 			Niflect::TSet<Niflect::CString> setReplacedLabel;
 			tpl1.ReplaceLabels(map, data.m_lines, &setReplacedLabel);
 		}

@@ -9,7 +9,14 @@ namespace Niflect
 {	
 	typedef uint32 CTypeIndex;
 
-	typedef CSharedAccessor (*InvokeCreateFieldLayoutFunc)();
+	template <typename TType>
+	CSharedAccessor StaticCreateFieldLayout()
+	{
+		ASSERT(false);
+		return NULL;
+	}
+
+	typedef CSharedAccessor (*InvokeCreateFieldLayoutOfTypeFunc)();
 
 	class CTypeInvokations
 	{
@@ -17,12 +24,12 @@ namespace Niflect
 		CTypeInvokations()
 			: m_InvokeConstructorFunc(NULL)
 			, m_InvokeDestructorFunc(NULL)
-			, m_InvokeCreateFieldLayoutFunc(NULL)
+			, m_InvokeCreateFieldLayoutOfTypeFunc(NULL)
 		{
 		}
 		InvokeConstructorFunc m_InvokeConstructorFunc;//一些其它框架中称作 Ctor 与 Dtor
 		InvokeDestructorFunc m_InvokeDestructorFunc;
-		InvokeCreateFieldLayoutFunc m_InvokeCreateFieldLayoutFunc;
+		InvokeCreateFieldLayoutOfTypeFunc m_InvokeCreateFieldLayoutOfTypeFunc;
 	};
 
 	//Native Meta
@@ -33,6 +40,9 @@ namespace Niflect
 	};
 	using CSharedNatimeta = TSharedPtr<CNatimeta>;
 
+	class CNiflectType;
+	using CStaticNiflectTypeAddr = CNiflectType*;
+
 	class CNiflectType
 	{
 	public:
@@ -40,7 +50,13 @@ namespace Niflect
 			: m_index(INDEX_NONE)
 			, m_niflectTypeSize(0)
 			, m_typeHash(0)
+			, m_staticTypePtrAddr(NULL)
 		{
+		}
+		~CNiflectType()
+		{
+			if (m_staticTypePtrAddr != NULL)
+				*m_staticTypePtrAddr = NULL;
 		}
 
 	public:
@@ -52,13 +68,15 @@ namespace Niflect
 			m_cb = cb;
 			m_typeHash = typeHash;
 		}
-		void InitTypeMeta2(uint32 nativeTypeSize, size_t typeHash, CTypeIndex tableIdx, const CTypeInvokations& typeFuncs, const CString& nativeTypeName)
+		void InitTypeMeta2(uint32 nativeTypeSize, size_t typeHash, CTypeIndex tableIdx, const CTypeInvokations& typeFuncs, const CString& id, CStaticNiflectTypeAddr* staticTypePtrAddr)
 		{
 			m_niflectTypeSize = nativeTypeSize;
 			m_typeHash = typeHash;
 			m_index = tableIdx;
 			m_cb = typeFuncs;
-			m_name = nativeTypeName;
+			m_name = id;
+			m_staticTypePtrAddr = staticTypePtrAddr;
+			*m_staticTypePtrAddr = this;
 		}
 		
 	public:
@@ -96,8 +114,8 @@ namespace Niflect
 		//}
 		CSharedAccessor CreateFieldLayout() const
 		{
-			if (m_cb.m_InvokeCreateFieldLayoutFunc != NULL)
-				return m_cb.m_InvokeCreateFieldLayoutFunc();
+			if (m_cb.m_InvokeCreateFieldLayoutOfTypeFunc != NULL)
+				return m_cb.m_InvokeCreateFieldLayoutOfTypeFunc();
 			return NULL;
 		}
 		void InitFieldLayout()
@@ -140,7 +158,7 @@ namespace Niflect
 		}
 
 	public:
-		void SetNatimeta(const CSharedNatimeta& natimeta)
+		void InitNatimeta(const CSharedNatimeta& natimeta)
 		{
 			m_natimeta = natimeta;
 		}
@@ -166,16 +184,20 @@ namespace Niflect
 		virtual void DebugFuncForDynamicCast() {}//仅为动态检查类型避免错误, 如已定义非调试用的virtual函数则可移除, 备注: error C2683: 'dynamic_cast': 'XXX' is not a polymorphic type 
 
 	private:
-		CString m_name;//todo: 计划改名为 m_nativeTypeName
+		//todo: 计划改名为 m_id, 通常为 natiev type name
+		//NiflectGen 所生成的 id 为带 namespace 的 type name, 而反射宏 NIFLECT_TYPE_REGISTER 所注册的 id 无 namespace, 如有需要可另作封装.
+		//但需要明确一点, id 的意义在于避免重复与序列化使用, 实际是否带 namespace 通常无关紧要, 一般情况下通过定义的类名区分即可
+		CString m_name;
+
 		CTypeIndex m_index;//todo: 计划改名为 m_tableIdx;
 		uint32 m_niflectTypeSize;//todo: 计划改名为 m_nativeTypeSize;
-		CSharedAccessor m_fieldRoot;
+		CSharedAccessor m_fieldRoot;//todo: 计划废弃
 		CTypeInvokations m_cb;//todo: 计划改名为 m_typeFuncs
 		size_t m_typeHash;
 		CSharedNatimeta m_natimeta;
+		CStaticNiflectTypeAddr* m_staticTypePtrAddr;
 	};
-
-	using CSharedType = TSharedPtr<CNiflectType>;
+	using CSharedNiflectType = TSharedPtr<CNiflectType>;
 	
 	class CEnumMeta
 	{

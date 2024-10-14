@@ -254,21 +254,6 @@ namespace NiflectGen
 		else
 			vecNamespace.erase(vecNamespace.begin(), vecNamespace.begin() + commonScopesCount);
 	}
-	Niflect::CString NSSSSSSSSS(const CXCursor& cursor, const CXType& type)
-	{
-		Niflect::CString name;
-		auto kind = clang_getCursorKind(cursor);
-		if ((kind != CXCursor_NoDeclFound) && (kind != CXCursor_ClassDecl))
-		{
-			name = GenerateNamespacesAndScopesCode(cursor);
-			name += CXStringToCString(clang_getCursorSpelling(cursor));
-		}
-		else
-		{
-			name = CXStringToCString(clang_getTypeSpelling(type));
-		}
-		return name;
-	}
 	bool IsCursorKindTemplateDecl(const CXCursorKind& kind)
 	{
 		bool isTemplate = false;

@@ -6,6 +6,15 @@
 
 namespace NiflectGen
 {
+	class CTaggedTypesMapping
+	{
+	public:
+		void InitPatterns();
+		bool InitIndexedNodeForClassDecl(const CXCursor& cursor, const CAccessorBindingMapping2& accessorBindingMapping, CResolvedCursorNode& indexedParent) const;
+		TCursorMap<uint32> m_mapCursorToIndex;
+		Niflect::TArrayNif<CTaggedType*> m_vecType;
+	};
+
 	class CResolvingDependenciesContext
 	{
 	public:
@@ -64,7 +73,7 @@ namespace NiflectGen
 
 	public:
 		Niflect::CString m_typeNamePattern;
-		CResolvedCursorNode m_classDeclIndexedRoot;
+		CResolvedCursorNode m_taggedResoRoot;
 	};
 
 	class CTaggedInheritableTypeMember : public CTaggedNode2

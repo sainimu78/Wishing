@@ -4,6 +4,7 @@
 #include "Niflect/Memory/Generic/GenericSharedPtr.h"
 #include "Niflect/Util/StlCompliant/StlCompliantString2.h"
 #include "Niflect/Util/StlCompliant/StlCompliantVector2.h"
+//#include "Niflect/Util/StlCompliant/StlCompliantSortedVector.h"
 #include "Niflect/Util/StlCompliant/StlCompliantMap2.h"
 #include "Niflect/Util/StlCompliant/StlCompliantUnorderedMap2.h"
 #include "Niflect/Util/StlCompliant/StlCompliantStringStream.h"
@@ -61,6 +62,10 @@ namespace Niflect
 	//避免与已有的TArray同名, 因此暂时加后缀
 	template <typename TElement>
 	using TArrayNif = StlCompliantType2::TVector<TElement, THeapAllocator<TElement> >;
+
+	//备用
+	//template <typename TKey, typename TCompare = std::less<TKey>, typename TAllocator = THeapAllocator<TKey> >
+	//using TSortedArray = StlCompliantType2::TSortedVector<TKey, TCompare, TAllocator>;
 
 	template <typename TKey, typename TValue, typename TCompare = std::less<TKey> >
 	using TMap = StlCompliantType2::TMap<TKey, TValue, TCompare, THeapAllocator<std::pair<const TKey, TValue> > >;

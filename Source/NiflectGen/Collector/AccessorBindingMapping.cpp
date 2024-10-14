@@ -1,4 +1,6 @@
 #include "NiflectGen/Collector/AccessorBindingMapping.h"
+#include "NiflectGen/Base/NiflectGenDefinition.h"
+#include "NiflectGen/TaggedType/TaggedType.h"
 
 namespace NiflectGen
 {
@@ -119,7 +121,7 @@ namespace NiflectGen
 		CFoundResult result(resultIndexedParent);
 		if (this->FindBindingTypesSSSSSSSSSSS(fieldOrArgCXType, vecDetailCursor, detailIteratingIdx, result))
 		{
-			resultIndexedParent.InitForTemplateBegin(m_vecAccessorBindingSetting[result.m_foundIdx].m_bindingTypePattern, result.m_foundIdx);
+			resultIndexedParent.InitForTemplateBegin(m_vecAccessorBindingSetting[result.m_foundIdx].m_bindingTypeCursorName, result.m_foundIdx);
 
 			if (result.m_continuing)
 			{
@@ -179,7 +181,7 @@ namespace NiflectGen
 					for (auto& it : vecSSSSSSSSS)
 					{
 						auto& foundIdx = it.second;
-						it.first->InitForTemplate(m_vecAccessorBindingSetting[foundIdx].m_bindingTypePattern, foundIdx, *pIndexedParent);
+						it.first->InitForTemplate(m_vecAccessorBindingSetting[foundIdx].m_bindingTypeCursorName, foundIdx, *pIndexedParent);
 					}
 				}
 				else
@@ -194,7 +196,7 @@ namespace NiflectGen
 		else
 		{
 			auto cursor = clang_getTypeDeclaration(fieldOrArgCXType);
-			taggedMapping.InitIndexedNodeForClassDecl(cursor, resultIndexedParent);
+			taggedMapping.InitIndexedNodeForClassDecl(cursor, *this, resultIndexedParent);
 		}
 	}
 	void CAccessorBindingMapping2::InitIndexedNodeForField(const CXCursor& fieldCursor, const Niflect::TArrayNif<CXCursor>& vecDetailCursor, const CTaggedTypesMapping& taggedMapping, const CUntaggedTemplateTypesMapping& untaggedTemplateMapping, CResolvedCursorNode& resultIndexedParent) const
@@ -203,12 +205,135 @@ namespace NiflectGen
 		uint32 detailIteratingIdx = 0;
 		this->FindBindingTypeRecurs(fieldCXType, vecDetailCursor, taggedMapping, untaggedTemplateMapping, resultIndexedParent, detailIteratingIdx);
 	}
+	static Niflect::CString GenerateBindingTypeCursorName(const CXCursor& cursor, const CXType& type)
+	{
+		Niflect::CString name;
+		auto kind = clang_getCursorKind(cursor);
+		if ((kind != CXCursor_NoDeclFound) && (kind != CXCursor_ClassDecl))
+		{
+			name = GenerateNamespacesAndScopesCode(cursor);
+			name += CXStringToCString(clang_getCursorSpelling(cursor));
+		}
+		else
+		{
+			name = CXStringToCString(clang_getTypeSpelling(type));
+		}
+		return name;
+	}
+
+	enum class EMyVisitingState
+	{
+		None,
+		Stop,
+	};
+	static void GenerateTemplateInstanceCodeRecurs3(const CSubcursor& parentSubcursor, EMyVisitingState& visitingState, Niflect::CString& text)
+	{
+		//该函数与旧实验 GenerateTemplateInstanceCode 流程类似, 主要区别为
+		//1. 仅支持生成 FullScope 的名称
+		//2. 根据 NiflectGenDefinition::CodeStyle 确定嵌套模板右尖括号是否加空格
+		//3. 对于模板类型定义, 即非特化或非部分特化的 Subcursor, 不递归尖括号对应的 CXType, 仅生成名称, 即 CursorName
+		Niflect::CString name;
+		if (parentSubcursor.m_vecAaaaaaaaaa.size() > 0)
+		{
+			for (uint32 idx = 0; idx < parentSubcursor.m_vecAaaaaaaaaa.size(); ++idx)
+			{
+				auto& it = parentSubcursor.m_vecAaaaaaaaaa[idx];
+				auto kind = clang_getCursorKind(it);
+				{
+					//手工编写对应的Cursor(如Field, AccessorBinding)不能保证scope(namespace与类scope)是完整的, 因此忽略, 通过GenerateNamespacesAndScopesCode生成完整scope
+					if (kind != CXCursor_NamespaceRef)
+					{
+						if (clang_isReference(kind))
+						{
+							auto decl = clang_getCursorReferenced(it);
+
+							bool isArgName = clang_getCursorKind(decl) == CXCursor_TemplateTypeParameter;
+							if (!isArgName)
+							{
+								auto strScope = GenerateNamespacesAndScopesCode(decl);
+								name += strScope;
+							}
+							else
+							{
+								visitingState = EMyVisitingState::Stop;
+								return;
+							}
+							auto spelling = CXStringToCString(clang_getCursorSpelling(decl));
+							name += spelling;
+
+							if (idx != parentSubcursor.m_vecAaaaaaaaaa.size() - 1)
+								name += "::";
+						}
+						else
+						{
+							ASSERT(false);
+						}
+					}
+				}
+			}
+		}
+		else
+		{
+			auto strScope = GenerateNamespacesAndScopesCode(parentSubcursor.m_cursorDecl);
+			name += strScope;
+			name += GetNameFromCursorOrTypeDeclaration(parentSubcursor.m_cursorDecl, parentSubcursor.m_CXType);
+		}
+
+		text += name;
+		bool canRecurs = true;
+		if (parentSubcursor.m_vecAaaaaaaaaa.size() > 0)
+		{
+			//m_vecChild为模板参数所引用的decl, 如TypedefAliasDecl, m_vecAaaaaaaaaa.back()中为模板参数的Spelling类型, 非模板为TypeRef, 模板为TemplateRef, 因此TypeRef不应继续递归
+			if (clang_getCursorKind(parentSubcursor.m_vecAaaaaaaaaa.back()) == CXCursor_TypeRef)
+			{
+				canRecurs = false;
+			}
+		}
+		else
+		{
+			canRecurs = clang_getCursorKind(parentSubcursor.m_cursorDecl) != CXCursor_TypeAliasDecl;
+		}
+		if ((canRecurs) && (parentSubcursor.m_vecChild.size() > 0))
+		{
+			Niflect::CString childrenText;
+			for (uint32 idx = 0; idx < parentSubcursor.m_vecChild.size(); ++idx)
+			{
+				Niflect::CString childText;
+				GenerateTemplateInstanceCodeRecurs3(parentSubcursor.m_vecChild[idx], visitingState, childText);
+
+				if (visitingState == EMyVisitingState::Stop)
+					break;
+
+				childrenText += childText;
+				if (idx != parentSubcursor.m_vecChild.size() - 1)
+					childrenText += ", ";
+			}
+			if (!childrenText.empty())
+			{
+				NiflectGenDefinition::CodeStyle::TemplateAngleBracketL(text);
+				text += childrenText;
+				NiflectGenDefinition::CodeStyle::TemplateAngleBracketR(text);
+			}
+		}
+	}
+	void GenerateTemplateInstanceCode3(const CSubcursor& parentSubcursor, Niflect::CString& text)
+	{
+		auto visitingState = EMyVisitingState::None;
+		GenerateTemplateInstanceCodeRecurs3(parentSubcursor, visitingState, text);
+	}
 	void CAccessorBindingMapping2::InitPatterns()
 	{
 		for (auto& it : m_vecAccessorBindingSetting)
 		{
-			auto& bSubcursor = it.GetBindingTypeDecl();
-			it.m_bindingTypePattern = NSSSSSSSSS(bSubcursor.m_cursorDecl, bSubcursor.m_CXType);
+			//auto& aSubcursor = it.GetAccessorTypeDecl();
+			//it.m_accessorTypePattern = GenerateNamespacesAndScopesCode(aSubcursor.m_cursorDecl);
+			//it.m_accessorTypePattern += CXStringToCString(clang_getCursorSpelling(aSubcursor.m_cursorDecl));
+
+			//auto& bSubcursor = it.GetBindingTypeDecl();
+			//it.m_bindingTypePattern = GenerateBindingTypeCursorName(bSubcursor.m_cursorDecl, bSubcursor.m_CXType);
+
+			GenerateTemplateInstanceCode3(it.GetAccessorTypeDecl(), it.m_accessorTypeCursorName);
+			GenerateTemplateInstanceCode3(it.GetBindingTypeDecl(), it.m_bindingTypeCursorName);
 		}
 	}
 }

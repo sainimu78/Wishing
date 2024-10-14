@@ -46,6 +46,6 @@ namespace NiflectGen
 	}
 	CSharedTypeRegCodeWriter2 CTaggedEnum::CreateCodeWriter2() const
 	{
-		return Niflect::MakeShared<CEnumRegCodeWriter2>(m_classDeclIndexedRoot);
+		return Niflect::MakeShared<CEnumRegCodeWriter2>();
 	}
 }

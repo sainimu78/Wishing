@@ -110,6 +110,7 @@ namespace TestGen
 					ASSERT(vec0.size() > 0);
 
 					Niflect::TArrayNif<Niflect::CString> vecExpected;
+					vecExpected.push_back("TestAccessor2::TMyTransform<float>");
 					vecExpected.push_back("EngineTypeBindingSettingScope::CMyTM");
 					vecExpected.push_back("Niflect::TArrayNif<float>");
 					vecExpected.push_back("Niflect::TArrayNif<EngineTypeBindingSettingScope::CMyTM>");
@@ -188,6 +189,59 @@ namespace TestGen
 				});
 		}
 	}
+	static void TestSuccess_AccessorFinding()
+	{
+		auto memTest = Niflect::GetDefaultMemoryStats();
+		{
+			auto gen = CreateGenerator();
+			CModuleRegInfo info;
+			info.m_vecOriginalHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestOriginalTypeAccessorFinding.h"));
+			info.m_vecBindingSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestAccessorBindingAccessorFinding.h"));
+			NiflectGenDefinition::Test::AddBasicHeaderSearchPaths(info.m_vecHeaderSearchPath);
+			gen->SetModuleRegInfo(info);
+			gen->Generate([&info](void* cursorAddr)
+				{
+					auto& cursor = *static_cast<CXCursor*>(cursorAddr);
+					CTaggedNode2 taggedRoot;
+					CGenLog log;
+					CCollectingContext context(&log);
+					CCollectionData collectionData;
+					CDataCollector collector;
+					collector.Collect(cursor, &taggedRoot, context, collectionData);
+					ASSERT(log.m_vecText.size() == 0);
+					CResolvingContext resolvingContext(&log);
+					CModuleRegInfoValidated validatedModuleRegInfo(info);
+					CResolver resolver(collectionData, validatedModuleRegInfo);
+					CResolvedData resolvedData;
+					resolver.Resolve4(&taggedRoot, resolvingContext, resolvedData);
+					ASSERT(log.m_vecText.size() == 0);
+					Niflect::TArrayNif<Niflect::CString> vecExpected;
+					vecExpected.push_back("CCompoundAccessor");//第0个本应为枚举的Accessor, 现未实现对应的AccessorBinding, 实现后再增加相应的测试
+					vecExpected.push_back("MyAccessor::CMyClassAccessor");
+					vecExpected.push_back("CCompoundAccessor");
+					uint32 idx0 = 0;
+					//仅对 TaggedType 进行测试
+					for (auto& it0 : resolvedData.m_signatureMapping.m_vecItem)
+					{
+						if (it0.m_resoRoot.m_taggedTypeIndex != INDEX_NONE)
+						{
+							Niflect::CString accessorResocursorName;
+							if (it0.m_resoRoot.m_accessorBindingIndex != INDEX_NONE)
+							{
+								auto& setting = resolvedData.m_accessorBindingMapping->m_vecAccessorBindingSetting[it0.m_resoRoot.m_accessorBindingIndex];
+								accessorResocursorName = setting.m_accessorTypeCursorName;
+							}
+							else
+							{
+								accessorResocursorName = NiflectGenDefinition::NiflectFramework::AccessorTypeName::CompoundField;
+							}
+							ASSERT(vecExpected[idx0++] == accessorResocursorName);
+						}
+					}
+					ASSERT(vecExpected.size() == idx0);
+				});
+		}
+	}
 	static void TestSuccess_RequiredHeader()
 	{
 		auto memTest = Niflect::GetDefaultMemoryStats();
@@ -240,6 +294,57 @@ namespace TestGen
 				});
 		}
 	}
+	static void TestSuccess_ResocursorName()
+	{
+		auto memTest = Niflect::GetDefaultMemoryStats();
+		{
+			auto gen = CreateGenerator();
+			CModuleRegInfo info;
+			info.m_vecOriginalHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestOriginalTypeResocursorName.h"));
+			info.m_vecBindingSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestAccessorBindingResocursorName.h"));
+			NiflectGenDefinition::Test::AddBasicHeaderSearchPaths(info.m_vecHeaderSearchPath);
+			gen->SetModuleRegInfo(info);
+			gen->Generate([&info](void* cursorAddr)
+				{
+					auto& cursor = *static_cast<CXCursor*>(cursorAddr);
+					CTaggedNode2 taggedRoot;
+					CGenLog log;
+					CCollectingContext context(&log);
+					CCollectionData collectionData;
+					CDataCollector collector;
+					collector.Collect(cursor, &taggedRoot, context, collectionData);
+					ASSERT(log.m_vecText.size() == 0);
+					Niflect::TArrayNif<Niflect::CString> vecExpectedA;
+					Niflect::TArrayNif<Niflect::CString> vecExpectedB;
+					vecExpectedA.push_back("TestAccessor2::TMyTransformAccessor<float>");
+					vecExpectedB.push_back("TestAccessor2::TMyTransform<float>");
+					vecExpectedA.push_back("TestAccessor2::TMyTransformAccessor<float>");
+					vecExpectedB.push_back("TestAccessor2::TMyTransform<double>");
+					vecExpectedA.push_back("TestAccessor2::TMyTransformAccessor<float>");
+					vecExpectedB.push_back("MyScope2::TMyScope2TM<int32>");
+					vecExpectedA.push_back("TestAccessor2::TMyTransformAccessor<float>");
+					vecExpectedB.push_back("MyScope2::SubScope1::TMySubScope1TM<uint32>");
+					vecExpectedA.push_back("TestAccessor2::TMyTransformAccessor<float>");
+					vecExpectedB.push_back("MyScope2::SubScope1::TMySubScope1TM<int64>");
+					vecExpectedA.push_back("TestAccessor2::TMyTransformAccessor<float>");
+					vecExpectedB.push_back("Niflect::TArrayNif<MyScope2::SMyStruct>");
+					vecExpectedA.push_back("Engine::TStlArrayAccessor");
+					vecExpectedB.push_back("Niflect::TArrayNif");
+					vecExpectedA.push_back("Niflect::CCompoundAccessor");
+					vecExpectedB.push_back("std::pair");
+					uint32 idxA = 0;
+					uint32 idxB = 0;
+					auto& vecCollected = collectionData.m_accessorBindingMapping->m_vecAccessorBindingSetting;
+					for (auto& it : vecCollected)
+					{
+						ASSERT(it.m_accessorTypeCursorName == vecExpectedA[idxA++]);
+						ASSERT(it.m_bindingTypeCursorName == vecExpectedB[idxB++]);
+					}
+					ASSERT(idxA == vecCollected.size());
+					ASSERT(idxB == vecCollected.size());
+				});
+		}
+	}
 	static void TestSuccess_TypeRegCodeGen()
 	{
 		auto memTest = Niflect::GetDefaultMemoryStats();
@@ -283,6 +388,8 @@ namespace TestGen
 		//TestFailure_BindingTypesDuplicated();
 		//TestSuccess_FullScopes();
 		//TestSuccess_TypeRegSignature();
+		//TestSuccess_AccessorFinding();
+		//TestSuccess_ResocursorName();
 		//TestSuccess_RequiredHeader();
 		TestSuccess_TypeRegCodeGen();
 	}

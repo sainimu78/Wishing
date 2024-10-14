@@ -1,7 +1,7 @@
 #pragma once
 #include "NiflectGen/CodeWriter/CodeWriter.h"
+#include "Niflect/Util/FileStreamUtil.h"
 #include <sstream>
-#include <fstream>
 #include <iostream>
 
 namespace NiflectGen
@@ -51,8 +51,10 @@ namespace NiflectGen
 		void ReadFromFileStream(const Niflect::CString& filePath)
 		{
 			std::ifstream ifstm;
-			ifstm.open(filePath.c_str(), std::ios::in);
-			this->ReadFromInputStream(ifstm);
+			if (NiflectUtil::OpenFileStream(ifstm, filePath))
+				this->ReadFromInputStream(ifstm);
+			else
+				ASSERT(false);
 		}
 		void ReadFromRawData(const char* psz)
 		{
@@ -242,7 +244,9 @@ namespace NiflectGen
 		CLabelToCodeMapping map0;
 		MapLabelToText(map0, label, text);
 		CCodeLines lines0;
-		tpl0.ReplaceLabels(map0, lines0);
+		Niflect::TSet<Niflect::CString> setReplacedLabel;
+		tpl0.ReplaceLabels(map0, lines0, &setReplacedLabel);
+		ASSERT(setReplacedLabel.size() == map0.size());
 		ASSERT(lines0.size() == 1);
 		return lines0.back();
 	}
@@ -254,7 +258,9 @@ namespace NiflectGen
 		MapLabelToText(map0, label0, text0);
 		MapLabelToText(map0, label1, text1);
 		CCodeLines lines0;
-		tpl0.ReplaceLabels(map0, lines0);
+		Niflect::TSet<Niflect::CString> setReplacedLabel;
+		tpl0.ReplaceLabels(map0, lines0, &setReplacedLabel);
+		ASSERT(setReplacedLabel.size() == map0.size());
 		ASSERT(lines0.size() == 1);
 		return lines0.back();
 	}

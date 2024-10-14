@@ -243,7 +243,7 @@ namespace NiflectGen
             CSharedTypeRegCodeWriter2 writer;
             if (it0.m_resoRoot.m_accessorBindingIndex != INDEX_NONE)
             {
-                writer = Niflect::MakeShared<CMiscTypeRegCodeWriter>(it0.m_resoRoot);
+                writer = Niflect::MakeShared<CMiscTypeRegCodeWriter>();
             }
             else if (it0.m_resoRoot.m_taggedTypeIndex != INDEX_NONE)
             {
@@ -264,6 +264,7 @@ namespace NiflectGen
             {
                 ASSERT(false);
             }
+            writer->Init(&m_resolvedData, &it0.m_resoRoot);
             m_vecWriter2.push_back(writer);
         }
     }
@@ -275,6 +276,16 @@ namespace NiflectGen
             auto& data = vecTypeRegData[idx0];
             auto& it0 = m_vecWriter2[idx0];
 
+            STypeRegInvokeRegisterTypeWritingData invokeRegisterTypeData{ data.m_registerTypeAndfieldLayout.m_linesInvokeRegisterType };
+            it0->WriteInvokeRegisterType(context, invokeRegisterTypeData);
+
+            STypeRegCreateFieldLayoutOfTypeWritingContext createFieldLayoutOfTypeCtx{ invokeRegisterTypeData.m_createFieldLayoutOfTypeFuncName, context.m_log };
+            STypeRegCreateFieldLayoutOfTypeWritingData createFieldLayoutOfTypeData{
+                data.m_registerTypeAndfieldLayout.m_linesFieldLayoutDecl, 
+                data.m_registerTypeAndfieldLayout.m_linesFieldLayoutImpl
+            };
+            it0->WriteCreateFieldLayoutOfType(createFieldLayoutOfTypeCtx, createFieldLayoutOfTypeData);
+
             it0->WriteTypeRegRegisterTypeAndFieldLayout(context, data.m_registerTypeAndfieldLayout);
 
             //{
@@ -282,7 +293,7 @@ namespace NiflectGen
             //    it0->WriteTypeRegClass(regClassCtx, data.m_regClass);
             //}
             {
-                STypeRegClassWritingContext regClassCtx{ data.m_registerTypeAndfieldLayout.m_linesRegisterType, data.m_registerTypeAndfieldLayout.m_fieldLayoutFuncName, context.m_log };
+                STypeRegClassWritingContext regClassCtx{ data.m_registerTypeAndfieldLayout.m_linesInvokeRegisterType, data.m_registerTypeAndfieldLayout.m_fieldLayoutFuncName, context.m_log };
                 it0->WriteTaggedTypeInit(regClassCtx, data.m_taggedTypeInit);
             }
 
@@ -483,7 +494,7 @@ R"(void ${Zhende}()
                     CCodeLines linesInvokeRegisterTypes;
                     for (auto& it1 : it0.m_vecTypeRegDataRef)
                     {
-                        for (auto& it2 : it1->m_registerTypeAndfieldLayout.m_linesRegisterType)
+                        for (auto& it2 : it1->m_registerTypeAndfieldLayout.m_linesInvokeRegisterType)
                             linesInvokeRegisterTypes.push_back(it2);
                     }
                     MapLabelToLines(map, "Shima", linesInvokeRegisterTypes);

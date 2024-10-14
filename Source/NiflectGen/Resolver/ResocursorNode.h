@@ -20,7 +20,7 @@ namespace NiflectGen
 		void InitForTemplateArguments(const CResolvedCursorNode& childrenOwner);
 		void InitForTemplateEnd();
 		void InitForTemplate(const Niflect::CString& signature, uint32 foundIdx, const CResolvedCursorNode& childrenOwner);
-		void InitForClassDecl(const Niflect::CString& signature, uint32 foundIdx, const Niflect::CString& headerFilePath);
+		void InitForClassDecl(const Niflect::CString& signature, uint32 taggedTypeIdx, uint32 accessorBindingIdx, const Niflect::CString& headerFilePath);
 		bool IsTemplateFormat() const
 		{
 			return m_isTemplateFormat;
@@ -31,10 +31,10 @@ namespace NiflectGen
 		}
 		bool m_isTemplateFormat;
 		uint32 m_accessorBindingIndex;
-		uint32 m_taggedTypeIndex;//该索引对应的类型一定不是模板, 现可为 class, struct, enum
+		uint32 m_taggedTypeIndex;//该索引对应的类型一定不是模板, 现可为 class, struct, enum, 可能也具有 m_accessorBindingIndex, 即指定了对应的 AccessorBinding
 		Niflect::TArrayNif<CResolvedCursorNode> m_vecChild;
 		Niflect::CString m_key;
-		Niflect::CString m_resoCursorName;
+		Niflect::CString m_resocursorName;
 		//要求与 m_vecChild 互斥, 即无法支持容器模板含成员变量, 而结构模板可含成员变量
 		CSharedResolvedCursorNode m_elem;
 		Niflect::TArrayNif<Niflect::CString> m_vecRequiredHeaderFilePath;

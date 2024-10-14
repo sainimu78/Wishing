@@ -108,7 +108,7 @@ namespace NiflectGen
 		//	baseTypeCursorDecl = m_baseTaggedType->GetCursor();
 		//return Niflect::MakeShared<CInheritableTypeRegCodeWriter_ObjectAccessor>(this->GetCursor(), setting, baseTypeCursorDecl, m_vecMember);
 
-		return Niflect::MakeShared<CInheritableTypeRegCodeWriter2>(m_classDeclIndexedRoot, m_vecMemberIndexedRoot, m_baseTaggedType);
+		return Niflect::MakeShared<CInheritableTypeRegCodeWriter2>(m_vecMemberIndexedRoot, m_baseTaggedType);
 	}
 	void CTaggedInheritableType::DebugDerivedPrint(FILE* fp) const
 	{
