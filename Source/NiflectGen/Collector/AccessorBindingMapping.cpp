@@ -4,7 +4,7 @@
 
 namespace NiflectGen
 {
-	void CAccessorBindingMapping2::IterateForTemplate(const CXType& fieldOrArgCXType, const Niflect::TArrayNif<CXCursor>& vecDetailCursor, const CTaggedTypesMapping& taggedMapping, const CUntaggedTemplateTypesMapping& untaggedTemplateMapping, CResolvedCursorNode& resultIndexedParent, uint32& detailIteratingIdx) const
+	bool CAccessorBindingMapping2::IterateForTemplate(const CXType& fieldOrArgCXType, const Niflect::TArrayNif<CXCursor>& vecDetailCursor, const CTaggedTypesMapping& taggedMapping, const CUntaggedTemplateTypesMapping& untaggedTemplateMapping, CResolvedCursorNode& resultIndexedParent, uint32& detailIteratingIdx) const
 	{
 		//auto argsCount = clang_Type_getNumTemplateArguments(fieldOrArgCXType);
 		//for (int32 idx1 = 0; idx1 < argsCount; ++idx1)
@@ -16,8 +16,7 @@ namespace NiflectGen
 		//}
 
 		auto argsCount = clang_Type_getNumTemplateArguments(fieldOrArgCXType);
-		ASSERT(!resultIndexedParent.m_isTemplateFormat);
-		resultIndexedParent.m_isTemplateFormat = argsCount > 0;
+		bool isTemplateFormat = argsCount > 0;
 		for (int32 idx1 = 0; idx1 < argsCount; ++idx1)
 		{
 			CXType argType = clang_Type_getTemplateArgumentAsType(fieldOrArgCXType, idx1);
@@ -58,6 +57,7 @@ namespace NiflectGen
 			}
 			this->FindBindingTypeRecurs(argType, vecDetailCursor, taggedMapping, untaggedTemplateMapping, *indexedNext, detailIteratingIdx);
 		}
+		return isTemplateFormat;
 	}
 	bool CAccessorBindingMapping2::FindBindingTypesSSSSSSSSSSS(const CXType& fieldOrArgCXType, const Niflect::TArrayNif<CXCursor>& vecDetailCursor, uint32& detailIteratingIdx, CFoundResult& result) const
 	{
@@ -175,20 +175,20 @@ namespace NiflectGen
 						//pIndexedParent->InitForTemplate(m_vecAccessorBindingSetting[result2222.m_foundIdx].m_bindingTypePattern, result2222.m_foundIdx, resultIndexedParent);
 						vecSSSSSSSSS.push_back({ pIndexedParent, result2222.m_foundIdx });
 					}
-					this->IterateForTemplate(fieldOrArgCXType, vecDetailCursor, taggedMapping, untaggedTemplateMapping, *pIndexedParent, detailIteratingIdx);
-					resultIndexedParent.InitForTemplateArguments(*pIndexedParent);
+					bool isTemplateFormat = this->IterateForTemplate(fieldOrArgCXType, vecDetailCursor, taggedMapping, untaggedTemplateMapping, *pIndexedParent, detailIteratingIdx);
+					resultIndexedParent.InitForTemplateArguments(*pIndexedParent, isTemplateFormat);
 
 					for (auto& it : vecSSSSSSSSS)
 					{
 						auto& foundIdx = it.second;
-						it.first->InitForTemplate(m_vecAccessorBindingSetting[foundIdx].m_bindingTypeCursorName, foundIdx, *pIndexedParent);
+						it.first->InitForTemplate(m_vecAccessorBindingSetting[foundIdx].m_bindingTypeCursorName, foundIdx, *pIndexedParent, isTemplateFormat);
 					}
 				}
 				else
 				{
 					//模板套特化的 BindingType, 成员类型如 Niflect::TArrayNif<Niflect::TArrayNif<bool> >
-					this->IterateForTemplate(fieldOrArgCXType, vecDetailCursor, taggedMapping, untaggedTemplateMapping, resultIndexedParent, detailIteratingIdx);
-					resultIndexedParent.InitForTemplateArguments(resultIndexedParent);
+					bool isTemplateFormat = this->IterateForTemplate(fieldOrArgCXType, vecDetailCursor, taggedMapping, untaggedTemplateMapping, resultIndexedParent, detailIteratingIdx);
+					resultIndexedParent.InitForTemplateArguments(resultIndexedParent, isTemplateFormat);
 				}
 			}
 			resultIndexedParent.InitForTemplateEnd();
@@ -221,17 +221,18 @@ namespace NiflectGen
 		return name;
 	}
 
-	enum class EMyVisitingState
+	enum class EGenerateAccessorBindingCursorNameVisitingState
 	{
 		None,
 		Stop,
 	};
-	static void GenerateTemplateInstanceCodeRecurs3(const CSubcursor& parentSubcursor, EMyVisitingState& visitingState, Niflect::CString& text)
+	static void GenerateAccessorBindingCursorNameRecurs(const CSubcursor& parentSubcursor, EGenerateAccessorBindingCursorNameVisitingState& visitingState, Niflect::CString& text)
 	{
 		//该函数与旧实验 GenerateTemplateInstanceCode 流程类似, 主要区别为
 		//1. 仅支持生成 FullScope 的名称
 		//2. 根据 NiflectGenDefinition::CodeStyle 确定嵌套模板右尖括号是否加空格
 		//3. 对于模板类型定义, 即非特化或非部分特化的 Subcursor, 不递归尖括号对应的 CXType, 仅生成名称, 即 CursorName
+		//不复用 FindBindingTypeRecurs 的原因是 AccessorBinding 中出现的类型, 不一定都是 Collect 阶段支持收集的类型, 如各种 Accessor 子类, 通常是无标记的
 		Niflect::CString name;
 		if (parentSubcursor.m_vecAaaaaaaaaa.size() > 0)
 		{
@@ -255,7 +256,7 @@ namespace NiflectGen
 							}
 							else
 							{
-								visitingState = EMyVisitingState::Stop;
+								visitingState = EGenerateAccessorBindingCursorNameVisitingState::Stop;
 								return;
 							}
 							auto spelling = CXStringToCString(clang_getCursorSpelling(decl));
@@ -299,9 +300,9 @@ namespace NiflectGen
 			for (uint32 idx = 0; idx < parentSubcursor.m_vecChild.size(); ++idx)
 			{
 				Niflect::CString childText;
-				GenerateTemplateInstanceCodeRecurs3(parentSubcursor.m_vecChild[idx], visitingState, childText);
+				GenerateAccessorBindingCursorNameRecurs(parentSubcursor.m_vecChild[idx], visitingState, childText);
 
-				if (visitingState == EMyVisitingState::Stop)
+				if (visitingState == EGenerateAccessorBindingCursorNameVisitingState::Stop)
 					break;
 
 				childrenText += childText;
@@ -316,10 +317,10 @@ namespace NiflectGen
 			}
 		}
 	}
-	void GenerateTemplateInstanceCode3(const CSubcursor& parentSubcursor, Niflect::CString& text)
+	void GenerateAccessorBindingCursorName(const CSubcursor& parentSubcursor, Niflect::CString& text)
 	{
-		auto visitingState = EMyVisitingState::None;
-		GenerateTemplateInstanceCodeRecurs3(parentSubcursor, visitingState, text);
+		auto visitingState = EGenerateAccessorBindingCursorNameVisitingState::None;
+		GenerateAccessorBindingCursorNameRecurs(parentSubcursor, visitingState, text);
 	}
 	void CAccessorBindingMapping2::InitPatterns()
 	{
@@ -332,8 +333,8 @@ namespace NiflectGen
 			//auto& bSubcursor = it.GetBindingTypeDecl();
 			//it.m_bindingTypePattern = GenerateBindingTypeCursorName(bSubcursor.m_cursorDecl, bSubcursor.m_CXType);
 
-			GenerateTemplateInstanceCode3(it.GetAccessorTypeDecl(), it.m_accessorTypeCursorName);
-			GenerateTemplateInstanceCode3(it.GetBindingTypeDecl(), it.m_bindingTypeCursorName);
+			GenerateAccessorBindingCursorName(it.GetAccessorTypeDecl(), it.m_accessorTypeCursorName);
+			GenerateAccessorBindingCursorName(it.GetBindingTypeDecl(), it.m_bindingTypeCursorName);
 		}
 	}
 }

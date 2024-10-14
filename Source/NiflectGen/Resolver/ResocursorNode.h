@@ -12,24 +12,18 @@ namespace NiflectGen
 		CResolvedCursorNode()
 			: m_accessorBindingIndex(INDEX_NONE)
 			, m_taggedTypeIndex(INDEX_NONE)
-			, m_isTemplateFormat(false)
 		{
 		}
 		void InitForAccessorBinding(uint32 foundIdx, const Niflect::CString& headerFilePath);
 		void InitForTemplateBegin(const Niflect::CString& signature, uint32 foundIdx);
-		void InitForTemplateArguments(const CResolvedCursorNode& childrenOwner);
+		void InitForTemplateArguments(const CResolvedCursorNode& childrenOwner, bool isTemplateFormat);
 		void InitForTemplateEnd();
-		void InitForTemplate(const Niflect::CString& signature, uint32 foundIdx, const CResolvedCursorNode& childrenOwner);
+		void InitForTemplate(const Niflect::CString& signature, uint32 foundIdx, const CResolvedCursorNode& childrenOwner, bool isTemplateFormat);
 		void InitForClassDecl(const Niflect::CString& signature, uint32 taggedTypeIdx, uint32 accessorBindingIdx, const Niflect::CString& headerFilePath);
-		bool IsTemplateFormat() const
-		{
-			return m_isTemplateFormat;
-		}
 		bool IsValid() const
 		{
 			return m_accessorBindingIndex != INDEX_NONE || m_taggedTypeIndex != INDEX_NONE;
 		}
-		bool m_isTemplateFormat;
 		uint32 m_accessorBindingIndex;
 		uint32 m_taggedTypeIndex;//该索引对应的类型一定不是模板, 现可为 class, struct, enum, 可能也具有 m_accessorBindingIndex, 即指定了对应的 AccessorBinding
 		Niflect::TArrayNif<CResolvedCursorNode> m_vecChild;

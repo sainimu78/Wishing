@@ -38,7 +38,7 @@ namespace NiflectGen
 	//	SADSAF(vec, str);
 	//	str += '>';
 	//}
-	void CResolvedCursorNode::InitForTemplateArguments(const CResolvedCursorNode& childrenOwner)
+	void CResolvedCursorNode::InitForTemplateArguments(const CResolvedCursorNode& childrenOwner, bool isTemplateFormat)
 	{
 		if (auto elem = childrenOwner.m_elem.Get())
 		{
@@ -50,7 +50,7 @@ namespace NiflectGen
 			for (auto& it : childrenOwner.m_vecChild)
 				m_key += it.m_key;
 		}
-		if (childrenOwner.IsTemplateFormat())
+		if (isTemplateFormat)
 		{
 			NiflectGenDefinition::CodeStyle::TemplateAngleBracketL(m_resocursorName);
 			if (auto elem = childrenOwner.m_elem.Get())
@@ -87,10 +87,10 @@ namespace NiflectGen
 	{
 		m_key += ')';
 	}
-	void CResolvedCursorNode::InitForTemplate(const Niflect::CString& signature, uint32 foundIdx, const CResolvedCursorNode& childrenOwner)
+	void CResolvedCursorNode::InitForTemplate(const Niflect::CString& signature, uint32 foundIdx, const CResolvedCursorNode& childrenOwner, bool isTemplateFormat)
 	{
 		this->InitForTemplateBegin(signature, foundIdx);
-		this->InitForTemplateArguments(childrenOwner);
+		this->InitForTemplateArguments(childrenOwner, isTemplateFormat);
 		this->InitForTemplateEnd();
 	}
 	void CResolvedCursorNode::InitForClassDecl(const Niflect::CString& signature, uint32 taggedTypeIdx, uint32 accessorBindingIdx, const Niflect::CString& headerFilePath)
