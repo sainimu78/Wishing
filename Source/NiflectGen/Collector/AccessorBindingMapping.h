@@ -114,7 +114,7 @@ namespace NiflectGen
 		Niflect::TArrayNif<CBindingSettingData> m_vecAccessorBindingSetting;
 		TCursorMap<uint32> m_mapCursorToIndex;
 		TCXTypeMap<uint32> m_mapCXTypeToIndex;
-		TCursorMap<uint32> m_mapSpecializedCursorToIndex;//包括特化模板与TaggedType对应的类型
+		TCursorMap<uint32> m_mapSpecializedCursorToIndex; //包括特化模板与 TaggedType 对应的类型
 	};
 	using CSharedAccessorBindingMapping = Niflect::TSharedPtr<CAccessorBindingMapping2>;
 

@@ -140,18 +140,27 @@ namespace NiflectGen
 					auto& setting = m_resolvedData->m_accessorBindingMapping->m_vecAccessorBindingSetting[m_bindingTypeIndexedRoot->m_accessorBindingIndex];
 					accessorResoCursorName = setting.m_accessorTypeCursorName;
 					
-					if (clang_getCursorKind(setting.GetAccessorTypeDecl().m_cursorDecl) != CXCursor_ClassDecl)
+					if (IsCursorTemplateDecl(setting.GetAccessorTypeDecl().m_cursorDecl))//注, 特化的 Kind 为 ClassDecl
 					{
-						auto argsCount = clang_Type_getNumTemplateArguments(setting.GetAccessorTypeDecl().m_CXType);
-						if (argsCount > 0)
-						{
-							auto& arg = m_bindingTypeIndexedRoot->m_resocursorName;
+						auto& arg = m_bindingTypeIndexedRoot->m_resocursorName;
 
-							NiflectGenDefinition::CodeStyle::TemplateAngleBracketL(accessorResoCursorName);
-							accessorResoCursorName += arg;
-							NiflectGenDefinition::CodeStyle::TemplateAngleBracketR(accessorResoCursorName);
-						}
+						NiflectGenDefinition::CodeStyle::TemplateAngleBracketL(accessorResoCursorName);
+						accessorResoCursorName += arg;
+						NiflectGenDefinition::CodeStyle::TemplateAngleBracketR(accessorResoCursorName);
 					}
+
+					//if (clang_getCursorKind(setting.GetAccessorTypeDecl().m_cursorDecl) != CXCursor_ClassDecl)
+					//{
+					//	auto argsCount = clang_Type_getNumTemplateArguments(setting.GetAccessorTypeDecl().m_CXType);
+					//	if (argsCount > 0)
+					//	{
+					//		auto& arg = m_bindingTypeIndexedRoot->m_resocursorName;
+
+					//		NiflectGenDefinition::CodeStyle::TemplateAngleBracketL(accessorResoCursorName);
+					//		accessorResoCursorName += arg;
+					//		NiflectGenDefinition::CodeStyle::TemplateAngleBracketR(accessorResoCursorName);
+					//	}
+					//}
 				}
 				else
 				{

@@ -659,6 +659,51 @@ namespace TestGen
 				});
 		}
 	}
+	static void TestSuccess_TypeRegSignature14()
+	{
+		auto memTest = Niflect::GetDefaultMemoryStats();
+		{
+			auto gen = CreateGenerator();
+			CModuleRegInfo info;
+			info.m_vecOriginalHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestOriginalTypeRegSignature14.h"));
+			info.m_vecBindingSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestAccessorBindingTypeRegSignature.h"));
+			NiflectGenDefinition::Test::AddBasicHeaderSearchPaths(info.m_vecHeaderSearchPath);
+			gen->SetModuleRegInfo(info);
+			gen->Generate([&info](void* cursorAddr)
+				{
+					auto& cursor = *static_cast<CXCursor*>(cursorAddr);
+					CTaggedNode2 taggedRoot;
+					CGenLog log;
+					CCollectingContext context(&log);
+					CCollectionData collectionData;
+					CDataCollector collector;
+					collector.Collect(cursor, &taggedRoot, context, collectionData);
+					ASSERT(log.m_vecText.size() == 0);
+					CResolvingContext resolvingContext(&log);
+					CModuleRegInfoValidated validatedModuleRegInfo(info);
+					CResolver resolver(collectionData, validatedModuleRegInfo);
+					CResolvedData resolvedData;
+					resolver.Resolve4(&taggedRoot, resolvingContext, resolvedData);
+					ASSERT(log.m_vecText.size() == 0);
+					Niflect::TArrayNif<Niflect::CString> vecSignature;
+					resolvedData.m_signatureMapping.DebugGenSignatures(vecSignature);
+					Niflect::TArrayNif<Niflect::CString> vecExpected;
+					//1维容器模板套结构模板
+					vecExpected.push_back("TestMyFinding::CMyClass_0");
+					vecExpected.push_back("Niflect::CString");
+					vecExpected.push_back("float");
+					vecExpected.push_back("std::pair<Niflect::CString, float>");
+					vecExpected.push_back("-Niflect::CString");
+					vecExpected.push_back("-float");
+					vecExpected.push_back("Niflect::TArrayNif<std::pair<Niflect::CString, float> >");
+					vecExpected.push_back("+std::pair<Niflect::CString, float>");
+					uint32 idx = 0;
+					for (auto& it : vecSignature)
+						ASSERT(vecExpected[idx++] == it);
+					ASSERT(vecSignature.size() == idx);
+				});
+		}
+	}
 	void TestSuccess_TypeRegSignature()
 	{
 		TestSuccess_TypeRegSignature0();
@@ -675,5 +720,6 @@ namespace TestGen
 		TestSuccess_TypeRegSignature11();
 		TestSuccess_TypeRegSignature12();
 		TestSuccess_TypeRegSignature13();
+		TestSuccess_TypeRegSignature14();
 	}
 }
