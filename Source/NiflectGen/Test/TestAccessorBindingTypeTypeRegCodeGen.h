@@ -24,19 +24,4 @@ namespace EngineTypeBindingSettingScope
 	NIF_BS() TBindingSetting<TStlArrayAccessor<TInstance>, std::vector<T> >;
 	NIF_BS() TBindingSetting<TBasicTypeAccessor<int32>, int32>;
 	NIF_BS() TBindingSetting<TestAccessor2::TMyTransformAccessor<float>, TestAccessor2::TMyTransform<float> >;
-	template <typename T0, typename T1>
-	NIF_BS() TBindingSetting<CCompoundAccessor, TestSomeScope::SMyPair<T0, T1> >;
-	template <typename T0, typename T1>
-	NIF_BS() TBindingSetting<CCompoundAccessor, TestSomeScope::SMyPairAlias<T0, T1> >;
-
-
-	//using AAAAA = float;
-	//NIF_BS() TBindingSetting<CFloatAccessor, AAAAA>;
-	//template <typename T0, typename T1>
-	//using SSSSSSSSSSSSS = std::pair<T0, T1>;
-	//template <typename T0, typename T1>
-	//NIF_BS() TBindingSetting<CCompoundAccessor, SSSSSSSSSSSSS<T0, T1> >;
-
-	//template <typename T0>
-	//NIF_BS() TBindingSetting<CCompoundAccessor, TestAccessor2::TMyTransform<T0> >;
 }

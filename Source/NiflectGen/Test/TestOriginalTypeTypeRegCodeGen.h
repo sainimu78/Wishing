@@ -28,10 +28,6 @@ namespace TestMyFinding
 		}
 
 		NIF_F()
-		TestSomeScope::SMyPairAlias<CString, float> m_my_pair_string_float_0;
-		NIF_F()
-		TestSomeScope::SMyPair<CString, float> m_my_pair_string_float_0_aaaaa;
-		NIF_F()
 		int32 m_int32_1;
 		NIF_F()
 		EMyOption m_ec_opt_2;
