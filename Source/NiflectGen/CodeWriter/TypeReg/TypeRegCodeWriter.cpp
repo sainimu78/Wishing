@@ -79,9 +79,9 @@ namespace NiflectGen
 	{
 		{
 			auto& hct = HardCodedTemplate::CreateFieldLayuotOfTypeFuncName;
-			auto cursorName = m_bindingTypeIndexedRoot->m_resocursorName;
-			NiflectGenDefinition::CodeStyle::TryFormatNestedTemplate(cursorName);
-			data.m_createFieldLayoutOfTypeFuncName = ReplaceLabelToText1(hct, LABEL_0, cursorName);
+			auto resocursorName = m_bindingTypeIndexedRoot->m_resocursorName;
+			NiflectGenDefinition::CodeStyle::TryFormatNestedTemplate(resocursorName);
+			data.m_createFieldLayoutOfTypeFuncName = ReplaceLabelToText1(hct, LABEL_0, resocursorName);
 		}
 		{
 			auto& hct = HardCodedTemplate::InvokeRegisterType;
