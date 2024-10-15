@@ -36,7 +36,7 @@ namespace NiflectGen
 		if (m_bindingTypeIndexedRoot->m_untaggedTemplateIndex != INDEX_NONE)
 		{
 			linesResoBodyCode.push_back("---------------");
-			auto ut = m_resolvedData->m_untaggedTemplateMapping.m_vecType[m_bindingTypeIndexedRoot->m_untaggedTemplateIndex];
+			auto ut = m_resolvedData->m_untaggedTemplateMapping->m_vecType[m_bindingTypeIndexedRoot->m_untaggedTemplateIndex];
 			ASSERT(false);//注意到别名与原始类型不能同时特化, 因此需要重构, 为每个BindingType都生成一种id(如通过key类似的方式生成), 在Write阶段生成这些id, 并供其它生成流程使用
 			if (ut->m_originalUntaggedDecl != NULL)
 				ut = ut->m_originalUntaggedDecl;

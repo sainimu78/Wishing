@@ -581,13 +581,13 @@ namespace NiflectGen
 	void CResolver::Resolve4(CTaggedNode2* taggedRoot, CResolvingContext& context, CResolvedData& data)
 	{
 		data.m_accessorBindingMapping = m_collectionData.m_accessorBindingMapping;
+		data.m_untaggedTemplateMapping = m_collectionData.m_untaggedTemplatesMapping;
 
-		this->ResolveRecurs4(taggedRoot, data, data.m_taggedMapping, data.m_untaggedTemplateMapping);
+		this->ResolveRecurs4(taggedRoot, data, data.m_taggedMapping);
 
 		data.m_taggedMapping.Resolve();
-		data.m_untaggedTemplateMapping.Resolve(*m_collectionData.m_aliasChain);
 
-		SResolvedMappings mappings{ *data.m_accessorBindingMapping, data.m_taggedMapping, data.m_untaggedTemplateMapping };
+		SResolvedMappings mappings{ *data.m_accessorBindingMapping, data.m_taggedMapping, *data.m_untaggedTemplateMapping };
 		CResolvingDependenciesContext resolvingDepCtx(mappings, context.m_log);
 		SResolvingDependenciesData resolvingDepData{ data.m_signatureMapping };
 		//未实现按CursorDeclaration依赖顺序遍历, 因此在最后ResolveDependcies
@@ -664,7 +664,7 @@ namespace NiflectGen
 		//	}
 		//}
 	}
-	void CResolver::ResolveRecurs4(CTaggedNode2* taggedParent, CResolvedData& data, CTaggedTypesMapping& resolvedMapping, CUntaggedTemplatesMapping& untaggedTemplateMapping)
+	void CResolver::ResolveRecurs4(CTaggedNode2* taggedParent, CResolvedData& data, CTaggedTypesMapping& resolvedMapping)
 	{
 		if (auto taggedType = CTaggedType::CastChecked(taggedParent))
 		{
@@ -674,18 +674,10 @@ namespace NiflectGen
 			ASSERT(ret.second);
 			resolvedMapping.m_vecType.push_back(taggedType);
 		}
-		else if (auto untaggedType = CUntaggedTemplate::CastChecked(taggedParent))
-		{
-			auto& cursor = untaggedType->GetCursor();
-			auto ret = untaggedTemplateMapping.m_mapCursorToIndex.insert({ cursor, static_cast<uint32>(untaggedTemplateMapping.m_vecType.size())});
-			ASSERT(ret.second);
-			untaggedTemplateMapping.m_vecType.push_back(untaggedType);
-			data.deprecated_m_mapCursorDeclToUntaggedTemplate.insert({ cursor, untaggedType });
-		}
 
 		for (auto& it0 : taggedParent->DebugGetChildren())
 		{
-			this->ResolveRecurs4(it0.Get(), data, resolvedMapping, untaggedTemplateMapping);
+			this->ResolveRecurs4(it0.Get(), data, resolvedMapping);
 		}
 	}
 

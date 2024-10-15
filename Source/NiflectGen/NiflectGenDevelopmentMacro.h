@@ -23,3 +23,6 @@
 
 //实现枚举的代码生成流程, 如专门的 AccessorBinding, CodeWriter
 //#define TODO_ENUM_CODE_GEN_PIPELINE
+
+//BindingType 重复指定检查
+//#define BINDING_TYPE_DUPLICATION_VERIFICATION

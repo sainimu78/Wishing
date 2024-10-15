@@ -92,6 +92,7 @@ namespace NiflectGen
 	private:
 		void CollectDataRecurs2(const CXCursor& cursor, const CXCursor& parentCursor, CTaggedNode2* taggedParent, CCollectingContext& context, SRecursCollectingData& recursCollectiingData);
 		void Visit(const CXCursor& cursor, CTaggedNode2* taggedParent, CCollectingContext& context, CAliasChain* aliasChain, SVisitingData& data);
+		void CollectUntaggedTemplatesRecurs(CTaggedNode2* taggedParent, CUntaggedTemplatesMapping& untaggedTemplateMapping);
 
 	private:
 		bool VerifyDerivedFromCAccessor(CXCursor p, CAliasChain* aliasChain) const;

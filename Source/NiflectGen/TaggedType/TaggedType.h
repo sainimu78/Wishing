@@ -121,7 +121,7 @@ namespace NiflectGen
 		virtual bool CollectSibling(const CXCursor& cursor, const STaggedNodeCollectingContext& context) override;
 
 	public:
-		void ResolveForAlias(const CAliasChain& aliasChain, const CUntaggedTemplatesMapping& untaggedMapping);
+		void InitForAlias(const CAliasChain& aliasChain, const CUntaggedTemplatesMapping& untaggedMapping);
 
 	public:
 		static CUntaggedTemplate* CastChecked(inherited* base)
@@ -131,6 +131,10 @@ namespace NiflectGen
 
 	public:
 		CUntaggedTemplate* m_originalUntaggedDecl;
+#ifdef BINDING_TYPE_DUPLICATION_VERIFICATION
+		uint32 m_argsCount;
+#else
+#endif
 	};
 
 	Niflect::CString ResolveSignature(const CResolvedCursorNode& indexedParent, const CResolvingDependenciesContext& ctx, CResolvedCursorRootsMapping& signatureMapping);

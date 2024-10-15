@@ -139,6 +139,10 @@ namespace NiflectGen
 
 	CUntaggedTemplate::CUntaggedTemplate()
 		: m_originalUntaggedDecl(NULL)
+#ifdef BINDING_TYPE_DUPLICATION_VERIFICATION
+		, m_argsCount(0)
+#else
+#endif
 	{
 	}
 	bool CUntaggedTemplate::CollectSibling(const CXCursor& cursor, const STaggedNodeCollectingContext& context)
@@ -148,6 +152,11 @@ namespace NiflectGen
 		bool ok = false;
 		if (kind == CXCursor_FieldDecl)
 			ok = true;
+#ifdef BINDING_TYPE_DUPLICATION_VERIFICATION
+		else if (kind == CXCursor_TemplateTypeParameter)
+			m_argsCount++;
+#else
+#endif
 		if (ok)
 		{
 			auto taggedChild = Niflect::MakeShared<CTaggedInheritableTypeMember>();
@@ -156,7 +165,7 @@ namespace NiflectGen
 		}
 		return addedTaggedChild;
 	}
-	void CUntaggedTemplate::ResolveForAlias(const CAliasChain& aliasChain, const CUntaggedTemplatesMapping& untaggedMapping)
+	void CUntaggedTemplate::InitForAlias(const CAliasChain& aliasChain, const CUntaggedTemplatesMapping& untaggedMapping)
 	{
 		CXCursor originalCursor;
 		//auto a = CXStringToCString(clang_getCursorSpelling(this->GetCursor()));

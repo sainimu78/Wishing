@@ -415,6 +415,45 @@ namespace NiflectGen
 		bool m_entered;
 	};
 
+	class CScopeTemplateArgsCount
+	{
+	public:
+		CScopeTemplateArgsCount(const CXCursor& cursor, const CCursorArray& vecChild)
+			: m_cursor(cursor)
+			, m_vecChild(vecChild)
+			, m_argsCount(0)
+			, m_entered(false)
+		{
+			auto kind = clang_getCursorKind(cursor);
+			m_entered = kind == CXCursor_TypeAliasTemplateDecl || kind == CXCursor_ClassTemplate;
+		}
+		~CScopeTemplateArgsCount()
+		{
+			if (m_entered)
+			{
+				for (uint32 idx = 0; idx < m_vecChild.size(); ++idx)
+				{
+					auto& cursor = m_vecChild[idx];
+					auto childKind = clang_getCursorKind(cursor);
+					if (childKind == CXCursor_TemplateTypeParameter)
+						m_argsCount++;
+					else
+						break;
+				}
+
+				//auto a = CXStringToCString(clang_getCursorSpelling(m_cursor));
+				//if (a.find("vector") != std::string::npos)
+				//	printf("%s, %u\n", a.c_str(), m_argsCount);
+			}
+		}
+
+	private:
+		const CXCursor& m_cursor;
+		const CCursorArray& m_vecChild;
+		uint32 m_argsCount;
+		bool m_entered;
+	};
+
 	//todo: 应改为 ScopeAliasChainLinking ?
 	class CScopeTemplateDecl
 	{
@@ -459,7 +498,7 @@ namespace NiflectGen
 						}
 						if (ok)
 						{
-							m_aliasChain->LinkToReferenced(dsssssssss, cursor);
+							m_aliasChain->LinkToReferenced(dsssssssss, cursor, 0);
 						}
 						break;
 					}
@@ -633,6 +672,21 @@ namespace NiflectGen
 		else
 			data.m_vecTaggedChildIndex.push_back(INDEX_NONE);
 	}
+	void CDataCollector::CollectUntaggedTemplatesRecurs(CTaggedNode2* taggedParent, CUntaggedTemplatesMapping& untaggedTemplateMapping)
+	{
+		if (auto untaggedType = CUntaggedTemplate::CastChecked(taggedParent))
+		{
+			auto& cursor = untaggedType->GetCursor();
+			auto ret = untaggedTemplateMapping.m_mapCursorToIndex.insert({ cursor, static_cast<uint32>(untaggedTemplateMapping.m_vecType.size()) });
+			ASSERT(ret.second);
+			untaggedTemplateMapping.m_vecType.push_back(untaggedType);
+		}
+
+		for (auto& it0 : taggedParent->DebugGetChildren())
+		{
+			this->CollectUntaggedTemplatesRecurs(it0.Get(), untaggedTemplateMapping);
+		}
+	}
 	static CXChildVisitResult VisitorCallback(CXCursor cursor, CXCursor parent, CXClientData data)
 	{
 		auto& d = *static_cast<SVisitorCallbackData*>(data);
@@ -722,6 +776,7 @@ namespace NiflectGen
 	{
 		auto aliasChain = Niflect::MakeShared<CAliasChain>();
 		auto accessorBindingMapping = Niflect::MakeShared<CAccessorBindingMapping2>();
+		auto untaggedTemplatesMapping = Niflect::MakeShared<CUntaggedTemplatesMapping>();
 		auto& vecSetting = accessorBindingMapping->m_vecAccessorBindingSetting;
 		SRecursCollectingData recursCollectiingData{ aliasChain.Get(), vecSetting };
 		this->CollectDataRecurs2(cursor, g_invalidCursor, taggedParent, context, recursCollectiingData);
@@ -745,7 +800,97 @@ namespace NiflectGen
 				break;
 			}
 		}
-		
+
+		this->CollectUntaggedTemplatesRecurs(taggedParent, *untaggedTemplatesMapping);
+		untaggedTemplatesMapping->Init(*aliasChain);
+
+		auto ReportForDup = [](CCollectingContext& context, const CAccessorBindingMapping2& mapping, uint32 idxErrSrc, uint32 idxDupWith)
+			{
+				auto& settingErrSrc = mapping.m_vecAccessorBindingSetting[idxErrSrc];
+				auto& settingDup = mapping.m_vecAccessorBindingSetting[idxDupWith];
+				Niflect::CString str0;
+				GenerateTemplateInstanceCode(settingErrSrc.m_subcursorRoot, str0);
+				Niflect::CString str1;
+				GenerateTemplateInstanceCode(settingDup.m_subcursorRoot, str1);
+				GenLogError(context.m_log, NiflectUtil::FormatString("Duplicated accessor binding of %s with %s. Additionally, partial template specialization is not supported for binding types.", str0.c_str(), str1.c_str()));
+			};
+
+#ifdef BINDING_TYPE_DUPLICATION_VERIFICATION
+		{
+			bool ok = true;
+			TCursorMap<uint32> mapBindingTypeDeclToIndex;
+			TCXTypeMap<uint32> mapBindingTypeCXTypeToIndex;
+			for (uint32 idx0 = 0; idx0 < vecSetting.size(); ++idx0)
+			{
+				auto& it0 = vecSetting[idx0];
+				auto& bSubcursor = it0.GetBindingTypeDecl();
+				auto originalKind = clang_getCursorKind(bSubcursor.m_cursorDecl);
+				uint32 idxDupWith = INDEX_NONE;
+				bool ok = true;
+				bool useCXType = false;
+				CXType cxType;
+				if (originalKind != CXCursor_NoDeclFound)
+				{
+					auto decl = bSubcursor.m_cursorDecl;
+					aliasChain->FindOriginalDecl(bSubcursor.m_cursorDecl, decl, true);
+					cxType = clang_getTypedefDeclUnderlyingType(decl);
+					if (cxType.kind != CXType_Invalid)
+					{
+						useCXType = true;
+					}
+					else
+					{
+						auto ret = mapBindingTypeDeclToIndex.insert({ decl, idx0 });
+						if (!ret.second)
+						{
+							idxDupWith = ret.first->second;
+							if (IsCursorTemplateDecl(bSubcursor.m_cursorDecl))
+							{
+								auto itFound = untaggedTemplatesMapping->m_mapCursorToIndex.find(decl);
+								ASSERT(itFound != untaggedTemplatesMapping->m_mapCursorToIndex.end());
+
+								//区分如 TArrayNif 与 std::vector, TStdPairAlias 与 std::pair 的方法为检查原始模板定义的参数个数是否相同
+								//这意味着无法区分分部特化的别名模板, 如 TArrayNif 与 TArrayNifAlias
+								//如需要实现此区分, 可考虑遍历 aliasChain 每级时的特化形式, 这涉及非常繁琐的递归分析
+								auto bindingTypeArgsCount = clang_Type_getNumTemplateArguments(bSubcursor.m_CXType);
+								auto& untaggedItem = untaggedTemplatesMapping->m_vecType[itFound->second];
+								if (bindingTypeArgsCount == untaggedItem->m_argsCount)
+								{
+									ok = false;
+								}
+							}
+							else
+							{
+								ok = false;
+							}
+						}
+					}
+				}
+				else
+				{
+					cxType = bSubcursor.m_CXType;
+					useCXType = true;
+				}
+				if (useCXType)
+				{
+					auto ret = mapBindingTypeCXTypeToIndex.insert({ cxType, idx0 });
+					if (!ret.second)
+					{
+						idxDupWith = ret.first->second;
+						ok = false;
+					}
+				}
+				if (!ok)
+				{
+					ReportForDup(context, *accessorBindingMapping, idx0, idxDupWith);
+					if (!context.m_log->m_opt.m_cachedItems)
+						break;
+				}
+			}
+		}
+#else
+#endif
+
 		//#2, 检查BindingType是否重定义, 生成BindingType的查找表
 		auto& mapCursorToIndex = accessorBindingMapping->m_mapCursorToIndex;
 		auto& mapSpecializedCursorToIndex = accessorBindingMapping->m_mapSpecializedCursorToIndex;//特化作单独容器是为减少FieldFinding时的查找规模
@@ -756,6 +901,7 @@ namespace NiflectGen
 			bool ok = true;
 			auto& bSubcursor = it0.GetBindingTypeDecl();//此处b不是bool前缀
 			uint32 idxDupWith = INDEX_NONE;
+
 			if (clang_getCursorKind(bSubcursor.m_cursorDecl) == CXCursor_NoDeclFound)
 			{
 				auto ret = mapCXTypeToIndex.insert({ bSubcursor.m_CXType, idx0 });
@@ -787,12 +933,7 @@ namespace NiflectGen
 			}
 			if (!ok)
 			{
-				Niflect::CString str0;
-				GenerateTemplateInstanceCode(it0.m_subcursorRoot, str0);
-				Niflect::CString str1;
-				GenerateTemplateInstanceCode(vecSetting[idxDupWith].m_subcursorRoot, str1);
-				GenLogError(context.m_log, NiflectUtil::FormatString("Duplicated accessor binding of %s with %s. Additionally, partial template specialization is not supported for binding types.", str0.c_str(), str1.c_str()));
-
+				ReportForDup(context, *accessorBindingMapping, idx0, idxDupWith);
 				if (!context.m_log->m_opt.m_cachedItems)
 					break;
 			}
@@ -816,6 +957,7 @@ namespace NiflectGen
 
 		collectionData.m_aliasChain = aliasChain;
 		collectionData.m_accessorBindingMapping = accessorBindingMapping;
+		collectionData.m_untaggedTemplatesMapping = untaggedTemplatesMapping;
 
 		//for (auto& it : collectionData.m_vecBindingSetting)
 		//{
@@ -908,10 +1050,18 @@ namespace NiflectGen
 
 		TSharedPtr<CScopeAccessorBaseCursorDecl> scopeCollectingClassBaseCursorDecl;
 		TSharedPtr<CScopeTemplateDecl> scopeCollectingAliasTemplateAndClassTemplateDecl;
+#ifdef BINDING_TYPE_DUPLICATION_VERIFICATION
+		TSharedPtr<CScopeTemplateArgsCount> scopeTemplateArgsCount;
+#else
+#endif
 		if (m_collectingClassBaseCursorDecl)
 		{
 			scopeCollectingClassBaseCursorDecl = MakeShared<CScopeAccessorBaseCursorDecl>(*this, cursor, visitorCbData.m_vecCursorChild);
 			scopeCollectingAliasTemplateAndClassTemplateDecl = MakeShared<CScopeTemplateDecl>(cursor, visitorCbData.m_vecCursorChild, parentCursor, recursCollectiingData.m_aliasChain);
+#ifdef BINDING_TYPE_DUPLICATION_VERIFICATION
+			scopeTemplateArgsCount = MakeShared<CScopeTemplateArgsCount>(cursor, visitorCbData.m_vecCursorChild);
+#else
+#endif
 		}
 
 		if (auto debugData = context.m_debugData)

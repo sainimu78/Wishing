@@ -264,5 +264,5 @@ namespace Engine
 	};
 
 	template <typename T0, typename T1>
-	using TMyPair = std::pair<T0, T1>;
+	using TStdPairAlias = std::pair<T0, T1>;
 }

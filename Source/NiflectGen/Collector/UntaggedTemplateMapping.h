@@ -9,8 +9,9 @@ namespace NiflectGen
 	class CUntaggedTemplatesMapping
 	{
 	public:
-		void Resolve(const CAliasChain& aliasChain);
+		void Init(const CAliasChain& aliasChain);
 		TCursorMap<uint32> m_mapCursorToIndex;
 		Niflect::TArrayNif<CUntaggedTemplate*> m_vecType;
 	};
+	using CSharedUntaggedTemplatesMapping = Niflect::TSharedPtr<CUntaggedTemplatesMapping>;
 }

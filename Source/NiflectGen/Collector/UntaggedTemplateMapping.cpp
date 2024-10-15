@@ -3,9 +3,9 @@
 
 namespace NiflectGen
 {
-	void CUntaggedTemplatesMapping::Resolve(const CAliasChain& aliasChain)
+	void CUntaggedTemplatesMapping::Init(const CAliasChain& aliasChain)
 	{
 		for (auto& it : m_vecType)
-			it->ResolveForAlias(aliasChain, *this);
+			it->InitForAlias(aliasChain, *this);
 	}
 }

@@ -40,6 +40,32 @@ namespace TestGen
 				});
 		}
 	}
+	static void TestFailure_BindingAlias()
+	{
+#ifdef BINDING_TYPE_DUPLICATION_VERIFICATION
+		auto memTest = Niflect::GetDefaultMemoryStats();
+		{
+			auto gen = CreateGenerator();
+			CModuleRegInfo info;
+			info.m_vecBindingSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestAccessorBindingBindingAlias.h"));
+			NiflectGenDefinition::Test::AddBasicHeaderSearchPaths(info.m_vecHeaderSearchPath);
+			gen->SetModuleRegInfo(info);
+			gen->Generate([&info](void* cursorAddr)
+				{
+					auto& cursor = *static_cast<CXCursor*>(cursorAddr);
+					CTaggedNode2 taggedRoot;
+					CGenLog log;
+					log.Config(CGenLogOption().SetAssertionOnAddingItem(false).SetCachedItems(true));
+					CCollectingContext context(&log);
+					CCollectionData collectionData;
+					CDataCollector collector;
+					collector.Collect(cursor, &taggedRoot, context, collectionData);
+					ASSERT(log.m_vecText.size() == 8);
+				});
+		}
+#else
+#endif
+	}
 	static void TestSuccess_BindingTypesAllUnique()
 	{
 		auto memTest = Niflect::GetDefaultMemoryStats();
@@ -384,6 +410,7 @@ namespace TestGen
 	void TestCollector()
 	{
 		//TestSuccess_AccessorAlias();
+		//TestFailure_BindingAlias();
 		//TestSuccess_BindingTypesAllUnique();
 		//TestFailure_BindingTypesDuplicated();
 		//TestSuccess_FullScopes();
