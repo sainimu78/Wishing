@@ -56,7 +56,7 @@
 	1. 对绝对路径的头文件搜索时, 应实现一种简单优化, 从末尾开始查找
 	2. 大概在代码位置 CTaggedInheritableType::ResolveDependcies, 改为只对Module内的TaggedType成员进一步生成IndexedNode
 27. NiflectGen, 应支持或避免 BindingType 为 Accessor 类型的用法
-28. NiflectGen, 无法使用特化风格的CreateFieldLayoutOfType
+28. NiflectGen, BindingType别名与原始类型同时指定时, 无法使用特化风格的CreateFieldLayoutOfType
 	1. 如需要支持同时使用别名与原始类型, 则需要通过类似key的生成方法构造一种id用于生成CreateFieldLayout_SomeId
 	2. 但考虑到StaticGetType本就无法实现区分别名与原始类型, 因此可简单地不支持同时指定BindingType的别名与原始类型
 	
