@@ -9,7 +9,7 @@ namespace NiflectGen
 	class CTaggedTypesMapping
 	{
 	public:
-		void InitPatterns();
+		void Resolve();
 		bool InitIndexedNodeForClassDecl(const CXCursor& cursor, const CAccessorBindingMapping2& accessorBindingMapping, CResolvedCursorNode& indexedParent) const;
 		TCursorMap<uint32> m_mapCursorToIndex;
 		Niflect::TArrayNif<CTaggedType*> m_vecType;
@@ -41,7 +41,7 @@ namespace NiflectGen
 		}
 
 	public:
-		void InitPattern();
+		void ResolveForResocursorNode();
 
 	public:
 		virtual void Deprecated_ResolveDependcies(const TCursorMap<CTaggedType*>& mapCursorDeclToTaggedType)
@@ -72,7 +72,7 @@ namespace NiflectGen
 		}
 
 	public:
-		Niflect::CString m_typeNamePattern;
+		Niflect::CString m_resocursorName;
 		CResolvedCursorNode m_taggedResoRoot;
 	};
 
@@ -111,7 +111,6 @@ namespace NiflectGen
 		Niflect::TArrayNif<CXCursor> m_vecDetailCursor;
 	};
 
-	//todo: 计划改名为 CUntaggedType
 	class CUntaggedTemplate : public CTaggedNode2
 	{
 		typedef CTaggedNode2 inherited;
@@ -122,10 +121,16 @@ namespace NiflectGen
 		virtual bool CollectSibling(const CXCursor& cursor, const STaggedNodeCollectingContext& context) override;
 
 	public:
+		void ResolveForAlias(const CAliasChain& aliasChain, const CUntaggedTemplatesMapping& untaggedMapping);
+
+	public:
 		static CUntaggedTemplate* CastChecked(inherited* base)
 		{
 			return dynamic_cast<CUntaggedTemplate*>(base);
 		}
+
+	public:
+		CUntaggedTemplate* m_originalUntaggedDecl;
 	};
 
 	Niflect::CString ResolveSignature(const CResolvedCursorNode& indexedParent, const CResolvingDependenciesContext& ctx, CResolvedCursorRootsMapping& signatureMapping);

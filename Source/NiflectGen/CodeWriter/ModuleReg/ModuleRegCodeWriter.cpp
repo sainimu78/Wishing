@@ -149,7 +149,7 @@ namespace NiflectGen
                     ASSERT(it0.Is1D());//不支持模板, 因此只能为1D, 对应的Binding类型可能为builtin, 类型Decl或别名
                     CAccessorBindingMapping2 placeholder0;
                     CTaggedTypesMapping placeholder1;
-                    CUntaggedTemplateTypesMapping placeholder2;
+                    CUntaggedTemplatesMapping placeholder2;
                     SResolvedMappings placeholderMappings{ placeholder0, placeholder1, placeholder2 };
                     CResolvingDependenciesContext placeholderCtx(placeholderMappings, NULL);
                     STypeRegClassWritingSetting setting = { m_moduleRegInfo.m_userProvided.m_vecHeaderSearchPath, m_resolvedData.deprecated_m_mapping, placeholderCtx };
@@ -174,7 +174,7 @@ namespace NiflectGen
                 privateHeaderData.m_vecTypeRegDataIndex.push_back(writerIndex);
                 CAccessorBindingMapping2 placeholder0;
                 CTaggedTypesMapping placeholder1;
-                CUntaggedTemplateTypesMapping placeholder2;
+                CUntaggedTemplatesMapping placeholder2;
                 SResolvedMappings placeholderMappings{ placeholder0, placeholder1, placeholder2 };
                 CResolvingDependenciesContext placeholderCtx(placeholderMappings, NULL);
                 STypeRegClassWritingSetting setting = { m_moduleRegInfo.m_userProvided.m_vecHeaderSearchPath, m_resolvedData.deprecated_m_mapping, placeholderCtx };

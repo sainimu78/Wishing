@@ -68,10 +68,10 @@ namespace NiflectGen
 		ResolveSignature(m_taggedResoRoot, context, data.m_signatureMapping);
 	}
 
-	void CTaggedTypesMapping::InitPatterns()
+	void CTaggedTypesMapping::Resolve()
 	{
 		for (auto& it : m_vecType)
-			it->InitPattern();
+			it->ResolveForResocursorNode();
 	}
 	bool CTaggedTypesMapping::InitIndexedNodeForClassDecl(const CXCursor& cursor, const CAccessorBindingMapping2& accessorBindingMapping, CResolvedCursorNode& indexedParent) const
 	{
@@ -85,18 +85,18 @@ namespace NiflectGen
 			auto itFound2 = accessorBindingMapping.m_mapSpecializedCursorToIndex.find(cursor);
 			if (itFound2 != accessorBindingMapping.m_mapSpecializedCursorToIndex.end())
 				taggedTypeIdx = itFound2->second;
-			indexedParent.InitForClassDecl(m_vecType[itFound->second]->m_typeNamePattern, itFound->second, taggedTypeIdx, headerFilePath);
+			indexedParent.InitForClassDecl(m_vecType[itFound->second]->m_resocursorName, itFound->second, taggedTypeIdx, headerFilePath);
 			return true;
 		}
 		return false;
 	}
 
-	void CTaggedType::InitPattern()
+	void CTaggedType::ResolveForResocursorNode()
 	{
 		auto& cursor = this->GetCursor();
-		auto signature = GenerateNamespacesAndScopesCode(cursor);
-		signature += CXStringToCString(clang_getCursorSpelling(cursor));
-		m_typeNamePattern = signature;
+		auto resocursorName = GenerateNamespacesAndScopesCode(cursor);
+		resocursorName += CXStringToCString(clang_getCursorSpelling(cursor));
+		m_resocursorName = resocursorName;
 	}
 
 	CTaggedInheritableTypeMember::CTaggedInheritableTypeMember()
@@ -138,6 +138,7 @@ namespace NiflectGen
 	}
 
 	CUntaggedTemplate::CUntaggedTemplate()
+		: m_originalUntaggedDecl(NULL)
 	{
 	}
 	bool CUntaggedTemplate::CollectSibling(const CXCursor& cursor, const STaggedNodeCollectingContext& context)
@@ -154,5 +155,20 @@ namespace NiflectGen
 			addedTaggedChild = true;
 		}
 		return addedTaggedChild;
+	}
+	void CUntaggedTemplate::ResolveForAlias(const CAliasChain& aliasChain, const CUntaggedTemplatesMapping& untaggedMapping)
+	{
+		CXCursor originalCursor;
+		//auto a = CXStringToCString(clang_getCursorSpelling(this->GetCursor()));
+		//if (a == "_Apply")
+		//	printf("");
+		//auto dddddddd = aliasChain.FindOriginalDeclOld(this->GetCursor());
+		if (aliasChain.FindOriginalDecl(this->GetCursor(), originalCursor))
+		{
+			auto itFound = untaggedMapping.m_mapCursorToIndex.find(originalCursor);
+			//ASSERT(itFound != untaggedMapping.m_mapCursorToIndex.end());
+			if (itFound != untaggedMapping.m_mapCursorToIndex.end())
+				m_originalUntaggedDecl = untaggedMapping.m_vecType[itFound->second];
+		}
 	}
 }

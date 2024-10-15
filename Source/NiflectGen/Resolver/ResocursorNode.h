@@ -12,20 +12,22 @@ namespace NiflectGen
 		CResolvedCursorNode()
 			: m_accessorBindingIndex(INDEX_NONE)
 			, m_taggedTypeIndex(INDEX_NONE)
+			, m_untaggedTemplateIndex(INDEX_NONE)
 		{
 		}
-		void InitForAccessorBinding(uint32 foundIdx, const Niflect::CString& headerFilePath);
-		void InitForTemplateBegin(const Niflect::CString& signature, uint32 foundIdx);
+		void InitForAccessorBinding(uint32 accessorBindingIdx, uint32 untaggedTemplateIndex, const Niflect::CString& headerFilePath);
+		void InitForTemplateBegin(const Niflect::CString& signature);
 		void InitForTemplateArguments(const CResolvedCursorNode& childrenOwner, bool isTemplateFormat);
 		void InitForTemplateEnd();
-		void InitForTemplate(const Niflect::CString& signature, uint32 foundIdx, const CResolvedCursorNode& childrenOwner, bool isTemplateFormat);
-		void InitForClassDecl(const Niflect::CString& signature, uint32 taggedTypeIdx, uint32 accessorBindingIdx, const Niflect::CString& headerFilePath);
+		void InitForTemplate(const Niflect::CString& signature, const CResolvedCursorNode& childrenOwner, bool isTemplateFormat);
+		void InitForClassDecl(const Niflect::CString& resocursorName, uint32 taggedTypeIdx, uint32 accessorBindingIdx, const Niflect::CString& headerFilePath);
 		bool IsValid() const
 		{
 			return m_accessorBindingIndex != INDEX_NONE || m_taggedTypeIndex != INDEX_NONE;
 		}
 		uint32 m_accessorBindingIndex;
-		uint32 m_taggedTypeIndex;//该索引对应的类型一定不是模板, 现可为 class, struct, enum, 可能也具有 m_accessorBindingIndex, 即指定了对应的 AccessorBinding
+		uint32 m_taggedTypeIndex;//该索引对应的类型一定不是模板, 现可为 class, struct, enum, 如指定了对应的 AccessorBinding, 则具有 m_accessorBindingIndex
+		uint32 m_untaggedTemplateIndex;//该索引有效时, 表明指定了对应的 AccessorBinding, 即具有 m_accessorBindingIndex
 		Niflect::TArrayNif<CResolvedCursorNode> m_vecChild;
 		Niflect::CString m_key;
 		Niflect::CString m_resocursorName;

@@ -10,4 +10,14 @@ namespace TestSomeScope
 		EMode0 NIF_C(),
 		EState0 NIF_C(),
 	};
+
+	template <typename T0, typename T1>
+	struct SMyPair
+	{
+		T0 m_nihao;
+		T1 m_bucuo;
+	};
+
+	template <typename T0, typename T1>
+	using SMyPairAlias = SMyPair<T0, T1>;
 }

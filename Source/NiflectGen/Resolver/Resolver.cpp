@@ -584,7 +584,8 @@ namespace NiflectGen
 
 		this->ResolveRecurs4(taggedRoot, data, data.m_taggedMapping, data.m_untaggedTemplateMapping);
 
-		data.m_taggedMapping.InitPatterns();
+		data.m_taggedMapping.Resolve();
+		data.m_untaggedTemplateMapping.Resolve(*m_collectionData.m_aliasChain);
 
 		SResolvedMappings mappings{ *data.m_accessorBindingMapping, data.m_taggedMapping, data.m_untaggedTemplateMapping };
 		CResolvingDependenciesContext resolvingDepCtx(mappings, context.m_log);
@@ -663,19 +664,21 @@ namespace NiflectGen
 		//	}
 		//}
 	}
-	void CResolver::ResolveRecurs4(CTaggedNode2* taggedParent, CResolvedData& data, CTaggedTypesMapping& resolvedMapping, CUntaggedTemplateTypesMapping& untaggedTemplateMapping)
+	void CResolver::ResolveRecurs4(CTaggedNode2* taggedParent, CResolvedData& data, CTaggedTypesMapping& resolvedMapping, CUntaggedTemplatesMapping& untaggedTemplateMapping)
 	{
 		if (auto taggedType = CTaggedType::CastChecked(taggedParent))
 		{
 			auto& cursor = taggedType->GetCursor();
 			ASSERT(clang_isDeclaration(clang_getCursorKind(cursor)));
-			resolvedMapping.m_mapCursorToIndex.insert({ cursor, static_cast<uint32>(resolvedMapping.m_vecType.size())});
+			auto ret = resolvedMapping.m_mapCursorToIndex.insert({ cursor, static_cast<uint32>(resolvedMapping.m_vecType.size())});
+			ASSERT(ret.second);
 			resolvedMapping.m_vecType.push_back(taggedType);
 		}
 		else if (auto untaggedType = CUntaggedTemplate::CastChecked(taggedParent))
 		{
 			auto& cursor = untaggedType->GetCursor();
-			untaggedTemplateMapping.m_mapCursorToIndex.insert({ cursor, static_cast<uint32>(untaggedTemplateMapping.m_vecType.size())});
+			auto ret = untaggedTemplateMapping.m_mapCursorToIndex.insert({ cursor, static_cast<uint32>(untaggedTemplateMapping.m_vecType.size())});
+			ASSERT(ret.second);
 			untaggedTemplateMapping.m_vecType.push_back(untaggedType);
 			data.deprecated_m_mapCursorDeclToUntaggedTemplate.insert({ cursor, untaggedType });
 		}

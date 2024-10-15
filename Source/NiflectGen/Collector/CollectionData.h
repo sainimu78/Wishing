@@ -1,21 +1,10 @@
 #pragma once
 #include "NiflectGen/Util/CursorMap.h"
 #include "NiflectGen/Collector/AccessorBindingMapping.h"
+#include "NiflectGen/Collector/AliasChain.h"
 
 namespace NiflectGen
 {
-	class CAliasChain
-	{
-	public:
-		void AddLinkDecl(const CXCursor& decl);
-		void LinkToReferenced(const CXCursor& decl, const CXCursor& alias);
-		CXCursor FindOriginalDecl(CXCursor decl) const;
-
-	private:
-		TCursorMap<CXCursor> m_mapDeclToReferenced;
-	};
-	using CSharedAliasChain = Niflect::TSharedPtr<CAliasChain>;
-
 	class CCollectionData
 	{
 	public:

@@ -8,6 +8,7 @@ namespace NiflectGen
 	{
 		typedef CTypeRegCodeWriter2 inherited;
 	public:
+		virtual void WriteResocursorNodeBodyCode(CCodeLines& linesResoBodyCode) const override;
 		virtual void WriteTypeRegRegisterTypeAndFieldLayout(const CWritingContext& context, CTypeRegRegisterAndFieldLayoutWritingData& data) const override;
 	};
 }

@@ -160,6 +160,9 @@ namespace NiflectGen
 		virtual void WriteTaggedTypeInit(const STypeRegClassWritingContext& context, CTypeRegTaggedTypeInitWritingData2& data) const {}
 
 	protected:
+		virtual void WriteResocursorNodeBodyCode(CCodeLines& linesResoBodyCode) const {}
+
+	protected:
 		const CResolvedCursorNode* m_bindingTypeIndexedRoot;
 		const CResolvedData* m_resolvedData;
 	};

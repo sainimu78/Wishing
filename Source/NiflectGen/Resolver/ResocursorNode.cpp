@@ -5,21 +5,23 @@
 
 namespace NiflectGen
 {
-	void CResolvedCursorNode::InitForAccessorBinding(uint32 foundIdx, const Niflect::CString& headerFilePath)
+	void CResolvedCursorNode::InitForAccessorBinding(uint32 accessorBindingIdx, uint32 untaggedTemplateIndex, const Niflect::CString& headerFilePath)
 	{
 		ASSERT(m_accessorBindingIndex == INDEX_NONE);
-		m_accessorBindingIndex = foundIdx;
+		m_accessorBindingIndex = accessorBindingIdx;
+		ASSERT(m_untaggedTemplateIndex == INDEX_NONE);
+		m_untaggedTemplateIndex = untaggedTemplateIndex;
 		if (!headerFilePath.empty())
 		{
 			ASSERT(m_vecRequiredHeaderFilePath.size() == 0);
 			m_vecRequiredHeaderFilePath.push_back(headerFilePath);
 		}
 	}
-	void CResolvedCursorNode::InitForTemplateBegin(const Niflect::CString& signature, uint32 foundIdx)
+	void CResolvedCursorNode::InitForTemplateBegin(const Niflect::CString& signature)
 	{
 		ASSERT(m_key.empty());
 		m_key += '(';
-		m_key += std::to_string(foundIdx).c_str();
+		m_key += std::to_string(m_accessorBindingIndex).c_str();
 
 		ASSERT(m_resocursorName.empty());
 		m_resocursorName = signature;
@@ -87,13 +89,13 @@ namespace NiflectGen
 	{
 		m_key += ')';
 	}
-	void CResolvedCursorNode::InitForTemplate(const Niflect::CString& signature, uint32 foundIdx, const CResolvedCursorNode& childrenOwner, bool isTemplateFormat)
+	void CResolvedCursorNode::InitForTemplate(const Niflect::CString& signature, const CResolvedCursorNode& childrenOwner, bool isTemplateFormat)
 	{
-		this->InitForTemplateBegin(signature, foundIdx);
+		this->InitForTemplateBegin(signature);
 		this->InitForTemplateArguments(childrenOwner, isTemplateFormat);
 		this->InitForTemplateEnd();
 	}
-	void CResolvedCursorNode::InitForClassDecl(const Niflect::CString& signature, uint32 taggedTypeIdx, uint32 accessorBindingIdx, const Niflect::CString& headerFilePath)
+	void CResolvedCursorNode::InitForClassDecl(const Niflect::CString& resocursorName, uint32 taggedTypeIdx, uint32 accessorBindingIdx, const Niflect::CString& headerFilePath)
 	{
 		ASSERT(m_key.empty());
 		m_key += '[';
@@ -104,7 +106,7 @@ namespace NiflectGen
 		m_accessorBindingIndex = accessorBindingIdx;
 
 		ASSERT(m_resocursorName.empty());
-		m_resocursorName = signature;
+		m_resocursorName = resocursorName;
 
 		ASSERT(m_vecRequiredHeaderFilePath.size() == 0);
 		m_vecRequiredHeaderFilePath.push_back(headerFilePath);

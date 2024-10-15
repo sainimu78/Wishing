@@ -11,13 +11,13 @@ namespace TestGen
 {
 	using namespace NiflectGen;
 
-	static void TestSuccess_AccessorBindingWithAlias()
+	static void TestSuccess_AccessorAlias()
 	{
 		auto memTest = Niflect::GetDefaultMemoryStats();
 		{
 			auto gen = CreateGenerator();
 			CModuleRegInfo info;
-			info.m_vecBindingSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestAccessorBindingAliass.h"));
+			info.m_vecBindingSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestAccessorBindingAccessorAliass.h"));
 			NiflectGenDefinition::Test::AddBasicHeaderSearchPaths(info.m_vecHeaderSearchPath);
 			gen->SetModuleRegInfo(info);
 			gen->Generate([](void* cursorAddr)
@@ -355,7 +355,7 @@ namespace TestGen
 			info.m_genIncludeBasePath = "NiflectGenerated";
 			info.m_genBasePath = "F:/Fts/Proj/Test/Interedit/Generated";
 			info.m_vecOriginalHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestOriginalTypeTypeRegCodeGen.h"));
-			info.m_vecBindingSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestAccessorBindingTypeRegSignature.h"));
+			info.m_vecBindingSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestAccessorBindingTypeTypeRegCodeGen.h"));
 			NiflectGenDefinition::Test::AddBasicHeaderSearchPaths(info.m_vecHeaderSearchPath);
 			gen->SetModuleRegInfo(info);
 			gen->Generate([&info](void* cursorAddr)
@@ -383,7 +383,7 @@ namespace TestGen
 	}
 	void TestCollector()
 	{
-		//TestSuccess_AccessorBindingWithAlias();
+		//TestSuccess_AccessorAlias();
 		//TestSuccess_BindingTypesAllUnique();
 		//TestFailure_BindingTypesDuplicated();
 		//TestSuccess_FullScopes();

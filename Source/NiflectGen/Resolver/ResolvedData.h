@@ -166,6 +166,6 @@ namespace NiflectGen
 		CResolvedCursorRootsMapping m_signatureMapping;
 		CSharedAccessorBindingMapping m_accessorBindingMapping;
 		CTaggedTypesMapping m_taggedMapping;
-		CUntaggedTemplateTypesMapping m_untaggedTemplateMapping;
+		CUntaggedTemplatesMapping m_untaggedTemplateMapping;
 	};
 }

@@ -652,7 +652,7 @@ namespace NiflectGen
 				ok = true;
 				break;
 			}
-			p = aliasChain->FindOriginalDecl(p);
+			aliasChain->FindOriginalDecl(p, p);
 			auto itFound = m_mapCursorDeclToBaseCursorDecl.find(p);
 			if (itFound != m_mapCursorDeclToBaseCursorDecl.end())
 			{
@@ -673,38 +673,6 @@ namespace NiflectGen
 			}
 		}
 		return ok;
-	}
-	void CAliasChain::AddLinkDecl(const CXCursor& decl)
-	{
-		m_mapDeclToReferenced.insert({ decl, g_invalidCursor });
-	}
-	void CAliasChain::LinkToReferenced(const CXCursor& decl, const CXCursor& alias)
-	{
-		auto itFound = m_mapDeclToReferenced.find(decl);
-		if (itFound != m_mapDeclToReferenced.end())
-			itFound->second = clang_getCursorReferenced(alias);
-	}
-	CXCursor CAliasChain::FindOriginalDecl(CXCursor decl) const
-	{
-		CXCursor lastValidDecl = decl;
-		while (true)
-		{
-			auto a = CXStringToCString(clang_getCursorSpelling(decl));
-			auto templateDecl = clang_getSpecializedCursorTemplate(decl);
-			if (!clang_Cursor_isNull(templateDecl))
-				decl = templateDecl;
-			if (!IsCursorAliasDecl(decl))
-				return decl;
-			auto itFound = m_mapDeclToReferenced.find(decl);
-			if (itFound != m_mapDeclToReferenced.end())
-				decl = itFound->second;
-			else
-				break;
-			if (clang_Cursor_isNull(decl))
-				break;
-			lastValidDecl = decl;
-		}
-		return lastValidDecl;
 	}
 	CXCursor CDataCollector::FindAliasDeclOld(CXCursor decl) const
 	{

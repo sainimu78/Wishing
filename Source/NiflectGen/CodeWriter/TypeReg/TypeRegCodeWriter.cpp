@@ -132,6 +132,7 @@ namespace NiflectGen
 			tpl0.ReadFromRawData(hct);
 			CLabelToCodeMapping map;
 			MapLabelToText(map, LABEL_2, context.m_createFieldLayoutOfTypeFuncName);
+			
 			CCodeLines linesBody;
 			{
 				Niflect::CString accessorResoCursorName;
@@ -143,24 +144,10 @@ namespace NiflectGen
 					if (IsCursorTemplateDecl(setting.GetAccessorTypeDecl().m_cursorDecl))//注, 特化的 Kind 为 ClassDecl
 					{
 						auto& arg = m_bindingTypeIndexedRoot->m_resocursorName;
-
 						NiflectGenDefinition::CodeStyle::TemplateAngleBracketL(accessorResoCursorName);
 						accessorResoCursorName += arg;
 						NiflectGenDefinition::CodeStyle::TemplateAngleBracketR(accessorResoCursorName);
 					}
-
-					//if (clang_getCursorKind(setting.GetAccessorTypeDecl().m_cursorDecl) != CXCursor_ClassDecl)
-					//{
-					//	auto argsCount = clang_Type_getNumTemplateArguments(setting.GetAccessorTypeDecl().m_CXType);
-					//	if (argsCount > 0)
-					//	{
-					//		auto& arg = m_bindingTypeIndexedRoot->m_resocursorName;
-
-					//		NiflectGenDefinition::CodeStyle::TemplateAngleBracketL(accessorResoCursorName);
-					//		accessorResoCursorName += arg;
-					//		NiflectGenDefinition::CodeStyle::TemplateAngleBracketR(accessorResoCursorName);
-					//	}
-					//}
 				}
 				else
 				{
@@ -169,6 +156,9 @@ namespace NiflectGen
 				linesBody.push_back(accessorResoCursorName);
 				MapLabelToLines(map, LABEL_3, linesBody);
 			}
+			
+			this->WriteResocursorNodeBodyCode(linesBody);
+
 			Niflect::TSet<Niflect::CString> setReplacedLabel;
 			tpl0.ReplaceLabels(map, data.m_linesCreateFieldLayoutOfTypeImpl, &setReplacedLabel);
 			ASSERT(setReplacedLabel.size() == map.size());
