@@ -17,7 +17,7 @@ namespace TestGen
 		{
 			auto gen = CreateGenerator();
 			CModuleRegInfo info;
-			info.m_vecBindingSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestAccessorBindingAccessorAliass.h"));
+			info.m_vecBindingSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestAccessorBindingAccessorTypeAliass.h"));
 			NiflectGenDefinition::Test::AddBasicHeaderSearchPaths(info.m_vecHeaderSearchPath);
 			gen->SetModuleRegInfo(info);
 			gen->Generate([](void* cursorAddr)
