@@ -41,7 +41,7 @@
 //			2. 可为定义的类(class), 结构体(struct), 枚举(enum class)
 //			3. 可为任意参数个数的类模板或结构体模板
 //			4. 可为模板特化, 如 std::vector<bool>
-//			5. 可为部分模板特化, 如 Niflect::TArray<T>, 其中 Allocator 为部分特化, 因此不认定与 std::vector 重复指定
+//			5. 可为部分模板特化, 如 Niflect::TArray<T>, 其中 Allocator 为部分特化, 因此不认定与 std::vector 重复指定, 实际上在 Runtime 的 typeid(Niflect::TArray<T>).hash_code() 与 typeid(std::vector<float>).hash_code() 是不同的
 //		2. 对于形式2, 要求对应的类型指定标记(NIF_T)
 //		3. 对于形式3, 1个参数的模板将认定为容器模板, 多于1个参数的模板将认定为结构模板(StructuralTemplateND)
 //			1. 对于结构模板, 要求实际定义的成员变量的 scope 全为 public, 如 std::pair
