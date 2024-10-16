@@ -151,7 +151,10 @@ namespace NiflectGen
 				}
 				else
 				{
-					accessorResoCursorName = "?";
+					//auto& taggedType = m_resolvedData->m_taggedMapping.m_vecType[m_bindingTypeIndexedRoot->m_taggedTypeIndex];
+					//accessorResoCursorName = CXStringToCString(clang_getCursorSpelling(taggedType->GetCursor()));
+					
+					accessorResoCursorName = m_bindingTypeIndexedRoot->m_resocursorName;
 				}
 				linesBody.push_back(accessorResoCursorName);
 				MapLabelToLines(map, LABEL_3, linesBody);

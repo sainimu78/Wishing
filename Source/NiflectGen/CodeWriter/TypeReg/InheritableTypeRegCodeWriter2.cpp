@@ -8,11 +8,31 @@
 
 namespace NiflectGen
 {
-	CInheritableTypeRegCodeWriter2::CInheritableTypeRegCodeWriter2(const Niflect::TArrayNif<CResolvedCursorNode>& vecMemberIndexedRoot, const CTaggedType* baseTaggedType)
+	CInheritableTypeRegCodeWriter2::CInheritableTypeRegCodeWriter2(const Niflect::TArrayNif<CResolvedCursorNode>& vecMemberIndexedRoot, const Niflect::TArrayNif<CTaggedInheritableTypeMember*>& vecMember, const CTaggedType* baseTaggedType)
 		: m_vecMemberIndexedRoot(vecMemberIndexedRoot)
+		, m_vecMember(vecMember)
 		, m_baseTaggedType(baseTaggedType)
 	{
 
+	}
+	void CInheritableTypeRegCodeWriter2::WriteResocursorNodeBodyCode(CCodeLines& linesResoBodyCode) const
+	{
+		//linesResoBodyCode.push_back(NiflectUtil::FormatString("My Name: %s", m_bindingTypeIndexedRoot->m_resocursorName.c_str()));
+		ASSERT(m_bindingTypeIndexedRoot->m_accessorBindingIndex);
+
+		{
+			linesResoBodyCode.push_back("---------------");
+			for (uint32 idx = 0; idx < m_vecMemberIndexedRoot.size(); ++idx)
+			{
+				auto& itA = m_vecMemberIndexedRoot[idx];
+				auto& a = itA.m_resocursorName;
+				auto& itB = m_vecMember[idx];
+				auto b = CXStringToCString(clang_getCursorSpelling(itB->GetCursor()));
+				auto c = NiflectUtil::FormatString("%s %s;", a.c_str(), b.c_str());
+				linesResoBodyCode.push_back(c);
+			}
+			//setting.GetBindingTypeDecl().m_cursorDecl
+		}
 	}
 	void CInheritableTypeRegCodeWriter2::WriteTypeRegRegisterTypeAndFieldLayout(const CWritingContext& context, CTypeRegRegisterAndFieldLayoutWritingData& data) const
 	{

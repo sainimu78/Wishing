@@ -37,5 +37,7 @@ namespace TestMyFinding
 		std::pair<CString, float> m_pair_string_float_4;
 		//NIF_F()
 		//TestSomeScope::SMyStruct m_my_struct_5;
+		NIF_F()
+		Niflect::TArrayNif<float> m_array_float_6;
 	};
 }

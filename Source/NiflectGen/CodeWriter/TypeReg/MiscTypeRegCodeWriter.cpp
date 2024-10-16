@@ -36,16 +36,27 @@ namespace NiflectGen
 		if (m_bindingTypeIndexedRoot->m_untaggedTemplateIndex != INDEX_NONE)
 		{
 			linesResoBodyCode.push_back("---------------");
-			auto ut = m_resolvedData->m_untaggedTemplateMapping->m_vecType[m_bindingTypeIndexedRoot->m_untaggedTemplateIndex];
-			if (ut->m_originalUntaggedDecl != NULL)
-				ut = ut->m_originalUntaggedDecl;
-			ASSERT(ut->DebugGetChildren().size() > 0);//需要通过aliasChain查找原始定义, 以获取结构
-			for (auto& it : ut->DebugGetChildren())
+			if (auto elemResocursorNode = m_bindingTypeIndexedRoot->m_elem.Get())
 			{
-				auto a = CXStringToCString(clang_getCursorSpelling(it->GetCursor()));
-				linesResoBodyCode.push_back(a);
+				auto d = NiflectUtil::FormatString("Element -> %s", elemResocursorNode->m_resocursorName.c_str());
+				linesResoBodyCode.push_back(d);
 			}
-			//setting.GetBindingTypeDecl().m_cursorDecl
+			else
+			{
+				auto ut = m_resolvedData->m_untaggedTemplateMapping->m_vecType[m_bindingTypeIndexedRoot->m_untaggedTemplateIndex];
+				if (ut->m_originalUntaggedDecl != NULL)
+					ut = ut->m_originalUntaggedDecl;
+				ASSERT(ut->DebugGetChildren().size() > 0);//需要通过aliasChain查找原始定义, 以获取结构
+				ASSERT(m_bindingTypeIndexedRoot->m_vecChild.size() == ut->GetChildrenCount());
+				for (uint32 idx = 0; idx < ut->DebugGetChildren().size(); ++idx)
+				{
+					auto& it = ut->DebugGetChildren()[idx];
+					auto& a = m_bindingTypeIndexedRoot->m_vecChild[idx].m_resocursorName;
+					auto b = CXStringToCString(clang_getCursorSpelling(it->GetCursor()));
+					auto d = NiflectUtil::FormatString("%s %s;", a.c_str(), b.c_str());
+					linesResoBodyCode.push_back(d);
+				}
+			}
 		}
 	}
 	void CMiscTypeRegCodeWriter::WriteTypeRegRegisterTypeAndFieldLayout(const CWritingContext& context, CTypeRegRegisterAndFieldLayoutWritingData& data) const
