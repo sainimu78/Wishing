@@ -29,7 +29,7 @@
 //生成规则
 //1. AccessorBinding 设置规则
 //	1. AccessorType
-//		1. 必须从 Niflect::CAccessor继承
+//		1. 必须从 Niflect::CAccessor 继承
 //		2. 具体定义形式
 //			1. 可为 class, 如 CFloatAccessor
 //			2. 可为1个参数模板类, 如 TStlArrayAccessor<TInstance>
