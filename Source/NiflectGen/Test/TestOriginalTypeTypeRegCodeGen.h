@@ -35,5 +35,7 @@ namespace TestMyFinding
 		TestAccessor2::TMyTransform<float> m_tm_3;
 		NIF_F()
 		std::pair<CString, float> m_pair_string_float_4;
+		//NIF_F()
+		//TestSomeScope::SMyStruct m_my_struct_5;
 	};
 }

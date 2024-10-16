@@ -26,6 +26,29 @@
 //	1. CursorName 为自定义概念, 可能易误解为 CursorSpelling, CursorSpelling 不一定为 Full Scope. 特殊的如 Builtin 类型, 无对应有效 Cursor, 名称需要通过 CXType 获取, 而通过 AccessorBinding 生成的 CursorName 则可为 Builtin 类型名称
 //16. ResocursorName, 全称为 Resolved Cursor Name, 通过 CursorName 拼接生成特化模板或其它类型的名称, 如 Niflect::TArray<float> 其中包含 Niflect::TArray 与 float 2 个 CursorName, 通过特化模板 Cursor 的解构递归拼接生成 Niflect::TArray<float>
 
+//生成规则
+//1. AccessorBinding 设置规则
+//	1. AccessorType
+//		1. 必须从 Niflect::CAccessor继承
+//		2. 具体定义形式
+//			1. 可为 class, 如 CFloatAccessor
+//			2. 可为1个参数模板类, 如 TStlArrayAccessor<TInstance>
+//			3. 可为模板特化, 如 TMyTransformAccessor<float>
+//		3. 对于形式2, 生成代码时, 将 BindingType 套如其参数, 生成创建 Accessor 的代码如 TStlArrayAccessor<TArray<float> >
+//	2. BindingType
+//		1. 具体定义形式
+//			1. 可为 Builtin 类型, 如 float
+//			2. 可为定义的类(class), 结构体(struct), 枚举(enum class)
+//			3. 可为任意参数个数的类模板或结构体模板
+//			4. 可为模板特化, 如 std::vector<bool>
+//			5. 可为部分模板特化, 如 Niflect::TArray<T>, 其中 Allocator 为部分特化, 因此不认定与 std::vector 重复指定
+//		2. 对于形式2, 要求对应的类型指定标记(NIF_T)
+//		3. 对于形式3, 1个参数的模板将认定为容器模板, 多于1个参数的模板将认定为结构模板(StructuralTemplateND)
+//			1. 对于结构模板, 要求实际定义的成员变量的 scope 全为 public, 如 std::pair
+//		4. 不支持的形式
+//			1. 不可指定2个相同的 BindingType
+//			2. 不可通过别名分别指定原始类型相同的 BindingType
+
 int main()
 {
 	if (true)//if (false)

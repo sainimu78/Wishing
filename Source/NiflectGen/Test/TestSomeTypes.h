@@ -20,4 +20,10 @@ namespace TestSomeScope
 
 	template <typename T0, typename T1>
 	using SMyPairAlias = SMyPair<T0, T1>;
+
+	struct SMyStruct
+	{
+		bool m_bool_0;
+		int32 m_int32_1;
+	};
 }
