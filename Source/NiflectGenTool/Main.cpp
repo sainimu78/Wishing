@@ -45,9 +45,17 @@
 //		2. 对于形式2, 要求对应的类型指定标记(NIF_T)
 //		3. 对于形式3, 1个参数的模板将认定为容器模板, 多于1个参数的模板将认定为结构模板(StructuralTemplateND)
 //			1. 对于结构模板, 要求实际定义的成员变量的 scope 全为 public, 如 std::pair
-//		4. 不支持的形式
-//			1. 不可指定2个相同的 BindingType
-//			2. 不可通过别名分别指定原始类型相同的 BindingType
+//		4. 不支持的形式为, 不可指定多个相同的 BindingType, 其中相同是指 Runtime 中 typeid(TypeA).hash_code() == typeid(TypeB).hash_code() 成立, 举例如下
+//			1. 不可指定完全相同的 BindingType, 如 float 与 float
+//			2. 不可通过别名分别指定原始类型相同的 BindingType, 如 float 与 MyFloat0, MyFloat0 与 MyFloat1
+//				1. 其中 MyFloat0 为 using MyFloat0 = float;
+//				2. 其中 MyFloat1 为 using MyFloat1 = MyFloat0;
+//			3. 不可通过部分模板特化但对应模板实例完全相同的 BindingType, 如 std::vector<T> 与 MyVector0<T>
+//				1. 其中 MyVector0 为 template <typename T> using MyVector0 = std::vecotr<T, MyAllocator0<T> >;
+//					1. 其中 MyAllocator0 为 template <typename T> using MyAllocator0 = std::allocator<T>;
+//			4. 但可定义部分模板特化对应模板实例不完全相同的 BindingType, 如 如 std::vector<T> 与 MyVector1<T>
+//				1. 其中 MyVector1 为 template <typename T> using MyVector1 = std::vecotr<T, MyAllocator1<T> >;
+//					1. 其中 MyAllocator1 为 template <typename T> class MyAllocator1 { ... };
 
 int main()
 {
