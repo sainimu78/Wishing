@@ -43,7 +43,7 @@ namespace NiflectGen
 			}
 			else
 			{
-				auto ut = m_resolvedData->m_untaggedTemplateMapping->m_vecType[m_bindingTypeIndexedRoot->m_untaggedTemplateIndex];
+				auto ut = m_resolvedData->m_untaggedTemplateMapping.m_vecType[m_bindingTypeIndexedRoot->m_untaggedTemplateIndex];
 				if (ut->m_originalUntaggedDecl != NULL)
 					ut = ut->m_originalUntaggedDecl;
 				ASSERT(ut->DebugGetChildren().size() > 0);//需要通过aliasChain查找原始定义, 以获取结构

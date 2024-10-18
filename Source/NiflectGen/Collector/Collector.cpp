@@ -306,6 +306,160 @@ namespace NiflectGen
 		CDataCollector& m_collection;
 		bool m_entered;
 	};
+#ifdef BINDING_TYPE_DUPLICATION_VERIFICATION
+	class CSSSSDFASFD;
+	using CSharedSSSSDFASFD = Niflect::TSharedPtr<CSSSSDFASFD>;
+	class CSSSSDFASFD
+	{
+	public:
+		CTypeDecl m_typeDecl;
+		Niflect::TArrayNif<CXCursor> m_vecDetail;
+		Niflect::TArrayNif<CSharedSSSSDFASFD> m_vecChild;
+	};
+	static void TakeNamespaceRefs(const CXType& cxType, const CXCursor& cursor, bool checking, const Niflect::TArrayNif<CXCursor>& vecDetail, int32& idxFront, CSSSSDFASFD* parentSetting)
+	{
+		if (vecDetail.size() == idxFront)
+			return;
+		//if (checking && ((cxType.kind != CXType_Unexposed) && (clang_getCursorKind(cursor) == CXCursor_NoDeclFound)))
+		//	return;
+		if (checking && ((clang_getCursorKind(cursor) == CXCursor_NoDeclFound)))
+			return;
+		auto kind = clang_getCursorKind(vecDetail[idxFront]);
+		while (kind == CXCursor_NamespaceRef)
+		{
+			parentSetting->m_vecDetail.push_back(vecDetail[idxFront]);
+			idxFront++;
+			kind = clang_getCursorKind(vecDetail[idxFront]);
+		}
+		parentSetting->m_vecDetail.push_back(vecDetail[idxFront++]);
+	}
+	static void wwwwwwwwwwwwwRecurs(const CUntaggedTypesMapping& untaggedTypesMapping, const CXType& cxType, const Niflect::TArrayNif<CXCursor>& vecDetail, int32& idxFront, bool ssssssssssss, CSSSSDFASFD* parentSetting)
+	{
+		parentSetting->m_typeDecl.m_CXType = cxType;
+		parentSetting->m_typeDecl.m_cursorDecl = clang_getTypeDeclaration(cxType);
+
+		auto& cursor = parentSetting->m_typeDecl.m_cursorDecl;
+
+		if (true)
+		{
+			//一层的类名scope, 如为嵌套的类名scope, 则需要改为递归逻辑, 可见非常复杂, 不计划支持, 本应实现相应错误提示, 但可能由于无法正确解析, 而不能提示
+			auto parentCursor = clang_getCursorSemanticParent(cursor);
+			auto parentKind = clang_getCursorKind(parentCursor);
+			if (parentKind == CXCursor_ClassDecl)
+			{
+				TakeNamespaceRefs(clang_getCursorType(parentCursor), parentCursor, false, vecDetail, idxFront, parentSetting);
+				auto t = clang_getCursorType(parentCursor);
+				auto argsCount = clang_Type_getNumTemplateArguments(t);
+				for (int idx = 0; idx < argsCount; ++idx)
+				{
+					auto scopeCXType = clang_Type_getTemplateArgumentAsType(t, idx);
+					auto scopeCursor = clang_getTypeDeclaration(scopeCXType);
+					TakeNamespaceRefs(scopeCXType, scopeCursor, true, vecDetail, idxFront, parentSetting);
+				}
+			}
+		}
+
+		TakeNamespaceRefs(cxType, cursor, false, vecDetail, idxFront, parentSetting);
+
+		auto argsCount = clang_Type_getNumTemplateArguments(cxType);
+		for (int idx = 0; idx < argsCount; ++idx)
+		{
+			auto childSetting = Niflect::MakeShared<CSSSSDFASFD>();
+			auto childCXType = clang_Type_getTemplateArgumentAsType(cxType, idx);
+			wwwwwwwwwwwwwRecurs(untaggedTypesMapping, childCXType, vecDetail, idxFront, ssssssssssss, childSetting.Get());
+			parentSetting->m_vecChild.push_back(childSetting);
+		}
+	}
+	//static void wwwwwwwwwwwwwRecurs22222(const CUntaggedTypesMapping& untaggedTypesMapping, const CXType& cxType, const Niflect::TArrayNif<CXCursor>& vecDetail, int32& idxFront, bool ssssssssssss, CSSSSDFASFD* parentSetting)
+	//{
+	//	parentSetting->m_typeDecl.m_CXType = cxType;
+	//	parentSetting->m_typeDecl.m_cursorDecl = clang_getTypeDeclaration(cxType);
+
+	//	auto argsCount = clang_Type_getNumTemplateArguments(cxType);
+	//	for (int idx = 0; idx < argsCount; ++idx)
+	//	{
+	//		auto childSetting = Niflect::MakeShared<CSSSSDFASFD>();
+	//		auto childCXType = clang_Type_getTemplateArgumentAsType(cxType, idx);
+	//		wwwwwwwwwwwwwRecurs22222(untaggedTypesMapping, childCXType, vecDetail, idxFront, ssssssssssss, childSetting.Get());
+	//		parentSetting->m_vecChild.push_back(childSetting);
+	//	}
+	//}
+	static void PrintMySettingCursorSpellingRecurs(CSSSSDFASFD* parentSetting, uint32 lv = 0)
+	{
+		auto strLv = NiflectUtil::DebugIndentToString(lv);
+		auto kind = clang_getCursorKind(parentSetting->m_typeDecl.m_cursorDecl);
+		Niflect::CString a;
+		if (kind != CXCursor_NoDeclFound)
+			a = CXStringToCString(clang_getCursorSpelling(parentSetting->m_typeDecl.m_cursorDecl));
+		else
+			a = CXStringToCString(clang_getTypeSpelling(parentSetting->m_typeDecl.m_CXType));
+		Niflect::CString detail;
+		for (uint32 idx = 0; idx < parentSetting->m_vecDetail.size(); ++idx)
+		{
+			auto asdf = NiflectUtil::FormatString("[%s, %s]", CXStringToCString(clang_getCursorSpelling(parentSetting->m_vecDetail[idx])).c_str(), CXStringToCString(clang_getCursorKindSpelling(clang_getCursorKind(parentSetting->m_vecDetail[idx]))).c_str());
+			detail += asdf;
+			if (idx != parentSetting->m_vecDetail.size() - 1)
+				detail += ", ";
+		}
+		auto strKind = CXStringToCString(clang_getCursorKindSpelling(kind));
+		printf("%s%s, %s (%s)\n", strLv.c_str(), a.c_str(), strKind.c_str(), detail.c_str());
+		lv++;
+		for (auto& it : parentSetting->m_vecChild)
+		{
+			PrintMySettingCursorSpellingRecurs(it.Get(), lv);
+		}
+	}
+	static void PrintMySettingTypeSpellingRecurs(CSSSSDFASFD* parentSetting, uint32 lv = 0)
+	{
+		auto strLv = NiflectUtil::DebugIndentToString(lv);
+		auto a = CXStringToCString(clang_getTypeSpelling(parentSetting->m_typeDecl.m_CXType));
+		auto kind = clang_getCursorKind(parentSetting->m_typeDecl.m_cursorDecl);
+		auto strKind = CXStringToCString(clang_getCursorKindSpelling(kind));
+		printf("%s%s, %s\n", strLv.c_str(), a.c_str(), strKind.c_str());
+		lv++;
+		for (auto& it : parentSetting->m_vecChild)
+		{
+			PrintMySettingTypeSpellingRecurs(it.Get(), lv);
+		}
+	}
+	static void PrintSubcursorTypeNameRecurs(const CSubcursor& parentSubcursor, uint32 lv = 0)
+	{
+		auto strLv = NiflectUtil::DebugIndentToString(lv);
+		auto a = CXStringToCString(clang_getTypeSpelling(parentSubcursor.m_CXType));
+		auto kind = clang_getCursorKind(parentSubcursor.m_cursorDecl);
+		auto strKind = CXStringToCString(clang_getCursorKindSpelling(kind));
+		printf("%s%s\n", strLv.c_str(), a.c_str());
+		lv++;
+		for (auto& it : parentSubcursor.m_vecChild)
+		{
+			PrintSubcursorTypeNameRecurs(it, lv);
+		}
+	}
+	static void BuildSubcursorRecurs2(const CXType& cxType, const Niflect::TArrayNif<CXCursor>& vecDetail, int32& idxFront, CSubcursor& parentSubcursor)
+	{
+		parentSubcursor.m_CXType = cxType;
+		parentSubcursor.m_cursorDecl = clang_getTypeDeclaration(cxType);
+
+		auto argsCount = clang_Type_getNumTemplateArguments(cxType);
+		if (argsCount > 0)
+		{
+			parentSubcursor.m_vecChild.resize(argsCount);
+			for (int idx = 0; idx < argsCount; ++idx)
+			{
+				auto childCXType = clang_Type_getTemplateArgumentAsType(cxType, idx);
+				auto& childSubcursor = parentSubcursor.m_vecChild[idx];
+				BuildSubcursorRecurs2(childCXType, vecDetail, idxFront, childSubcursor);
+			}
+		}
+	}
+	static void BuildSubcursor2(const CXCursor& cursorSettingRoot, const Niflect::TArrayNif<CXCursor>& vecDetail, CSubcursor& parentSubcursor)
+	{
+		auto cxType = clang_getCursorType(cursorSettingRoot);
+		int32 idxFront = 0;
+		BuildSubcursorRecurs2(cxType, vecDetail, idxFront, parentSubcursor);
+	}
+#else
+#endif
 
 	class CScopeBindingSetting
 	{
@@ -334,6 +488,12 @@ namespace NiflectGen
 				MyLogErrorChecked(m_vecChild.size() > 0, NiflectUtil::FormatString("Template must have child nodes"));
 				MyLogErrorChecked(clang_getCursorKind(m_vecChild[0]) == CXCursor_TemplateRef, NiflectUtil::FormatString("The first node must be TemplateRef"));
 
+
+#ifdef BINDING_TYPE_DUPLICATION_VERIFICATION
+				m_recursCollectiingData.m_vecAccessorBindingSetting.push_back(CBindingSettingData());
+				auto& data = m_recursCollectiingData.m_vecAccessorBindingSetting.back();
+				BuildSubcursor2(m_cursor, m_vecChild, data.m_subcursorRoot);
+#else
 				CXType templateType = clang_getCursorType(m_cursor);
 				CBindingSettingData data;
 				if (!BuildSubcursor(templateType, m_vecChild, data.m_subcursorRoot))
@@ -355,6 +515,7 @@ namespace NiflectGen
 				//Niflect::CString str1;
 				//GenerateTemplateInstanceCode(data.m_subcursorRoot.m_vecChild[1], str1);
 				m_recursCollectiingData.m_vecAccessorBindingSetting.push_back(data);
+#endif
 			}
 		}
 
@@ -601,6 +762,19 @@ namespace NiflectGen
 		return true;
 	}
 
+#ifdef BINDING_TYPE_DUPLICATION_VERIFICATION
+	CUntaggedTypeCollector::CUntaggedTypeCollector()
+	{
+
+	}
+	bool CUntaggedTypeCollector::Collect(const CXCursor& cursor, CTaggedNode2* taggedParent, CGenLog* log)
+	{
+		taggedParent->AddChildAndInitDefault(MakeShared<CUntaggedType>(), cursor, g_invalidCursor);
+		return true;
+	}
+#else
+#endif
+
 	CDataCollector::CDataCollector()
 		: m_taggedTypeCollector(m_macroTagCollection)
 		, m_collectingClassBaseCursorDecl(true)
@@ -642,6 +816,24 @@ namespace NiflectGen
 				//	ASSERT(ret.second);
 				//}
 
+#ifdef BINDING_TYPE_DUPLICATION_VERIFICATION
+				bool isUntagged = false;
+				switch (kind)
+				{
+				case CXCursor_TypeAliasTemplateDecl: 
+				case CXCursor_TypeAliasDecl:
+				case CXCursor_ClassTemplate:
+
+					isUntagged = true;
+					break;
+				default: break;
+				};
+				if (isUntagged)
+				{
+					aliasChain->AddLinkDecl(cursor);
+					addedTaggedChild = m_untaggedTypeCollector.Collect(cursor, taggedParent, context.m_log);
+				}
+#else
 				if (kind == CXCursor_TypeAliasTemplateDecl)
 				{
 					aliasChain->AddLinkDecl(cursor);
@@ -656,6 +848,7 @@ namespace NiflectGen
 					aliasChain->AddLinkDecl(cursor);
 					addedTaggedChild = m_templateCollector.Collect(cursor, taggedParent, context.m_log);
 				}
+#endif
 			}
 			if (!addedTaggedChild)
 			{
@@ -672,21 +865,24 @@ namespace NiflectGen
 		else
 			data.m_vecTaggedChildIndex.push_back(INDEX_NONE);
 	}
-	void CDataCollector::CollectUntaggedTemplatesRecurs(CTaggedNode2* taggedParent, CUntaggedTemplatesMapping& untaggedTemplateMapping)
+#ifdef BINDING_TYPE_DUPLICATION_VERIFICATION
+	void CDataCollector::CollectUntaggedTypesRecurs(CTaggedNode2* taggedParent, CUntaggedTypesMapping& mapping) const
 	{
-		if (auto untaggedType = CUntaggedTemplate::CastChecked(taggedParent))
+		if (auto untaggedType = CUntaggedType::CastChecked(taggedParent))
 		{
 			auto& cursor = untaggedType->GetCursor();
-			auto ret = untaggedTemplateMapping.m_mapCursorToIndex.insert({ cursor, static_cast<uint32>(untaggedTemplateMapping.m_vecType.size()) });
+			auto ret = mapping.m_mapCursorToIndex.insert({ cursor, static_cast<uint32>(mapping.m_vecType.size()) });
 			ASSERT(ret.second);
-			untaggedTemplateMapping.m_vecType.push_back(untaggedType);
+			mapping.m_vecType.push_back(untaggedType);
 		}
 
 		for (auto& it0 : taggedParent->DebugGetChildren())
 		{
-			this->CollectUntaggedTemplatesRecurs(it0.Get(), untaggedTemplateMapping);
+			this->CollectUntaggedTypesRecurs(it0.Get(), mapping);
 		}
 	}
+#else
+#endif
 	static CXChildVisitResult VisitorCallback(CXCursor cursor, CXCursor parent, CXClientData data)
 	{
 		auto& d = *static_cast<SVisitorCallbackData*>(data);
@@ -772,14 +968,296 @@ namespace NiflectGen
 		}
 		return yes;
 	}
+	void DebugPrintTaggedNodeRecurs3(CTaggedNode2* taggedParent, int level)
+	{
+		taggedParent->DebugPrint(NULL, level);
+
+		level++;
+		for (auto& it0 : taggedParent->DebugGetChildren())
+		{
+			DebugPrintTaggedNodeRecurs3(it0.Get(), level);
+		}
+	}
+#ifdef BINDING_TYPE_DUPLICATION_VERIFICATION
+	static Niflect::CString BuildBindingTypeName(const CTypeDecl& typeDecl)
+	{
+		auto kind = clang_getCursorKind(typeDecl.m_cursorDecl);
+		Niflect::CString a;
+		if (kind != CXCursor_NoDeclFound)
+			a = CXStringToCString(clang_getCursorSpelling(typeDecl.m_cursorDecl));
+		else
+			a = CXStringToCString(clang_getTypeSpelling(typeDecl.m_CXType));
+		return a;
+	}
+	static void BuildSubcursorTypeNameRecurs(const CSubcursor& parentSubcursor, Niflect::CString& str)
+	{
+		str += CXStringToCString(clang_getTypeSpelling(parentSubcursor.m_CXType));
+		if (parentSubcursor.m_vecChild.size() > 0)
+		{
+			if (IsCursorTemplateDecl(parentSubcursor.m_cursorDecl))
+			{
+				NiflectGenDefinition::CodeStyle::TemplateAngleBracketL(str);
+				Niflect::CString childStr;
+				for (uint32 idx = 0; idx < parentSubcursor.m_vecChild.size(); ++idx)
+				{
+					auto& it = parentSubcursor.m_vecChild[idx];
+					BuildSubcursorTypeNameRecurs(it, childStr);
+					if (idx != parentSubcursor.m_vecChild.size() - 1)
+						childStr += ", ";
+				}
+				str += childStr;
+				NiflectGenDefinition::CodeStyle::TemplateAngleBracketR(str);
+			}
+		}
+	}
+	static Niflect::CString BuildSubcursorTypeName(const CSubcursor& parentSubcursor)
+	{
+		Niflect::CString str;
+		BuildSubcursorTypeNameRecurs(parentSubcursor, str);
+		return str;
+	}
+#else
+#endif
 	void CDataCollector::Collect(const CXCursor& cursor, CTaggedNode2* taggedParent, CCollectingContext& context, CCollectionData& collectionData)
 	{
 		auto aliasChain = Niflect::MakeShared<CAliasChain>();
 		auto accessorBindingMapping = Niflect::MakeShared<CAccessorBindingMapping2>();
-		auto untaggedTemplatesMapping = Niflect::MakeShared<CUntaggedTemplatesMapping>();
+#ifdef BINDING_TYPE_DUPLICATION_VERIFICATION
+		auto untaggedTypesMapping = Niflect::MakeShared<CUntaggedTypesMapping>();
+#else
+#endif
 		auto& vecSetting = accessorBindingMapping->m_vecAccessorBindingSetting;
 		SRecursCollectingData recursCollectiingData{ aliasChain.Get(), vecSetting };
 		this->CollectDataRecurs2(cursor, g_invalidCursor, taggedParent, context, recursCollectiingData);
+
+#ifdef BINDING_TYPE_DUPLICATION_VERIFICATION
+		this->CollectUntaggedTypesRecurs(taggedParent, *untaggedTypesMapping);
+
+		//{
+		//	TCXTypeMap<uint32> mapCXTypeToIndex;
+		//	TCursorMap<uint32> mapCursorToIndex;
+		//	TCursorMap<uint32> mapCanoCursorToIndex;
+		//	for (uint32 idx0 = 0; idx0 < vecSetting.size(); ++idx0)
+		//	{
+		//		auto& it0 = vecSetting[idx0];
+		//		auto& bSubcursor = it0.GetBindingTypeDecl();
+		//		
+		//		auto ret0 = mapCXTypeToIndex.insert({ bSubcursor.m_CXType, idx0 });
+		//		if (!ret0.second)
+		//		{
+		//			printf("");
+		//		}
+		//		auto ret1 = mapCursorToIndex.insert({ bSubcursor.m_cursorDecl, idx0 });
+		//		if (!ret1.second)
+		//		{
+		//			printf("");
+		//		}
+		//		auto canoCursor = clang_getCanonicalCursor(bSubcursor.m_cursorDecl);
+		//		auto ret2 = mapCanoCursorToIndex.insert({ canoCursor, idx0 });
+		//		if (!ret2.second)
+		//		{
+		//			printf("");
+		//		}
+		//	}
+		//	printf("");
+		//}
+#endif
+#ifdef BINDING_TYPE_DUPLICATION_VERIFICATION
+		auto ReportForDup = [](CCollectingContext& context, const CAccessorBindingMapping2& mapping, uint32 idxErrSrc, uint32 idxDupWith)
+			{
+				auto& settingErrSrc = mapping.m_vecAccessorBindingSetting[idxErrSrc];
+				auto& settingDup = mapping.m_vecAccessorBindingSetting[idxDupWith];
+				Niflect::CString str0 = BuildSubcursorTypeName(settingErrSrc.GetBindingTypeDecl());
+				Niflect::CString str1 = BuildSubcursorTypeName(settingDup.GetBindingTypeDecl());
+				GenLogError(context.m_log, NiflectUtil::FormatString("Duplicated accessor binding of %s with %s. Additionally, partial template specialization is not supported for binding types.", str0.c_str(), str1.c_str()));
+			};
+
+		{
+			bool ok = true;
+			TCursorMap<uint32> mapCursorToIndex;
+			for (uint32 idx0 = 0; idx0 < vecSetting.size(); ++idx0)
+			{
+				auto& it0 = vecSetting[idx0];
+				auto& bSubcursor = it0.GetBindingTypeDecl();
+
+				auto a = CXStringToCString(clang_getCursorSpelling(bSubcursor.m_cursorDecl));
+
+				auto cursor = bSubcursor.m_cursorDecl;
+				bool isDup = false;
+				auto itInitialInsertionPos = mapCursorToIndex.end();
+				uint32 idxDupWith = INDEX_NONE;
+				bool initialFound = false;
+				while (true)
+				{
+					auto itFound = mapCursorToIndex.find(cursor);
+					if (itFound != mapCursorToIndex.end())
+					{
+						isDup = true;
+						idxDupWith = itFound->second;
+						break;
+					}
+					if (!initialFound)
+					{
+						itInitialInsertionPos = itFound;
+						initialFound = true;
+					}
+
+					auto kind = clang_getCursorKind(cursor);
+					if (kind == CXCursor_TypeAliasDecl)//非模板的别名
+					{
+						auto itFound = untaggedTypesMapping->m_mapCursorToIndex.find(cursor);
+						if (itFound != untaggedTypesMapping->m_mapCursorToIndex.end())
+						{
+							auto& ut = untaggedTypesMapping->m_vecType[itFound->second];
+							auto t = clang_getTypedefDeclUnderlyingType(ut->GetCursor());
+							ASSERT(t.kind != CXType_Invalid);
+							cursor = clang_getTypeDeclaration(t);
+						}
+						else
+						{
+							break;
+						}
+					}
+					else if (kind == CXCursor_TypeAliasTemplateDecl)
+					{
+						//现验证非模板别名具可行性, 但对于模板别名, 无法实现区分部分特化的情况
+						auto itFound = untaggedTypesMapping->m_mapCursorToIndex.find(cursor);
+						if (itFound != untaggedTypesMapping->m_mapCursorToIndex.end())
+						{
+							auto& ut = untaggedTypesMapping->m_vecType[itFound->second];
+							for (auto& it1 : ut->DebugGetChildren())
+							{
+								auto k = clang_getCursorKind(it1->GetCursor());
+								if (k == CXCursor_TypeAliasDecl)
+								{
+									cursor = it1->GetCursor();
+									break;
+								}
+							}
+						}
+						else
+						{
+							break;
+						}
+					}
+					else
+					{
+						break;
+					}
+				}
+				if (!isDup)
+				{
+					mapCursorToIndex.insert(itInitialInsertionPos, { bSubcursor.m_cursorDecl, idx0 });
+				}
+				else
+				{
+					ok = false;
+					ReportForDup(context, *accessorBindingMapping, idx0, idxDupWith);
+					if (!context.m_log->m_opt.m_cachedItems)
+						break;
+				}
+			}
+			if (!ok)
+				return;
+		}
+
+
+
+
+		{
+			//bool ok = true;
+			//TCursorMap<uint32> mapCursorToIndex;
+			//for (uint32 idx0 = 0; idx0 < vecSetting.size(); ++idx0)
+			//{
+			//	auto& it0 = vecSetting[idx0];
+			//	auto& bSubcursor = it0.GetBindingTypeDecl();
+
+			//	auto ret = mapCursorToIndex.insert({ bSubcursor.m_cursorDecl, idx0 });
+			//	if (!ret.second)
+			//	{
+			//		ok = false;
+			//		auto& idxDupWith = ret.first->second;
+			//		ReportForDup(context, *accessorBindingMapping, idx0, idxDupWith);
+			//		if (!context.m_log->m_opt.m_cachedItems)
+			//			break;
+			//	}
+			//}
+			//if (!ok)
+			//	return;
+
+
+
+
+			//for (uint32 idx0 = 0; idx0 < vecSetting.size(); ++idx0)
+			//{
+			//	auto& it0 = vecSetting[idx0];
+			//	auto& bSubcursor = it0.GetBindingTypeDecl();
+
+			//	auto a = CXStringToCString(clang_getTypeSpelling(bSubcursor.m_CXType));
+			//	printf("%s\n", a.c_str());
+			//}
+			//return;
+
+
+
+			//for (uint32 idx0 = 0; idx0 < vecSetting.size(); ++idx0)
+			//{
+			//	auto& it0 = vecSetting[idx0];
+			//	auto& bSubcursor = it0.GetBindingTypeDecl();
+
+			//	auto cxType = bSubcursor.m_CXType;
+			//	auto kind = clang_getCursorKind(bSubcursor.m_cursorDecl);
+			//	if (kind == CXCursor_TypeAliasDecl)
+			//	{
+			//		auto itFound = untaggedTypesMapping->m_mapCursorToIndex.find(bSubcursor.m_cursorDecl);
+			//		auto& ut = untaggedTypesMapping->m_vecType[itFound->second];
+			//		//cxType = clang_getCursorType(ut->GetCursor());
+
+			//		cxType = clang_getTypedefDeclUnderlyingType(ut->GetCursor());
+			//		auto a = clang_getTypeDeclaration(cxType);
+			//		printf("");
+
+			//		//for (auto& it1 : ut->DebugGetChildren())
+			//		//{
+			//		//	auto k = clang_getCursorKind(it1->GetCursor());
+			//		//	if (k == CXCursor_TemplateRef || k == CXCursor_TypeRef)
+			//		//	{
+			//		//		auto c = clang_getCursorReferenced(it1->GetCursor());
+			//		//		cxType = clang_getCursorType(c);
+			//		//		break;
+			//		//	}
+			//		//}
+			//	}
+
+			//	auto a = CXStringToCString(clang_getTypeSpelling(cxType));
+			//	printf("%s\n", a.c_str());
+			//}
+			//return;
+
+
+
+			//bool ok = true;
+			//TCXTypeMap<uint32> mapCXTypeToIndex;
+			//for (uint32 idx0 = 0; idx0 < vecSetting.size(); ++idx0)
+			//{
+			//	auto& it0 = vecSetting[idx0];
+			//	auto& bSubcursor = it0.GetBindingTypeDecl();
+
+			//	auto ret = mapCXTypeToIndex.insert({ bSubcursor.m_CXType, idx0 });
+			//	if (!ret.second)
+			//	{
+			//		ok = false;
+			//		auto& idxDupWith = ret.first->second;
+			//		ReportForDup(context, *accessorBindingMapping, idx0, idxDupWith);
+			//		if (!context.m_log->m_opt.m_cachedItems)
+			//			break;
+			//	}
+			//}
+			//if (!ok)
+			//	return;
+		}
+#else
+#endif
 
 		//#1, 检查AccessorType定义是否继承自CAccessor
 		for (uint32 idx0 = 0; idx0 < vecSetting.size(); ++idx0)
@@ -801,9 +1279,8 @@ namespace NiflectGen
 			}
 		}
 
-		this->CollectUntaggedTemplatesRecurs(taggedParent, *untaggedTemplatesMapping);
-		untaggedTemplatesMapping->Init(*aliasChain);
-
+#ifdef BINDING_TYPE_DUPLICATION_VERIFICATION
+#else
 		auto ReportForDup = [](CCollectingContext& context, const CAccessorBindingMapping2& mapping, uint32 idxErrSrc, uint32 idxDupWith)
 			{
 				auto& settingErrSrc = mapping.m_vecAccessorBindingSetting[idxErrSrc];
@@ -815,81 +1292,83 @@ namespace NiflectGen
 				GenLogError(context.m_log, NiflectUtil::FormatString("Duplicated accessor binding of %s with %s. Additionally, partial template specialization is not supported for binding types.", str0.c_str(), str1.c_str()));
 			};
 
-#ifdef BINDING_TYPE_DUPLICATION_VERIFICATION
-		{
-			bool ok = true;
-			TCursorMap<uint32> mapBindingTypeDeclToIndex;
-			TCXTypeMap<uint32> mapBindingTypeCXTypeToIndex;
-			for (uint32 idx0 = 0; idx0 < vecSetting.size(); ++idx0)
-			{
-				auto& it0 = vecSetting[idx0];
-				auto& bSubcursor = it0.GetBindingTypeDecl();
-				auto originalKind = clang_getCursorKind(bSubcursor.m_cursorDecl);
-				uint32 idxDupWith = INDEX_NONE;
-				bool ok = true;
-				bool useCXType = false;
-				CXType cxType;
-				if (originalKind != CXCursor_NoDeclFound)
-				{
-					auto decl = bSubcursor.m_cursorDecl;
-					aliasChain->FindOriginalDecl(bSubcursor.m_cursorDecl, decl, true);
-					cxType = clang_getTypedefDeclUnderlyingType(decl);
-					if (cxType.kind != CXType_Invalid)
-					{
-						useCXType = true;
-					}
-					else
-					{
-						auto ret = mapBindingTypeDeclToIndex.insert({ decl, idx0 });
-						if (!ret.second)
-						{
-							idxDupWith = ret.first->second;
-							if (IsCursorTemplateDecl(bSubcursor.m_cursorDecl))
-							{
-								auto itFound = untaggedTemplatesMapping->m_mapCursorToIndex.find(decl);
-								ASSERT(itFound != untaggedTemplatesMapping->m_mapCursorToIndex.end());
-
-								//区分如 TArrayNif 与 std::vector, TStdPairAlias 与 std::pair 的方法为检查原始模板定义的参数个数是否相同
-								//这意味着无法区分分部特化的别名模板, 如 TArrayNif 与 TArrayNifAlias
-								//如需要实现此区分, 可考虑遍历 aliasChain 每级时的特化形式, 这涉及非常繁琐的递归分析
-								auto bindingTypeArgsCount = clang_Type_getNumTemplateArguments(bSubcursor.m_CXType);
-								auto& untaggedItem = untaggedTemplatesMapping->m_vecType[itFound->second];
-								if (bindingTypeArgsCount == untaggedItem->m_argsCount)
-								{
-									ok = false;
-								}
-							}
-							else
-							{
-								ok = false;
-							}
-						}
-					}
-				}
-				else
-				{
-					cxType = bSubcursor.m_CXType;
-					useCXType = true;
-				}
-				if (useCXType)
-				{
-					auto ret = mapBindingTypeCXTypeToIndex.insert({ cxType, idx0 });
-					if (!ret.second)
-					{
-						idxDupWith = ret.first->second;
-						ok = false;
-					}
-				}
-				if (!ok)
-				{
-					ReportForDup(context, *accessorBindingMapping, idx0, idxDupWith);
-					if (!context.m_log->m_opt.m_cachedItems)
-						break;
-				}
-			}
-		}
-#else
 #endif
+
+//#ifdef BINDING_TYPE_DUPLICATION_VERIFICATION
+//		{
+//			bool ok = true;
+//			TCursorMap<uint32> mapBindingTypeDeclToIndex;
+//			TCXTypeMap<uint32> mapBindingTypeCXTypeToIndex;
+//			for (uint32 idx0 = 0; idx0 < vecSetting.size(); ++idx0)
+//			{
+//				auto& it0 = vecSetting[idx0];
+//				auto& bSubcursor = it0.GetBindingTypeDecl();
+//				auto originalKind = clang_getCursorKind(bSubcursor.m_cursorDecl);
+//				uint32 idxDupWith = INDEX_NONE;
+//				bool ok = true;
+//				bool useCXType = false;
+//				CXType cxType;
+//				if (originalKind != CXCursor_NoDeclFound)
+//				{
+//					auto decl = bSubcursor.m_cursorDecl;
+//					aliasChain->FindOriginalDecl(bSubcursor.m_cursorDecl, decl, true);
+//					cxType = clang_getTypedefDeclUnderlyingType(decl);
+//					if (cxType.kind != CXType_Invalid)
+//					{
+//						useCXType = true;
+//					}
+//					else
+//					{
+//						auto ret = mapBindingTypeDeclToIndex.insert({ decl, idx0 });
+//						if (!ret.second)
+//						{
+//							idxDupWith = ret.first->second;
+//							if (IsCursorTemplateDecl(bSubcursor.m_cursorDecl))
+//							{
+//								auto itFound = untaggedTemplatesMapping->m_mapCursorToIndex.find(decl);
+//								ASSERT(itFound != untaggedTemplatesMapping->m_mapCursorToIndex.end());
+//
+//								//区分如 TArrayNif 与 std::vector, TStdPairAlias 与 std::pair 的方法为检查原始模板定义的参数个数是否相同
+//								//这意味着无法区分分部特化的别名模板, 如 TArrayNif 与 TArrayNifAlias
+//								//如需要实现此区分, 可考虑遍历 aliasChain 每级时的特化形式, 这涉及非常繁琐的递归分析
+//								auto bindingTypeArgsCount = clang_Type_getNumTemplateArguments(bSubcursor.m_CXType);
+//								auto& untaggedItem = untaggedTemplatesMapping->m_vecType[itFound->second];
+//								if (bindingTypeArgsCount == untaggedItem->m_argsCount)
+//								{
+//									ok = false;
+//								}
+//							}
+//							else
+//							{
+//								ok = false;
+//							}
+//						}
+//					}
+//				}
+//				else
+//				{
+//					cxType = bSubcursor.m_CXType;
+//					useCXType = true;
+//				}
+//				if (useCXType)
+//				{
+//					auto ret = mapBindingTypeCXTypeToIndex.insert({ cxType, idx0 });
+//					if (!ret.second)
+//					{
+//						idxDupWith = ret.first->second;
+//						ok = false;
+//					}
+//				}
+//				if (!ok)
+//				{
+//					ReportForDup(context, *accessorBindingMapping, idx0, idxDupWith);
+//					if (!context.m_log->m_opt.m_cachedItems)
+//						break;
+//				}
+//			}
+//		}
+//#else
+//#endif
 
 		//#2, 检查BindingType是否重定义, 生成BindingType的查找表
 		auto& mapCursorToIndex = accessorBindingMapping->m_mapCursorToIndex;
@@ -957,7 +1436,6 @@ namespace NiflectGen
 
 		collectionData.m_aliasChain = aliasChain;
 		collectionData.m_accessorBindingMapping = accessorBindingMapping;
-		collectionData.m_untaggedTemplatesMapping = untaggedTemplatesMapping;
 
 		//for (auto& it : collectionData.m_vecBindingSetting)
 		//{
@@ -1078,16 +1556,6 @@ namespace NiflectGen
 
 		if (auto debugData = context.m_debugData)
 			debugData->m_level--;
-	}
-	void DebugPrintTaggedNodeRecurs3(CTaggedNode2* taggedParent, int level)
-	{
-		taggedParent->DebugPrint(NULL, level);
-
-		level++;
-		for (auto& it0 : taggedParent->DebugGetChildren())
-		{
-			DebugPrintTaggedNodeRecurs3(it0.Get(), level);
-		}
 	}
 	void CDataCollector::DebugFinish2(CTaggedNode2* taggedParent, const CCollectionData& collectionData) const
 	{

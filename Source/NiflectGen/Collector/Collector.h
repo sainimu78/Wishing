@@ -61,8 +61,17 @@ namespace NiflectGen
 		bool Collect(const CXCursor& cursor, CTaggedNode2* taggedParent, CGenLog* log);
 	};
 
+#ifdef BINDING_TYPE_DUPLICATION_VERIFICATION
+	class CUntaggedTypeCollector
+	{
+	public:
+		CUntaggedTypeCollector();
+		bool Collect(const CXCursor& cursor, CTaggedNode2* taggedParent, CGenLog* log);
+	};
+#else
+#endif
+
 	class CTaggedTypeCollector;
-	class CTemplateCollector;
 
 	struct SVisitingData
 	{
@@ -92,7 +101,10 @@ namespace NiflectGen
 	private:
 		void CollectDataRecurs2(const CXCursor& cursor, const CXCursor& parentCursor, CTaggedNode2* taggedParent, CCollectingContext& context, SRecursCollectingData& recursCollectiingData);
 		void Visit(const CXCursor& cursor, CTaggedNode2* taggedParent, CCollectingContext& context, CAliasChain* aliasChain, SVisitingData& data);
-		void CollectUntaggedTemplatesRecurs(CTaggedNode2* taggedParent, CUntaggedTemplatesMapping& untaggedTemplateMapping);
+#ifdef BINDING_TYPE_DUPLICATION_VERIFICATION
+		void CollectUntaggedTypesRecurs(CTaggedNode2* taggedParent, CUntaggedTypesMapping& mapping) const;
+#else
+#endif
 
 	private:
 		bool VerifyDerivedFromCAccessor(CXCursor p, CAliasChain* aliasChain) const;
@@ -107,6 +119,10 @@ namespace NiflectGen
 		CMacroTagCollection2 m_macroTagCollection;
 		CTaggedTypeCollector m_taggedTypeCollector;
 		CTemplateCollector m_templateCollector;
+#ifdef BINDING_TYPE_DUPLICATION_VERIFICATION
+		CUntaggedTypeCollector m_untaggedTypeCollector;
+#else
+#endif
 		TCursorMap<CXCursor> m_mapCursorDeclToBaseCursorDecl;
 		//TCursorMap<CXCursor> m_mapCursorDeclToAliasDecl;
 		//CSharedAliasChain m_aliasChain;

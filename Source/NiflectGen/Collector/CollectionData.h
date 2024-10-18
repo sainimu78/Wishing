@@ -12,6 +12,5 @@ namespace NiflectGen
 		TCursorMap<CXCursor> deprecated_m_mapAliasTemplateDeclToClassTemplateCursor;
 		CSharedAliasChain m_aliasChain;
 		CSharedAccessorBindingMapping m_accessorBindingMapping;
-		CSharedUntaggedTemplatesMapping m_untaggedTemplatesMapping;
 	};
 }

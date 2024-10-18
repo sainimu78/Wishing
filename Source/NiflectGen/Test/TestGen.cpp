@@ -6,6 +6,7 @@
 #include "NiflectGen/Resolver/Resolver.h"
 #include "NiflectGen/Test/TestTypeRegSignature.h"
 #include "NiflectGen/CodeWriter/ModuleReg/ModuleRegCodeWriter.h"
+#include "NiflectGen/Test/TestBindingTypeAlias.h"
 
 namespace TestGen
 {
@@ -39,32 +40,6 @@ namespace TestGen
 					//ASSERT(bindingTypeName == "TestAccessor2::TMyTransform<float>");
 				});
 		}
-	}
-	static void TestFailure_BindingAlias()
-	{
-#ifdef BINDING_TYPE_DUPLICATION_VERIFICATION
-		auto memTest = Niflect::GetDefaultMemoryStats();
-		{
-			auto gen = CreateGenerator();
-			CModuleRegInfo info;
-			info.m_vecBindingSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestAccessorBindingBindingAlias.h"));
-			NiflectGenDefinition::Test::AddBasicHeaderSearchPaths(info.m_vecHeaderSearchPath);
-			gen->SetModuleRegInfo(info);
-			gen->Generate([&info](void* cursorAddr)
-				{
-					auto& cursor = *static_cast<CXCursor*>(cursorAddr);
-					CTaggedNode2 taggedRoot;
-					CGenLog log;
-					log.Config(CGenLogOption().SetAssertionOnAddingItem(false).SetCachedItems(true));
-					CCollectingContext context(&log);
-					CCollectionData collectionData;
-					CDataCollector collector;
-					collector.Collect(cursor, &taggedRoot, context, collectionData);
-					ASSERT(log.m_vecText.size() == 8);
-				});
-		}
-#else
-#endif
 	}
 	static void TestSuccess_BindingTypesAllUnique()
 	{

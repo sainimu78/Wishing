@@ -180,4 +180,19 @@ namespace NiflectGen
 				m_originalUntaggedDecl = untaggedMapping.m_vecType[itFound->second];
 		}
 	}
+
+#ifdef BINDING_TYPE_DUPLICATION_VERIFICATION
+	CUntaggedType::CUntaggedType()
+	{
+
+	}
+	bool CUntaggedType::CollectSibling(const CXCursor& cursor, const STaggedNodeCollectingContext& context)
+	{
+		//return inherited::CollectSibling(cursor, context);
+		auto untaggedChild = Niflect::MakeShared<CUntaggedTemplate>();
+		this->AddChildAndInitDefault(untaggedChild, cursor, g_invalidCursor);
+		return true;
+	}
+#else
+#endif
 }

@@ -137,5 +137,24 @@ namespace NiflectGen
 #endif
 	};
 
+#ifdef BINDING_TYPE_DUPLICATION_VERIFICATION
+	class CUntaggedType : public CTaggedNode2
+	{
+		typedef CTaggedNode2 inherited;
+	public:
+		CUntaggedType();
+
+	public:
+		virtual bool CollectSibling(const CXCursor& cursor, const STaggedNodeCollectingContext& context) override;
+
+	public:
+		static CUntaggedType* CastChecked(inherited* base)
+		{
+			return dynamic_cast<CUntaggedType*>(base);
+		}
+	};
+#else
+#endif
+
 	Niflect::CString ResolveSignature(const CResolvedCursorNode& indexedParent, const CResolvingDependenciesContext& ctx, CResolvedCursorRootsMapping& signatureMapping);
 }

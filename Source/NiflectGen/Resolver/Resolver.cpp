@@ -581,13 +581,13 @@ namespace NiflectGen
 	void CResolver::Resolve4(CTaggedNode2* taggedRoot, CResolvingContext& context, CResolvedData& data)
 	{
 		data.m_accessorBindingMapping = m_collectionData.m_accessorBindingMapping;
-		data.m_untaggedTemplateMapping = m_collectionData.m_untaggedTemplatesMapping;
 
-		this->ResolveRecurs4(taggedRoot, data, data.m_taggedMapping);
+		this->ResolveRecurs4(taggedRoot, data, data.m_taggedMapping, data.m_untaggedTemplateMapping);
 
 		data.m_taggedMapping.Resolve();
+		data.m_untaggedTemplateMapping.Init(*m_collectionData.m_aliasChain);
 
-		SResolvedMappings mappings{ *data.m_accessorBindingMapping, data.m_taggedMapping, *data.m_untaggedTemplateMapping };
+		SResolvedMappings mappings{ *data.m_accessorBindingMapping, data.m_taggedMapping, data.m_untaggedTemplateMapping };
 		CResolvingDependenciesContext resolvingDepCtx(mappings, context.m_log);
 		SResolvingDependenciesData resolvingDepData{ data.m_signatureMapping };
 		//未实现按CursorDeclaration依赖顺序遍历, 因此在最后ResolveDependcies
@@ -664,20 +664,27 @@ namespace NiflectGen
 		//	}
 		//}
 	}
-	void CResolver::ResolveRecurs4(CTaggedNode2* taggedParent, CResolvedData& data, CTaggedTypesMapping& resolvedMapping)
+	void CResolver::ResolveRecurs4(CTaggedNode2* taggedParent, CResolvedData& data, CTaggedTypesMapping& taggedTypesMapping, CUntaggedTemplatesMapping& untaggedTemplatesMapping)
 	{
 		if (auto taggedType = CTaggedType::CastChecked(taggedParent))
 		{
 			auto& cursor = taggedType->GetCursor();
 			ASSERT(clang_isDeclaration(clang_getCursorKind(cursor)));
-			auto ret = resolvedMapping.m_mapCursorToIndex.insert({ cursor, static_cast<uint32>(resolvedMapping.m_vecType.size())});
+			auto ret = taggedTypesMapping.m_mapCursorToIndex.insert({ cursor, static_cast<uint32>(taggedTypesMapping.m_vecType.size())});
 			ASSERT(ret.second);
-			resolvedMapping.m_vecType.push_back(taggedType);
+			taggedTypesMapping.m_vecType.push_back(taggedType);
+		}
+		else if (auto untaggedType = CUntaggedTemplate::CastChecked(taggedParent))
+		{
+			auto& cursor = untaggedType->GetCursor();
+			auto ret = untaggedTemplatesMapping.m_mapCursorToIndex.insert({ cursor, static_cast<uint32>(untaggedTemplatesMapping.m_vecType.size()) });
+			ASSERT(ret.second);
+			untaggedTemplatesMapping.m_vecType.push_back(untaggedType);
 		}
 
 		for (auto& it0 : taggedParent->DebugGetChildren())
 		{
-			this->ResolveRecurs4(it0.Get(), data, resolvedMapping);
+			this->ResolveRecurs4(it0.Get(), data, taggedTypesMapping, untaggedTemplatesMapping);
 		}
 	}
 

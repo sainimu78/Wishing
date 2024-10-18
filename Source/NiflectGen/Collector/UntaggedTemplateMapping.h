@@ -14,4 +14,17 @@ namespace NiflectGen
 		Niflect::TArrayNif<CUntaggedTemplate*> m_vecType;
 	};
 	using CSharedUntaggedTemplatesMapping = Niflect::TSharedPtr<CUntaggedTemplatesMapping>;
+
+#ifdef BINDING_TYPE_DUPLICATION_VERIFICATION
+	class CUntaggedType;
+
+	class CUntaggedTypesMapping
+	{
+	public:
+		TCursorMap<uint32> m_mapCursorToIndex;
+		Niflect::TArrayNif<CUntaggedType*> m_vecType;
+	};
+	using CSharedUntaggedTypesMapping = Niflect::TSharedPtr<CUntaggedTypesMapping>;
+#else
+#endif
 }

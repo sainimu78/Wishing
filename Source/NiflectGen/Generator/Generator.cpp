@@ -222,7 +222,7 @@ namespace NiflectGen
             static_cast<uint32>(vecUnsavedFileHandle.size()), CXTranslationUnit_DetailedPreprocessingRecord | CXTranslationUnit_SkipFunctionBodies
         );
 
-        if (false)//if (true)//
+        if (true)//if (false)//
         {
             auto cursor = clang_getTranslationUnitCursor(translation_unit);
 #pragma warning( disable : 4996 )
