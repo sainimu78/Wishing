@@ -93,7 +93,6 @@ namespace NiflectGen
 			{
 				if (m_bindingTypeIndexedRoot->m_taggedTypeIndex != INDEX_NONE)
 				{
-					ASSERT(m_bindingTypeIndexedRoot->m_accessorBindingIndex == INDEX_NONE);
 					auto& tagged = m_resolvedData->m_taggedMapping.m_vecType[m_bindingTypeIndexedRoot->m_taggedTypeIndex];
 					auto& cursor = tagged->GetCursor();
 					auto kind = clang_getCursorKind(cursor);
@@ -105,6 +104,18 @@ namespace NiflectGen
 					default:
 						break;
 					}
+
+					{
+						//CTaggedInheritableType::ResolveDependcies 中, TaggedType 的成员依赖头文件未加到此所属类的头文件列表中, 因此有此假定头文件列表为必定为1
+						//即使用通用数据结构, 在特定流程中特殊使用的一种方式
+						ASSERT(m_bindingTypeIndexedRoot->m_vecRequiredHeaderFilePath.size() == 1);
+						if (m_bindingTypeIndexedRoot->m_vecRequiredHeaderFilePath.size() > 0)
+						{
+							ASSERT(data.m_taggedTypeHeaderFilePathRef2 == NULL);
+							//第0个即为taggedType所在头文件
+							data.m_taggedTypeHeaderFilePathRef2 = &m_bindingTypeIndexedRoot->m_vecRequiredHeaderFilePath[0];
+						}
+					}
 				}
 			}
 			MapLabelToText(map, LABEL_1, infoTypeName);
@@ -113,61 +124,5 @@ namespace NiflectGen
 			tpl0.ReplaceLabels(map, data.m_linesInvokeRegisterType, &setReplacedLabel);
 			ASSERT(setReplacedLabel.size() == map.size());
 		}
-	}
-	void CTypeRegCodeWriter2::WriteCreateFieldLayoutOfType(const STypeRegCreateFieldLayoutOfTypeWritingContext& context, STypeRegCreateFieldLayoutOfTypeWritingData& data) const
-	{
-		{
-			auto& hct = HardCodedTemplate::CreateFieldLayoutOfTypeDecl;
-			CCodeTemplate tpl0;
-			tpl0.ReadFromRawData(hct);
-			CLabelToCodeMapping map;
-			MapLabelToText(map, LABEL_2, context.m_createFieldLayoutOfTypeFuncName);
-			Niflect::TSet<Niflect::CString> setReplacedLabel;
-			tpl0.ReplaceLabels(map, data.m_linesCreateFieldLayoutOfTypeDecl, &setReplacedLabel);
-			ASSERT(setReplacedLabel.size() == map.size());
-		}
-		{
-			auto& hct = HardCodedTemplate::CreateFieldLayoutOfTypeImpl;
-			CCodeTemplate tpl0;
-			tpl0.ReadFromRawData(hct);
-			CLabelToCodeMapping map;
-			MapLabelToText(map, LABEL_2, context.m_createFieldLayoutOfTypeFuncName);
-			
-			CCodeLines linesBody;
-			{
-				Niflect::CString accessorResoCursorName;
-				if (m_bindingTypeIndexedRoot->m_accessorBindingIndex != INDEX_NONE)
-				{
-					auto& setting = m_resolvedData->m_accessorBindingMapping->m_vecAccessorBindingSetting[m_bindingTypeIndexedRoot->m_accessorBindingIndex];
-					accessorResoCursorName = setting.m_accessorTypeCursorName;
-					
-					if (IsCursorTemplateDecl(setting.GetAccessorTypeDecl().m_cursorDecl))//注, 特化的 Kind 为 ClassDecl
-					{
-						auto& arg = m_bindingTypeIndexedRoot->m_resocursorName;
-						NiflectGenDefinition::CodeStyle::TemplateAngleBracketL(accessorResoCursorName);
-						accessorResoCursorName += arg;
-						NiflectGenDefinition::CodeStyle::TemplateAngleBracketR(accessorResoCursorName);
-					}
-				}
-				else
-				{
-					//auto& taggedType = m_resolvedData->m_taggedMapping.m_vecType[m_bindingTypeIndexedRoot->m_taggedTypeIndex];
-					//accessorResoCursorName = CXStringToCString(clang_getCursorSpelling(taggedType->GetCursor()));
-					
-					accessorResoCursorName = m_bindingTypeIndexedRoot->m_resocursorName;
-				}
-				linesBody.push_back(accessorResoCursorName);
-				MapLabelToLines(map, LABEL_3, linesBody);
-			}
-			
-			this->WriteResocursorNodeBodyCode(linesBody);
-
-			Niflect::TSet<Niflect::CString> setReplacedLabel;
-			tpl0.ReplaceLabels(map, data.m_linesCreateFieldLayoutOfTypeImpl, &setReplacedLabel);
-			ASSERT(setReplacedLabel.size() == map.size());
-		}
-
-
-		DebugPrintCodeLines(data.m_linesCreateFieldLayoutOfTypeImpl);
 	}
 }

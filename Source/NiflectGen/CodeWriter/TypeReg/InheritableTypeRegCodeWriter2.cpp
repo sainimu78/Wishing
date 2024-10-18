@@ -34,6 +34,17 @@ namespace NiflectGen
 			//setting.GetBindingTypeDecl().m_cursorDecl
 		}
 	}
+	void CInheritableTypeRegCodeWriter2::CollectDependencyHeaderFilePaths(CDependencyHeaderFilePathRefs& dependencyHeaderFilePathRefs) const
+	{
+		//还差基类的include
+		ASSERT(m_bindingTypeIndexedRoot->m_vecRequiredHeaderFilePath.size() == 1);
+		dependencyHeaderFilePathRefs.m_vecDecl.push_back(&m_bindingTypeIndexedRoot->m_vecRequiredHeaderFilePath[0]);
+		for (auto& it0 : m_vecMemberIndexedRoot)
+		{
+			for (auto& it1 : it0.m_vecRequiredHeaderFilePath)
+				dependencyHeaderFilePathRefs.m_vecImpl.push_back(&it1);
+		}
+	}
 	void CInheritableTypeRegCodeWriter2::WriteTypeRegRegisterTypeAndFieldLayout(const CWritingContext& context, CTypeRegRegisterAndFieldLayoutWritingData& data) const
 	{
 		{
@@ -66,7 +77,7 @@ R"(void ${Bucuo}();)"
 			funcSignature = ReplaceLabelToText1(aaaaaaaaaaaaaaaaa, "Bucuo", data.m_fieldLayoutFuncName);
 		}
 		{
-			data.m_linesFieldLayoutDecl.push_back(funcSignature);
+			data.m_linesCreateFieldLayoutOfTypeDecl.push_back(funcSignature);
 		}
 		{
 			static const char* aaaaaaaaaaaaaaaaa =
@@ -84,7 +95,7 @@ R"(void ${Bucuo}()
 				linesMembers.push_back(it.m_resocursorName);
 			MapLabelToLines(map, "Shima", linesMembers);
 			Niflect::TSet<Niflect::CString> setReplacedLabel;
-			tpl1.ReplaceLabels(map, data.m_linesFieldLayoutImpl, &setReplacedLabel);
+			tpl1.ReplaceLabels(map, data.m_linesCreateFieldLayoutOfTypeImpl, &setReplacedLabel);
 		}
 	}
 	void CInheritableTypeRegCodeWriter2::WriteStaticRegisterType(const STypeRegClassWritingContext& context, CCodeLines& lines) const
@@ -144,7 +155,7 @@ public:
 		Niflect::TSet<Niflect::CString> setReplacedLabel;
 		tpl1.ReplaceLabels(map, data.m_linesImpl, &setReplacedLabel);
 	}
-	void CInheritableTypeRegCodeWriter2::WriteTaggedTypeInit(const STypeRegClassWritingContext& context, CTypeRegTaggedTypeInitWritingData2& data) const
+	void CInheritableTypeRegCodeWriter2::WriteInvokeInitType(const STypeRegClassWritingContext& context, CTypeRegTaggedTypeInitWritingData2& data) const
 	{
 		if (m_baseTaggedType != NULL)
 		{

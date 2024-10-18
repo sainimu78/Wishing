@@ -45,8 +45,6 @@ namespace NiflectGen
 	}
 	void CTaggedInheritableType::ResolveDependcies(const CResolvingDependenciesContext& context, SResolvingDependenciesData& data)
 	{
-		inherited::ResolveDependcies(context, data);
-
 		//基类
 		ASSERT(m_baseTaggedType == NULL);
 		auto baseTypeCursorDecl = clang_getTypeDeclaration(clang_getCursorType(m_baseTypeSpecifierCursor));
@@ -81,6 +79,9 @@ namespace NiflectGen
 			//DebugPrintIndexedNodeRecurs(indexedRoot, indexedRoot, context.m_bindingAccessorMapping, 0);
 			ResolveSignature(indexedRoot, context, data.m_signatureMapping);
 		}
+
+		//在后执行, 仅为使成员依赖的类型先注册, 实际上顺序并不重要, 但认为依赖出现在前更方便查看
+		inherited::ResolveDependcies(context, data);
 	}
 	CSharedTypeRegCodeWriter CTaggedInheritableType::Deprecated_CreateCodeWriter(const STypeRegClassWritingSetting& setting) const
 	{

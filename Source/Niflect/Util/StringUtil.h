@@ -58,6 +58,16 @@ namespace NiflectUtil
 		}
 		return filePath;
 	}
+	static Niflect::CString RemoveFileExt(const Niflect::CString& filePath, const Niflect::CString& ext = ".")
+	{
+		auto pos = filePath.find_last_of(ext);
+		if (pos != std::string::npos)
+		{
+			auto result = filePath.substr(0, pos);
+			return result;
+		}
+		return filePath;
+	}
 	static Niflect::CString ConcatPath(const Niflect::CString& a, const Niflect::CString& b)
 	{
 		return a + "/" + b;

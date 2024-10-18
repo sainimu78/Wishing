@@ -359,7 +359,8 @@ namespace TestGen
 			info.m_vecBindingSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestAccessorBindingTypeTypeRegCodeGen.h"));
 			NiflectGenDefinition::Test::AddBasicHeaderSearchPaths(info.m_vecHeaderSearchPath);
 			gen->SetModuleRegInfo(info);
-			gen->Generate([&info](void* cursorAddr)
+			CCodeGenData genData;
+			gen->Generate([&info, &genData](void* cursorAddr)
 				{
 					auto& cursor = *static_cast<CXCursor*>(cursorAddr);
 					CTaggedNode2 taggedRoot;
@@ -377,9 +378,9 @@ namespace TestGen
 					ASSERT(log.m_vecText.size() == 0);
 					CTemplateBasedCppWriter writer(resolvedData, validatedModuleRegInfo);
 					CWritingContext writingContext(&log);
-					CCodeGenData writtenData;
-					writer.Write3(writingContext, writtenData);
+					writer.Write3(writingContext, genData);
 				});
+			gen->Save2(genData);
 		}
 	}
 	void TestCollector()

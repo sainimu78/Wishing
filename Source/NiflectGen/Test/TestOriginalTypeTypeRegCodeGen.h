@@ -2,7 +2,7 @@
 #include "Niflect/NiflectMacro.h"
 #include "Niflect/NiflectBase.h"
 #include "Engine/Test/TestMyTransform.h"
-#include "NiflectGen/Test/TestSomeTypes.h"
+#include "NiflectGen/Test/TestSomeTypes.h"//º¬TaggedTypeµÄ¶àÓàinclude
 
 namespace TestMyFinding
 {

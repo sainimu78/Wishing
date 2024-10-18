@@ -1,22 +1,25 @@
 #pragma once
-#include "NiflectGen/CodeWriter/TypeReg/TypeRegCodeWriter.h"
+#include "NiflectGen/CodeWriter/TypeReg/FieldLayoutBasedCodeWriter.h"
 #include "NiflectGen/Collector/CollectionData.h"
 #include "NiflectGen/Resolver/ResolvedData.h"
 #include "NiflectGen/TaggedType/TaggedInheritableType.h"
 
 namespace NiflectGen
 {
-	class CInheritableTypeRegCodeWriter2 : public CTypeRegCodeWriter2
+	class CInheritableTypeRegCodeWriter2 : public CFieldLayoutBasedCodeWriter
 	{
-		typedef CTypeRegCodeWriter2 inherited;
+		typedef CFieldLayoutBasedCodeWriter inherited;
 	public:
 		CInheritableTypeRegCodeWriter2(const Niflect::TArrayNif<CResolvedCursorNode>& vecMemberIndexedRoot, const Niflect::TArrayNif<CTaggedInheritableTypeMember*>& vecMember, const CTaggedType* baseTaggedType);
 
-	public:
+	protected:
 		virtual void WriteResocursorNodeBodyCode(CCodeLines& linesResoBodyCode) const override;
+		virtual void CollectDependencyHeaderFilePaths(CDependencyHeaderFilePathRefs& dependencyHeaderFilePathRefs) const override;
+
+	public:
 		virtual void WriteTypeRegRegisterTypeAndFieldLayout(const CWritingContext& context, CTypeRegRegisterAndFieldLayoutWritingData& data) const override;
 		virtual void Deprecated_WriteTypeRegClass(const STypeRegClassWritingContext& context, CTypeRegClassWritingData2& data) const override;
-		virtual void WriteTaggedTypeInit(const STypeRegClassWritingContext& context, CTypeRegTaggedTypeInitWritingData2& data) const override;
+		virtual void WriteInvokeInitType(const STypeRegClassWritingContext& context, CTypeRegTaggedTypeInitWritingData2& data) const override;
 
 	private:
 		void WriteStaticRegisterType(const STypeRegClassWritingContext& context, CCodeLines& lines) const;

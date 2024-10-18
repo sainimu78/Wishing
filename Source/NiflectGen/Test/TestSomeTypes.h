@@ -26,4 +26,9 @@ namespace TestSomeScope
 		bool m_bool_0;
 		int32 m_int32_1;
 	};
+
+	NIF_T()
+	class CSomeIrrelavantClass
+	{
+	};
 }

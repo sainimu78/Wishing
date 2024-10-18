@@ -24,6 +24,7 @@ namespace NiflectGen
 		NIFLECTGEN_API void SetModuleRegInfo(const CModuleRegInfo& moduleRegInfo);
 		NIFLECTGEN_API void Generate(TestInterfaceFunc TestFunc = NULL);
 		NIFLECTGEN_API void Save() const;
+		NIFLECTGEN_API void Save2(const CCodeGenData& genData) const;
 
 	private:
 		void PrepareSourceFiles();

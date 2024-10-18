@@ -17,7 +17,7 @@ namespace NiflectGen
             vecSplittedModuleRegToTypeRegs[0].push_back(idx);
         }
     }
-	void WriteSplittedModuleRegs(const CWritingContext& context, const SSplittedModuleRegWritingContext& writingCtx, Niflect::TArrayNif<CSplittedModuleRegInvokationData>& vecSplittedModuleRegInvokationData, Niflect::TArrayNif<CSplittedModuleRegGenData>& vecSplittedModuleRegData)
+	void WriteSplittedModuleRegs(const CWritingContext& context, const CSplittedModuleRegWritingContext& writingCtx, Niflect::TArrayNif<CSplittedModuleRegInvokationData>& vecSplittedModuleRegInvokationData, Niflect::TArrayNif<CSplittedModuleRegGenData>& vecSplittedModuleRegData)
 	{
         Niflect::TArrayNif<Niflect::TArrayNif<uint32> > vecSplittedModuleRegToTypeRegs;
         DetermineSplitting(writingCtx.m_vecTypeRegRefInfo, vecSplittedModuleRegInvokationData, vecSplittedModuleRegData, vecSplittedModuleRegToTypeRegs);

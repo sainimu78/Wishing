@@ -9,6 +9,8 @@
 #include "NiflectGen/CodeWriter/TypeReg/TypeRegGenHeaderCodeWriter.h"
 #include "NiflectGen/CodeWriter/ModuleReg/ModuleRegPrivateHeaderCodeWriter.h"
 #include "NiflectGen/CodeWriter/TypeReg/MiscTypeRegCodeWriter.h"
+#include "NiflectGen/CodeWriter/ModuleReg/SplittedModuleRegCodeWriter2.h"
+#include "NiflectGen/CodeWriter/HardCoded/ModuleRegTemplate.h"
 
 #include "Niflect/Util/SystemUtil.h"//临时写文件测试用
 
@@ -276,17 +278,21 @@ namespace NiflectGen
             auto& data = vecTypeRegData[idx0];
             auto& it0 = m_vecWriter2[idx0];
 
-            STypeRegInvokeRegisterTypeWritingData invokeRegisterTypeData{ data.m_registerTypeAndfieldLayout.m_linesInvokeRegisterType };
+            STypeRegInvokeRegisterTypeWritingData invokeRegisterTypeData{
+                data.m_registerTypeAndfieldLayout.m_linesInvokeRegisterType, 
+                data.m_registerTypeAndfieldLayout.m_taggedTypeHeaderFilePathRef2
+            };
             it0->WriteInvokeRegisterType(context, invokeRegisterTypeData);
 
             STypeRegCreateFieldLayoutOfTypeWritingContext createFieldLayoutOfTypeCtx{ invokeRegisterTypeData.m_createFieldLayoutOfTypeFuncName, context.m_log };
             STypeRegCreateFieldLayoutOfTypeWritingData createFieldLayoutOfTypeData{
-                data.m_registerTypeAndfieldLayout.m_linesFieldLayoutDecl, 
-                data.m_registerTypeAndfieldLayout.m_linesFieldLayoutImpl
+                data.m_registerTypeAndfieldLayout.m_linesCreateFieldLayoutOfTypeDecl,
+                data.m_registerTypeAndfieldLayout.m_linesCreateFieldLayoutOfTypeImpl,
+                data.m_registerTypeAndfieldLayout.m_dependencyHeaderFilePathRefs
             };
-            it0->WriteCreateFieldLayoutOfType(createFieldLayoutOfTypeCtx, createFieldLayoutOfTypeData);
+            it0->WriteForFieldLayout(createFieldLayoutOfTypeCtx, createFieldLayoutOfTypeData);
 
-            it0->WriteTypeRegRegisterTypeAndFieldLayout(context, data.m_registerTypeAndfieldLayout);
+            //it0->WriteTypeRegRegisterTypeAndFieldLayout(context, data.m_registerTypeAndfieldLayout);
 
             //{
             //    STypeRegClassWritingContext regClassCtx{ data.m_registerTypeAndfieldLayout.m_linesRegisterType, data.m_registerTypeAndfieldLayout.m_fieldLayoutFuncName, context.m_log };
@@ -294,7 +300,7 @@ namespace NiflectGen
             //}
             {
                 STypeRegClassWritingContext regClassCtx{ data.m_registerTypeAndfieldLayout.m_linesInvokeRegisterType, data.m_registerTypeAndfieldLayout.m_fieldLayoutFuncName, context.m_log };
-                it0->WriteTaggedTypeInit(regClassCtx, data.m_taggedTypeInit);
+                it0->WriteInvokeInitType(regClassCtx, data.m_taggedTypeInit);
             }
 
             //DebugPrintCodeLines(data.m_registerTypeAndfieldLayout.m_linesRegisterType);
@@ -314,14 +320,56 @@ namespace NiflectGen
     //{
 
     //};
-    CSplittedModuleRegWritingContext::CSplittedModuleRegWritingContext(CGenLog* log)
-        : m_log(log)
-    {
-    }
     //void CSplittedModuleRegWriter::Write(const SSplittedModuleRegWritingContext2& context, CSplittedModuleRegWritingData2& data) const
     //{
 
     //}
+    struct SModuleSplittingContext
+    {
+        const CModuleRegInfoValidated& m_moduleRegInfo;
+        const Niflect::TArrayNif<CTypeRegWritingData2>& m_vecTypeRegData;
+        CGenLog* m_log;
+    };
+    static void SplitModuleReg(const SModuleSplittingContext& context, Niflect::TArrayNif<CSplittedModuleRegInfo>& vecSplittedModuleRegInfo)
+    {
+        Niflect::TMap<Niflect::CString, uint32> mapHeaderFilePathToSmIndex;
+        Niflect::TArrayNif<bool> vecTaken;
+        vecTaken.resize(context.m_vecTypeRegData.size());
+        for (uint32 idx0 = 0; idx0 < context.m_vecTypeRegData.size(); ++idx0)
+        {
+            auto& it0 = context.m_vecTypeRegData[idx0];
+            if (auto filePathRef = it0.m_registerTypeAndfieldLayout.m_taggedTypeHeaderFilePathRef2)
+            {
+                auto ret = mapHeaderFilePathToSmIndex.insert({ *filePathRef, static_cast<uint32>(vecSplittedModuleRegInfo.size()) });
+                if (ret.second)
+                    vecSplittedModuleRegInfo.push_back(CSplittedModuleRegInfo());
+                auto& smr = vecSplittedModuleRegInfo[ret.first->second];
+                smr.m_taggedTypeHeaderFilePathRef = filePathRef;
+                smr.m_vecTypeRegDataRef.push_back(&it0);
+                vecTaken[idx0] = true;
+            }
+        }
+
+        CSplittedModuleRegInfo smr;
+        uint32 splitLinesCounter = 0;
+        for (uint32 idx0 = 0; idx0 < context.m_vecTypeRegData.size(); ++idx0)
+        {
+            if (!vecTaken[idx0])
+            {
+                auto& it0 = context.m_vecTypeRegData[idx0];
+                smr.m_vecTypeRegDataRef.push_back(&it0);
+                splitLinesCounter += static_cast<uint32>(it0.m_registerTypeAndfieldLayout.m_linesCreateFieldLayoutOfTypeImpl.size());
+                if (splitLinesCounter > NiflectGenDefinition::NiflectFramework::Setting::ThresholdLinesCountForModuleRegSplitting)
+                {
+                    vecSplittedModuleRegInfo.push_back(smr);
+                    smr.m_vecTypeRegDataRef.clear();
+                    splitLinesCounter = 0;
+                }
+            }
+        }
+        if (smr.m_vecTypeRegDataRef.size() > 0)
+            vecSplittedModuleRegInfo.push_back(smr);
+    }
     void CTemplateBasedCppWriter::Write3(const CWritingContext& context, CCodeGenData& data)
     {
         Niflect::TArrayNif<CTypeRegGenFileInfo> vecTypeRegGenFileInfo;
@@ -330,202 +378,120 @@ namespace NiflectGen
         Niflect::TArrayNif<CTypeRegWritingData2> vecTypeRegData;
         this->WriteTypeRegs3(context, vecTypeRegData);
 
-        CSplittedModuleRegWritingContext splittedModulesCtx(context.m_log);
-        CSplittedModuleReg2 smr;
-        uint32 splitLinesCounter = 0;
-        for (uint32 idx0 = 0; idx0 < vecTypeRegData.size(); ++idx0)
-        {
-            auto& it0 = vecTypeRegData[idx0];
-            smr.m_vecTypeRegDataRef.push_back(&it0);
-            splitLinesCounter += static_cast<uint32>(it0.m_registerTypeAndfieldLayout.m_linesFieldLayoutImpl.size());
-            if (splitLinesCounter > NiflectGenDefinition::NiflectFramework::Setting::ThresholdLinesCountForModuleRegSplitting)
-            {
-                splittedModulesCtx.m_vecItem.push_back(smr);
-                smr.m_vecTypeRegDataRef.clear();
-                splitLinesCounter = 0;
-            }
-        }
-        if (smr.m_vecTypeRegDataRef.size() > 0)
-            splittedModulesCtx.m_vecItem.push_back(smr);
+        //CSplittedTypeRegWritingContext splittedModTypesCtx(m_moduleRegInfo, context.m_log);
+        //CSplittedModuleReg2 smr;
+        //uint32 splitLinesCounter = 0;
+        //for (uint32 idx0 = 0; idx0 < vecTypeRegData.size(); ++idx0)
+        //{
+        //    auto& it0 = vecTypeRegData[idx0];
+        //    smr.m_vecTypeRegDataRef.push_back(&it0);
+        //    splitLinesCounter += static_cast<uint32>(it0.m_registerTypeAndfieldLayout.m_linesFieldLayoutImpl.size());
+        //    if (splitLinesCounter > NiflectGenDefinition::NiflectFramework::Setting::ThresholdLinesCountForModuleRegSplitting)
+        //    {
+        //        splittedModTypesCtx.m_vecItem.push_back(smr);
+        //        smr.m_vecTypeRegDataRef.clear();
+        //        splitLinesCounter = 0;
+        //    }
+        //}
+        //if (smr.m_vecTypeRegDataRef.size() > 0)
+        //    splittedModTypesCtx.m_vecItem.push_back(smr);
 
-        SSplittedTypeRegWritingData typeRegsData{ data.m_vecTypeRegGenData };
-        this->WriteSplittedTypeRegs(splittedModulesCtx, typeRegsData);
 
-        Niflect::TArrayNif<Niflect::CString> vecSplittedModuleRegFuncName;
-        SSplittedModuleRegWritingData2 splittedModuleRegsData{ data.m_vecSplittedModuleRegGenData, vecSplittedModuleRegFuncName };
-        this->WriteSplittedModuleRegs2(splittedModulesCtx, splittedModuleRegsData);
 
-        SModuleRegWritingContext2 moduleRegCtx{ splittedModulesCtx.m_vecItem, vecSplittedModuleRegFuncName, data.m_vecSplittedModuleRegGenData, context.m_log };
+        //Niflect::TArrayNif<CSplittedModuleRegInfo> vecSplittedModuleRegInfo;
+        //SSplittedTypeRegWritingContext splittedModTypesCtx{ m_moduleRegInfo, vecSplittedModuleRegInfo, context.m_log };
+        //Niflect::TMap<Niflect::CString, uint32> mapHeaderFilePathToSmIndex;
+        //Niflect::TArrayNif<bool> vecTaken;
+        //vecTaken.resize(vecTypeRegData.size());
+        //for (uint32 idx0 = 0; idx0 < vecTypeRegData.size(); ++idx0)
+        //{
+        //    auto& it0 = vecTypeRegData[idx0];
+        //    if (auto filePathRef = it0.m_registerTypeAndfieldLayout.m_taggedTypeHeaderFilePathRef)
+        //    {
+        //        auto ret = mapHeaderFilePathToSmIndex.insert({ *filePathRef, static_cast<uint32>(splittedModTypesCtx.m_vecItem.size())});
+        //        if (ret.second)
+        //            vecSplittedModuleRegInfo.push_back(CSplittedModuleRegInfo());
+        //        auto& smr = vecSplittedModuleRegInfo[ret.first->second];
+        //        smr.m_taggedTypeHeaderFilePathRef = filePathRef;
+        //        smr.m_vecTypeRegDataRef.push_back(&it0);
+        //        vecTaken[idx0] = true;
+        //    }
+        //}
+
+        //CSplittedModuleRegInfo smr;
+        //uint32 splitLinesCounter = 0;
+        //for (uint32 idx0 = 0; idx0 < vecTypeRegData.size(); ++idx0)
+        //{
+        //    if (!vecTaken[idx0])
+        //    {
+        //        auto& it0 = vecTypeRegData[idx0];
+        //        smr.m_vecTypeRegDataRef.push_back(&it0);
+        //        splitLinesCounter += static_cast<uint32>(it0.m_registerTypeAndfieldLayout.m_linesFieldLayoutImpl.size());
+        //        if (splitLinesCounter > NiflectGenDefinition::NiflectFramework::Setting::ThresholdLinesCountForModuleRegSplitting)
+        //        {
+        //            vecSplittedModuleRegInfo.push_back(smr);
+        //            smr.m_vecTypeRegDataRef.clear();
+        //            splitLinesCounter = 0;
+        //        }
+        //    }
+        //}
+        //if (smr.m_vecTypeRegDataRef.size() > 0)
+        //    vecSplittedModuleRegInfo.push_back(smr);
+
+
+        SModuleSplittingContext moduleSplittingCtx{ m_moduleRegInfo, vecTypeRegData, context.m_log };
+        Niflect::TArrayNif<CSplittedModuleRegInfo> vecSplittedModuleRegInfo;
+        SplitModuleReg(moduleSplittingCtx, vecSplittedModuleRegInfo);
+
+        SSplittedFieldLayoutSpecWritingContext splittedModTypesCtx{ m_moduleRegInfo, vecSplittedModuleRegInfo, context.m_log };
+        SSplittedFieldLayoutSpecWritingData fieldLayoutsData{ data.m_vecFieldLayoutSpecGenData };
+        WriteSplittedFieldLayoutSpec(splittedModTypesCtx, fieldLayoutsData);
+
+        SSplittedModuleRegWritingContext2 splittedModulesCtx{ m_moduleRegInfo, splittedModTypesCtx.m_vecItem, data.m_vecFieldLayoutSpecGenData, context.m_log };
+        Niflect::TArrayNif<CSplittedModuleRegFunctionsName> vecSplittedModuleRegFuncsName;
+        SSplittedModuleRegWritingData2 splittedModuleRegsData{ data.m_vecSplittedModuleRegGenData, vecSplittedModuleRegFuncsName };
+        WriteSplittedModuleRegs3(splittedModulesCtx, splittedModuleRegsData);
+
+        SModuleRegWritingContext2 moduleRegCtx{ splittedModulesCtx.m_vecItem, vecSplittedModuleRegFuncsName, data.m_vecSplittedModuleRegGenData, context.m_log };
         SModuleRegWritingData2 moduleRegData{ data.m_moduleRegGenData };
         this->WriteModuleReg(moduleRegCtx, moduleRegData);
 
-        {
-            auto outputBaseDirPath = NiflectUtil::ConcatPath(m_moduleRegInfo.m_userProvided.m_genBasePath, m_moduleRegInfo.m_userProvided.m_genIncludeBasePath);
-            for (auto& it0 : data.m_vecTypeRegGenData)
-            {
-                CCppWriter writer;
-                writer.WriteLines(it0.m_privateH);
-                auto outputFilePath = NiflectUtil::ConcatPath(outputBaseDirPath, it0.m_privateHIncludePath);
-                NiflectUtil::MakeDirectories(outputFilePath);
-                NiflectUtil::WriteStringToFile(writer.m_code, outputFilePath);
-            }
-            for (auto& it0 : data.m_vecSplittedModuleRegGenData)
-            {
-                CCppWriter writer;
-                writer.WriteLines(it0.m_cpp);
-                auto cppFilePath = NiflectUtil::ReplaceFilePathExt(it0.m_includePath, NiflectGenDefinition::FileExt::H, NiflectGenDefinition::FileExt::Cpp);
-                auto outputFilePath = NiflectUtil::ConcatPath(outputBaseDirPath, cppFilePath);
-                NiflectUtil::MakeDirectories(outputFilePath);
-                NiflectUtil::WriteStringToFile(writer.m_code, outputFilePath);
-            }
-            {
-                CCppWriter writer;
-                writer.WriteLines(data.m_moduleRegGenData.m_privateH);
-                auto outputFilePath = NiflectUtil::ConcatPath(outputBaseDirPath, data.m_moduleRegGenData.m_privateHIncludePath);
-                NiflectUtil::MakeDirectories(outputFilePath);
-                NiflectUtil::WriteStringToFile(writer.m_code, outputFilePath);
-            }
-        }
-        printf("");
-
         //{
-        //    auto& userProvided = m_moduleRegInfo.m_userProvided;
-        //    Niflect::TArrayNif<SSplittedModuleRefInfo> vecRefInfo;
-        //    for (auto& it1 : m_mapping.m_vecTypeRegIndices)
+        //    auto outputBaseDirPath = NiflectUtil::ConcatPath(m_moduleRegInfo.m_userProvided.m_genBasePath, m_moduleRegInfo.m_userProvided.m_genIncludeBasePath);
+        //    for (auto& it0 : data.m_vecTypeRegGenData)
         //    {
-        //        SSplittedModuleRefInfo ref{ &vecTypeRegData[it1], m_mapping.m_vecTypeRegIncludePathPrivateHRef[it1] };
-        //        vecRefInfo.push_back(ref);
+        //        CCppWriter writer;
+        //        writer.WriteLines(it0.m_privateH);
+        //        auto outputFilePath = NiflectUtil::ConcatPath(outputBaseDirPath, it0.m_privateHIncludePath);
+        //        NiflectUtil::MakeDirectories(outputFilePath);
+        //        NiflectUtil::WriteStringToFile(writer.m_code, outputFilePath);
         //    }
-        //    SSplittedModuleRegWritingContext spliitedModuleRegWritingCtx = { userProvided.m_moduleName, m_moduleRegInfo.m_moduleRegBasePath, vecRefInfo };
-        //    Niflect::TArrayNif<CSplittedModuleRegInvokationData> vecSplittedModuleRegInvokationData;
-        //    WriteSplittedModuleRegs(context, spliitedModuleRegWritingCtx, vecSplittedModuleRegInvokationData, data.m_vecSplittedModuleRegGenData);
-
-        //    SModuleRegWritingContext moduleRegWritngCtx = { userProvided.m_moduleName, vecSplittedModuleRegInvokationData, data.m_vecSplittedModuleRegGenData };
-        //    auto genIncPathPrivateH = NiflectUtil::ConcatPath(m_moduleRegInfo.m_moduleRegBasePath, userProvided.m_moduleName) + NiflectGenDefinition::FileExt::PrivateH;
-        //    data.m_moduleRegGenData.m_privateHIncludePath = genIncPathPrivateH;
-        //    SModuleRegWritingData moduleRegWrtingData = { data.m_moduleRegGenData.m_privateH };
-        //    WriteModuleRegPrivateHeader(context, moduleRegWritngCtx, moduleRegWrtingData);
+        //    for (auto& it0 : data.m_vecSplittedModuleRegGenData)
+        //    {
+        //        CCppWriter writer;
+        //        writer.WriteLines(it0.m_cpp);
+        //        auto cppFilePath = NiflectUtil::ReplaceFilePathExt(it0.m_includePath, NiflectGenDefinition::FileExt::H, NiflectGenDefinition::FileExt::Cpp);
+        //        auto outputFilePath = NiflectUtil::ConcatPath(outputBaseDirPath, cppFilePath);
+        //        NiflectUtil::MakeDirectories(outputFilePath);
+        //        NiflectUtil::WriteStringToFile(writer.m_code, outputFilePath);
+        //    }
+        //    {
+        //        CCppWriter writer;
+        //        writer.WriteLines(data.m_moduleRegGenData.m_privateH);
+        //        auto outputFilePath = NiflectUtil::ConcatPath(outputBaseDirPath, data.m_moduleRegGenData.m_privateHIncludePath);
+        //        NiflectUtil::MakeDirectories(outputFilePath);
+        //        NiflectUtil::WriteStringToFile(writer.m_code, outputFilePath);
+        //    }
         //}
 
-        //data.m_vecTypeRegGenData.resize(vecTypeRegGenFileInfo.size());
-        //for (uint32 idx0 = 0; idx0 < vecTypeRegGenFileInfo.size(); ++idx0)
-        //{
-        //    STypeRegPrivateHeaderWritingContext writingCtx;
-        //    for (auto& it1 : vecTypeRegGenFileInfo[idx0].m_vecTypeRegDataIndex)
-        //        writingCtx.m_vecWritingData.push_back(&vecTypeRegData[it1]);
-        //    auto& typeRegGenData = data.m_vecTypeRegGenData[idx0];
-        //    typeRegGenData.m_privateHIncludePath = vecTypeRegGenFileInfo[idx0].m_prevateHIncludePath;
-        //    STypeRegPrivateHeaderWritingData writingData = { typeRegGenData.m_privateH };
-        //    WriteTypeRegsPrivateHeader(context, writingCtx, writingData);
-        //}
-        //for (uint32 idx0 = 0; idx0 < vecTypeRegGenFileInfo.size(); ++idx0)
-        //{
-        //    STypeRegGenHeaderWritingContext writingCtx;
-        //    for (auto& it1 : vecTypeRegGenFileInfo[idx0].m_vecTypeRegDataIndex)
-        //        writingCtx.m_vecWritingData.push_back(&vecTypeRegData[it1]);
-        //    auto& typeRegGenData = data.m_vecTypeRegGenData[idx0];
-        //    typeRegGenData.m_genHIncludePath = vecTypeRegGenFileInfo[idx0].m_genHIncludePath;
-        //    STypeRegGenHeaderWritingData writingData = { typeRegGenData.m_genH };
-        //    WriteTypeRegsGenHeader(context, writingCtx, writingData);
-        //}
-    }
-    void CTemplateBasedCppWriter::WriteSplittedTypeRegs(const CSplittedModuleRegWritingContext& context, SSplittedTypeRegWritingData& data) const
-    {
-        auto& typeRegModuleDirPath = m_moduleRegInfo.m_typeRegBasePath;
-        auto typeRegFieldLayoutDirPath = NiflectUtil::ConcatPath(typeRegModuleDirPath, "FieldLayout");
-        auto splitsCount = context.m_vecItem.size();
-        data.m_vecTypeRegGenData.resize(splitsCount);
-        for (uint32 idx0 = 0; idx0 < splitsCount; ++idx0)
-        {
-            auto& it0 = context.m_vecItem[idx0];
-            {
-                auto& typeRegData = data.m_vecTypeRegGenData[idx0];
-                auto typeRegSplittedFilePathNoExt = NiflectUtil::ConcatPath(typeRegFieldLayoutDirPath, NiflectUtil::FormatString("Splitted_%u", idx0));
-                typeRegData.m_privateHIncludePath = typeRegSplittedFilePathNoExt + NiflectGenDefinition::FileExt::PrivateH;
-                typeRegData.m_genHIncludePath = typeRegSplittedFilePathNoExt + NiflectGenDefinition::FileExt::GenH;
-
-                for (auto& it1 : it0.m_vecTypeRegDataRef)
-                {
-                    for (auto& it2 : it1->m_registerTypeAndfieldLayout.m_linesFieldLayoutImpl)
-                        typeRegData.m_privateH.push_back(it2);
-                    for (auto& it2 : it1->m_registerTypeAndfieldLayout.m_linesFieldLayoutDecl)
-                        typeRegData.m_genH.push_back(it2);
-                }
-            }
-        }
-    }
-    void CTemplateBasedCppWriter::WriteSplittedModuleRegs2(const CSplittedModuleRegWritingContext& context, SSplittedModuleRegWritingData2& data) const
-    {
-        auto splittedModuleRegDirPath = NiflectUtil::ConcatPath(m_moduleRegInfo.m_moduleRegBasePath, "Splitted");
-        auto splitsCount = context.m_vecItem.size();
-        data.m_vecSplittedModuleRegGenData.resize(splitsCount);
-        data.m_vecSplittedModuleRegFuncName.resize(splitsCount);
-        for (uint32 idx0 = 0; idx0 < splitsCount; ++idx0)
-        {
-            auto& it0 = context.m_vecItem[idx0];
-
-            {
-                auto& splittedRegData = data.m_vecSplittedModuleRegGenData[idx0];
-                Niflect::CString funcName;
-                {
-                    static const char* aaaaaaaaaaaaaaaaa =
-R"(${Nihao}_SplittedModuleReg_RegisterTypes_${Bucuo})"
-;
-                    funcName = ReplaceLabelToText2(aaaaaaaaaaaaaaaaa, "Nihao", "Bucuo", m_moduleRegInfo.m_userProvided.m_moduleName, NiflectUtil::FormatString("%u", idx0));
-                }
-                {
-                    static const char* aaaaaaaaaaaaaaaaa =
-R"(void ${Buxin}();)"
-;
-                    auto funcSignature = ReplaceLabelToText1(aaaaaaaaaaaaaaaaa, "Buxin", funcName);
-                    splittedRegData.m_h.push_back(funcSignature);
-                }
-                {
-                    static const char* aaaaaaaaaaaaaaaaa =
-R"(void ${Zhende}()
-{
-	${Shima}
-})"
-;
-                    CCodeTemplate tpl1;
-                    tpl1.ReadFromRawData(aaaaaaaaaaaaaaaaa);
-                    CLabelToCodeMapping map;
-                    MapLabelToText(map, "Zhende", funcName);
-                    CCodeLines linesInvokeRegisterTypes;
-                    for (auto& it1 : it0.m_vecTypeRegDataRef)
-                    {
-                        for (auto& it2 : it1->m_registerTypeAndfieldLayout.m_linesInvokeRegisterType)
-                            linesInvokeRegisterTypes.push_back(it2);
-                    }
-                    MapLabelToLines(map, "Shima", linesInvokeRegisterTypes);
-                    Niflect::TSet<Niflect::CString> setReplacedLabel;
-                    tpl1.ReplaceLabels(map, splittedRegData.m_cpp, &setReplacedLabel);
-                }
-                {
-                    auto fileName = NiflectUtil::FormatString("_%s_%u%s", m_moduleRegInfo.m_userProvided.m_moduleName.c_str(), idx0, NiflectGenDefinition::FileExt::H);
-                    splittedRegData.m_includePath = NiflectUtil::ConcatPath(splittedModuleRegDirPath, fileName);
-                }
-                data.m_vecSplittedModuleRegFuncName[idx0] = funcName;
-            }
-        }
+        this->WriteVerificationCode();
     }
     void CTemplateBasedCppWriter::WriteModuleReg(const SModuleRegWritingContext2& context, SModuleRegWritingData2& data) const
     {
         auto splitsCount = context.m_vecItem.size();
-        {
-            static const char* aaaaaaaaaaaaaaaaa =
-R"(${Nihao}
-void GeneratedNiflectRegistrationInitialReg()
-{
-	${Bucuo}
-}
-void GeneratedNiflectRegistrationInitTypes()
-{
-	${Shima}
-})"
-;
+        {;
             CCodeTemplate tpl1;
-            tpl1.ReadFromRawData(aaaaaaaaaaaaaaaaa);
+            tpl1.ReadFromRawData(HardCodedTemplate::ModuleRegImpl);
             CLabelToCodeMapping map;
             CCodeLines linesInclude;
             {
@@ -533,47 +499,29 @@ void GeneratedNiflectRegistrationInitTypes()
                 {
                     linesInclude.push_back(it1.m_includePath);
                 }
-                MapLabelToLines(map, "Nihao", linesInclude);
+                MapLabelToLines(map, LABEL_0, linesInclude);
             }
             CCodeLines linesInvokeRegisterTypes;
-            {
-                for (auto& it1 : context.m_vecSplittedModuleRegFuncName)
-                {
-                    linesInvokeRegisterTypes.push_back(it1 + "();");
-                }
-                MapLabelToLines(map, "Bucuo", linesInvokeRegisterTypes);
-            }
-
             CCodeLines linesInvokeTaggedTypeInit;
             {
-                for (uint32 idx0 = 0; idx0 < splitsCount; ++idx0)
+                for (auto& it1 : context.m_vecSplittedModuleRegFuncsName)
                 {
-                    auto& it0 = context.m_vecItem[idx0];
-                    for (auto& it1 : it0.m_vecTypeRegDataRef)
-                    {
-                        {
-                            static const char* aaaaaaaaaaaaaaaaa =
-R"({
-	${Zhende}
-})"
-;
-                            CCodeTemplate tpl1;
-                            tpl1.ReadFromRawData(aaaaaaaaaaaaaaaaa);
-                            CLabelToCodeMapping map;
-                            MapLabelToLines(map, "Zhende", it1->m_taggedTypeInit.m_lines);
-                            Niflect::TSet<Niflect::CString> setReplacedLabel;
-                            tpl1.ReplaceLabels(map, linesInvokeTaggedTypeInit, &setReplacedLabel);
-                        }
-                    }
+                    linesInvokeRegisterTypes.push_back(it1.m_registerTypes + "();");
+                    if (!it1.m_initTypes.empty())
+                        linesInvokeTaggedTypeInit.push_back(it1.m_initTypes + "();");
                 }
+                MapLabelToLines(map, LABEL_1, linesInvokeRegisterTypes);
             }
-
-            MapLabelToLines(map, "Shima", linesInvokeTaggedTypeInit);
+            MapLabelToLines(map, LABEL_2, linesInvokeTaggedTypeInit);
             Niflect::TSet<Niflect::CString> setReplacedLabel;
             tpl1.ReplaceLabels(map, data.m_moduleRegGenData.m_privateH, &setReplacedLabel);
         }
         auto moduleFileName = NiflectUtil::FormatString("%s%s", m_moduleRegInfo.m_userProvided.m_moduleName.c_str(), NiflectGenDefinition::FileExt::PrivateH);
         data.m_moduleRegGenData.m_privateHIncludePath = NiflectUtil::ConcatPath(m_moduleRegInfo.m_moduleRegBasePath, moduleFileName);
+    }
+    void CTemplateBasedCppWriter::WriteVerificationCode()
+    {
+        printf("#todo: Code for verification of binding types duplication (auto a = typeid(TA).hash_code();).\n");
     }
     void CTemplateBasedCppWriter::Deprecated_Write2(const CWritingContext& context, CCodeGenData& data)
     {
@@ -591,7 +539,7 @@ R"({
                 SSplittedModuleRefInfo ref{&vecTypeRegData[it1], m_mapping.m_vecTypeRegIncludePathPrivateHRef[it1]};
                 vecRefInfo.push_back(ref);
             }
-            SSplittedModuleRegWritingContext spliitedModuleRegWritingCtx = { userProvided.m_moduleName, m_moduleRegInfo.m_moduleRegBasePath, vecRefInfo };
+            CSplittedModuleRegWritingContext spliitedModuleRegWritingCtx = { userProvided.m_moduleName, m_moduleRegInfo.m_moduleRegBasePath, vecRefInfo };
             Niflect::TArrayNif<CSplittedModuleRegInvokationData> vecSplittedModuleRegInvokationData;
             WriteSplittedModuleRegs(context, spliitedModuleRegWritingCtx, vecSplittedModuleRegInvokationData, data.m_vecSplittedModuleRegGenData);
 

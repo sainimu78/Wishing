@@ -28,3 +28,6 @@
 //2024.10.18, 实验结论为, 未找到可行的通用办法实现重复指定 BindingType 检查. 对非模板别名具可行性, 但对于模板别名, 无法实现区分部分特化的情况
 //	计划通过生成检查重复指定的代码实现正确性检查, 如生成基于 typeid(MyType).hash_code() 的检查代码
 //#define BINDING_TYPE_DUPLICATION_VERIFICATION
+
+//临时调试开关
+//#define DEBUG_FOR_TYPE_REG

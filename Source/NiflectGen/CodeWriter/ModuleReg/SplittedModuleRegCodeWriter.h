@@ -5,5 +5,5 @@
 
 namespace NiflectGen
 {
-	void WriteSplittedModuleRegs(const CWritingContext& context, const SSplittedModuleRegWritingContext& writingCtx, Niflect::TArrayNif<CSplittedModuleRegInvokationData>& vecSplittedModuleRegInvokationData, Niflect::TArrayNif<CSplittedModuleRegGenData>& vecSplittedModuleRegData);
+	void WriteSplittedModuleRegs(const CWritingContext& context, const CSplittedModuleRegWritingContext& writingCtx, Niflect::TArrayNif<CSplittedModuleRegInvokationData>& vecSplittedModuleRegInvokationData, Niflect::TArrayNif<CSplittedModuleRegGenData>& vecSplittedModuleRegData);
 }

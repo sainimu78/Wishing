@@ -59,6 +59,11 @@ namespace NiflectGen
 			}
 		}
 	}
+	void CMiscTypeRegCodeWriter::CollectDependencyHeaderFilePaths(CDependencyHeaderFilePathRefs& dependencyHeaderFilePathRefs) const
+	{
+		for (auto& it : m_bindingTypeIndexedRoot->m_vecRequiredHeaderFilePath)
+			dependencyHeaderFilePathRefs.m_vecDecl.push_back(&it);
+	}
 	void CMiscTypeRegCodeWriter::WriteTypeRegRegisterTypeAndFieldLayout(const CWritingContext& context, CTypeRegRegisterAndFieldLayoutWritingData& data) const
 	{
 		{
@@ -91,7 +96,7 @@ R"(void ${Bucuo}();)"
 			funcSignature = ReplaceLabelToText1(aaaaaaaaaaaaaaaaa, "Bucuo", data.m_fieldLayoutFuncName);
 		}
 		{
-			data.m_linesFieldLayoutDecl.push_back(funcSignature);
+			data.m_linesCreateFieldLayoutOfTypeDecl.push_back(funcSignature);
 		}
 		{
 			static const char* aaaaaaaaaaaaaaaaa =
@@ -108,7 +113,7 @@ R"(void ${Bucuo}()
 			WriteNexts(*m_bindingTypeIndexedRoot, linesNexts);
 			MapLabelToLines(map, "Shima", linesNexts);
 			Niflect::TSet<Niflect::CString> setReplacedLabel;
-			tpl1.ReplaceLabels(map, data.m_linesFieldLayoutImpl, &setReplacedLabel);
+			tpl1.ReplaceLabels(map, data.m_linesCreateFieldLayoutOfTypeImpl, &setReplacedLabel);
 		}
 	}
 }

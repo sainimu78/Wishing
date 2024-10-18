@@ -591,8 +591,23 @@ namespace NiflectGen
 		CResolvingDependenciesContext resolvingDepCtx(mappings, context.m_log);
 		SResolvingDependenciesData resolvingDepData{ data.m_signatureMapping };
 		//未实现按CursorDeclaration依赖顺序遍历, 因此在最后ResolveDependcies
-		for (auto& it : data.m_taggedMapping.m_vecType)
-			it->ResolveDependcies(resolvingDepCtx, resolvingDepData);
+		for (auto& it0 : data.m_taggedMapping.m_vecType)
+		{
+			bool found = false;
+			for (auto& it1 : m_moduleRegInfo.m_userProvided.m_vecOriginalHeader)
+			{
+				auto filePath = GetCursorFilePath(it0->GetCursor());
+				if (it1 == filePath)
+				{
+					found = true;
+					break;
+				}
+			}
+			if (!found)
+				continue;
+
+			it0->ResolveDependcies(resolvingDepCtx, resolvingDepData);
+		}
 
 		//Niflect::TMap<Niflect::CString, SModuleRegIndicesAndIncludePath> mapOriginalFilePathToModuleRegIndicesAndIncPath;
 		//{

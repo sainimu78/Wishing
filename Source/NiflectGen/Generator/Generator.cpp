@@ -222,7 +222,7 @@ namespace NiflectGen
             static_cast<uint32>(vecUnsavedFileHandle.size()), CXTranslationUnit_DetailedPreprocessingRecord | CXTranslationUnit_SkipFunctionBodies
         );
 
-        if (true)//if (false)//
+        if (false)//if (true)//
         {
             auto cursor = clang_getTranslationUnitCursor(translation_unit);
 #pragma warning( disable : 4996 )
@@ -348,6 +348,57 @@ namespace NiflectGen
             }
         }
         printf("");
+    }
+    void CGenerator::Save2(const CCodeGenData& genData) const
+    {
+        const auto outputRootPath = NiflectUtil::ConcatPath(m_moduleRegInfo.m_genBasePath, m_moduleRegInfo.m_genIncludeBasePath);
+        for (auto& it0 : genData.m_vecFieldLayoutSpecGenData)
+        {
+            {
+                CCppWriter writer;
+                writer.WriteLines(it0.m_decl);
+                auto filePath = NiflectUtil::ConcatPath(outputRootPath, it0.m_declIncludePath);
+                NiflectUtil::MakeDirectories(filePath);
+                NiflectUtil::WriteStringToFile(writer.m_code, filePath);
+            }
+            {
+                CCppWriter writer;
+                writer.WriteLines(it0.m_impl);
+                auto filePath = NiflectUtil::ConcatPath(outputRootPath, it0.m_implIncludePath);
+                NiflectUtil::MakeDirectories(filePath);
+                NiflectUtil::WriteStringToFile(writer.m_code, filePath);
+            }
+        }
+        {
+            {
+                for (auto& it0 : genData.m_vecSplittedModuleRegGenData)
+                {
+                    auto filePath = NiflectUtil::ConcatPath(outputRootPath, it0.m_includePath);
+                    {
+                        CCppWriter writer;
+                        writer.WriteLines(it0.m_h);
+                        NiflectUtil::MakeDirectories(filePath);
+                        NiflectUtil::WriteStringToFile(writer.m_code, filePath);
+                    }
+                    filePath = NiflectUtil::ReplaceFilePathExt(filePath, NiflectGenDefinition::FileExt::H, NiflectGenDefinition::FileExt::Cpp);
+                    {
+                        CCppWriter writer;
+                        writer.WriteLines(it0.m_cpp);
+                        NiflectUtil::MakeDirectories(filePath);
+                        NiflectUtil::WriteStringToFile(writer.m_code, filePath);
+                    }
+                }
+            }
+            //NiflectUtil::WriteStringToFile(writer.m_code, "E:/NiflectGenTool_Test_SplittedModuleRegsCpp.cpp");
+        }
+        {
+            CCppWriter writer;
+            writer.WriteLines(genData.m_moduleRegGenData.m_privateH);
+            //NiflectUtil::WriteStringToFile(writer.m_code, "E:/NiflectGenTool_Test_ModuleRegPrivateH.cpp");
+            auto filePath = NiflectUtil::ConcatPath(outputRootPath, genData.m_moduleRegGenData.m_privateHIncludePath);
+            NiflectUtil::MakeDirectories(filePath);
+            NiflectUtil::WriteStringToFile(writer.m_code, filePath);
+        }
     }
 
     CXChildVisitResult visitAST(CXCursor cursor, CXCursor parent, CXClientData data)

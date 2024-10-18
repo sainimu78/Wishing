@@ -13,9 +13,9 @@ namespace NiflectGen
 		constexpr const char* CreateFieldLayuotOfTypeFuncName = 
 R"(CreateFieldLayoutOfType<)" MAKELABEL(LABEL_0) ">";
 		constexpr const char* InvokeRegisterType =
-R"(this->RegisterType2<)" MAKELABEL(LABEL_0) ", " MAKELABEL(LABEL_1) R"(>(")" MAKELABEL(LABEL_0) R"(", &)" MAKELABEL(LABEL_2) R"())";
+R"(table->RegisterType2<)" MAKELABEL(LABEL_0) ", " MAKELABEL(LABEL_1) R"(>(")" MAKELABEL(LABEL_0) R"(", &)" MAKELABEL(LABEL_2) R"())";
 		constexpr const char* CreateFieldLayoutOfTypeDecl =
-"CSharedAccessor " MAKELABEL(LABEL_2) "(); ";
+"CSharedAccessor " MAKELABEL(LABEL_2) "();";
 		constexpr const char* CreateFieldLayoutOfTypeImpl =
 "CSharedAccessor " MAKELABEL(LABEL_2) R"(()
 {
