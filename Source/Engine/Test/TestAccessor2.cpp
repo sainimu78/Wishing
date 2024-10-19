@@ -6,6 +6,18 @@
 #include "Niflect/Util/StringUtil.h"
 #include "Niflect/Serialization/JsonFormat.h"
 #include "Engine/Test/TestMyTransform.h"
+#include "Engine/EnumAccessor.h"
+
+namespace TestAccessor2
+{
+	enum class EMyOption : uint8
+	{
+		None,
+		Default,
+		Mode0,
+		Mode1,
+	};
+}
 
 namespace Engine
 {
@@ -139,6 +151,13 @@ namespace Engine
 	{
 		auto accessor0 = Niflect::MakeShared<CStringAccessor>();
 		accessor0->InitType(StaticGetType<Niflect::CString>());
+		return accessor0;
+	}
+	template <>
+	CSharedAccessor CreateSSSSSSSSSSSS<TestAccessor2::EMyOption>()
+	{
+		auto accessor0 = Niflect::MakeShared<Engine::CUnitXEnumAccessor>();
+		accessor0->InitType(StaticGetType<TestAccessor2::EMyOption>());
 		return accessor0;
 	}
 }
@@ -732,130 +751,165 @@ namespace TestAccessor2
 		}
 	};
 
-	void TestFieldLayout()
+	static void TestAccessor0()
 	{
-		if (false)
+		using namespace Engine;
+		using namespace Niflect;
+
+		//ArrayAccessor
+		Niflect::CNiflectTable tableHolder;
 		{
-			using namespace Engine;
-			using namespace Niflect;
+			auto table = &tableHolder;
+			table->RegisterType<CClass, Niflect::TArrayNif<float> >("Niflect::TArrayNif<float>", &CreateSSSSSSSSSSSS<Niflect::TArrayNif<float> >);
+			table->RegisterType<CClass, float>("float", &CreateSSSSSSSSSSSS<float>);
+		}
 
-			Niflect::CNiflectTable tableHolder;
-			{
-				auto table = &tableHolder;
-				table->RegisterType<CClass, Niflect::TArrayNif<float> >("Niflect::TArrayNif<float>", &CreateSSSSSSSSSSSS<Niflect::TArrayNif<float> >);
-				table->RegisterType<CClass, float>("float", &CreateSSSSSSSSSSSS<float>);
-			}
+		auto type = StaticGetType<Niflect::TArrayNif<float> >();
+		auto accessor0 = type->CreateFieldLayout();
 
-			auto type = StaticGetType<Niflect::TArrayNif<float> >();
+		Niflect::TArrayNif<float> srcData;
+		srcData.resize(2);
+		srcData[0] = 1.2f;
+		srcData[1] = 2.3f;
+		CRwNode root;
+		accessor0->SaveToRwNode(&srcData, &root);
+		Niflect::TArrayNif<float> dstData;
+		accessor0->LoadFromRwNode(&dstData, &root);
+		ASSERT(srcData == dstData);
+		for (auto& it : dstData)
+			printf("%f\n", it);
+		printf("");
+	}
+	static void TestAccessor1()
+	{
+		using namespace Engine;
+		using namespace Niflect;
+
+		Niflect::CNiflectTable tableHolder;
+		{
+			auto table = &tableHolder;
+			table->RegisterType2<EMyOption, CEnum>("TestAccessor2::EMyOption", &CreateSSSSSSSSSSSS<EMyOption>);
+
+			Niflect::CEnumMeta enumMeta;
+			enumMeta.m_vecEnumConstant.push_back("None");
+			enumMeta.m_vecEnumConstant.push_back("Default");
+			enumMeta.m_vecEnumConstant.push_back("Mode 0");
+			enumMeta.m_vecEnumConstant.push_back("Mode 1");
+			auto et = Niflect::CEnum::Cast(StaticGetType<EMyOption>());
+			et->InitEnumMeta(enumMeta);
+		}
+
+		auto type = Niflect::CEnum::Cast(StaticGetType<EMyOption>());
+		auto accessor0 = type->CreateFieldLayout();
+
+		EMyOption srcData = EMyOption::Mode1;
+		CRwNode root;
+		accessor0->SaveToRwNode(&srcData, &root);
+		EMyOption dstData;
+		accessor0->LoadFromRwNode(&dstData, &root);
+		ASSERT(srcData == dstData);
+		printf("%s\n", type->GetEnumConstName(dstData).c_str());
+	}
+	static void TestProperty0()
+	{
+		using namespace Engine;
+		using namespace Niflect;
+
+		Niflect::CNiflectTable tableHolder;
+		{
+			auto table = &tableHolder;
+			table->RegisterType<CNiflectType, float>("float", &CreateFieldLayoutForfFunctionPointerrrrrrrr<CFloatAccessor, float>);
+			table->RegisterType<CNiflectType, bool>("bool", &CreateFieldLayoutForfFunctionPointerrrrrrrr<CBoolAccessor, bool>);
+			table->RegisterType<CNiflectType, Niflect::CString>("Niflect::CString", &CreateFieldLayoutForfFunctionPointerrrrrrrr<CStringAccessor, Niflect::CString>);
+			table->RegisterType<CClass, TMyTransform<float> >("TMyTransform<float>", &CreateFieldLayoutForfFunctionPointerrrrrrrr<TMyTransformAccessor<float>, TMyTransform<float> >);
+		}
+		{
+			auto table = &tableHolder;
+			table->RegisterType<CClass, Niflect::TArrayNif<float> >("Niflect::TArrayNif<float>", &CreateSSSSSSSSSSSS<Niflect::TArrayNif<float> >);
+			table->RegisterType<CClass, Niflect::TArrayNif<Niflect::TArrayNif<float> > >("Niflect::TArrayNif<Niflect::TArrayNif<float> >", &CreateSSSSSSSSSSSS<Niflect::TArrayNif<Niflect::TArrayNif<float> > >);
+			table->RegisterType<CClass, Niflect::TArrayNif<bool> >("Niflect::TArrayNif<bool>", &CreateSSSSSSSSSSSS<Niflect::TArrayNif<bool> >);
+			table->RegisterType<CClass, std::vector<bool> >("std::vector<bool>", &CreateSSSSSSSSSSSS<std::vector<bool> >);
+			table->RegisterType<CStruct, std::pair<Niflect::CString, float> >("std::pair<Niflect::CString, float>", &CreateSSSSSSSSSSSS<std::pair<Niflect::CString, float> >);
+			table->RegisterType<CClass, Niflect::TMap<Niflect::CString, float> >("Niflect::TMap<Niflect::CString, float>", &CreateSSSSSSSSSSSS<Niflect::TMap<Niflect::CString, float> >);
+			table->RegisterType<CClass, Niflect::TArrayNif<Niflect::CString> >("Niflect::TArrayNif<Niflect::CString>", &CreateSSSSSSSSSSSS<Niflect::TArrayNif<Niflect::CString> >);
+			table->RegisterType<CClass, Niflect::TArrayNif<TMyTransform<float> > >("Niflect::TArrayNif<TMyTransform<float> >", &CreateSSSSSSSSSSSS<Niflect::TArrayNif<TMyTransform<float> > >);
+		}
+
+		{
+			auto table = &tableHolder;
+			table->RegisterType<CClass, CTestClassMy>("CTestClassMy", &SSSSSSSSSS_CTestClassMy);
+			table->RegisterType<CClass, CTestClassMy2>("CTestClassMy2", &SSSSSSSSSS_CTestClassMy2);
+		}
+
+		{
+			auto type = StaticGetType<CTestClassMy>();
 			auto accessor0 = type->CreateFieldLayout();
 
-			Niflect::TArrayNif<float> srcData;
-			srcData.resize(2);
-			srcData[0] = 1.2f;
-			srcData[1] = 2.3f;
+			CTestClassMy srcData;
+			srcData.TestInit();
 			CRwNode root;
 			accessor0->SaveToRwNode(&srcData, &root);
-			Niflect::TArrayNif<float> dstData;
+			CTestClassMy dstData;
 			accessor0->LoadFromRwNode(&dstData, &root);
 			ASSERT(srcData == dstData);
-			for (auto& it : dstData)
-				printf("%f\n", it);
 			printf("");
 		}
-		if (true)
 		{
-			using namespace Engine;
-			using namespace Niflect;
+			auto type0 = StaticGetType<CTestClassMy>();
+			auto accessor0 = type0->CreateFieldLayout();
+			auto type1 = StaticGetType<CTestClassMy2>();
+			auto accessor1 = type1->CreateFieldLayout();
 
-			Niflect::CNiflectTable tableHolder;
+			CTestClassMy2 srcData;
+			srcData.TestInit();
+			CRwNode root;
+			accessor0->SaveToRwNode(&srcData, &root);
+			accessor1->SaveToRwNode(&srcData, &root);
+			CTestClassMy2 dstData;
+			accessor0->LoadFromRwNode(&dstData, &root);
+			accessor1->LoadFromRwNode(&dstData, &root);
+			ASSERT(srcData == dstData);
+			printf("");
+		}
+		{
 			{
 				auto table = &tableHolder;
-				table->RegisterType<CNiflectType, float>("float", &CreateFieldLayoutForfFunctionPointerrrrrrrr<CFloatAccessor, float>);
-				table->RegisterType<CNiflectType, bool>("bool", &CreateFieldLayoutForfFunctionPointerrrrrrrr<CBoolAccessor, bool>);
-				table->RegisterType<CNiflectType, Niflect::CString>("Niflect::CString", &CreateFieldLayoutForfFunctionPointerrrrrrrr<CStringAccessor, Niflect::CString>);
-				table->RegisterType<CClass, TMyTransform<float> >("TMyTransform<float>", &CreateFieldLayoutForfFunctionPointerrrrrrrr<TMyTransformAccessor<float>, TMyTransform<float> >);
-			}
-			{
-				auto table = &tableHolder;
-				table->RegisterType<CClass, Niflect::TArrayNif<float> >("Niflect::TArrayNif<float>", &CreateSSSSSSSSSSSS<Niflect::TArrayNif<float> >);
-				table->RegisterType<CClass, Niflect::TArrayNif<Niflect::TArrayNif<float> > >("Niflect::TArrayNif<Niflect::TArrayNif<float> >", &CreateSSSSSSSSSSSS<Niflect::TArrayNif<Niflect::TArrayNif<float> > >);
-				table->RegisterType<CClass, Niflect::TArrayNif<bool> >("Niflect::TArrayNif<bool>", &CreateSSSSSSSSSSSS<Niflect::TArrayNif<bool> >);
-				table->RegisterType<CClass, std::vector<bool> >("std::vector<bool>", &CreateSSSSSSSSSSSS<std::vector<bool> >);
-				table->RegisterType<CStruct, std::pair<Niflect::CString, float> >("std::pair<Niflect::CString, float>", &CreateSSSSSSSSSSSS<std::pair<Niflect::CString, float> >);
-				table->RegisterType<CClass, Niflect::TMap<Niflect::CString, float> >("Niflect::TMap<Niflect::CString, float>", &CreateSSSSSSSSSSSS<Niflect::TMap<Niflect::CString, float> >);
-				table->RegisterType<CClass, Niflect::TArrayNif<Niflect::CString> >("Niflect::TArrayNif<Niflect::CString>", &CreateSSSSSSSSSSSS<Niflect::TArrayNif<Niflect::CString> >);
-				table->RegisterType<CClass, Niflect::TArrayNif<TMyTransform<float> > >("Niflect::TArrayNif<TMyTransform<float> >", &CreateSSSSSSSSSSSS<Niflect::TArrayNif<TMyTransform<float> > >);
+				table->RegisterType<CClass, CPropertyBool>("CPropertyBool", NULL);
+				table->RegisterType<CClass, CPropertyFloat>("CPropertyFloat", NULL);
+				table->RegisterType<CClass, CPropertyString>("CPropertyString", NULL);
+				table->RegisterType<CClass, TPropertyMyTransform<float> >("TPropertyMyTransform<float>", NULL);
 			}
 
 			{
-				auto table = &tableHolder;
-				table->RegisterType<CClass, CTestClassMy>("CTestClassMy", &SSSSSSSSSS_CTestClassMy);
-				table->RegisterType<CClass, CTestClassMy2>("CTestClassMy2", &SSSSSSSSSS_CTestClassMy2);
-			}
+				CPropertyNodeFactory factory;
+				factory.Register(StaticGetType<bool>(), StaticGetType<CPropertyBool>());
+				factory.Register(StaticGetType<float>(), StaticGetType<CPropertyFloat>());
+				factory.Register(StaticGetType<Niflect::CString>(), StaticGetType<CPropertyString>());
+				factory.Register(StaticGetType<TMyTransform<float> >(), StaticGetType<TPropertyMyTransform<float> >());
 
-			{
-				auto type = StaticGetType<CTestClassMy>();
-				auto accessor0 = type->CreateFieldLayout();
-
-				CTestClassMy srcData;
-				srcData.TestInit();
-				CRwNode root;
-				accessor0->SaveToRwNode(&srcData, &root);
-				CTestClassMy dstData;
-				accessor0->LoadFromRwNode(&dstData, &root);
-				ASSERT(srcData == dstData);
-				printf("");
-			}
-			{
-				auto type0 = StaticGetType<CTestClassMy>();
-				auto accessor0 = type0->CreateFieldLayout();
-				auto type1 = StaticGetType<CTestClassMy2>();
-				auto accessor1 = type1->CreateFieldLayout();
-
-				CTestClassMy2 srcData;
-				srcData.TestInit();
-				CRwNode root;
-				accessor0->SaveToRwNode(&srcData, &root);
-				accessor1->SaveToRwNode(&srcData, &root);
-				CTestClassMy2 dstData;
-				accessor0->LoadFromRwNode(&dstData, &root);
-				accessor1->LoadFromRwNode(&dstData, &root);
-				ASSERT(srcData == dstData);
-				printf("");
-			}
-			{
+				CSharedAccessor accessorSrc;
+				CRwNode rwSrc;
 				{
-					auto table = &tableHolder;
-					table->RegisterType<CClass, CPropertyBool>("CPropertyBool", NULL);
-					table->RegisterType<CClass, CPropertyFloat>("CPropertyFloat", NULL);
-					table->RegisterType<CClass, CPropertyString>("CPropertyString", NULL);
-					table->RegisterType<CClass, TPropertyMyTransform<float> >("TPropertyMyTransform<float>", NULL);
+					auto type0 = StaticGetType<CTestClassMy>();
+					accessorSrc = type0->CreateFieldLayout();
+					auto instance = type0->MakeSharedInstance<void*>();
+					auto& srcData = *reinterpret_cast<CTestClassMy*>(instance.Get());
+					srcData.TestInit();
+					accessorSrc->SaveToRwNode(&srcData, &rwSrc);
 				}
 
-				{
-					CPropertyNodeFactory factory;
-					factory.Register(StaticGetType<bool>(), StaticGetType<CPropertyBool>());
-					factory.Register(StaticGetType<float>(), StaticGetType<CPropertyFloat>());
-					factory.Register(StaticGetType<Niflect::CString>(), StaticGetType<CPropertyString>());
-					factory.Register(StaticGetType<TMyTransform<float> >(), StaticGetType<TPropertyMyTransform<float> >());
-
-					CSharedAccessor accessorSrc;
-					CRwNode rwSrc;
-					{
-						auto type0 = StaticGetType<CTestClassMy>();
-						accessorSrc = type0->CreateFieldLayout();
-						auto instance = type0->MakeSharedInstance<void*>();
-						auto& srcData = *reinterpret_cast<CTestClassMy*>(instance.Get());
-						srcData.TestInit();
-						accessorSrc->SaveToRwNode(&srcData, &rwSrc);
-					}
-
-					auto propDst = BuildPropertyTreeRecurs(factory, &rwSrc, accessorSrc.Get());
-					//factory.BuildPropertyTreeRecurs(&rwSrc, accessorSrc.Get(), &propDst);
-					DebugPrintPropertyNodeRecurs(propDst.Get());
-					printf("");
-				}
+				auto propDst = BuildPropertyTreeRecurs(factory, &rwSrc, accessorSrc.Get());
+				//factory.BuildPropertyTreeRecurs(&rwSrc, accessorSrc.Get(), &propDst);
+				DebugPrintPropertyNodeRecurs(propDst.Get());
+				printf("");
 			}
 		}
+	}
+
+	void TestFieldLayout()
+	{
+		if (false) TestAccessor0();
+		if (true) TestAccessor1();
+		if (false) TestProperty0();
 	}
 }

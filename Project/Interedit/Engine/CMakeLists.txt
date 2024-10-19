@@ -17,6 +17,9 @@ create_source_group(${RootNiflectGeneratedPath} ${GeneratedSrc})
 list(APPEND SrcAll ${GeneratedSrc})
 
 add_library(${ModuleName} SHARED ${SrcAll})
+
+target_precompile_headers(${ModuleName} PRIVATE ${SourcePath}/EngineDevelopmentMacro.h)
+
 #set_target_properties(${ModuleName} PROPERTIES LINKER_LANGUAGE CXX)
 set_target_properties(${ModuleName} PROPERTIES 
     RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG}

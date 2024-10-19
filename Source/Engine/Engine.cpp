@@ -1,11 +1,5 @@
 #include "Engine/Engine.h"
 #include <stdio.h>
-#include "ModuleReg/Engine/Engine.private.h"
-#include "BuiltinAccessor.h"
-#include "Engine/EngineObject.h"
-#include "Engine/Asset.h"
-#include "Niflect/Serialization/RwTree.h"
-#include "Niflect/Serialization/JsonFormat.h"
 
 void TestAPI_Cpp()
 {
@@ -17,6 +11,15 @@ void TestAPI_C()
 	printf("Invoke C API\n");
 	fflush(stdout);
 }
+
+#ifdef ENABLED_TEST_MODULEREG_GEN_BY_NGT
+#include "ModuleReg/Engine/Engine.private.h"
+#include "BuiltinAccessor.h"
+#include "Engine/EngineObject.h"
+#include "Engine/Asset.h"
+#include "Niflect/Serialization/RwTree.h"
+#include "Niflect/Serialization/JsonFormat.h"
+
 ////begin, 已验证无法通过特化区分原始类型与别名(using和typedef定义的别名)
 ////using Nihao = float;
 ////typedef float SSSSS;
@@ -187,3 +190,16 @@ void TestEngineRun()
 //	CNiflectRegistration::StaticRelease();
 //	//DestroyModuleRegistration();
 //}
+#else
+#include "Niflect/NiflectRegistration.h"
+Niflect::CNiflectRegistration* GeneratedNiflectRegistrationGet()
+{
+	return NULL;
+}
+void GeneratedNiflectRegistrationInitialReg()
+{
+}
+void GeneratedNiflectRegistrationInitTypes()
+{
+}
+#endif

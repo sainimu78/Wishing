@@ -207,32 +207,51 @@ namespace Niflect
 
 	class CEnum : public CNiflectType
 	{
+		typedef CNiflectType inherited;
 	public:
 		void InitEnumMeta(const CEnumMeta& data)
 		{
-			ASSERT(m_meta.m_vecEnumConstant.size() == 0);
-			m_meta = data;
+			m_enumMeta = data;
 		}
-		const CEnumMeta& GetMeta() const
+		const CEnumMeta& GetEnumMeta() const
 		{
-			return m_meta;
+			return m_enumMeta;
 		}
-		const CString& GetName(uint32 idx) const
+		const CString& GetEnumConstNameByIndex(uint32 idx) const
 		{
-			return m_meta.m_vecEnumConstant[idx];
+			return m_enumMeta.m_vecEnumConstant[idx];
 		}
-		uint32 FindIndex(const CString& name) const
+		uint32 FindIndexByEnumConstName(const CString& name) const
 		{
-			for (uint32 idx = 0; idx < m_meta.m_vecEnumConstant.size(); ++idx)
+			for (uint32 idx = 0; idx < m_enumMeta.m_vecEnumConstant.size(); ++idx)
 			{
-				if (m_meta.m_vecEnumConstant[idx] == name)
+				if (m_enumMeta.m_vecEnumConstant[idx] == name)
 					return idx;
 			}
 			return INDEX_NONE;
 		}
+		template <typename TEnumType>
+		const CString& GetEnumConstName(const TEnumType& e) const
+		{
+			auto idx = static_cast<uint32>(e);
+			return this->GetEnumConstNameByIndex(idx);
+		}
+		template <typename TEnumType>
+		TEnumType FindEnumConstByName(const CString& name) const
+		{
+			auto idx = this->FindIndexByEnumConstName(name);
+			return static_cast<TEnumType>(idx);
+		}
+
+	public:
+		static CEnum* Cast(inherited* base)
+		{
+			ASSERT(dynamic_cast<CEnum*>(base) != NULL);
+			return static_cast<CEnum*>(base);
+		}
 
 	private:
-		CEnumMeta m_meta;
+		CEnumMeta m_enumMeta;
 	};
 
 	class CFunction : public CNiflectType
