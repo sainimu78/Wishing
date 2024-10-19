@@ -156,7 +156,7 @@ namespace Engine
 	template <>
 	CSharedAccessor CreateSSSSSSSSSSSS<TestAccessor2::EMyOption>()
 	{
-		auto accessor0 = Niflect::MakeShared<Engine::CUnitXEnumAccessor>();
+		auto accessor0 = Niflect::MakeShared<Engine::CEnumClassAccessor>();
 		accessor0->InitType(StaticGetType<TestAccessor2::EMyOption>());
 		return accessor0;
 	}
@@ -808,6 +808,90 @@ namespace TestAccessor2
 		ASSERT(srcData == dstData);
 		printf("%s\n", type->GetEnumConstName(dstData).c_str());
 	}
+	static void TestAccessor2()
+	{
+		using namespace Engine;
+		using namespace Niflect;
+
+		ASSERT(false);
+
+		//static void InvokeMethod_MyFunc0(AddrType obj, AddrType * inputInstanceArray, AddrType * ouputInstanceArray, const TArrayNif<CNiflectType*>&vecInputType, const TArrayNif<CNiflectType*>&vecOutputType)
+		//{
+		//	auto& arg0 = vecInputType[0]->GetInstanceRef<float>(inputInstanceArray[0]);
+		//	auto& arg1 = vecInputType[1]->GetInstanceRef<CMyClass0>(inputInstanceArray[1]);
+		//	auto& arg2 = vecInputType[2]->GetInstanceRef<bool*>(inputInstanceArray[2]);
+		//	auto& arg3 = vecInputType[3]->GetInstanceRef<CMyClass0*>(inputInstanceArray[3]);
+		//	auto& arg4 = vecInputType[4]->GetInstanceRef<float**>(inputInstanceArray[4]);
+		//	auto& ret0 = vecOutputType[0]->GetInstanceRef<bool>(ouputInstanceArray[0]);
+		//	ret0 = static_cast<CMyClassBase0*>(obj)->MyFunc0(arg0, arg1, arg2, arg3, arg4);
+		//}
+		//static void StaticInitMethods()
+		//{
+		//	auto type = Cast<CClass>(StaticGetType<CMyClassBase0>());
+		//	CNiflectMethod2 method;
+		//	method.m_InvokeFunc = &InvokeMethod_MyFunc0;
+		//	method.m_vecInputType.push_back(StaticGetType<CFloatField>());
+		//	method.m_vecInputType.push_back(StaticGetType<CMyClass0>());
+		//	method.m_vecInputType.push_back(StaticGetType_Misc<CPointerField, bool*>("bool*"));
+		//	method.m_vecInputType.push_back(StaticGetType_Misc<CPointerField, CMyClass0*>("CMyClass0*"));
+		//	method.m_vecInputType.push_back(StaticGetType_Misc<CPointerField, float**>("float**"));
+		//	method.m_vecOutputType.push_back(StaticGetType<CBoolField>());
+		//	type->m_vecMethod.push_back(method);
+		//}
+
+		//{
+		//	using namespace MyTestClassScope;
+
+		//	auto type = Cast<CClass>(StaticGetType<CMyClassBase0>());
+		//	CMyClassBase0 obj;
+
+		//	float a = 1.0f;
+		//	CMyClass0 b;
+		//	bool temp0 = true;
+		//	bool* c = &temp0;
+		//	CMyClass0 temp1;
+		//	temp1.m_float_1 = 2.0f;
+		//	CMyClass0* d = &temp1;
+		//	float temp2_0[] = { 3.0f, 4.0f, 5.0f, 6.0f };
+		//	float temp2_1[] = { 7.0f, 8.0f, 9.0f, 10.0f };
+		//	float temp2_2[] = { 11.0f, 12.0f, 13.0f, 14.0f };
+		//	float* temp2[3] = { temp2_0, temp2_1, temp2_2 };
+		//	//实验时略有误解, 以下这种定义为连续内存, 访问是通过float*, 而不是float**
+		//	//float temp2[3][4] = {{3.0f, 4.0f, 5.0f, 6.0f}, {7.0f, 8.0f, 9.0f, 10.0f}, {11.0f, 12.0f, 13.0f, 14.0f}};
+		//	auto e = &temp2;
+		//	void* inputInstanceArray[] = { &a, &b, &c, &d, &e };
+		//	bool ret = false;
+		//	void* outputInstanceArray[] = { &ret };
+		//	type->m_vecMethod[0].Invoke(&obj, inputInstanceArray, outputInstanceArray);
+		//	ASSERT(ret);
+		//	printf("");
+		//}
+
+		Niflect::CNiflectTable tableHolder;
+		{
+			auto table = &tableHolder;
+			table->RegisterType2<EMyOption, CEnum>("TestAccessor2::EMyOption", &CreateSSSSSSSSSSSS<EMyOption>);
+
+			Niflect::CEnumMeta enumMeta;
+			enumMeta.m_vecEnumConstant.push_back("None");
+			enumMeta.m_vecEnumConstant.push_back("Default");
+			enumMeta.m_vecEnumConstant.push_back("Mode 0");
+			enumMeta.m_vecEnumConstant.push_back("Mode 1");
+			auto et = Niflect::CEnum::Cast(StaticGetType<EMyOption>());
+			et->InitEnumMeta(enumMeta);
+		}
+
+		auto type = Niflect::CEnum::Cast(StaticGetType<EMyOption>());
+		auto accessor0 = type->CreateFieldLayout();
+
+		EMyOption srcData = EMyOption::Mode1;
+		CRwNode root;
+		accessor0->SaveToRwNode(&srcData, &root);
+		EMyOption dstData;
+		accessor0->LoadFromRwNode(&dstData, &root);
+		ASSERT(srcData == dstData);
+		printf("%s\n", type->GetEnumConstName(dstData).c_str());
+	}
 	static void TestProperty0()
 	{
 		using namespace Engine;
@@ -910,6 +994,8 @@ namespace TestAccessor2
 			TestAccessor0();
 		if (false)
 			TestAccessor1();
+		if (false)
+			TestAccessor2();
 		if (true)
 			TestProperty0();
 	}

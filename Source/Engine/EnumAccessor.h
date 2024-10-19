@@ -6,20 +6,14 @@ namespace Engine
 {
 	using namespace RwTree;
 
-	//class IUintXEnumAccessor
-	//{
-	//public:
-	//	virtual uint32 GetUInt(const AddrType& base) const = 0;
-	//	virtual void SetUInt(AddrType& base, uint32 idx) const = 0;
-	//};
-	//using CSharedUintXEnumAccessor = TSharedPtr<IUintXEnumAccessor>;
-
-	class CUnitXEnumAccessor : public Niflect::CAccessor
+	class CEnumClassAccessor : public Niflect::CAccessor
 	{
 		typedef Niflect::CAccessor inherited;
 	public:
 		virtual bool SaveToRwNode2222(const AddrType offsetBase, CRwNode* rw) const override
 		{
+			//typename std::underlying_type<TEnum>::type >, 可获取枚举对应的整数类型
+
 			auto et = this->GetEnum();
 			auto rwValue = rw->ToValue();
 			uint32 idx = INDEX_NONE;
@@ -45,9 +39,9 @@ namespace Engine
 			ASSERT(idx != INDEX_NONE);//可能由于此枚举类型的版本不同导致查找失败
 			switch (et->GetTypeSize())
 			{
-			case 1: idx = *static_cast<uint8*>(offsetBase) = idx; break;
-			case 2: idx = *static_cast<uint16*>(offsetBase) = idx; break;
-			case 4: idx = *static_cast<uint32*>(offsetBase) = idx; break;
+			case 1: *static_cast<uint8*>(offsetBase) = idx; break;
+			case 2: *static_cast<uint16*>(offsetBase) = idx; break;
+			case 4: *static_cast<uint32*>(offsetBase) = idx; break;
 			default:
 				ASSERT(false);
 				break;
@@ -55,42 +49,31 @@ namespace Engine
 			return true;
 		}
 
-	public:
+	private:
 		Niflect::CEnum* GetEnum() const
 		{
 			return Niflect::CEnum::Cast(inherited::GetType());
 		}
 	};
 
-	//template <typename TUintXType>
-	//class TUintXEnumAccessorAddr : public IUintXEnumAccessor
-	//{
-	//public:
-	//	virtual uint32 GetUInt(const AddrType& base) const override
-	//	{
-	//		return *static_cast<TUintXType*>(base);
-	//	}
-	//	virtual void SetUInt(AddrType& base, uint32 idx) const override
-	//	{
-	//		*static_cast<TUintXType*>(base) = idx;
-	//	}
-	//};
+	class CBitsMaskEnumAccessor : public Niflect::CAccessor
+	{
+		typedef Niflect::CAccessor inherited;
+	public:
+		virtual bool SaveToRwNode2222(const AddrType offsetBase, CRwNode* rw) const override
+		{
+			//typename std::underlying_type<TEnum>::type >, 可获取枚举对应的整数类型
+			return true;
+		}
+		virtual bool LoadFromRwNode2222(AddrType offsetBase, const CRwNode* rw) const override
+		{
+			return true;
+		}
 
-	//template <typename TEnum>
-	//static TSharedPtr<CEnumField> CreateEnumField()
-	//{
-	//	auto shared1 = Niflect::MakeShared<CEnumField>();
-	//	auto field1 = shared1.Get();
-	//	field1->SetAccessor(MakeShared<TUintXEnumAccessorAddr<typename std::underlying_type<TEnum>::type> >());
-	//	return shared1;
-	//}
-
-	//template <typename TType>
-	//struct SFieldCreator<CEnumField, TType>
-	//{
-	//	static TSharedPtr<CEnumField> Create()
-	//	{
-	//		return CreateEnumField<TType>();
-	//	}
-	//};
+	private:
+		Niflect::CEnum* GetEnum() const
+		{
+			return Niflect::CEnum::Cast(inherited::GetType());
+		}
+	};
 }
