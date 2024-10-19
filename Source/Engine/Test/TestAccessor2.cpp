@@ -539,6 +539,10 @@ namespace TestAccessor2
 			{
 				auto rwChild = ctx.m_rw->GetNode(idx);
 				auto propElem = Niflect::MakeShared<CPropertyItem>();
+				//打印时无值, 是因为 rwChild 未保存到 propElem 中, 现 propElem 仅作占位
+				//须先实现对应 Accessor 的 Save/Load, 后再根据其数据读写方式改写 property, 可参考 TPropertyMyTransform
+				//大致实现方法为只保存 CPropertyBitsArray 一级的 m_rwData, 从而可复用通用的 PropertyTree 序列化
+				//计划实现的 PropertyTree 序列化, 只需要递归收集每个 PropertyNode 的 m_rwData, 现仅 PropertyItem 具有 m_rwData, 可考虑改为 PropertyNode 即具有 rwData, 废弃 PropertyItem
 				propElem->Init(NiflectUtil::FormatString("%u (bit)", idx));
 				this->AddNode(propElem);
 			}
@@ -559,6 +563,7 @@ namespace TestAccessor2
 				//希望将 first 与 second 另命名为 key 与 value, 可通过选项传入, 或另外定义 pair 的 property 与 accessor
 				if (auto propChild = BuildPropertyTreeRecurs(ctx.m_factory, rwChild, elemAccessor))
 				{
+					//如需要, 可在此处修改 first 与 second 名称
 					propChild->Init(NiflectUtil::FormatString("%u (%s)", idx, elemAccessor->GetType()->GetTypeName().c_str()));
 					this->AddNode(propChild);
 				}
@@ -700,13 +705,6 @@ namespace TestAccessor2
 	public:
 		virtual void BuildSelf(const SSSSSSSSContext& ctx) override
 		{
-			//RwTree::DebugPrintRecurs2(ctx.m_rw);
-
-			//m_rwData = CreateRwNode();
-			//TMyTransform<TPrecision> instance;
-			//ctx.m_accessor->LoadFromRwNode2222(&instance, ctx.m_rw);
-			//ctx.m_accessor->SaveToRwNode2222(&instance, m_rwData.Get());
-
 			m_rwData = CreateRwNode();
 			TMyTransform<TPrecision> instance;
 			auto accessorTransform = ctx.m_accessor->GetType()->CreateFieldLayout();
@@ -760,8 +758,8 @@ namespace TestAccessor2
 		Niflect::CNiflectTable tableHolder;
 		{
 			auto table = &tableHolder;
-			table->RegisterType<CClass, Niflect::TArrayNif<float> >("Niflect::TArrayNif<float>", &CreateSSSSSSSSSSSS<Niflect::TArrayNif<float> >);
-			table->RegisterType<CClass, float>("float", &CreateSSSSSSSSSSSS<float>);
+			table->RegisterType2<Niflect::TArrayNif<float>, CClass>("Niflect::TArrayNif<float>", &CreateSSSSSSSSSSSS<Niflect::TArrayNif<float> >);
+			table->RegisterType2<float, CClass>("float", &CreateSSSSSSSSSSSS<float>);
 		}
 
 		auto type = StaticGetType<Niflect::TArrayNif<float> >();
@@ -818,27 +816,27 @@ namespace TestAccessor2
 		Niflect::CNiflectTable tableHolder;
 		{
 			auto table = &tableHolder;
-			table->RegisterType<CNiflectType, float>("float", &CreateFieldLayoutForfFunctionPointerrrrrrrr<CFloatAccessor, float>);
-			table->RegisterType<CNiflectType, bool>("bool", &CreateFieldLayoutForfFunctionPointerrrrrrrr<CBoolAccessor, bool>);
-			table->RegisterType<CNiflectType, Niflect::CString>("Niflect::CString", &CreateFieldLayoutForfFunctionPointerrrrrrrr<CStringAccessor, Niflect::CString>);
-			table->RegisterType<CClass, TMyTransform<float> >("TMyTransform<float>", &CreateFieldLayoutForfFunctionPointerrrrrrrr<TMyTransformAccessor<float>, TMyTransform<float> >);
+			table->RegisterType2<float, CNiflectType>("float", &CreateFieldLayoutForfFunctionPointerrrrrrrr<CFloatAccessor, float>);
+			table->RegisterType2<bool, CNiflectType>("bool", &CreateFieldLayoutForfFunctionPointerrrrrrrr<CBoolAccessor, bool>);
+			table->RegisterType2<Niflect::CString, CNiflectType>("Niflect::CString", &CreateFieldLayoutForfFunctionPointerrrrrrrr<CStringAccessor, Niflect::CString>);
+			table->RegisterType2<TMyTransform<float>, CClass>("TMyTransform<float>", &CreateFieldLayoutForfFunctionPointerrrrrrrr<TMyTransformAccessor<float>, TMyTransform<float> >);
 		}
 		{
 			auto table = &tableHolder;
-			table->RegisterType<CClass, Niflect::TArrayNif<float> >("Niflect::TArrayNif<float>", &CreateSSSSSSSSSSSS<Niflect::TArrayNif<float> >);
-			table->RegisterType<CClass, Niflect::TArrayNif<Niflect::TArrayNif<float> > >("Niflect::TArrayNif<Niflect::TArrayNif<float> >", &CreateSSSSSSSSSSSS<Niflect::TArrayNif<Niflect::TArrayNif<float> > >);
-			table->RegisterType<CClass, Niflect::TArrayNif<bool> >("Niflect::TArrayNif<bool>", &CreateSSSSSSSSSSSS<Niflect::TArrayNif<bool> >);
-			table->RegisterType<CClass, std::vector<bool> >("std::vector<bool>", &CreateSSSSSSSSSSSS<std::vector<bool> >);
-			table->RegisterType<CStruct, std::pair<Niflect::CString, float> >("std::pair<Niflect::CString, float>", &CreateSSSSSSSSSSSS<std::pair<Niflect::CString, float> >);
-			table->RegisterType<CClass, Niflect::TMap<Niflect::CString, float> >("Niflect::TMap<Niflect::CString, float>", &CreateSSSSSSSSSSSS<Niflect::TMap<Niflect::CString, float> >);
-			table->RegisterType<CClass, Niflect::TArrayNif<Niflect::CString> >("Niflect::TArrayNif<Niflect::CString>", &CreateSSSSSSSSSSSS<Niflect::TArrayNif<Niflect::CString> >);
-			table->RegisterType<CClass, Niflect::TArrayNif<TMyTransform<float> > >("Niflect::TArrayNif<TMyTransform<float> >", &CreateSSSSSSSSSSSS<Niflect::TArrayNif<TMyTransform<float> > >);
+			table->RegisterType2<Niflect::TArrayNif<float>, CClass>("Niflect::TArrayNif<float>", &CreateSSSSSSSSSSSS<Niflect::TArrayNif<float> >);
+			table->RegisterType2<Niflect::TArrayNif<Niflect::TArrayNif<float> >, CClass>("Niflect::TArrayNif<Niflect::TArrayNif<float> >", &CreateSSSSSSSSSSSS<Niflect::TArrayNif<Niflect::TArrayNif<float> > >);
+			table->RegisterType2<Niflect::TArrayNif<bool>, CClass>("Niflect::TArrayNif<bool>", &CreateSSSSSSSSSSSS<Niflect::TArrayNif<bool> >);
+			table->RegisterType2<std::vector<bool>, CClass>("std::vector<bool>", &CreateSSSSSSSSSSSS<std::vector<bool> >);
+			table->RegisterType2<std::pair<Niflect::CString, float>, CStruct>("std::pair<Niflect::CString, float>", &CreateSSSSSSSSSSSS<std::pair<Niflect::CString, float> >);
+			table->RegisterType2<Niflect::TMap<Niflect::CString, float>, CClass>("Niflect::TMap<Niflect::CString, float>", &CreateSSSSSSSSSSSS<Niflect::TMap<Niflect::CString, float> >);
+			table->RegisterType2<Niflect::TArrayNif<Niflect::CString>, CClass>("Niflect::TArrayNif<Niflect::CString>", &CreateSSSSSSSSSSSS<Niflect::TArrayNif<Niflect::CString> >);
+			table->RegisterType2<Niflect::TArrayNif<TMyTransform<float> >, CClass>("Niflect::TArrayNif<TMyTransform<float> >", &CreateSSSSSSSSSSSS<Niflect::TArrayNif<TMyTransform<float> > >);
 		}
 
 		{
 			auto table = &tableHolder;
-			table->RegisterType<CClass, CTestClassMy>("CTestClassMy", &SSSSSSSSSS_CTestClassMy);
-			table->RegisterType<CClass, CTestClassMy2>("CTestClassMy2", &SSSSSSSSSS_CTestClassMy2);
+			table->RegisterType2<CTestClassMy, CClass>("CTestClassMy", &SSSSSSSSSS_CTestClassMy);
+			table->RegisterType2<CTestClassMy2, CClass>("CTestClassMy2", &SSSSSSSSSS_CTestClassMy2);
 		}
 
 		{
@@ -874,10 +872,10 @@ namespace TestAccessor2
 		{
 			{
 				auto table = &tableHolder;
-				table->RegisterType<CClass, CPropertyBool>("CPropertyBool", NULL);
-				table->RegisterType<CClass, CPropertyFloat>("CPropertyFloat", NULL);
-				table->RegisterType<CClass, CPropertyString>("CPropertyString", NULL);
-				table->RegisterType<CClass, TPropertyMyTransform<float> >("TPropertyMyTransform<float>", NULL);
+				table->RegisterType2<CPropertyBool, CClass>("CPropertyBool", NULL);
+				table->RegisterType2<CPropertyFloat, CClass>("CPropertyFloat", NULL);
+				table->RegisterType2<CPropertyString, CClass>("CPropertyString", NULL);
+				table->RegisterType2<TPropertyMyTransform<float>, CClass>("TPropertyMyTransform<float>", NULL);
 			}
 
 			{
@@ -908,8 +906,11 @@ namespace TestAccessor2
 
 	void TestFieldLayout()
 	{
-		if (false) TestAccessor0();
-		if (true) TestAccessor1();
-		if (false) TestProperty0();
+		if (false)
+			TestAccessor0();
+		if (false)
+			TestAccessor1();
+		if (true)
+			TestProperty0();
 	}
 }
