@@ -35,7 +35,7 @@
 	1. 考虑限制模板用途认定规则, 见Main.cpp, 12, 13, 14
 19. NiflectGen, using与typedef支持NIF_T, 仅注册不提供结构的用法
 20, NiflectGen, 生成时无任何member则FieldLayout为NULL
-21, NiflectGen, 增加其它Accessor
+21, Deprecated, NiflectGen, 增加其它Accessor
 	1. 一种AccessorBinding用于指定枚举的Accessor, 且不可重复指定
 	2. 一种AccessorBinding用于指定非枚举的默认Accessor (现 CCompoundAccessor), 且不可重复指定
 22. NiflectGen, Splitted模式, cmake设置不添加到VS中
@@ -51,12 +51,12 @@
 	2. 在检测到保存的信息中对应类型已不存在, 则只删除对应的SplittedModuleReg中的信息
 24. NiflectGen, 生成的文件是否有差异, 是则写无则不写
 	1. 需要先确认是否直接写, 即使无差异, 在Build时也会执行编译
-25. NiflectGen, 生成正确的TypeReg
+25. Deprecated, (现废弃 TypeReg, 改为一系列 FieldLayoutSpec) NiflectGen, 生成正确的TypeReg
 26. NiflectGen, 头文件路径统一为绝对路径, 只对Module中的OriginalHeader生成代码
 	1. 对绝对路径的头文件搜索时, 应实现一种简单优化, 从末尾开始查找
 	2. 大概在代码位置 CTaggedInheritableType::ResolveDependcies, 改为只对Module内的TaggedType成员进一步生成IndexedNode
 27. NiflectGen, 应支持或避免 BindingType 为 Accessor 类型的用法
-28. NiflectGen, BindingType别名与原始类型同时指定时, 无法使用特化风格的CreateFieldLayoutOfType
+28. Deprecated, (已决定继续用此风格, 因为在Runtime本就无法支持hash_code相同的StaticGetType) NiflectGen, BindingType别名与原始类型同时指定时, 无法使用特化风格的CreateFieldLayoutOfType
 	1. 如需要支持同时使用别名与原始类型, 则需要通过类似key的生成方法构造一种id用于生成CreateFieldLayout_SomeId
 	2. 但考虑到StaticGetType本就无法实现区分别名与原始类型, 因此可简单地不支持同时指定BindingType的别名与原始类型
-	
+29. NiflectGen, 收集 NIF_AS_B, 框架应调整为可扩展其它类型的 NIF_AS
