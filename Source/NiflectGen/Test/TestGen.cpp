@@ -31,7 +31,7 @@ namespace TestGen
 					CCollectionData collectionData;
 					CDataCollector collector;
 					collector.Collect(cursor, &taggedRoot, context, collectionData);
-					auto& vec = collectionData.m_accessorBindingMapping->m_vecAccessorBindingSetting;
+					auto& vec = collectionData.m_accessorBindingMapping->m_settings.m_vecAccessorBindingSetting;
 					ASSERT(log.m_vecText.size() == 0);
 					//ASSERT(vec.size() == 1);
 					//auto accessorTypeName = CXStringToCString(clang_getTypeSpelling(vec.back().m_subcursorRoot.m_vecChild[0].m_CXType));
@@ -59,7 +59,7 @@ namespace TestGen
 					CCollectionData collectionData;
 					CDataCollector collector;
 					collector.Collect(cursor, &taggedRoot, context, collectionData);
-					auto& vec = collectionData.m_accessorBindingMapping->m_vecAccessorBindingSetting;
+					auto& vec = collectionData.m_accessorBindingMapping->m_settings.m_vecAccessorBindingSetting;
 					ASSERT(log.m_vecText.size() == 0);
 				});
 		}
@@ -83,7 +83,7 @@ namespace TestGen
 					CCollectionData collectionData;
 					CDataCollector collector;
 					collector.Collect(cursor, &taggedRoot, context, collectionData);
-					auto& vec = collectionData.m_accessorBindingMapping->m_vecAccessorBindingSetting;
+					auto& vec = collectionData.m_accessorBindingMapping->m_settings.m_vecAccessorBindingSetting;
 					ASSERT(log.m_vecText.size() == 4);
 				});
 		}
@@ -107,7 +107,7 @@ namespace TestGen
 					CDataCollector collector;
 					collector.Collect(cursor, &taggedRoot, context, collectionData);
 					ASSERT(log.m_vecText.size() == 0);
-					auto& vec0 = collectionData.m_accessorBindingMapping->m_vecAccessorBindingSetting;
+					auto& vec0 = collectionData.m_accessorBindingMapping->m_settings.m_vecAccessorBindingSetting;
 					ASSERT(vec0.size() > 0);
 
 					Niflect::TArrayNif<Niflect::CString> vecExpected;
@@ -229,7 +229,7 @@ namespace TestGen
 							Niflect::CString accessorResocursorName;
 							if (it0.m_resoRoot.m_accessorBindingIndex != INDEX_NONE)
 							{
-								auto& setting = resolvedData.m_accessorBindingMapping->m_vecAccessorBindingSetting[it0.m_resoRoot.m_accessorBindingIndex];
+								auto& setting = resolvedData.m_accessorBindingMapping->m_settings.m_vecAccessorBindingSetting[it0.m_resoRoot.m_accessorBindingIndex];
 								accessorResocursorName = setting.m_accessorTypeCursorName;
 							}
 							else
@@ -335,7 +335,7 @@ namespace TestGen
 					vecExpectedB.push_back("std::pair");
 					uint32 idxA = 0;
 					uint32 idxB = 0;
-					auto& vecCollected = collectionData.m_accessorBindingMapping->m_vecAccessorBindingSetting;
+					auto& vecCollected = collectionData.m_accessorBindingMapping->m_settings.m_vecAccessorBindingSetting;
 					for (auto& it : vecCollected)
 					{
 						ASSERT(it.m_accessorTypeCursorName == vecExpectedA[idxA++]);
@@ -346,7 +346,46 @@ namespace TestGen
 				});
 		}
 	}
-	static void TestSuccess_TypeRegCodeGen()
+#ifdef ACCESSOR_SETTING_ABCD
+	static void TestSuccess_TypeRegCodeGen0()
+	{
+		auto memTest = Niflect::GetDefaultMemoryStats();
+		{
+			auto gen = CreateGenerator();
+			CModuleRegInfo info;
+			info.m_moduleName = "Engine";
+			info.m_genIncludeBasePath = "NiflectGenerated";
+			info.m_genBasePath = "F:/Fts/Proj/Test/Interedit/Generated";
+			info.m_vecOriginalHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestOriginalCodeGen0.h"));
+			info.m_vecBindingSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestAccessorSettingCodeGen0.h"));
+			NiflectGenDefinition::Test::AddBasicHeaderSearchPaths(info.m_vecHeaderSearchPath);
+			gen->SetModuleRegInfo(info);
+			CCodeGenData genData;
+			gen->Generate([&info, &genData](void* cursorAddr)
+				{
+					auto& cursor = *static_cast<CXCursor*>(cursorAddr);
+					CTaggedNode2 taggedRoot;
+					CGenLog log;
+					CCollectingContext context(&log);
+					CCollectionData collectionData;
+					CDataCollector collector;
+					collector.Collect(cursor, &taggedRoot, context, collectionData);
+					ASSERT(log.m_vecText.size() == 0);
+					CResolvingContext resolvingContext(&log);
+					CModuleRegInfoValidated validatedModuleRegInfo(info);
+					CResolver resolver(collectionData, validatedModuleRegInfo);
+					CResolvedData resolvedData;
+					resolver.Resolve4(&taggedRoot, resolvingContext, resolvedData);
+					ASSERT(log.m_vecText.size() == 0);
+					CTemplateBasedCppWriter writer(resolvedData, validatedModuleRegInfo);
+					CWritingContext writingContext(&log);
+					writer.Write3(writingContext, genData);
+				});
+			gen->Save2(genData);
+		}
+	}
+#else
+	static void TestSuccess_TypeRegCodeGenOld()
 	{
 		auto memTest = Niflect::GetDefaultMemoryStats();
 		{
@@ -383,6 +422,7 @@ namespace TestGen
 			gen->Save2(genData);
 		}
 	}
+#endif
 	void TestCollector()
 	{
 		//TestSuccess_AccessorAlias();
@@ -394,6 +434,10 @@ namespace TestGen
 		//TestSuccess_AccessorFinding();
 		//TestSuccess_ResocursorName();
 		//TestSuccess_RequiredHeader();
-		TestSuccess_TypeRegCodeGen();
+#ifdef ACCESSOR_SETTING_ABCD
+		TestSuccess_TypeRegCodeGen0();
+#else
+		TestSuccess_TypeRegCodeGenOld();
+#endif
 	}
 }

@@ -58,12 +58,16 @@ namespace NiflectGen
 		{
 			return m_subcursorRoot.m_vecChild[ElementBindingTypeChildStartIndex + idx];
 		}
-		bool IsValidBindingSetting() const
+		bool Deprecated_IsValidBindingSetting() const
 		{
 			bool valid = false;
 			if (m_subcursorRoot.m_vecChild.size() >= ElementBindingTypeChildStartIndex && m_subcursorRoot.m_vecChild.size() <= Count)
 				valid = true;
 			return valid;
+		}
+		bool IsValid() const
+		{
+			return m_subcursorRoot.m_vecChild.size() > 0;
 		}
 
 	public:
@@ -94,6 +98,18 @@ namespace NiflectGen
 		bool m_continuing;
 	};
 
+	class CCollectedAccessorSettings
+	{
+	public:
+		Niflect::TArrayNif<CBindingSettingData> m_vecAccessorBindingSetting;
+#ifdef ACCESSOR_SETTING_ABCD
+		CBindingSettingData m_settingCompound;
+		CBindingSettingData m_settingEnumClass;
+		CBindingSettingData m_settingEnumBitsMask;
+#else
+#endif
+	};
+
 	class CAccessorBindingMapping2
 	{
 	public:
@@ -106,7 +122,7 @@ namespace NiflectGen
 		void FindBindingTypeRecurs(const CXType& fieldOrArgCXType, const Niflect::TArrayNif<CXCursor>& vecDetailCursor, const CTaggedTypesMapping& taggedMapping, const CUntaggedTemplatesMapping& untaggedTemplateMapping, CResolvedCursorNode& resultIndexedParent, uint32& detailIteratingIdx) const;
 
 	public:
-		Niflect::TArrayNif<CBindingSettingData> m_vecAccessorBindingSetting;
+		CCollectedAccessorSettings m_settings;
 		TCursorMap<uint32> m_mapCursorToIndex;
 		TCXTypeMap<uint32> m_mapCXTypeToIndex;
 		TCursorMap<uint32> m_mapSpecializedCursorToIndex; //包括特化模板与 TaggedType 对应的类型

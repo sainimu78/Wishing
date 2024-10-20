@@ -34,13 +34,16 @@ namespace NiflectGen
 		return GetCursorInfoTypeName(m_cursor);
 	}
 
-	void CEnumRegCodeWriter2::WriteForFieldLayout(const STypeRegCreateFieldLayoutOfTypeWritingContext& context, STypeRegCreateFieldLayoutOfTypeWritingData& data) const
+//	void CEnumRegCodeWriter2::WriteForFieldLayout(const STypeRegCreateFieldLayoutOfTypeWritingContext& context, STypeRegCreateFieldLayoutOfTypeWritingData& data) const
+//	{
+//		//仅留作测试不应生成无关文件的代码, 可移除
+//		data.m_linesCreateFieldLayoutOfTypeImpl.push_back(NiflectUtil::FormatString("Reserved WriteForFieldLayout for enum: %s", m_bindingTypeIndexedRoot->m_resocursorName.c_str()));
+//#ifdef DEBUG_FOR_TYPE_REG
+//		DebugPrintCodeLines(data.m_linesCreateFieldLayoutOfTypeImpl);
+//#endif
+//	}
+	void CEnumRegCodeWriter2::CollectDependencyHeaderFilePaths(CDependencyHeaderFilePathRefs& dependencyHeaderFilePathRefs) const
 	{
-		//仅留作测试不应生成无关文件的代码, 可移除
-		data.m_linesCreateFieldLayoutOfTypeImpl.push_back(NiflectUtil::FormatString("Reserved WriteForFieldLayout for enum: %s", m_bindingTypeIndexedRoot->m_resocursorName.c_str()));
-#ifdef DEBUG_FOR_TYPE_REG
-		DebugPrintCodeLines(data.m_linesCreateFieldLayoutOfTypeImpl);
-#endif
 	}
 	void CEnumRegCodeWriter2::WriteTypeRegRegisterTypeAndFieldLayout(const CWritingContext& context, CTypeRegRegisterAndFieldLayoutWritingData& data) const
 	{

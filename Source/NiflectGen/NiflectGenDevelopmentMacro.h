@@ -31,3 +31,6 @@
 
 //临时调试开关
 //#define DEBUG_FOR_TYPE_REG
+
+//原BindingSetting改为AccessorSetting
+#define ACCESSOR_SETTING_ABCD

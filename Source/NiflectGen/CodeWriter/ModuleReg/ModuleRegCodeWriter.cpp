@@ -521,7 +521,7 @@ namespace NiflectGen
     }
     void CTemplateBasedCppWriter::WriteVerificationCode()
     {
-        printf("#todo: Code for verification of binding types duplication (auto a = typeid(TA).hash_code();).\n");
+        //printf("#todo: Code for verification of binding types duplication (auto a = typeid(TA).hash_code();).\n");
     }
     void CTemplateBasedCppWriter::Deprecated_Write2(const CWritingContext& context, CCodeGenData& data)
     {

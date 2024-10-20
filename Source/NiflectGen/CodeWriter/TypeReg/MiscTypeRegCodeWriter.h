@@ -1,12 +1,12 @@
 #pragma once
-#include "NiflectGen/CodeWriter/TypeReg/FieldLayoutBasedCodeWriter.h"
+#include "NiflectGen/CodeWriter/TypeReg/TypeRegCodeWriter.h"
 #include "NiflectGen/CodeWriter/TypeReg/TypeRegCode.h"
 
 namespace NiflectGen
 {
-	class CMiscTypeRegCodeWriter : public CFieldLayoutBasedCodeWriter
+	class CMiscTypeRegCodeWriter : public CTypeRegCodeWriter2
 	{
-		typedef CFieldLayoutBasedCodeWriter inherited;
+		typedef CTypeRegCodeWriter2 inherited;
 
 	protected:
 		virtual void WriteResocursorNodeBodyCode(CCodeLines& linesResoBodyCode) const override;

@@ -7,6 +7,7 @@
 #include "NiflectGen/TaggedType/TaggedStruct.h"
 #include "NiflectGen/TaggedType/TaggedClass.h"
 #include "NiflectGen/TaggedType/TaggedEnum.h"
+#include "NiflectGen/Collector/AccessorSetting.h"
 
 #include "NiflectGen/Collector/TemplateSubcursor.h"//备用, 现已另作实现, 见CSubcursor
 
@@ -471,7 +472,19 @@ namespace NiflectGen
 			, m_context(context)
 			, m_recursCollectiingData(recursCollectiingData)
 			, m_entered(false)
+			, m_tagType(EAccessorSettingTagType::Count)
 		{
+#ifdef ACCESSOR_SETTING_ABCD
+			for (uint32 idx = 0; idx < GetAccessorSettingTypesCount(); ++idx)
+			{
+				if (FindTagByKindAndDisplayName(m_cursor, CXCursor_TypeAliasDecl, AccessorSetingTagNames[idx]))
+				{
+					m_tagType = static_cast<EAccessorSettingTagType>(idx);
+					m_entered = true;
+					break;
+				}
+			}
+#else
 			if (m_collection.GetNamespaceDepth() <= 1)//TypeBinding仅支持定义在全局或1层深的namespace中
 			{
 				m_entered = FindTagByKindAndDisplayName(m_cursor, CXCursor_TypeAliasDecl, NiflectGenDefinition::CodeTag::BindingSetting);
@@ -480,6 +493,7 @@ namespace NiflectGen
 				//if (m_entered)
 				//	m_collection.m_collectingClassBaseCursorDecl = false;//逻辑为遍历到BindingSetting配置头文件中的cursor之前一定已经遍历完所有Accessor类型
 			}
+#endif
 		}
 		~CScopeBindingSetting()
 		{
@@ -514,7 +528,41 @@ namespace NiflectGen
 				//GenerateTemplateInstanceCode(data.m_subcursorRoot.m_vecChild[0], str0);
 				//Niflect::CString str1;
 				//GenerateTemplateInstanceCode(data.m_subcursorRoot.m_vecChild[1], str1);
-				m_recursCollectiingData.m_vecAccessorBindingSetting.push_back(data);
+
+	#ifdef ACCESSOR_SETTING_ABCD
+				switch (m_tagType)
+				{
+				case EAccessorSettingTagType::A:
+					m_recursCollectiingData.m_settings.m_vecAccessorBindingSetting.push_back(data);
+					break;
+				case EAccessorSettingTagType::B:
+				{
+					auto& s = m_recursCollectiingData.m_settings.m_settingCompound;
+					ASSERT(!s.IsValid());//todo: 检测到冲突定义, 报错
+					s = data;
+					break;
+				}
+				case EAccessorSettingTagType::C:
+				{
+					auto& s = m_recursCollectiingData.m_settings.m_settingEnumClass;
+					ASSERT(!s.IsValid());//todo: 检测到冲突定义, 报错
+					s = data;
+					break;
+				}
+				case EAccessorSettingTagType::D:
+				{
+					auto& s = m_recursCollectiingData.m_settings.m_settingEnumBitsMask;
+					ASSERT(!s.IsValid());//todo: 检测到冲突定义, 报错
+					s = data;
+					break;
+				}
+				default:
+					ASSERT(false);
+					break;
+				}
+	#else
+			m_recursCollectiingData.m_settings.m_vecAccessorBindingSetting.push_back(data);
+	#endif
 #endif
 			}
 		}
@@ -526,6 +574,7 @@ namespace NiflectGen
 		const CCollectingContext& m_context;
 		SRecursCollectingData& m_recursCollectiingData;
 		bool m_entered;
+		EAccessorSettingTagType m_tagType;
 	};
 
 	static bool IsTypeForBaseClassVerifying(CXCursorKind kind)
@@ -1026,8 +1075,8 @@ namespace NiflectGen
 		auto untaggedTypesMapping = Niflect::MakeShared<CUntaggedTypesMapping>();
 #else
 #endif
-		auto& vecSetting = accessorBindingMapping->m_vecAccessorBindingSetting;
-		SRecursCollectingData recursCollectiingData{ aliasChain.Get(), vecSetting };
+		auto& accessorSettings= accessorBindingMapping->m_settings;
+		SRecursCollectingData recursCollectiingData{ aliasChain.Get(), accessorSettings };
 		this->CollectDataRecurs2(cursor, g_invalidCursor, taggedParent, context, recursCollectiingData);
 
 #ifdef BINDING_TYPE_DUPLICATION_VERIFICATION
@@ -1260,9 +1309,9 @@ namespace NiflectGen
 #endif
 
 		//#1, 检查AccessorType定义是否继承自CAccessor
-		for (uint32 idx0 = 0; idx0 < vecSetting.size(); ++idx0)
+		for (uint32 idx0 = 0; idx0 < accessorSettings.m_vecAccessorBindingSetting.size(); ++idx0)
 		{
-			auto& it0 = vecSetting[idx0];
+			auto& it0 = accessorSettings.m_vecAccessorBindingSetting[idx0];
 			auto& aSubcursor = it0.GetAccessorTypeDecl();
 			bool ok = this->VerifyDerivedFromCAccessor(aSubcursor.m_cursorDecl, aliasChain.Get());
 			//if (!found)
@@ -1283,8 +1332,8 @@ namespace NiflectGen
 #else
 		auto ReportForDup = [](CCollectingContext& context, const CAccessorBindingMapping2& mapping, uint32 idxErrSrc, uint32 idxDupWith)
 			{
-				auto& settingErrSrc = mapping.m_vecAccessorBindingSetting[idxErrSrc];
-				auto& settingDup = mapping.m_vecAccessorBindingSetting[idxDupWith];
+				auto& settingErrSrc = mapping.m_settings.m_vecAccessorBindingSetting[idxErrSrc];
+				auto& settingDup = mapping.m_settings.m_vecAccessorBindingSetting[idxDupWith];
 				Niflect::CString str0;
 				GenerateTemplateInstanceCode(settingErrSrc.m_subcursorRoot, str0);
 				Niflect::CString str1;
@@ -1374,9 +1423,9 @@ namespace NiflectGen
 		auto& mapCursorToIndex = accessorBindingMapping->m_mapCursorToIndex;
 		auto& mapSpecializedCursorToIndex = accessorBindingMapping->m_mapSpecializedCursorToIndex;//特化作单独容器是为减少FieldFinding时的查找规模
 		auto& mapCXTypeToIndex = accessorBindingMapping->m_mapCXTypeToIndex;
-		for (uint32 idx0 = 0; idx0 < vecSetting.size(); ++idx0)
+		for (uint32 idx0 = 0; idx0 < accessorSettings.m_vecAccessorBindingSetting.size(); ++idx0)
 		{
-			auto& it0 = vecSetting[idx0];
+			auto& it0 = accessorSettings.m_vecAccessorBindingSetting[idx0];
 			bool ok = true;
 			auto& bSubcursor = it0.GetBindingTypeDecl();//此处b不是bool前缀
 			uint32 idxDupWith = INDEX_NONE;
@@ -1418,9 +1467,9 @@ namespace NiflectGen
 			}
 		}
 
-		for (uint32 idx0 = 0; idx0 < vecSetting.size(); ++idx0)
+		for (uint32 idx0 = 0; idx0 < accessorSettings.m_vecAccessorBindingSetting.size(); ++idx0)
 		{
-			auto& it0 = vecSetting[idx0];
+			auto& it0 = accessorSettings.m_vecAccessorBindingSetting[idx0];
 			for (uint32 idx1 = 0; idx1 < it0.GetBindingTypeDeclsCount(); ++idx1)
 			{
 				auto& bindingTypeDecl = it0.GetBindingTypeDecl(idx1);

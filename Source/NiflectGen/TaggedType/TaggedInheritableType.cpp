@@ -28,7 +28,7 @@ namespace NiflectGen
 	static void DebugPrintIndexedNodeRecurs(const CResolvedCursorNode& indexedParent, const CResolvedCursorNode& childrenOwner, const CAccessorBindingMapping2& mapping, uint32 lv)
 	{
 		auto strLv = NiflectUtil::DebugIndentToString(lv);
-		auto& cxType = mapping.m_vecAccessorBindingSetting[indexedParent.m_accessorBindingIndex].GetAccessorTypeDecl().m_CXType;
+		auto& cxType = mapping.m_settings.m_vecAccessorBindingSetting[indexedParent.m_accessorBindingIndex].GetAccessorTypeDecl().m_CXType;
 		auto a = CXStringToCString(clang_getTypeSpelling(cxType));
 		printf("%s%s\n", strLv.c_str(), a.c_str());
 

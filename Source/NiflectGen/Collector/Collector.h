@@ -81,7 +81,7 @@ namespace NiflectGen
 	struct SRecursCollectingData
 	{
 		CAliasChain* m_aliasChain;
-		Niflect::TArrayNif<CBindingSettingData>& m_vecAccessorBindingSetting;
+		CCollectedAccessorSettings& m_settings;
 	};
 
 	class CDataCollector

@@ -130,7 +130,7 @@ namespace NiflectGen
 		CAccessorBindingFindingContext result(fieldOrArgCXType, vecDetailCursor, untaggedTemplateMapping, detailIteratingIdx);
 		if (this->InitResocursorNodeIfFound(result, resultIndexedParent))
 		{
-			auto& bindingSetting = m_vecAccessorBindingSetting[resultIndexedParent.m_accessorBindingIndex];
+			auto& bindingSetting = m_settings.m_vecAccessorBindingSetting[resultIndexedParent.m_accessorBindingIndex];
 			resultIndexedParent.InitForTemplateBegin(bindingSetting.m_bindingTypeCursorName);
 
 			if (result.m_continuing)
@@ -160,7 +160,7 @@ namespace NiflectGen
 
 					for (auto& it : vecElemResocursorNode)
 					{
-						auto& elemSetting = m_vecAccessorBindingSetting[it->m_accessorBindingIndex];
+						auto& elemSetting = m_settings.m_vecAccessorBindingSetting[it->m_accessorBindingIndex];
 						it->InitForTemplate(elemSetting.m_bindingTypeCursorName, *pIndexedParent, isTemplateFormat);
 					}
 				}
@@ -304,7 +304,7 @@ namespace NiflectGen
 	}
 	void CAccessorBindingMapping2::InitPatterns()
 	{
-		for (auto& it : m_vecAccessorBindingSetting)
+		for (auto& it : m_settings.m_vecAccessorBindingSetting)
 		{
 			//auto& aSubcursor = it.GetAccessorTypeDecl();
 			//it.m_accessorTypePattern = GenerateNamespacesAndScopesCode(aSubcursor.m_cursorDecl);
@@ -316,5 +316,11 @@ namespace NiflectGen
 			GenerateAccessorBindingCursorName(it.GetAccessorTypeDecl(), it.m_accessorTypeCursorName);
 			GenerateAccessorBindingCursorName(it.GetBindingTypeDecl(), it.m_bindingTypeCursorName);
 		}
+		if (m_settings.m_settingCompound.IsValid())
+			GenerateAccessorBindingCursorName(m_settings.m_settingCompound.GetAccessorTypeDecl(), m_settings.m_settingCompound.m_accessorTypeCursorName);
+		if (m_settings.m_settingEnumClass.IsValid())
+			GenerateAccessorBindingCursorName(m_settings.m_settingEnumClass.GetAccessorTypeDecl(), m_settings.m_settingEnumClass.m_accessorTypeCursorName);
+		if (m_settings.m_settingEnumBitsMask.IsValid())
+			GenerateAccessorBindingCursorName(m_settings.m_settingEnumBitsMask.GetAccessorTypeDecl(), m_settings.m_settingEnumBitsMask.m_accessorTypeCursorName);
 	}
 }

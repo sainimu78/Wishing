@@ -32,16 +32,38 @@ namespace NiflectGenDefinition
 
 	namespace CodeTag
 	{
+#ifdef ACCESSOR_SETTING_ABCD
+#else
 		constexpr const char* BindingSetting = "__NiflectGen_BindingSetting";
+#endif
 		constexpr const char* Type = "__NiflectGen_Type";
 		constexpr const char* Field = "__NiflectGen_Field";
 		constexpr const char* Method = "__NiflectGen_Method";
 		constexpr const char* EnumConstant = "__NiflectGen_EnumConstant";
 
+#ifdef ACCESSOR_SETTING_ABCD
+		//static bool IsAccessorSettingA(const Niflect::CString& text)
+		//{
+		//	return NiflectUtil::StartsWith(text, NiflectGenDefinition::CodeTag::AccessorSettingA);
+		//}
+		//static bool IsAccessorSettingB(const Niflect::CString& text)
+		//{
+		//	return NiflectUtil::StartsWith(text, NiflectGenDefinition::CodeTag::AccessorSettingB);
+		//}
+		//static bool IsAccessorSettingC(const Niflect::CString& text)
+		//{
+		//	return NiflectUtil::StartsWith(text, NiflectGenDefinition::CodeTag::AccessorSettingC);
+		//}
+		//static bool IsAccessorSettingD(const Niflect::CString& text)
+		//{
+		//	return NiflectUtil::StartsWith(text, NiflectGenDefinition::CodeTag::AccessorSettingD);
+		//}
+#else
 		static bool IsBindingSetting(const Niflect::CString& text)
 		{
 			return NiflectUtil::StartsWith(text, NiflectGenDefinition::CodeTag::BindingSetting);
 		}
+#endif
 		static bool IsType(const Niflect::CString& text)
 		{
 			return NiflectUtil::StartsWith(text, NiflectGenDefinition::CodeTag::Type);

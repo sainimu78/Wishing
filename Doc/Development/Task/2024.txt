@@ -60,3 +60,4 @@
 	1. 如需要支持同时使用别名与原始类型, 则需要通过类似key的生成方法构造一种id用于生成CreateFieldLayout_SomeId
 	2. 但考虑到StaticGetType本就无法实现区分别名与原始类型, 因此可简单地不支持同时指定BindingType的别名与原始类型
 29. NiflectGen, 收集 NIF_AS_B, 框架应调整为可扩展其它类型的 NIF_AS
+30. NiflectGen, 重构实现统一流程 NIF_AS 系列检查

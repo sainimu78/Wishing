@@ -56,7 +56,7 @@ namespace Engine
 		}
 	};
 
-	class CBitsMaskEnumAccessor : public Niflect::CAccessor
+	class CEnumBitsMaskAccessor : public Niflect::CAccessor
 	{
 		typedef Niflect::CAccessor inherited;
 	public:

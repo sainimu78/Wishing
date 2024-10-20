@@ -46,16 +46,31 @@ namespace Niflect
 			m_name = name;
 			m_addrOffset.SetOffset(offset);
 		}
-		CNiflectType* GetType() const
-		{
-			return m_type;
-		}
-		const CString& GetName() const
-		{
-			return m_name;
-		}
 
-	public:
+	public://todo: 将改为 protected, CreateFieldLayoutOfType 作为 friend
+		void InitLayoutMeta(CNiflectType* type)
+		{
+			m_type = type;
+			ASSERT(m_name.empty());
+			ASSERT(m_addrOffset.GetOffset() == CAddrOffset::None);
+		}
+		void InitForField(const CString& name, const AddrOffsetType& offset)
+		{
+			ASSERT(m_name.empty());
+			m_name = name;
+			ASSERT(m_addrOffset.GetOffset() == CAddrOffset::None);
+			m_addrOffset.SetOffset(offset);
+		}
+		void InitForElement(const CString& reserved_name = "reserved_dim")
+		{
+			ASSERT(m_name.empty());
+			m_name = reserved_name;
+			ASSERT(m_addrOffset.GetOffset() == CAddrOffset::None);
+		}
+		void InitElementAccessor(const CSharedAccessor& accessor)
+		{
+			m_elemAccessor = accessor;
+		}
 		void AddChild(const CSharedAccessor& accessor)
 		{
 			this->InsertChild(accessor, this->GetChildrenCount());
@@ -64,6 +79,16 @@ namespace Niflect
 		{
 			m_vecChild.insert(m_vecChild.begin() + idx, accessor);
 		}
+
+	public:
+		CNiflectType* GetType() const
+		{
+			return m_type;
+		}
+		const CString& GetName() const
+		{
+			return m_name;
+		}
 		uint32 GetChildrenCount() const
 		{
 			return static_cast<uint32>(m_vecChild.size());
@@ -71,10 +96,6 @@ namespace Niflect
 		CAccessor* GetChild(uint32 idx) const
 		{
 			return m_vecChild[idx].Get();
-		}
-		void InitElementAccessor(const CSharedAccessor& accessor)
-		{
-			m_elemAccessor = accessor;
 		}
 		CAccessor* GetElementAccessor() const
 		{

@@ -125,4 +125,92 @@ namespace NiflectGen
 			ASSERT(setReplacedLabel.size() == map.size());
 		}
 	}
+	void CTypeRegCodeWriter2::WriteForFieldLayout(const STypeRegCreateFieldLayoutOfTypeWritingContext& context, STypeRegCreateFieldLayoutOfTypeWritingData& data) const
+	{
+		this->WriteCreateFieldLayoutOfType(context, data.m_linesCreateFieldLayoutOfTypeDecl, data.m_linesCreateFieldLayoutOfTypeImpl);
+
+		this->CollectDependencyHeaderFilePaths(data.m_dependencyHeaderFilePathRefs);
+	}
+	void CTypeRegCodeWriter2::WriteCreateFieldLayoutOfType(const STypeRegCreateFieldLayoutOfTypeWritingContext& context, CCodeLines& dataDecl, CCodeLines& dataImpl) const
+	{
+		{
+			CCodeTemplate tpl0;
+			tpl0.ReadFromRawData(HardCodedTemplate::CreateFieldLayoutOfTypeDecl);
+			CLabelToCodeMapping map;
+			MapLabelToText(map, LABEL_2, context.m_createFieldLayoutOfTypeFuncName);
+			Niflect::TSet<Niflect::CString> setReplacedLabel;
+			tpl0.ReplaceLabels(map, dataDecl, &setReplacedLabel);
+			ASSERT(setReplacedLabel.size() == map.size());
+		}
+		{
+			CCodeTemplate tpl0;
+			tpl0.ReadFromRawData(HardCodedTemplate::CreateFieldLayoutOfTypeImpl);
+			CLabelToCodeMapping map;
+			MapLabelToText(map, LABEL_2, context.m_createFieldLayoutOfTypeFuncName);
+
+			CCodeLines linesBody;
+			{
+				Niflect::CString accessorResoCursorName;
+				if (m_bindingTypeIndexedRoot->m_accessorBindingIndex != INDEX_NONE)
+				{
+					auto& setting = m_resolvedData->m_accessorBindingMapping->m_settings.m_vecAccessorBindingSetting[m_bindingTypeIndexedRoot->m_accessorBindingIndex];
+					accessorResoCursorName = setting.m_accessorTypeCursorName;
+
+					if (IsCursorTemplateDecl(setting.GetAccessorTypeDecl().m_cursorDecl))//注, 特化的 Kind 为 ClassDecl
+					{
+						auto& arg = m_bindingTypeIndexedRoot->m_resocursorName;
+						NiflectGenDefinition::CodeStyle::TemplateAngleBracketL(accessorResoCursorName);
+						accessorResoCursorName += arg;
+						NiflectGenDefinition::CodeStyle::TemplateAngleBracketR(accessorResoCursorName);
+					}
+				}
+				else
+				{
+					ASSERT(m_bindingTypeIndexedRoot->m_taggedTypeIndex != INDEX_NONE);
+					auto& tt = m_resolvedData->m_taggedMapping.m_vecType[m_bindingTypeIndexedRoot->m_taggedTypeIndex];
+					auto& cursor = tt->GetCursor();
+					auto kind = clang_getCursorKind(cursor);
+					CBindingSettingData* p = NULL;
+					if (kind == CXCursor_ClassDecl || kind == CXCursor_StructDecl)
+					{
+						p = &m_resolvedData->m_accessorBindingMapping->m_settings.m_settingCompound;
+					}
+					else if (kind == CXCursor_EnumDecl)
+					{
+						auto& cursor = tt->GetCursor();
+						if (clang_EnumDecl_isScoped(cursor))
+							p = &m_resolvedData->m_accessorBindingMapping->m_settings.m_settingEnumClass;
+						else
+							p = &m_resolvedData->m_accessorBindingMapping->m_settings.m_settingEnumBitsMask;
+					}
+					else
+					{
+						ASSERT(false);
+					}
+					if (p != NULL)
+					{
+						ASSERT(p->IsValid());//todo: 报错
+						accessorResoCursorName = p->m_accessorTypeCursorName;
+					}
+					else
+					{
+						ASSERT(false);
+					}
+				}
+
+				linesBody.push_back(accessorResoCursorName);
+				MapLabelToLines(map, LABEL_3, linesBody);
+			}
+
+			this->WriteResocursorNodeBodyCode(linesBody);
+
+			Niflect::TSet<Niflect::CString> setReplacedLabel;
+			tpl0.ReplaceLabels(map, dataImpl, &setReplacedLabel);
+			ASSERT(setReplacedLabel.size() == map.size());
+		}
+
+#ifdef DEBUG_FOR_TYPE_REG
+		DebugPrintCodeLines(dataImpl);
+#endif
+	}
 }

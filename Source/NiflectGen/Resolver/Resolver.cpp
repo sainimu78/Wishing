@@ -197,7 +197,7 @@ namespace NiflectGen
 		auto& accessorBindingMapping = data.deprecated_m_mapping.m_accessorBindingMapping;
 		for (auto& it0 : m_collectionData.deprecated_m_vecBindingSetting)
 		{
-			if (!it0.IsValidBindingSetting())
+			if (!it0.Deprecated_IsValidBindingSetting())
 			{
 				GenLogError(context.m_log, "Unable to obtain type bindings from the TBindingSetting template instance");
 				break;
@@ -307,7 +307,7 @@ namespace NiflectGen
 
 		this->TestResolveRecurs3(taggedRoot, context, data);
 
-		auto& vec0 = m_collectionData.m_accessorBindingMapping->m_vecAccessorBindingSetting;
+		auto& vec0 = m_collectionData.m_accessorBindingMapping->m_settings.m_vecAccessorBindingSetting;
 
 		for (uint32 idx0 = 0; idx0 < vec0.size(); ++idx0)
 		{

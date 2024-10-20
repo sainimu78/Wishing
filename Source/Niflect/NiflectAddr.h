@@ -12,34 +12,34 @@ namespace Niflect
 
 	public:
 		CAddrOffset()
-			: m_offsetInBytes(None)
+			: m_addrDiff(None)
 		{
 		}
-		CAddrOffset(const AddrOffsetType& offsetInBytes)
-			: m_offsetInBytes(offsetInBytes)
+		CAddrOffset(const AddrOffsetType& offset)
+			: m_addrDiff(offset)
 		{
 		}
-		void SetOffset(const AddrOffsetType& offsetInBytes)
+		void SetOffset(const AddrOffsetType& offset)
 		{
-			m_offsetInBytes = offsetInBytes;
+			m_addrDiff = offset;
 		}
 		const AddrOffsetType& GetOffset() const
 		{
-			return m_offsetInBytes;
+			return m_addrDiff;
 		}
 
 	public:
 		inline const AddrType GetAddr(const AddrType& base) const
 		{
-			return static_cast<const char*>(base) + m_offsetInBytes;
+			return static_cast<const char*>(base) + m_addrDiff;
 		}
 		inline AddrType GetAddr(AddrType& base) const
 		{
-			return static_cast<char*>(base) + m_offsetInBytes;
+			return static_cast<char*>(base) + m_addrDiff;
 		}
 
 	private:
-		AddrOffsetType m_offsetInBytes;
+		AddrOffsetType m_addrDiff;
 	};
 
 	template <typename U, typename T>

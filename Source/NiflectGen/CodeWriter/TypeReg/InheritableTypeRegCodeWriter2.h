@@ -1,14 +1,14 @@
 #pragma once
-#include "NiflectGen/CodeWriter/TypeReg/FieldLayoutBasedCodeWriter.h"
+#include "NiflectGen/CodeWriter/TypeReg/TypeRegCodeWriter.h"
 #include "NiflectGen/Collector/CollectionData.h"
 #include "NiflectGen/Resolver/ResolvedData.h"
 #include "NiflectGen/TaggedType/TaggedInheritableType.h"
 
 namespace NiflectGen
 {
-	class CInheritableTypeRegCodeWriter2 : public CFieldLayoutBasedCodeWriter
+	class CInheritableTypeRegCodeWriter2 : public CTypeRegCodeWriter2
 	{
-		typedef CFieldLayoutBasedCodeWriter inherited;
+		typedef CTypeRegCodeWriter2 inherited;
 	public:
 		CInheritableTypeRegCodeWriter2(const Niflect::TArrayNif<CResolvedCursorNode>& vecMemberIndexedRoot, const Niflect::TArrayNif<CTaggedInheritableTypeMember*>& vecMember, const CTaggedType* baseTaggedType);
 
