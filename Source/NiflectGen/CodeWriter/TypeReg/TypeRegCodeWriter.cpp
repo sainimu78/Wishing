@@ -106,15 +106,8 @@ namespace NiflectGen
 					}
 
 					{
-						//CTaggedInheritableType::ResolveDependcies 中, TaggedType 的成员依赖头文件未加到此所属类的头文件列表中, 因此有此假定头文件列表为必定为1
-						//即使用通用数据结构, 在特定流程中特殊使用的一种方式
-						ASSERT(m_bindingTypeIndexedRoot->m_vecRequiredHeaderFilePath.size() == 1);
-						if (m_bindingTypeIndexedRoot->m_vecRequiredHeaderFilePath.size() > 0)
-						{
-							ASSERT(data.m_taggedTypeHeaderFilePathRef2 == NULL);
-							//第0个即为taggedType所在头文件
-							data.m_taggedTypeHeaderFilePathRef2 = &m_bindingTypeIndexedRoot->m_vecRequiredHeaderFilePath[0];
-						}
+						ASSERT(data.m_taggedTypeHeaderFilePathRef2 == NULL);
+						data.m_taggedTypeHeaderFilePathRef2 = m_bindingTypeIndexedRoot->GetHeaderFilePathAddrForTaggedType();
 					}
 				}
 			}

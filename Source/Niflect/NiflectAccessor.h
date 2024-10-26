@@ -61,10 +61,10 @@ namespace Niflect
 			ASSERT(m_addrOffset.GetOffset() == CAddrOffset::None);
 			m_addrOffset.SetOffset(offset);
 		}
-		void InitForElement(const CString& reserved_name = "reserved_dim")
+		void InitForElement()
 		{
 			ASSERT(m_name.empty());
-			m_name = reserved_name;
+			m_name = "reserved_dim";
 			ASSERT(m_addrOffset.GetOffset() == CAddrOffset::None);
 		}
 		void InitElementAccessor(const CSharedAccessor& accessor)

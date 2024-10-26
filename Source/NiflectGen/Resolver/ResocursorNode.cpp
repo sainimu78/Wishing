@@ -111,6 +111,23 @@ namespace NiflectGen
 		ASSERT(m_vecRequiredHeaderFilePath.size() == 0);
 		m_vecRequiredHeaderFilePath.push_back(headerFilePath);
 	}
+	const Niflect::CString* CResolvedCursorNode::GetHeaderFilePathAddrForTaggedType() const
+	{
+		//CTaggedInheritableType::ResolveDependcies 中, TaggedType 的成员依赖头文件未加到此所属类的头文件列表中, 因此有此假定头文件列表为必定为1
+		//即使用通用数据结构, 在特定流程中特殊使用的一种方式
+		ASSERT(m_vecRequiredHeaderFilePath.size() == 1);
+		if (m_vecRequiredHeaderFilePath.size() > 0)
+		{
+			//第0个即为taggedType所在头文件
+			return &m_vecRequiredHeaderFilePath[0];
+		}
+		return NULL;
+	}
+	void CResolvedCursorNode::GetHeaderFilePathAddrs(Niflect::TArrayNif<const Niflect::CString*>& vecAddr) const
+	{
+		for (auto& it1 : m_vecRequiredHeaderFilePath)
+			vecAddr.push_back(&it1);
+	}
 
 	static void DebugGenSignature2222(const CResolvedCursorNode& indexedParent, uint32 lv, const char* pszLv, Niflect::TArrayNif<Niflect::CString>& vecSignature)
 	{

@@ -25,6 +25,15 @@ namespace NiflectGen
 		{
 			return m_accessorBindingIndex != INDEX_NONE || m_taggedTypeIndex != INDEX_NONE;
 		}
+
+	public:
+		const Niflect::CString* GetHeaderFilePathAddrForTaggedType() const;
+		void GetHeaderFilePathAddrs(Niflect::TArrayNif<const Niflect::CString*>& vecAddr) const;
+
+	public:
+		const Niflect::TArrayNif<Niflect::CString>& DebugGetHeaderFilePaths() const { return m_vecRequiredHeaderFilePath; }
+
+	public:
 		uint32 m_accessorBindingIndex;
 		uint32 m_taggedTypeIndex;//该索引对应的类型一定不是模板, 现可为 class, struct, enum, 如指定了对应的 AccessorBinding, 则具有 m_accessorBindingIndex
 		uint32 m_untaggedTemplateIndex;//该索引有效时, 表明指定了对应的 AccessorBinding, 即具有 m_accessorBindingIndex
@@ -33,6 +42,8 @@ namespace NiflectGen
 		Niflect::CString m_resocursorName;
 		//要求与 m_vecChild 互斥, 即无法支持容器模板含成员变量, 而结构模板可含成员变量
 		CSharedResolvedCursorNode m_elem;
+
+	private:
 		Niflect::TArrayNif<Niflect::CString> m_vecRequiredHeaderFilePath;
 	};
 

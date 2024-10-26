@@ -279,17 +279,14 @@ namespace TestGen
 					uint32 idxExpected = 0;
 					for (auto& it0 : resolvedData.m_signatureMapping.m_vecItem)
 					{
-						if (it0.m_resoRoot.m_vecRequiredHeaderFilePath.size() > 0)
+						for (auto& it1 : it0.m_resoRoot.DebugGetHeaderFilePaths())
 						{
-							for (auto& it1 : it0.m_resoRoot.m_vecRequiredHeaderFilePath)
-							{
-								auto pos = it1.find(vecExpected[idxExpected]);
-								ASSERT(pos != std::string::npos);
-								idxExpected++;
-								//printf("%s\n", it1.c_str());
-							}
-							//printf("################\n");
+							auto pos = it1.find(vecExpected[idxExpected]);
+							ASSERT(pos != std::string::npos);
+							idxExpected++;
+							//printf("%s\n", it1.c_str());
 						}
+						//printf("################\n");
 					}
 					ASSERT(idxExpected == vecExpected.size());
 				});

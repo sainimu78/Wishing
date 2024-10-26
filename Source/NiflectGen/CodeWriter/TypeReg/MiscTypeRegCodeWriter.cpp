@@ -61,8 +61,7 @@ namespace NiflectGen
 	}
 	void CMiscTypeRegCodeWriter::CollectDependencyHeaderFilePaths(CDependencyHeaderFilePathRefs& dependencyHeaderFilePathRefs) const
 	{
-		for (auto& it : m_bindingTypeIndexedRoot->m_vecRequiredHeaderFilePath)
-			dependencyHeaderFilePathRefs.m_vecDecl.push_back(&it);
+		m_bindingTypeIndexedRoot->GetHeaderFilePathAddrs(dependencyHeaderFilePathRefs.m_vecDecl);
 	}
 	void CMiscTypeRegCodeWriter::WriteTypeRegRegisterTypeAndFieldLayout(const CWritingContext& context, CTypeRegRegisterAndFieldLayoutWritingData& data) const
 	{

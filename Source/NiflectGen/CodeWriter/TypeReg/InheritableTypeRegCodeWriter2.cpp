@@ -37,13 +37,9 @@ namespace NiflectGen
 	void CInheritableTypeRegCodeWriter2::CollectDependencyHeaderFilePaths(CDependencyHeaderFilePathRefs& dependencyHeaderFilePathRefs) const
 	{
 		//还差基类的include
-		ASSERT(m_bindingTypeIndexedRoot->m_vecRequiredHeaderFilePath.size() == 1);
-		dependencyHeaderFilePathRefs.m_vecDecl.push_back(&m_bindingTypeIndexedRoot->m_vecRequiredHeaderFilePath[0]);
+		dependencyHeaderFilePathRefs.m_vecDecl.push_back(m_bindingTypeIndexedRoot->GetHeaderFilePathAddrForTaggedType());
 		for (auto& it0 : m_vecMemberIndexedRoot)
-		{
-			for (auto& it1 : it0.m_vecRequiredHeaderFilePath)
-				dependencyHeaderFilePathRefs.m_vecImpl.push_back(&it1);
-		}
+			it0.GetHeaderFilePathAddrs(dependencyHeaderFilePathRefs.m_vecImpl);
 	}
 	void CInheritableTypeRegCodeWriter2::WriteTypeRegRegisterTypeAndFieldLayout(const CWritingContext& context, CTypeRegRegisterAndFieldLayoutWritingData& data) const
 	{
