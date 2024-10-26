@@ -17,7 +17,7 @@ namespace TestMyFinding
 	};
 
 	NIF_T()
-	enum EMyBitsMask
+	enum EMyBitMask
 	{
 		MBM_None NIF_C(),
 		MBM_Bit0 NIF_C(),
@@ -32,7 +32,7 @@ namespace TestMyFinding
 		CMyClass_0()
 			: m_int32_1(0)
 			, m_ec_opt_2(EMyOption::EDefaultMode)
-			, m_e_bits_mask_7(EMyBitsMask::MBM_None)
+			, m_e_bit_mask_7(EMyBitMask::MBM_None)
 		{
 
 		}
@@ -50,6 +50,6 @@ namespace TestMyFinding
 		NIF_F()
 		Niflect::TArrayNif<float> m_array_float_6;
 		NIF_F()
-		EMyBitsMask m_e_bits_mask_7;
+		EMyBitMask m_e_bit_mask_7;
 	};
 }

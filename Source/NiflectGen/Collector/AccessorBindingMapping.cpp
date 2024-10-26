@@ -320,7 +320,7 @@ namespace NiflectGen
 			GenerateAccessorBindingCursorName(m_settings.m_settingCompound.GetAccessorTypeDecl(), m_settings.m_settingCompound.m_accessorTypeCursorName);
 		if (m_settings.m_settingEnumClass.IsValid())
 			GenerateAccessorBindingCursorName(m_settings.m_settingEnumClass.GetAccessorTypeDecl(), m_settings.m_settingEnumClass.m_accessorTypeCursorName);
-		if (m_settings.m_settingEnumBitsMask.IsValid())
-			GenerateAccessorBindingCursorName(m_settings.m_settingEnumBitsMask.GetAccessorTypeDecl(), m_settings.m_settingEnumBitsMask.m_accessorTypeCursorName);
+		if (m_settings.m_settingEnumBitMask.IsValid())
+			GenerateAccessorBindingCursorName(m_settings.m_settingEnumBitMask.GetAccessorTypeDecl(), m_settings.m_settingEnumBitMask.m_accessorTypeCursorName);
 	}
 }

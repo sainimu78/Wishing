@@ -105,7 +105,7 @@ namespace NiflectGen
 #ifdef ACCESSOR_SETTING_ABCD
 		CBindingSettingData m_settingCompound;
 		CBindingSettingData m_settingEnumClass;
-		CBindingSettingData m_settingEnumBitsMask;
+		CBindingSettingData m_settingEnumBitMask;
 #else
 #endif
 	};

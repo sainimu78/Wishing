@@ -181,7 +181,7 @@ namespace NiflectGen
 						if (clang_EnumDecl_isScoped(cursor))
 							p = &m_resolvedData->m_accessorBindingMapping->m_settings.m_settingEnumClass;
 						else
-							p = &m_resolvedData->m_accessorBindingMapping->m_settings.m_settingEnumBitsMask;
+							p = &m_resolvedData->m_accessorBindingMapping->m_settings.m_settingEnumBitMask;
 					}
 					else
 					{

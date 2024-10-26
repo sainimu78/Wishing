@@ -551,7 +551,7 @@ namespace NiflectGen
 				}
 				case EAccessorSettingTagType::D:
 				{
-					auto& s = m_recursCollectiingData.m_settings.m_settingEnumBitsMask;
+					auto& s = m_recursCollectiingData.m_settings.m_settingEnumBitMask;
 					ASSERT(!s.IsValid());//todo: 检测到冲突定义, 报错
 					s = data;
 					break;

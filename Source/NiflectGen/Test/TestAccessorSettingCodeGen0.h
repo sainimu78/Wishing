@@ -27,5 +27,5 @@ namespace EngineTypeBindingSettingScope
 	NIF_AS_A() TSetting<TestAccessor2::TMyTransformAccessor<float>, TestAccessor2::TMyTransform<float> >;
 	NIF_AS_B() TSetting<Niflect::CCompoundAccessor>;
 	NIF_AS_C() TSetting<Engine::CEnumClassAccessor>;
-	NIF_AS_D() TSetting<Engine::CEnumBitsMaskAccessor>;
+	NIF_AS_D() TSetting<Engine::CEnumBitMaskAccessor>;
 }
