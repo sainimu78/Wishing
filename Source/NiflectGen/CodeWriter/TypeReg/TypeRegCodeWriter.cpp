@@ -106,8 +106,8 @@ namespace NiflectGen
 					}
 
 					{
-						ASSERT(data.m_taggedTypeHeaderFilePathRef2 == NULL);
-						data.m_taggedTypeHeaderFilePathRef2 = m_bindingTypeIndexedRoot->GetHeaderFilePathAddrForTaggedType();
+						ASSERT(data.m_taggedTypeHeaderFilePathAddr == NULL);
+						data.m_taggedTypeHeaderFilePathAddr = m_bindingTypeIndexedRoot->GetHeaderFilePathAddrForTaggedType();
 					}
 				}
 			}

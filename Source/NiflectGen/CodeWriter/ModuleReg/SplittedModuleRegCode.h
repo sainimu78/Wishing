@@ -49,10 +49,10 @@ namespace NiflectGen
 	{
 	public:
 		CSplittedModuleRegInfo()
-			: m_taggedTypeHeaderFilePathRef(NULL)
+			: m_taggedTypeHeaderFilePathAddr(NULL)
 		{
 		}
-		const Niflect::CString* m_taggedTypeHeaderFilePathRef;
+		const Niflect::CString* m_taggedTypeHeaderFilePathAddr;
 		Niflect::TArrayNif<const CTypeRegWritingData2*> m_vecTypeRegDataRef;
 	};
 

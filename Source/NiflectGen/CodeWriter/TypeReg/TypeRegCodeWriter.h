@@ -111,7 +111,7 @@ namespace NiflectGen
 	{
 	public:
 		CTypeRegRegisterAndFieldLayoutWritingData()
-			: m_taggedTypeHeaderFilePathRef2(NULL)
+			: m_taggedTypeHeaderFilePathAddr(NULL)
 		{
 
 		}
@@ -119,7 +119,7 @@ namespace NiflectGen
 		CCodeLines m_linesCreateFieldLayoutOfTypeDecl;
 		CCodeLines m_linesCreateFieldLayoutOfTypeImpl;
 		Niflect::CString m_fieldLayoutFuncName;
-		const Niflect::CString* m_taggedTypeHeaderFilePathRef2;//只需要引用缓存在IndexedNode中的路径地址, 在生成无重复includes时才需要获取实际字符串
+		const Niflect::CString* m_taggedTypeHeaderFilePathAddr;//只需要引用缓存在IndexedNode中的路径地址, 在生成无重复includes时才需要获取实际字符串
 		CDependencyHeaderFilePathRefs m_dependencyHeaderFilePathRefs;
 	};
 
@@ -146,7 +146,7 @@ namespace NiflectGen
 	struct STypeRegInvokeRegisterTypeWritingData
 	{
 		CCodeLines& m_linesInvokeRegisterType;
-		const Niflect::CString*& m_taggedTypeHeaderFilePathRef2;
+		const Niflect::CString*& m_taggedTypeHeaderFilePathAddr;
 		Niflect::CString m_createFieldLayoutOfTypeFuncName;
 	};
 

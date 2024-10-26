@@ -19,9 +19,9 @@ namespace NiflectGen
             {
                 auto& typeRegData = data.m_vecFieldLayoutSpecData[idx0];
                 Niflect::CString relativeTypeRegFilePathNoExt;
-                if (it0.m_taggedTypeHeaderFilePathRef != NULL)
+                if (it0.m_taggedTypeHeaderFilePathAddr != NULL)
                 {
-                    relativeTypeRegFilePathNoExt = CIncludesHelper::ConvertToIncludePath(*it0.m_taggedTypeHeaderFilePathRef, context.m_moduleRegInfo.m_userProvided.m_vecHeaderSearchPath);
+                    relativeTypeRegFilePathNoExt = CIncludesHelper::ConvertToIncludePath(*it0.m_taggedTypeHeaderFilePathAddr, context.m_moduleRegInfo.m_userProvided.m_vecHeaderSearchPath);
                     relativeTypeRegFilePathNoExt = NiflectUtil::RemoveFileExt(relativeTypeRegFilePathNoExt);
                 }
                 else

@@ -280,7 +280,7 @@ namespace NiflectGen
 
             STypeRegInvokeRegisterTypeWritingData invokeRegisterTypeData{
                 data.m_registerTypeAndfieldLayout.m_linesInvokeRegisterType, 
-                data.m_registerTypeAndfieldLayout.m_taggedTypeHeaderFilePathRef2
+                data.m_registerTypeAndfieldLayout.m_taggedTypeHeaderFilePathAddr
             };
             it0->WriteInvokeRegisterType(context, invokeRegisterTypeData);
 
@@ -338,13 +338,13 @@ namespace NiflectGen
         for (uint32 idx0 = 0; idx0 < context.m_vecTypeRegData.size(); ++idx0)
         {
             auto& it0 = context.m_vecTypeRegData[idx0];
-            if (auto filePathRef = it0.m_registerTypeAndfieldLayout.m_taggedTypeHeaderFilePathRef2)
+            if (auto filePathAddr = it0.m_registerTypeAndfieldLayout.m_taggedTypeHeaderFilePathAddr)
             {
-                auto ret = mapHeaderFilePathToSmIndex.insert({ *filePathRef, static_cast<uint32>(vecSplittedModuleRegInfo.size()) });
+                auto ret = mapHeaderFilePathToSmIndex.insert({ *filePathAddr, static_cast<uint32>(vecSplittedModuleRegInfo.size()) });
                 if (ret.second)
                     vecSplittedModuleRegInfo.push_back(CSplittedModuleRegInfo());
                 auto& smr = vecSplittedModuleRegInfo[ret.first->second];
-                smr.m_taggedTypeHeaderFilePathRef = filePathRef;
+                smr.m_taggedTypeHeaderFilePathAddr = filePathAddr;
                 smr.m_vecTypeRegDataRef.push_back(&it0);
                 vecTaken[idx0] = true;
             }
