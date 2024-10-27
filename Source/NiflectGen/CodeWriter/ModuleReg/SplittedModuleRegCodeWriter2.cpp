@@ -46,9 +46,10 @@ namespace NiflectGen
                     tpl1.ReadFromRawData(HardCodedTemplate::FieldLayoutSpecH);
                     CLabelToCodeMapping map;
                     CCodeLines linesHInclude;
+                    linesHInclude.push_back("NiflectType.h");
                     for (auto& it1 : it0.m_vecTypeRegDataRef)
                     {
-                        for (auto& it2 : it1->m_registerTypeAndfieldLayout.m_dependencyHeaderFilePathRefs.m_vecDecl)
+                        for (auto& it2 : it1->m_registerTypeAndfieldLayout.m_dependencyHeaderFilePathAddrs.m_vecDecl)
                             linesHInclude.push_back(*it2);
                     }
                     MapLabelToLines(map, LABEL_4, linesHInclude);
@@ -64,7 +65,7 @@ namespace NiflectGen
                     linesCppInclude.push_back(typeRegData.m_declIncludePath);
                     for (auto& it1 : it0.m_vecTypeRegDataRef)
                     {
-                        for (auto& it2 : it1->m_registerTypeAndfieldLayout.m_dependencyHeaderFilePathRefs.m_vecImpl)
+                        for (auto& it2 : it1->m_registerTypeAndfieldLayout.m_dependencyHeaderFilePathAddrs.m_vecImpl)
                             linesCppInclude.push_back(*it2);
                     }
                     MapLabelToLines(map, LABEL_4, linesCppInclude);

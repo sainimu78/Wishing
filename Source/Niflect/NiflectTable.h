@@ -39,12 +39,12 @@ namespace Niflect
 			m_name = name;
 		}
 		template <typename TInfo, typename TType>
-		void RegisterType(const CString& typeName, const CreateFieldLayoutOfTypeFunc& Func)
+		void RegisterType(const CString& typeName, const CreateFieldLayoutOfTypeFuncOld& Func)
 		{
 			CTypeInvokations typeFuncs;
 			typeFuncs.m_InvokeConstructorFunc = &GenericInstanceInvokeConstructor<TType>;
 			typeFuncs.m_InvokeDestructorFunc = &GenericInstanceInvokeDestructor<TType>;
-			typeFuncs.m_CreateFieldLayoutOfTypeFunc = Func;
+			typeFuncs.m_CreateTypeAccessorFunc = Func;
 
 			auto shared = MakeShared<TInfo>();
 			auto type = shared.Get();
@@ -56,12 +56,12 @@ namespace Niflect
 			ASSERT(TRegisteredType<TType>::IsValid());
 		}
 		template <typename TType, typename TInfo = CNiflectType>
-		void RegisterType2(const Niflect::CString& id, const CreateFieldLayoutOfTypeFunc& Func)
+		void RegisterType2(const Niflect::CString& id, const CreateTypeAccessorFunc& Func)
 		{
 			CTypeInvokations typeFuncs;
 			typeFuncs.m_InvokeConstructorFunc = &GenericInstanceInvokeConstructor<TType>;
 			typeFuncs.m_InvokeDestructorFunc = &GenericInstanceInvokeDestructor<TType>;
-			typeFuncs.m_CreateFieldLayoutOfTypeFunc = Func;
+			typeFuncs.m_CreateTypeAccessorFunc = Func;
 
 			auto shared = Niflect::MakeShared<TInfo>();
 			CNiflectType* type = shared.Get();
@@ -114,12 +114,12 @@ namespace Niflect
 	class TStaticTableTypeReg
 	{
 	public:
-		TStaticTableTypeReg(CNiflectTable* table, const CString& typeName, const CreateFieldLayoutOfTypeFunc& Func)
+		TStaticTableTypeReg(CNiflectTable* table, const CString& typeName, const CreateFieldLayoutOfTypeFuncOld& Func)
 		{
 			table->RegisterType<TInfo, TType>(typeName, Func);
 		}
 		template <typename TNatimeta>
-		TStaticTableTypeReg(CNiflectTable* table, const CString& typeName, const CreateFieldLayoutOfTypeFunc& Func, const TNatimeta& natimeta)
+		TStaticTableTypeReg(CNiflectTable* table, const CString& typeName, const CreateFieldLayoutOfTypeFuncOld& Func, const TNatimeta& natimeta)
 			: TStaticTableTypeReg(table, typeName, Func)
 		{
 			auto type = StaticGetType<TType>();
@@ -142,7 +142,7 @@ namespace Niflect
 		//	table->RegisterType2<TType, TInfo>(id, Func);
 		//}
 		template <typename TNatimeta>
-		TStaticTypeRegger(CNiflectTable* table, const Niflect::CString& id, const CreateFieldLayoutOfTypeFunc& Func, const TNatimeta& natimeta)
+		TStaticTypeRegger(CNiflectTable* table, const Niflect::CString& id, const CreateTypeAccessorFunc& Func, const TNatimeta& natimeta)
 			//: TStaticTypeRegger(table, id, Func)
 		{
 			table->RegisterType2<TType, TInfo>(id, Func);

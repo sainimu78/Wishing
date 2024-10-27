@@ -3,6 +3,7 @@
 #include "NiflectGen/CodeWriter/CodeTemplate.h"
 #include "NiflectGen/CodeWriter/CppWriter.h"
 #include "NiflectGen/Resolver/ResolvedData.h"
+#include "NiflectGen/CodeWriter/TypeReg/TypeAccessorCodeWriter.h"
 
 namespace NiflectGen
 {
@@ -35,11 +36,15 @@ namespace NiflectGen
 		ASSERT(m_bindingTypeIndexedRoot->m_accessorBindingIndex);
 		if (m_bindingTypeIndexedRoot->m_untaggedTemplateIndex != INDEX_NONE)
 		{
-			linesResoBodyCode.push_back("---------------");
+			//linesResoBodyCode.push_back("---------------");
 			if (auto elemResocursorNode = m_bindingTypeIndexedRoot->m_elem.Get())
 			{
-				auto d = NiflectUtil::FormatString("Element -> %s", elemResocursorNode->m_resocursorName.c_str());
-				linesResoBodyCode.push_back(d);
+				//auto d = NiflectUtil::FormatString("Element -> %s", elemResocursorNode->m_resocursorName.c_str());
+				//linesResoBodyCode.push_back(d);
+
+				auto fieldResocursorNameLastTemplateArg = elemResocursorNode->m_resocursorName;
+				NiflectGenDefinition::CodeStyle::TryFormatNestedTemplate(fieldResocursorNameLastTemplateArg);
+				WriteNextInitElementAccessor(fieldResocursorNameLastTemplateArg, linesResoBodyCode);
 			}
 			else
 			{
@@ -48,20 +53,31 @@ namespace NiflectGen
 					ut = ut->m_originalUntaggedDecl;
 				ASSERT(ut->DebugGetChildren().size() > 0);//需要通过aliasChain查找原始定义, 以获取结构
 				ASSERT(m_bindingTypeIndexedRoot->m_vecChild.size() == ut->GetChildrenCount());
+
+				//for (uint32 idx = 0; idx < ut->DebugGetChildren().size(); ++idx)
+				//{
+				//	auto& it = ut->DebugGetChildren()[idx];
+				//	auto& a = m_bindingTypeIndexedRoot->m_vecChild[idx].m_resocursorName;
+				//	auto b = CXStringToCString(clang_getCursorSpelling(it->GetCursor()));
+				//	auto d = NiflectUtil::FormatString("%s %s;", a.c_str(), b.c_str());
+				//	linesResoBodyCode.push_back(d);
+				//}
+
+
 				for (uint32 idx = 0; idx < ut->DebugGetChildren().size(); ++idx)
 				{
-					auto& it = ut->DebugGetChildren()[idx];
-					auto& a = m_bindingTypeIndexedRoot->m_vecChild[idx].m_resocursorName;
-					auto b = CXStringToCString(clang_getCursorSpelling(it->GetCursor()));
-					auto d = NiflectUtil::FormatString("%s %s;", a.c_str(), b.c_str());
-					linesResoBodyCode.push_back(d);
+					auto it0 = ut->GetChild(idx);
+					auto fieldResocursorNameLastTemplateArg = m_bindingTypeIndexedRoot->m_vecChild[idx].m_resocursorName;
+					NiflectGenDefinition::CodeStyle::TryFormatNestedTemplate(fieldResocursorNameLastTemplateArg);
+					auto fieldName = CXStringToCString(clang_getCursorSpelling(it0->GetCursor()));
+					WriteNextInitChildAccessor(m_bindingTypeIndexedRoot->m_resocursorName, fieldResocursorNameLastTemplateArg, fieldName, linesResoBodyCode);
 				}
 			}
 		}
 	}
-	void CMiscTypeRegCodeWriter::CollectDependencyHeaderFilePaths(CDependencyHeaderFilePathRefs& dependencyHeaderFilePathRefs) const
+	void CMiscTypeRegCodeWriter::CollectDependencyHeaderFilePathAddrs(CDependencyHeaderFilePathAddrs& dependencyHeaderFilePathAddrs) const
 	{
-		m_bindingTypeIndexedRoot->GetHeaderFilePathAddrs(dependencyHeaderFilePathRefs.m_vecDecl);
+		m_bindingTypeIndexedRoot->GetHeaderFilePathAddrs(dependencyHeaderFilePathAddrs.m_vecDecl);
 	}
 	void CMiscTypeRegCodeWriter::WriteTypeRegRegisterTypeAndFieldLayout(const CWritingContext& context, CTypeRegRegisterAndFieldLayoutWritingData& data) const
 	{

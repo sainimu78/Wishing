@@ -37,18 +37,14 @@ namespace Niflect
 		virtual bool LoadFromRwNode2222(AddrType offsetBase, const CRwNode* rw) const = 0;
 
 	public:
-		void InitType(CNiflectType* type)
-		{
-			m_type = type;
-		}
 		void InitMemberMeta(const CString& name, const AddrOffsetType& offset)
 		{
 			m_name = name;
 			m_addrOffset.SetOffset(offset);
 		}
 
-	public://todo: 将改为 protected, CreateFieldLayoutOfType 作为 friend
-		void InitLayoutMeta(CNiflectType* type)
+	public:
+		void InitType(CNiflectType* type)
 		{
 			m_type = type;
 			ASSERT(m_name.empty());

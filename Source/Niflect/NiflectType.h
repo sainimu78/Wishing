@@ -10,13 +10,14 @@ namespace Niflect
 	typedef uint32 CTypeIndex;
 
 	template <typename TType>
-	CSharedAccessor StaticCreateFieldLayout()
+	CSharedAccessor CreateTypeAccessor()
 	{
 		ASSERT(false);
 		return NULL;
 	}
 
-	typedef CSharedAccessor (*CreateFieldLayoutOfTypeFunc)();
+	typedef CSharedAccessor (*CreateTypeAccessorFunc)();
+	using CreateFieldLayoutOfTypeFuncOld = CreateTypeAccessorFunc;
 
 	class CTypeInvokations
 	{
@@ -24,12 +25,12 @@ namespace Niflect
 		CTypeInvokations()
 			: m_InvokeConstructorFunc(NULL)
 			, m_InvokeDestructorFunc(NULL)
-			, m_CreateFieldLayoutOfTypeFunc(NULL)
+			, m_CreateTypeAccessorFunc(NULL)
 		{
 		}
 		InvokeConstructorFunc m_InvokeConstructorFunc;//一些其它框架中称作 Ctor 与 Dtor
 		InvokeDestructorFunc m_InvokeDestructorFunc;
-		CreateFieldLayoutOfTypeFunc m_CreateFieldLayoutOfTypeFunc;
+		CreateTypeAccessorFunc m_CreateTypeAccessorFunc;
 	};
 
 	//Native Meta
@@ -112,10 +113,16 @@ namespace Niflect
 		//	if (m_cb.m_InvokeDestructorFunc != NULL)
 		//		m_cb.m_InvokeDestructorFunc(instanceBase);
 		//}
-		CSharedAccessor CreateFieldLayout() const
+		CSharedAccessor CreateFieldLayout() const//todo:计划删除
 		{
-			if (m_cb.m_CreateFieldLayoutOfTypeFunc != NULL)
-				return m_cb.m_CreateFieldLayoutOfTypeFunc();
+			if (m_cb.m_CreateTypeAccessorFunc != NULL)
+				return m_cb.m_CreateTypeAccessorFunc();
+			return NULL;
+		}
+		CSharedAccessor CreateAccessor() const
+		{
+			if (m_cb.m_CreateTypeAccessorFunc != NULL)
+				return m_cb.m_CreateTypeAccessorFunc();
 			return NULL;
 		}
 		void InitFieldLayout()

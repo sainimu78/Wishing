@@ -1,8 +1,8 @@
-//#pragma once
-//#include "NiflectGen/CodeWriter/TypeReg/TypeRegCodeWriter.h"
-//
-//namespace NiflectGen
-//{
+#pragma once
+#include "NiflectGen/CodeWriter/CodeWriter.h"
+
+namespace NiflectGen
+{
 //	class CFieldLayoutBasedCodeWriter : public CTypeRegCodeWriter2
 //	{
 //		typedef CTypeRegCodeWriter2 inherited;
@@ -19,4 +19,8 @@
 //	private:
 //		void WriteCreateFieldLayoutOfType(const STypeRegCreateFieldLayoutOfTypeWritingContext& context, CCodeLines& dataDecl, CCodeLines& dataImpl) const;
 //	};
-//}
+
+
+	void WriteNextInitChildAccessor(const Niflect::CString& fieldOwnerResocursorName, const Niflect::CString& fieldResocursorNameLastTemplateArg, const Niflect::CString& fieldName, CCodeLines& linesResoBodyCode);
+	void WriteNextInitElementAccessor(const Niflect::CString& fieldResocursorNameLastTemplateArg, CCodeLines& linesResoBodyCode);
+}

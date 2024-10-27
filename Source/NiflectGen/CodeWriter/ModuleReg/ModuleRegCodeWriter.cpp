@@ -284,13 +284,13 @@ namespace NiflectGen
             };
             it0->WriteInvokeRegisterType(context, invokeRegisterTypeData);
 
-            STypeRegCreateFieldLayoutOfTypeWritingContext createFieldLayoutOfTypeCtx{ invokeRegisterTypeData.m_createFieldLayoutOfTypeFuncName, context.m_log };
-            STypeRegCreateFieldLayoutOfTypeWritingData createFieldLayoutOfTypeData{
+            STypeRegCreateTypeAccessorWritingContext createTypeAccessorCtx{ invokeRegisterTypeData.m_createFieldLayoutOfTypeFuncName, context.m_log };
+            STypeRegCreateTypeAccessorWritingData createTypeAccessorData{
                 data.m_registerTypeAndfieldLayout.m_linesCreateFieldLayoutOfTypeDecl,
                 data.m_registerTypeAndfieldLayout.m_linesCreateFieldLayoutOfTypeImpl,
-                data.m_registerTypeAndfieldLayout.m_dependencyHeaderFilePathRefs
+                data.m_registerTypeAndfieldLayout.m_dependencyHeaderFilePathAddrs
             };
-            it0->WriteForFieldLayout(createFieldLayoutOfTypeCtx, createFieldLayoutOfTypeData);
+            it0->WriteWriteCreateTypeAccessorFunc(createTypeAccessorCtx, createTypeAccessorData);
 
             //it0->WriteTypeRegRegisterTypeAndFieldLayout(context, data.m_registerTypeAndfieldLayout);
 

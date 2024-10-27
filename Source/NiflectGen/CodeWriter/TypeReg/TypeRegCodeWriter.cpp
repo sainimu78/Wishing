@@ -78,10 +78,10 @@ namespace NiflectGen
 	void CTypeRegCodeWriter2::WriteInvokeRegisterType(const CWritingContext& context, STypeRegInvokeRegisterTypeWritingData& data) const
 	{
 		{
-			auto& hct = HardCodedTemplate::CreateFieldLayuotOfTypeFuncName;
+			auto& hct = HardCodedTemplate::CreateTypeAccessorFuncName;
 			auto resocursorName = m_bindingTypeIndexedRoot->m_resocursorName;
 			NiflectGenDefinition::CodeStyle::TryFormatNestedTemplate(resocursorName);
-			data.m_createFieldLayoutOfTypeFuncName = ReplaceLabelToText1(hct, LABEL_0, resocursorName);
+			data.m_createFieldLayoutOfTypeFuncName = ReplaceLabelToText1(hct, LABEL_9, resocursorName);
 		}
 		{
 			auto& hct = HardCodedTemplate::InvokeRegisterType;
@@ -118,43 +118,43 @@ namespace NiflectGen
 			ASSERT(setReplacedLabel.size() == map.size());
 		}
 	}
-	void CTypeRegCodeWriter2::WriteForFieldLayout(const STypeRegCreateFieldLayoutOfTypeWritingContext& context, STypeRegCreateFieldLayoutOfTypeWritingData& data) const
+	void CTypeRegCodeWriter2::WriteWriteCreateTypeAccessorFunc(const STypeRegCreateTypeAccessorWritingContext& context, STypeRegCreateTypeAccessorWritingData& data) const
 	{
-		this->WriteCreateFieldLayoutOfType(context, data.m_linesCreateFieldLayoutOfTypeDecl, data.m_linesCreateFieldLayoutOfTypeImpl);
+		this->WriteCreateTypeAccessor(context, data.m_linesCreateTypeAccessorDecl, data.m_linesCreateTypeAccessorImpl);
 
-		this->CollectDependencyHeaderFilePaths(data.m_dependencyHeaderFilePathRefs);
+		this->CollectDependencyHeaderFilePathAddrs(data.m_dependencyHeaderFilePathAddrs);
 	}
-	void CTypeRegCodeWriter2::WriteCreateFieldLayoutOfType(const STypeRegCreateFieldLayoutOfTypeWritingContext& context, CCodeLines& dataDecl, CCodeLines& dataImpl) const
+	void CTypeRegCodeWriter2::WriteCreateTypeAccessor(const STypeRegCreateTypeAccessorWritingContext& context, CCodeLines& dataDecl, CCodeLines& dataImpl) const
 	{
 		{
 			CCodeTemplate tpl0;
-			tpl0.ReadFromRawData(HardCodedTemplate::CreateFieldLayoutOfTypeDecl);
+			tpl0.ReadFromRawData(HardCodedTemplate::CreateTypeAccessorDecl);
 			CLabelToCodeMapping map;
-			MapLabelToText(map, LABEL_2, context.m_createFieldLayoutOfTypeFuncName);
+			MapLabelToText(map, LABEL_2, context.m_createTypeAccessorFuncName);
 			Niflect::TSet<Niflect::CString> setReplacedLabel;
 			tpl0.ReplaceLabels(map, dataDecl, &setReplacedLabel);
 			ASSERT(setReplacedLabel.size() == map.size());
 		}
 		{
 			CCodeTemplate tpl0;
-			tpl0.ReadFromRawData(HardCodedTemplate::CreateFieldLayoutOfTypeImpl);
+			tpl0.ReadFromRawData(HardCodedTemplate::CreateTypeAccessorImpl);
 			CLabelToCodeMapping map;
-			MapLabelToText(map, LABEL_2, context.m_createFieldLayoutOfTypeFuncName);
+			MapLabelToText(map, LABEL_2, context.m_createTypeAccessorFuncName);
 
 			CCodeLines linesBody;
+			Niflect::CString accessorResocursorName;
 			{
-				Niflect::CString accessorResoCursorName;
 				if (m_bindingTypeIndexedRoot->m_accessorBindingIndex != INDEX_NONE)
 				{
 					auto& setting = m_resolvedData->m_accessorBindingMapping->m_settings.m_vecAccessorBindingSetting[m_bindingTypeIndexedRoot->m_accessorBindingIndex];
-					accessorResoCursorName = setting.m_accessorTypeCursorName;
+					accessorResocursorName = setting.m_accessorTypeCursorName;
 
 					if (IsCursorTemplateDecl(setting.GetAccessorTypeDecl().m_cursorDecl))//注, 特化的 Kind 为 ClassDecl
 					{
 						auto& arg = m_bindingTypeIndexedRoot->m_resocursorName;
-						NiflectGenDefinition::CodeStyle::TemplateAngleBracketL(accessorResoCursorName);
-						accessorResoCursorName += arg;
-						NiflectGenDefinition::CodeStyle::TemplateAngleBracketR(accessorResoCursorName);
+						NiflectGenDefinition::CodeStyle::TemplateAngleBracketL(accessorResocursorName);
+						accessorResocursorName += arg;
+						NiflectGenDefinition::CodeStyle::TemplateAngleBracketR(accessorResocursorName);
 					}
 				}
 				else
@@ -183,19 +183,31 @@ namespace NiflectGen
 					if (p != NULL)
 					{
 						ASSERT(p->IsValid());//todo: 报错
-						accessorResoCursorName = p->m_accessorTypeCursorName;
+						accessorResocursorName = p->m_accessorTypeCursorName;
 					}
 					else
 					{
 						ASSERT(false);
 					}
 				}
-
-				linesBody.push_back(accessorResoCursorName);
-				MapLabelToLines(map, LABEL_3, linesBody);
+				NiflectGenDefinition::CodeStyle::TryFormatNestedTemplate(accessorResocursorName);
 			}
 
-			this->WriteResocursorNodeBodyCode(linesBody);
+			{
+				CCodeTemplate tpl0;
+				tpl0.ReadFromRawData(HardCodedTemplate::CreateAndInitTypeAccessor);
+				CLabelToCodeMapping map;
+				MapLabelToText(map, LABEL_4, accessorResocursorName);
+				MapLabelToText(map, LABEL_9, m_bindingTypeIndexedRoot->GetResocursorNameForLastTemplateArg());
+				CCodeLines linesNexts;
+				this->WriteResocursorNodeBodyCode(linesNexts);
+				MapLabelToLines(map, LABEL_5, linesNexts);
+				Niflect::TSet<Niflect::CString> setReplacedLabel;
+				tpl0.ReplaceLabels(map, linesBody, &setReplacedLabel);
+				ASSERT(setReplacedLabel.size() == map.size());
+			}
+
+			MapLabelToLines(map, LABEL_3, linesBody);
 
 			Niflect::TSet<Niflect::CString> setReplacedLabel;
 			tpl0.ReplaceLabels(map, dataImpl, &setReplacedLabel);

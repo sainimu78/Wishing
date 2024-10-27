@@ -1,4 +1,52 @@
-//#include "NiflectGen/CodeWriter/TypeReg/FieldLayoutBasedCodeWriter.h"
+#include "NiflectGen/CodeWriter/TypeReg/TypeAccessorCodeWriter.h"
+#include "NiflectGen/CodeWriter/CodeTemplate.h"
+#include "NiflectGen/CodeWriter/HardCoded/TypeRegInitialRegTemplate.h"
+
+namespace NiflectGen
+{
+	void WriteNextInitNextAccessor(const Niflect::CString& fieldResocursorNameLastTemplateArg, CCodeLines& linesCode)
+	{
+		CCodeTemplate tpl0;
+		tpl0.ReadFromRawData(HardCodedTemplate::CreateAndInitNextsAccessor);
+		CLabelToCodeMapping map;
+		MapLabelToText(map, LABEL_9, fieldResocursorNameLastTemplateArg);
+		Niflect::TSet<Niflect::CString> setReplacedLabel;
+		tpl0.ReplaceLabels(map, linesCode, &setReplacedLabel);
+		ASSERT(setReplacedLabel.size() == map.size());
+	}
+	void WriteNextInitChildAccessor(const Niflect::CString& fieldOwnerResocursorName, const Niflect::CString& fieldResocursorNameLastTemplateArg, const Niflect::CString& fieldName, CCodeLines& linesResoBodyCode)
+	{
+		CCodeLines linesCode;
+		WriteNextInitNextAccessor(fieldResocursorNameLastTemplateArg, linesCode);
+		{
+			CCodeTemplate tpl0;
+			tpl0.ReadFromRawData(HardCodedTemplate::InitChildAccessor);
+			CLabelToCodeMapping map;
+			MapLabelToText(map, LABEL_0, fieldName);
+			auto invokeGetFieldOffset = ReplaceLabelToText2(HardCodedTemplate::GetFieldOffset, LABEL_0, LABEL_8, fieldOwnerResocursorName, fieldName);
+			MapLabelToText(map, LABEL_7, invokeGetFieldOffset);
+			Niflect::TSet<Niflect::CString> setReplacedLabel;
+			tpl0.ReplaceLabels(map, linesCode, &setReplacedLabel);
+			ASSERT(setReplacedLabel.size() == map.size());
+		}
+		ReplaceLabelToImplScopeLines(linesCode, linesResoBodyCode);
+	}
+	void WriteNextInitElementAccessor(const Niflect::CString& fieldResocursorNameLastTemplateArg, CCodeLines& linesResoBodyCode)
+	{
+		CCodeLines linesCode;
+		WriteNextInitNextAccessor(fieldResocursorNameLastTemplateArg, linesCode);
+		{
+			CCodeTemplate tpl0;
+			tpl0.ReadFromRawData(HardCodedTemplate::InitElementAccessor);
+			CLabelToCodeMapping map;
+			Niflect::TSet<Niflect::CString> setReplacedLabel;
+			tpl0.ReplaceLabels(map, linesCode, &setReplacedLabel);
+			ASSERT(setReplacedLabel.size() == map.size());
+		}
+		ReplaceLabelToImplScopeLines(linesCode, linesResoBodyCode);
+	}
+}
+
 //#include "NiflectGen/Util/CursorUtil.h"
 ////#include "NiflectGen/CodeWriter/HardCoded/TypeRegGenHeaderDeclTemplate.h"
 //#include "NiflectGen/CodeWriter/CodeTemplate.h"

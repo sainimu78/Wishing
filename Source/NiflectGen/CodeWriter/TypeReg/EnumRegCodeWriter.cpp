@@ -42,7 +42,7 @@ namespace NiflectGen
 //		DebugPrintCodeLines(data.m_linesCreateFieldLayoutOfTypeImpl);
 //#endif
 //	}
-	void CEnumRegCodeWriter2::CollectDependencyHeaderFilePaths(CDependencyHeaderFilePathRefs& dependencyHeaderFilePathRefs) const
+	void CEnumRegCodeWriter2::CollectDependencyHeaderFilePathAddrs(CDependencyHeaderFilePathAddrs& dependencyHeaderFilePathAddrs) const
 	{
 	}
 	void CEnumRegCodeWriter2::WriteTypeRegRegisterTypeAndFieldLayout(const CWritingContext& context, CTypeRegRegisterAndFieldLayoutWritingData& data) const

@@ -128,6 +128,12 @@ namespace NiflectGen
 		for (auto& it1 : m_vecRequiredHeaderFilePath)
 			vecAddr.push_back(&it1);
 	}
+	Niflect::CString CResolvedCursorNode::GetResocursorNameForLastTemplateArg() const
+	{
+		auto name = m_resocursorName;
+		NiflectGenDefinition::CodeStyle::TryFormatNestedTemplate(name);
+		return name;
+	}
 
 	static void DebugGenSignature2222(const CResolvedCursorNode& indexedParent, uint32 lv, const char* pszLv, Niflect::TArrayNif<Niflect::CString>& vecSignature)
 	{

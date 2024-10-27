@@ -10,11 +10,11 @@ namespace NiflectGen
 	{
 		typedef CTypeRegCodeWriter2 inherited;
 	public:
-		CInheritableTypeRegCodeWriter2(const Niflect::TArrayNif<CResolvedCursorNode>& vecMemberIndexedRoot, const Niflect::TArrayNif<CTaggedInheritableTypeMember*>& vecMember, const CTaggedType* baseTaggedType);
+		CInheritableTypeRegCodeWriter2(const Niflect::TArrayNif<CResolvedCursorNode>& vecFieldResocursorNode, const Niflect::TArrayNif<CTaggedInheritableTypeMember*>& vecField, const CTaggedType* baseTaggedType);
 
 	protected:
 		virtual void WriteResocursorNodeBodyCode(CCodeLines& linesResoBodyCode) const override;
-		virtual void CollectDependencyHeaderFilePaths(CDependencyHeaderFilePathRefs& dependencyHeaderFilePathRefs) const override;
+		virtual void CollectDependencyHeaderFilePathAddrs(CDependencyHeaderFilePathAddrs& dependencyHeaderFilePathAddrs) const override;
 
 	public:
 		virtual void WriteTypeRegRegisterTypeAndFieldLayout(const CWritingContext& context, CTypeRegRegisterAndFieldLayoutWritingData& data) const override;
@@ -26,8 +26,8 @@ namespace NiflectGen
 		void WriteStaticInitType(const STypeRegClassWritingContext& context, CCodeLines& lines) const;
 
 	private:
-		const Niflect::TArrayNif<CResolvedCursorNode>& m_vecMemberIndexedRoot;
-		const Niflect::TArrayNif<CTaggedInheritableTypeMember*>& m_vecMember;
+		const Niflect::TArrayNif<CResolvedCursorNode>& m_vecFieldResocursorNode;
+		const Niflect::TArrayNif<CTaggedInheritableTypeMember*>& m_vecField;
 		const CTaggedType* m_baseTaggedType;
 	};
 }

@@ -100,7 +100,7 @@ namespace NiflectGen
 		CCodeLines m_linesImpl;
 	};
 
-	class CDependencyHeaderFilePathRefs
+	class CDependencyHeaderFilePathAddrs
 	{
 	public:
 		Niflect::TArrayNif<const Niflect::CString*> m_vecDecl;
@@ -120,7 +120,7 @@ namespace NiflectGen
 		CCodeLines m_linesCreateFieldLayoutOfTypeImpl;
 		Niflect::CString m_fieldLayoutFuncName;
 		const Niflect::CString* m_taggedTypeHeaderFilePathAddr;//只需要引用缓存在IndexedNode中的路径地址, 在生成无重复includes时才需要获取实际字符串
-		CDependencyHeaderFilePathRefs m_dependencyHeaderFilePathRefs;
+		CDependencyHeaderFilePathAddrs m_dependencyHeaderFilePathAddrs;
 	};
 
 	class CTypeRegTaggedTypeInitWritingData2
@@ -150,17 +150,17 @@ namespace NiflectGen
 		Niflect::CString m_createFieldLayoutOfTypeFuncName;
 	};
 
-	struct STypeRegCreateFieldLayoutOfTypeWritingContext
+	struct STypeRegCreateTypeAccessorWritingContext
 	{
-		const Niflect::CString& m_createFieldLayoutOfTypeFuncName;
+		const Niflect::CString& m_createTypeAccessorFuncName;
 		CGenLog* m_log;
 	};
 
-	struct STypeRegCreateFieldLayoutOfTypeWritingData
+	struct STypeRegCreateTypeAccessorWritingData
 	{
-		CCodeLines& m_linesCreateFieldLayoutOfTypeDecl;
-		CCodeLines& m_linesCreateFieldLayoutOfTypeImpl;
-		CDependencyHeaderFilePathRefs& m_dependencyHeaderFilePathRefs;
+		CCodeLines& m_linesCreateTypeAccessorDecl;
+		CCodeLines& m_linesCreateTypeAccessorImpl;
+		CDependencyHeaderFilePathAddrs& m_dependencyHeaderFilePathAddrs;
 	};
 
 	class CTypeRegCodeWriter2
@@ -169,17 +169,17 @@ namespace NiflectGen
 		CTypeRegCodeWriter2();
 		void Init(const CResolvedData* resolvedData, const CResolvedCursorNode* bindingTypeIndexedRoot);
 		virtual void WriteInvokeRegisterType(const CWritingContext& context, STypeRegInvokeRegisterTypeWritingData& data) const;
-		virtual void WriteForFieldLayout(const STypeRegCreateFieldLayoutOfTypeWritingContext& context, STypeRegCreateFieldLayoutOfTypeWritingData& data) const;
+		void WriteWriteCreateTypeAccessorFunc(const STypeRegCreateTypeAccessorWritingContext& context, STypeRegCreateTypeAccessorWritingData& data) const;
 		virtual void WriteTypeRegRegisterTypeAndFieldLayout(const CWritingContext& context, CTypeRegRegisterAndFieldLayoutWritingData& data) const = 0;
 		virtual void Deprecated_WriteTypeRegClass(const STypeRegClassWritingContext& context, CTypeRegClassWritingData2& data) const {}
 		virtual void WriteInvokeInitType(const STypeRegClassWritingContext& context, CTypeRegTaggedTypeInitWritingData2& data) const {}
 
 	protected:
 		virtual void WriteResocursorNodeBodyCode(CCodeLines& linesResoBodyCode) const {}
-		virtual void CollectDependencyHeaderFilePaths(CDependencyHeaderFilePathRefs& dependencyHeaderFilePathRefs) const = 0;
+		virtual void CollectDependencyHeaderFilePathAddrs(CDependencyHeaderFilePathAddrs& dependencyHeaderFilePathAddrs) const = 0;
 
 	private:
-		void WriteCreateFieldLayoutOfType(const STypeRegCreateFieldLayoutOfTypeWritingContext& context, CCodeLines& dataDecl, CCodeLines& dataImpl) const;
+		void WriteCreateTypeAccessor(const STypeRegCreateTypeAccessorWritingContext& context, CCodeLines& dataDecl, CCodeLines& dataImpl) const;
 
 	protected:
 		const CResolvedCursorNode* m_bindingTypeIndexedRoot;

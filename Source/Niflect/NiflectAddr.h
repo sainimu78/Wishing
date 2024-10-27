@@ -47,4 +47,10 @@ namespace Niflect
 	{
 		return (char*)&((T*)nullptr->*member) - (char*)nullptr;
 	}
+
+	template <typename U, typename T>
+	inline static AddrOffsetType GetFieldOffset(U T::* member)
+	{
+		return (char*)&((T*)nullptr->*member) - (char*)nullptr;
+	}
 }
