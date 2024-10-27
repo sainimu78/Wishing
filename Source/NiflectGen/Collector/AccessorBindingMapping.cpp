@@ -1,6 +1,7 @@
 #include "NiflectGen/Collector/AccessorBindingMapping.h"
 #include "NiflectGen/Base/NiflectGenDefinition.h"
 #include "NiflectGen/TaggedType/TaggedType.h"
+#include "NiflectGen/Util/CursorUtil.h"
 
 namespace NiflectGen
 {
@@ -297,10 +298,16 @@ namespace NiflectGen
 			}
 		}
 	}
-	void GenerateAccessorBindingCursorName(const CSubcursor& parentSubcursor, Niflect::CString& text)
+	static void GenerateAccessorSettingCursorName(const CSubcursor& parentSubcursor, Niflect::CString& text)
 	{
 		auto visitingState = EGenerateAccessorBindingCursorNameVisitingState::None;
 		GenerateAccessorBindingCursorNameRecurs(parentSubcursor, visitingState, text);
+	}
+	static void GenerateAccessorResocursorNodeInfo(const CSubcursor& parentSubcursor, CAccessorResocursorNodeInfo& info)
+	{
+		auto visitingState = EGenerateAccessorBindingCursorNameVisitingState::None;
+		GenerateAccessorBindingCursorNameRecurs(parentSubcursor, visitingState, info.m_resocursorName);
+		info.m_requiredHeaderFilePath = GetCursorFilePath(parentSubcursor.m_cursorDecl);
 	}
 	void CAccessorBindingMapping2::InitPatterns()
 	{
@@ -313,14 +320,14 @@ namespace NiflectGen
 			//auto& bSubcursor = it.GetBindingTypeDecl();
 			//it.m_bindingTypePattern = GenerateBindingTypeCursorName(bSubcursor.m_cursorDecl, bSubcursor.m_CXType);
 
-			GenerateAccessorBindingCursorName(it.GetAccessorTypeDecl(), it.m_accessorTypeCursorName);
-			GenerateAccessorBindingCursorName(it.GetBindingTypeDecl(), it.m_bindingTypeCursorName);
+			GenerateAccessorResocursorNodeInfo(it.GetAccessorTypeDecl(), it.m_accessorResocursorNodeInfo);
+			GenerateAccessorSettingCursorName(it.GetBindingTypeDecl(), it.m_bindingTypeCursorName);
 		}
 		if (m_settings.m_settingCompound.IsValid())
-			GenerateAccessorBindingCursorName(m_settings.m_settingCompound.GetAccessorTypeDecl(), m_settings.m_settingCompound.m_accessorTypeCursorName);
+			GenerateAccessorResocursorNodeInfo(m_settings.m_settingCompound.GetAccessorTypeDecl(), m_settings.m_settingCompound.m_accessorResocursorNodeInfo);
 		if (m_settings.m_settingEnumClass.IsValid())
-			GenerateAccessorBindingCursorName(m_settings.m_settingEnumClass.GetAccessorTypeDecl(), m_settings.m_settingEnumClass.m_accessorTypeCursorName);
+			GenerateAccessorResocursorNodeInfo(m_settings.m_settingEnumClass.GetAccessorTypeDecl(), m_settings.m_settingEnumClass.m_accessorResocursorNodeInfo);
 		if (m_settings.m_settingEnumBitMask.IsValid())
-			GenerateAccessorBindingCursorName(m_settings.m_settingEnumBitMask.GetAccessorTypeDecl(), m_settings.m_settingEnumBitMask.m_accessorTypeCursorName);
+			GenerateAccessorResocursorNodeInfo(m_settings.m_settingEnumBitMask.GetAccessorTypeDecl(), m_settings.m_settingEnumBitMask.m_accessorResocursorNodeInfo);
 	}
 }

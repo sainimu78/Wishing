@@ -51,5 +51,7 @@ namespace TestMyFinding
 		Niflect::TArrayNif<float> m_array_float_6;
 		NIF_F()
 		EMyBitMask m_e_bit_mask_7;
+		NIF_F()
+		Niflect::TMap<Niflect::CString, float> m_map_string_float_8;
 	};
 }

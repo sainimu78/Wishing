@@ -11,6 +11,13 @@ namespace NiflectGen
 	class CTaggedType;
 	class CTaggedTypesMapping;
 
+	class CAccessorResocursorNodeInfo
+	{
+	public:
+		Niflect::CString m_resocursorName;
+		Niflect::CString m_requiredHeaderFilePath;
+	};
+
 	class CBindingSettingData
 	{
 		enum ESetting
@@ -76,7 +83,7 @@ namespace NiflectGen
 		CSubcursor m_subcursorRoot;
 		CAccessorData m_accessorData;//todo: 应废弃, 改为通过AccessorBindingMapping查找并获取对应信息
 		Niflect::CString m_bindingTypeCursorName;
-		Niflect::CString m_accessorTypeCursorName;
+		CAccessorResocursorNodeInfo m_accessorResocursorNodeInfo;
 	};
 
 	class CAccessorBindingFindingContext

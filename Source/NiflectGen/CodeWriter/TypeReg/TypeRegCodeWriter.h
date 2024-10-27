@@ -179,7 +179,7 @@ namespace NiflectGen
 		virtual void CollectDependencyHeaderFilePathAddrs(CDependencyHeaderFilePathAddrs& dependencyHeaderFilePathAddrs) const = 0;
 
 	private:
-		void WriteCreateTypeAccessor(const STypeRegCreateTypeAccessorWritingContext& context, CCodeLines& dataDecl, CCodeLines& dataImpl) const;
+		void WriteCreateTypeAccessor(const STypeRegCreateTypeAccessorWritingContext& context, CCodeLines& dataDecl, CCodeLines& dataImpl, STypeRegCreateTypeAccessorWritingData& data) const;
 
 	protected:
 		const CResolvedCursorNode* m_bindingTypeIndexedRoot;

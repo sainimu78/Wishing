@@ -46,7 +46,7 @@ namespace NiflectGen
                     tpl1.ReadFromRawData(HardCodedTemplate::FieldLayoutSpecH);
                     CLabelToCodeMapping map;
                     CCodeLines linesHInclude;
-                    linesHInclude.push_back("NiflectType.h");
+                    linesHInclude.push_back(NiflectGenDefinition::NiflectFramework::FilePath::NiflectTypeHeader);//含 CreateTypeAccessor 的函数模板声明
                     for (auto& it1 : it0.m_vecTypeRegDataRef)
                     {
                         for (auto& it2 : it1->m_registerTypeAndfieldLayout.m_dependencyHeaderFilePathAddrs.m_vecDecl)

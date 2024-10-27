@@ -142,6 +142,7 @@ namespace NiflectGenDefinition
 #ifdef USER_PROVIDED_CCOMPONENTFIELD_CLASS_DEFINITION
 			constexpr const char* CompoundFieldHeader = "Niflect/Field/CompoundField.h";
 #endif
+			constexpr const char* NiflectTypeHeader = "Niflect/NiflectType.h";
 		}
 
 		namespace Setting

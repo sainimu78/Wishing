@@ -120,11 +120,11 @@ namespace NiflectGen
 	}
 	void CTypeRegCodeWriter2::WriteWriteCreateTypeAccessorFunc(const STypeRegCreateTypeAccessorWritingContext& context, STypeRegCreateTypeAccessorWritingData& data) const
 	{
-		this->WriteCreateTypeAccessor(context, data.m_linesCreateTypeAccessorDecl, data.m_linesCreateTypeAccessorImpl);
+		this->WriteCreateTypeAccessor(context, data.m_linesCreateTypeAccessorDecl, data.m_linesCreateTypeAccessorImpl, data);
 
 		this->CollectDependencyHeaderFilePathAddrs(data.m_dependencyHeaderFilePathAddrs);
 	}
-	void CTypeRegCodeWriter2::WriteCreateTypeAccessor(const STypeRegCreateTypeAccessorWritingContext& context, CCodeLines& dataDecl, CCodeLines& dataImpl) const
+	void CTypeRegCodeWriter2::WriteCreateTypeAccessor(const STypeRegCreateTypeAccessorWritingContext& context, CCodeLines& dataDecl, CCodeLines& dataImpl, STypeRegCreateTypeAccessorWritingData& data) const
 	{
 		{
 			CCodeTemplate tpl0;
@@ -147,7 +147,8 @@ namespace NiflectGen
 				if (m_bindingTypeIndexedRoot->m_accessorBindingIndex != INDEX_NONE)
 				{
 					auto& setting = m_resolvedData->m_accessorBindingMapping->m_settings.m_vecAccessorBindingSetting[m_bindingTypeIndexedRoot->m_accessorBindingIndex];
-					accessorResocursorName = setting.m_accessorTypeCursorName;
+					accessorResocursorName = setting.m_accessorResocursorNodeInfo.m_resocursorName;
+					data.m_dependencyHeaderFilePathAddrs.m_vecImpl.push_back(&setting.m_accessorResocursorNodeInfo.m_requiredHeaderFilePath);
 
 					if (IsCursorTemplateDecl(setting.GetAccessorTypeDecl().m_cursorDecl))//注, 特化的 Kind 为 ClassDecl
 					{
@@ -170,7 +171,6 @@ namespace NiflectGen
 					}
 					else if (kind == CXCursor_EnumDecl)
 					{
-						auto& cursor = tt->GetCursor();
 						if (clang_EnumDecl_isScoped(cursor))
 							p = &m_resolvedData->m_accessorBindingMapping->m_settings.m_settingEnumClass;
 						else
@@ -183,7 +183,8 @@ namespace NiflectGen
 					if (p != NULL)
 					{
 						ASSERT(p->IsValid());//todo: 报错
-						accessorResocursorName = p->m_accessorTypeCursorName;
+						accessorResocursorName = p->m_accessorResocursorNodeInfo.m_resocursorName;
+						data.m_dependencyHeaderFilePathAddrs.m_vecImpl.push_back(&p->m_accessorResocursorNodeInfo.m_requiredHeaderFilePath);
 					}
 					else
 					{
