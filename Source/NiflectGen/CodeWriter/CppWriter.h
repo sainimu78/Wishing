@@ -31,27 +31,27 @@ namespace NiflectGen
 	{
 	public:
 		CHeaderFilePathData()
-			: m_isFirstlyAdded(false)
+			: m_isPreservedHeadersOrder(false)
 		{
 			ASSERT(false);
 		}
 		CHeaderFilePathData(const Niflect::CString& path)
 			: m_path(path)
-			, m_isFirstlyAdded(false)
+			, m_isPreservedHeadersOrder(false)
 		{
 		}
 		CHeaderFilePathData(const char* pszPath)
 			: m_path(pszPath)
-			, m_isFirstlyAdded(false)
+			, m_isPreservedHeadersOrder(false)
 		{
 		}
-		CHeaderFilePathData(const Niflect::CString& path, bool isFirstlyAdded)
+		CHeaderFilePathData(const Niflect::CString& path, bool isPreservedHeadersOrder)
 			: m_path(path)
-			, m_isFirstlyAdded(isFirstlyAdded)
+			, m_isPreservedHeadersOrder(m_isPreservedHeadersOrder)
 		{
 		}
 		const Niflect::CString m_path;
-		const bool m_isFirstlyAdded;
+		const bool m_isPreservedHeadersOrder;
 	};
 
 	class CIncludesHelper
@@ -88,7 +88,7 @@ namespace NiflectGen
 		}
 		static void ConvertFromHeaderFilePaths(const Niflect::TArrayNif<CHeaderFilePathData>& vecHeaderData, const CWritingHeaderSearchPaths& paths, CCodeLines& linesInclude)
 		{
-			Niflect::TArrayNif<Niflect::CString> vecIncPathFirstlyAdded;
+			Niflect::TArrayNif<Niflect::CString> vecIncPathPreservedOrder;
 			Niflect::TArrayNif<Niflect::CString> vecIncPathSystem;
 			Niflect::TArrayNif<Niflect::CString> vecIncPathUser;
 			CNoDupPathCollectorRef collector;
@@ -104,13 +104,13 @@ namespace NiflectGen
 					auto p = &vecIncPathUser;
 					if (isBypassFilePath)
 						p = &vecIncPathSystem;
-					else if (it.m_isFirstlyAdded)
-						p = &vecIncPathFirstlyAdded;
+					else if (it.m_isPreservedHeadersOrder)
+						p = &vecIncPathPreservedOrder;
 					p->push_back(incPath);
 				}
 			}
 			Niflect::TArrayNif<SIncludeDerectiveData> vecIncData;
-			for (auto& it : vecIncPathFirstlyAdded)
+			for (auto& it : vecIncPathPreservedOrder)
 				vecIncData.push_back({ it, false });
 			for (auto& it : vecIncPathSystem)
 				vecIncData.push_back({ it, true });
