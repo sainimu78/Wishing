@@ -87,7 +87,7 @@ int main()
 				info.m_vecBindingSettingHeader.push_back("F:/Fts/Proj/Test/Interedit/Source/Engine/EngineTypeBindingSetting.h");
 				//end
 				Test::AddHeaderSearchPaths(info.m_vecParsingHeaderSearchPath, info.m_writingHeaderSearchPaths);
-				gen->SetModuleRegInfo(info);
+				gen->InitModuleRegInfo(info);
 				gen->Generate();
 				gen->Save();
 			}

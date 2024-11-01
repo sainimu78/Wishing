@@ -24,7 +24,7 @@ namespace NiflectGenDefinition
 		}
 	}
 
-	namespace RelativeDirPath
+	namespace DirName
 	{
 		constexpr const char* ModuleReg = "ModuleReg";
 		constexpr const char* TypeReg = "TypeReg";
@@ -143,6 +143,7 @@ namespace NiflectGenDefinition
 			constexpr const char* CompoundFieldHeader = "Niflect/Field/CompoundField.h";
 #endif
 			constexpr const char* NiflectTypeHeader = "Niflect/NiflectType.h";
+			constexpr const char* NiflectTableHeader = "Niflect/NiflectTable.h";
 		}
 
 		namespace Setting

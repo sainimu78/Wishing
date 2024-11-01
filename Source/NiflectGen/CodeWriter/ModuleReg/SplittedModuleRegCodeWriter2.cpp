@@ -29,8 +29,8 @@ namespace NiflectGen
                     relativeTypeRegFilePathNoExt = NiflectUtil::FormatString("Misc_%u", idx0);
                 }
                 auto typeRegSplittedFilePathNoExt = NiflectUtil::ConcatPath(typeRegFieldLayoutDirPath, relativeTypeRegFilePathNoExt);
-                typeRegData.m_implHeaderFilePath = typeRegSplittedFilePathNoExt + NiflectGenDefinition::FileExt::PrivateH;
-                typeRegData.m_declHeaderFilePath = typeRegSplittedFilePathNoExt + NiflectGenDefinition::FileExt::GenH;
+                typeRegData.m_implHeaderFilePath = typeRegSplittedFilePathNoExt + NiflectGenDefinition::FileExt::Cpp;
+                typeRegData.m_declHeaderFilePath = typeRegSplittedFilePathNoExt + NiflectGenDefinition::FileExt::H;
 
                 CCodeLines linesH;
                 CCodeLines linesCpp;
@@ -47,14 +47,14 @@ namespace NiflectGen
                     CLabelToCodeMapping map;
                     CCodeLines linesHInclude;
                     {
-                        CCodeLines linesFilePath;
-                        linesFilePath.push_back(NiflectGenDefinition::NiflectFramework::FilePath::NiflectTypeHeader);//含 CreateTypeAccessor 的函数模板声明
+                        Niflect::TArrayNif<CHeaderFilePathData> vecHeaderData;
+                        vecHeaderData.push_back(NiflectGenDefinition::NiflectFramework::FilePath::NiflectTypeHeader);//含 CreateTypeAccessor 的函数模板声明
                         for (auto& it1 : it0.m_vecTypeRegDataRef)
                         {
                             for (auto& it2 : it1->m_registerTypeAndfieldLayout.m_dependencyHeaderFilePathAddrs.m_vecDecl)
-                                linesFilePath.push_back(*it2);
+                                vecHeaderData.push_back(*it2);
                         }
-                        CIncludesHelper::ConvertFromHeaderFilePaths(linesFilePath, context.m_moduleRegInfo.m_userProvided.m_writingHeaderSearchPaths, linesHInclude);
+                        CIncludesHelper::ConvertFromHeaderFilePaths(vecHeaderData, context.m_moduleRegInfo.m_userProvided.m_writingHeaderSearchPaths, linesHInclude);
                     }
                     MapLabelToLines(map, LABEL_4, linesHInclude);
                     MapLabelToLines(map, LABEL_6, linesH);
@@ -68,14 +68,14 @@ namespace NiflectGen
                     
                     CCodeLines linesCppInclude;
                     {
-                        CCodeLines linesFilePath;
-                        linesFilePath.push_back(typeRegData.m_declHeaderFilePath);
+                        Niflect::TArrayNif<CHeaderFilePathData> vecHeaderData;
+                        vecHeaderData.push_back({ typeRegData.m_declHeaderFilePath, true });
                         for (auto& it1 : it0.m_vecTypeRegDataRef)
                         {
                             for (auto& it2 : it1->m_registerTypeAndfieldLayout.m_dependencyHeaderFilePathAddrs.m_vecImpl)
-                                linesFilePath.push_back(*it2);
+                                vecHeaderData.push_back(*it2);
                         }
-                        CIncludesHelper::ConvertFromHeaderFilePaths(linesFilePath, context.m_moduleRegInfo.m_userProvided.m_writingHeaderSearchPaths, linesCppInclude);
+                        CIncludesHelper::ConvertFromHeaderFilePaths(vecHeaderData, context.m_moduleRegInfo.m_userProvided.m_writingHeaderSearchPaths, linesCppInclude);
                         //linesCppInclude = linesFilePath;
                     }
                     MapLabelToLines(map, LABEL_4, linesCppInclude);
@@ -124,24 +124,40 @@ namespace NiflectGen
                 Niflect::CString registerTypesFuncName;
                 Niflect::CString initTypesFuncName;
                 {
+                    CCodeLines linesDecl;
                     auto strIdx = NiflectUtil::FormatString("%u", idx0);
                     {
                         registerTypesFuncName = ReplaceLabelToText2(HardCodedTemplate::RegisterTypesFuncName, LABEL_0, LABEL_1, context.m_moduleRegInfo.m_userProvided.m_moduleName, strIdx);
-                        auto funcSignature = ReplaceLabelToText1(HardCodedTemplate::FuncDecl, LABEL_2, registerTypesFuncName);
-                        splittedRegData.m_h.push_back(funcSignature);
+                        auto funcSignature = ReplaceLabelToText1(HardCodedTemplate::SplittedModuleRegFuncDecl, LABEL_2, registerTypesFuncName);
+                        linesDecl.push_back(funcSignature);
                     }
                     if (linesInvokeInitTypes.size() > 0)
                     {
                         initTypesFuncName = ReplaceLabelToText2(HardCodedTemplate::InitTypesFuncName, LABEL_0, LABEL_1, context.m_moduleRegInfo.m_userProvided.m_moduleName, strIdx);
                         auto funcSignature = ReplaceLabelToText1(HardCodedTemplate::FuncDecl, LABEL_2, initTypesFuncName);
-                        splittedRegData.m_h.push_back(funcSignature);
+                        linesDecl.push_back(funcSignature);
+                    }
+                    {
+                        CCodeTemplate tpl1;
+                        tpl1.ReadFromRawData(HardCodedTemplate::SplittedModuleRegH);
+                        CLabelToCodeMapping map;
+                        CCodeLines linesInclude;
+                        {
+                            Niflect::TArrayNif<CHeaderFilePathData> vecHeaderData;
+                            vecHeaderData.push_back(NiflectGenDefinition::NiflectFramework::FilePath::NiflectTableHeader);
+                            CIncludesHelper::ConvertFromHeaderFilePaths(vecHeaderData, context.m_moduleRegInfo.m_userProvided.m_writingHeaderSearchPaths, linesInclude);
+                        }
+                        MapLabelToLines(map, LABEL_4, linesInclude);
+                        MapLabelToLines(map, LABEL_6, linesDecl);
+                        Niflect::TSet<Niflect::CString> setReplacedLabel;
+                        tpl1.ReplaceLabels(map, splittedRegData.m_h, &setReplacedLabel);
                     }
                 }
                 {
                     CCodeLines linesImpl;
                     {
                         CCodeTemplate tpl1;
-                        tpl1.ReadFromRawData(HardCodedTemplate::FuncImpl);
+                        tpl1.ReadFromRawData(HardCodedTemplate::SplittedModuleRegFuncImpl);
                         CLabelToCodeMapping map;
                         MapLabelToText(map, LABEL_2, registerTypesFuncName);
                         CCodeLines linesInvoke;
@@ -171,10 +187,10 @@ namespace NiflectGen
                         CCodeLines linesInclude;
                         auto& createTypeAccessorSpecData = context.m_vecCreateTypeAccessorSpecData[idx0];
                         {
-                            CCodeLines linesFilePath;
-                            linesFilePath.push_back(splittedRegData.m_headerFilePath);
-                            linesFilePath.push_back(createTypeAccessorSpecData.m_declHeaderFilePath);
-                            CIncludesHelper::ConvertFromHeaderFilePaths(linesFilePath, context.m_moduleRegInfo.m_userProvided.m_writingHeaderSearchPaths, linesInclude);
+                            Niflect::TArrayNif<CHeaderFilePathData> vecHeaderData;
+                            vecHeaderData.push_back({ splittedRegData.m_headerFilePath, true });
+                            vecHeaderData.push_back(createTypeAccessorSpecData.m_declHeaderFilePath);
+                            CIncludesHelper::ConvertFromHeaderFilePaths(vecHeaderData, context.m_moduleRegInfo.m_userProvided.m_writingHeaderSearchPaths, linesInclude);
                         }
                         MapLabelToLines(map, LABEL_4, linesInclude);
                         MapLabelToLines(map, LABEL_5, linesImpl);

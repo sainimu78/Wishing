@@ -17,6 +17,13 @@ namespace NiflectGen
 "" MAKELABEL(LABEL_0) R"(_SplittedModuleReg_RegisterTypes_)" MAKELABEL(LABEL_1);
 		static const char* InitTypesFuncName =
 "" MAKELABEL(LABEL_0) R"(_SplittedModuleReg_InitTypes_)" MAKELABEL(LABEL_1);
+		static const char* SplittedModuleRegFuncDecl =
+R"(void )" MAKELABEL(LABEL_2) R"((Niflect::CNiflectTable& table);)";
+		static const char* SplittedModuleRegFuncImpl =
+R"(void )" MAKELABEL(LABEL_2) R"((Niflect::CNiflectTable& table)
+{
+	)" MAKELABEL(LABEL_3) R"(
+})";
 		static const char* FuncDecl =
 R"(void )" MAKELABEL(LABEL_2) R"(();)";
 		static const char* FuncImpl =
@@ -24,6 +31,12 @@ R"(void )" MAKELABEL(LABEL_2) R"(()
 {
 	)" MAKELABEL(LABEL_3) R"(
 })";
+		static const char* SplittedModuleRegH=
+R"(#pragma once
+)" MAKELABEL(LABEL_4) R"(
+
+)" MAKELABEL(LABEL_6) R"(
+)";
 		static const char* SplittedModuleRegCpp =
 "" MAKELABEL(LABEL_4) R"(
 

@@ -34,12 +34,11 @@ namespace NiflectGen
 	class CModuleRegInfoValidated
 	{
 	public:
-		CModuleRegInfoValidated(const CModuleRegInfo& info);
-		//void Validate();
-		//void Init(const CModuleInfo& info);
+		void Init(const CModuleRegInfo& info);
 
 		Niflect::CString m_typeRegBasePath;
 		Niflect::CString m_moduleRegBasePath;
 		CModuleRegInfo m_userProvided;
+		Niflect::CString m_outputRootPath;
 	};
 }

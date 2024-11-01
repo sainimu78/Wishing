@@ -68,7 +68,7 @@ namespace NiflectGen
 #ifdef TODO_ENUM_CODE_GEN_PIPELINE
 		asdf
 #else
-		data.m_lines.push_back(NiflectUtil::FormatString("Reserved InvokeInitType for enum: %s", m_bindingTypeIndexedRoot->m_resocursorName.c_str()));
+		data.m_lines.push_back(NiflectUtil::FormatString("//Reserved InvokeInitType for enum: %s", m_bindingTypeIndexedRoot->m_resocursorName.c_str()));
 #endif
 	}
 }

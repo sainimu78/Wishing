@@ -418,10 +418,10 @@ namespace NiflectGen
             CLabelToCodeMapping map;
             CCodeLines linesInclude;
             {
-                CCodeLines linesFilePath;
+                Niflect::TArrayNif<CHeaderFilePathData> vecHeaderData;
                 for (auto& it1 : context.m_vecSplittedModuleRegGenData)
-                    linesFilePath.push_back(it1.m_headerFilePath);
-                CIncludesHelper::ConvertFromHeaderFilePaths(linesFilePath, m_moduleRegInfo.m_userProvided.m_writingHeaderSearchPaths, linesInclude);
+                    vecHeaderData.push_back(it1.m_headerFilePath);
+                CIncludesHelper::ConvertFromHeaderFilePaths(vecHeaderData, m_moduleRegInfo.m_userProvided.m_writingHeaderSearchPaths, linesInclude);
                 MapLabelToLines(map, LABEL_0, linesInclude);
             }
             CCodeLines linesInvokeRegisterTypes;
@@ -429,7 +429,7 @@ namespace NiflectGen
             {
                 for (auto& it1 : context.m_vecSplittedModuleRegFuncsName)
                 {
-                    linesInvokeRegisterTypes.push_back(it1.m_registerTypes + "();");
+                    linesInvokeRegisterTypes.push_back(it1.m_registerTypes + "(table);");
                     if (!it1.m_initTypes.empty())
                         linesInvokeTaggedTypeInit.push_back(it1.m_initTypes + "();");
                 }

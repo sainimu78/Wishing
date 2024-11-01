@@ -72,9 +72,38 @@ namespace NiflectUtil
 	{
 		return a + "/" + b;
 	}
+	static bool GetParentDirPathSafe(const Niflect::CString& fileOrDirPath, Niflect::CString& parentDirPath)
+	{
+		auto posSlash = fileOrDirPath.find_last_of('/');
+		if (posSlash != std::string::npos)
+		{
+			parentDirPath = fileOrDirPath.substr(0, fileOrDirPath.length() - posSlash - 1);
+			return true;
+		}
+		return false;
+	}
+	static Niflect::CString GetParentDirPath(const Niflect::CString& fileOrDirPath)
+	{
+		Niflect::CString parentDirPath;
+		if (GetParentDirPathSafe(fileOrDirPath, parentDirPath))
+			return parentDirPath;
+		return fileOrDirPath;
+	}
+	static Niflect::CString GetFileName(const Niflect::CString& filePath)
+	{
+		auto posSlash = filePath.find_last_of('/');
+		if (posSlash != std::string::npos)
+			return filePath.substr(posSlash + 1, filePath.length() - posSlash);
+		return filePath;
+	}
+	static Niflect::CString GetDirName(const Niflect::CString& dirPath)
+	{
+		return GetFileName(dirPath);
+	}
 	static void WriteStringToFile(const Niflect::CString& data, const Niflect::CString& filePath)
 	{
 		std::ofstream ofs(filePath.c_str(), std::ios::binary);
+		ASSERT(ofs.is_open());
 		ofs << data;
 		ofs.close();
 	}

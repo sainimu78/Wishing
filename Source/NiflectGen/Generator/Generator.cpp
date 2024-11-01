@@ -147,12 +147,11 @@ namespace NiflectGen
             {
                 CResolvingContext resolvingContext(&log);
                 CModuleRegInfo moduleRegInfo_reserved;
-                CModuleRegInfoValidated validatedModuleRegInfo_reserved(moduleRegInfo_reserved);
-                CResolver resolver(collectionData, validatedModuleRegInfo_reserved);
+                CResolver resolver(collectionData, m_moduleRegInfo);
                 CResolvedData resolvedData;
                 resolver.Deprecated_Resolve2(&taggedRoot, resolvingContext, resolvedData);
                 //resolver.DebugFinish(resolvedData);
-                CTemplateBasedCppWriter writer(resolvedData, validatedModuleRegInfo_reserved);
+                CTemplateBasedCppWriter writer(resolvedData, m_moduleRegInfo);
                 CWritingContext writingContext(&log);
                 CCodeGenData genData;
                 //writer.Deprecated_Write2(writingContext, genData);
@@ -185,16 +184,15 @@ namespace NiflectGen
         if (index)
             clang_disposeIndex(index);
     }
-    void CGenerator::SetModuleRegInfo(const CModuleRegInfo& moduleRegInfo)
+    void CGenerator::InitModuleRegInfo(const CModuleRegInfo& userProvied)
     {
-        m_moduleRegInfo = moduleRegInfo;
+        m_moduleRegInfo.Init(userProvied);
     }
     void CGenerator::Generate(TestInterfaceFunc TestFunc)
     {
         //#1, Cleanup & Prepare
-        CModuleRegInfoValidated validatedModuleRegInfo(m_moduleRegInfo);
         //todo: 路径有效性检查, 重复路径剔除等
-        const auto& userProvided = validatedModuleRegInfo.m_userProvided;
+        const auto& userProvided = m_moduleRegInfo.m_userProvided;
 
         //预留清理module, 从module输出目录中的缓存可获取生成的所有文件
 
@@ -265,12 +263,12 @@ namespace NiflectGen
                 if (true)
                 {
                     CResolvingContext resolvingContext(&log);
-                    CResolver resolver(collectionData, validatedModuleRegInfo);
+                    CResolver resolver(collectionData, m_moduleRegInfo);
                     CResolvedData resolvedData;
                     resolver.Resolve4(&taggedRoot, resolvingContext, resolvedData);
 
                     //#3, Generate code
-                    CTemplateBasedCppWriter writer(resolvedData, validatedModuleRegInfo);
+                    CTemplateBasedCppWriter writer(resolvedData, m_moduleRegInfo);
                     CWritingContext writingContext(&log);
                     writer.Write3(writingContext, m_genData);
                 }
@@ -292,7 +290,7 @@ namespace NiflectGen
     }
     void CGenerator::Save() const
     {
-        const auto outputRootPath = NiflectUtil::ConcatPath(m_moduleRegInfo.m_genBasePath, m_moduleRegInfo.m_genIncludeBasePath);
+        const auto& outputRootPath = m_moduleRegInfo.m_outputRootPath;
         {
             {
                 for (auto& it0 : m_genData.m_vecTypeRegGenData)
@@ -352,7 +350,7 @@ namespace NiflectGen
     }
     void CGenerator::Save2(const CCodeGenData& genData) const
     {
-        const auto outputRootPath = NiflectUtil::ConcatPath(m_moduleRegInfo.m_genBasePath, m_moduleRegInfo.m_genIncludeBasePath);
+        const auto& outputRootPath = m_moduleRegInfo.m_outputRootPath;
         for (auto& it0 : genData.m_vecCreateTypeAccessorSpecGenData)
         {
             {

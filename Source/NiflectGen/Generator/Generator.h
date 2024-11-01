@@ -21,10 +21,13 @@ namespace NiflectGen
 		NIFLECTGEN_API void AddFileForSearching(const Niflect::CString& filePath);
 		NIFLECTGEN_API void AddIncludePath(const Niflect::CString& dirPath);
 		NIFLECTGEN_API void ParseSourceFiles();
-		NIFLECTGEN_API void SetModuleRegInfo(const CModuleRegInfo& moduleRegInfo);
+		NIFLECTGEN_API void InitModuleRegInfo(const CModuleRegInfo& userProvied);
 		NIFLECTGEN_API void Generate(TestInterfaceFunc TestFunc = NULL);
 		NIFLECTGEN_API void Save() const;
 		NIFLECTGEN_API void Save2(const CCodeGenData& genData) const;
+
+	public:
+		const CModuleRegInfoValidated& GetModuleRegInfo() const { return m_moduleRegInfo; }
 
 	private:
 		void PrepareSourceFiles();
@@ -38,7 +41,7 @@ namespace NiflectGen
 		Niflect::TArrayNif<Niflect::CString> m_vecHeaderSearchPath;
 		Niflect::TSharedPtr<CDataCollector> m_collectorHolder;//仅为不包含头文件, 避免使用该类的工程需要添加clang头文件路径
 		CDataCollector& m_collector;
-		CModuleRegInfo m_moduleRegInfo;
+		CModuleRegInfoValidated m_moduleRegInfo;
 		Niflect::TSharedPtr<CCodeGenData> m_genDataHolder;
 		CCodeGenData& m_genData;
 	};
