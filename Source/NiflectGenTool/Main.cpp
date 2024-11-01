@@ -86,7 +86,7 @@ int main()
 				//begin, 指定BindingSetting头文件列表
 				info.m_vecBindingSettingHeader.push_back("F:/Fts/Proj/Test/Interedit/Source/Engine/EngineTypeBindingSetting.h");
 				//end
-				NiflectGenDefinition::Test::AddBasicHeaderSearchPaths(info.m_vecHeaderSearchPath);
+				Test::AddHeaderSearchPaths(info.m_vecParsingHeaderSearchPath, info.m_writingHeaderSearchPaths);
 				gen->SetModuleRegInfo(info);
 				gen->Generate();
 				gen->Save();

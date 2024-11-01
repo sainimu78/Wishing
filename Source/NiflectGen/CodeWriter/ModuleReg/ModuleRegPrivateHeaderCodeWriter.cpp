@@ -23,9 +23,10 @@ namespace NiflectGen
                 linesMergedRegisterTypes.push_back(it1);
             for (auto& it1 : dataForInvokation.m_invokationInitTypes)
                 linesMergedInitTypes.push_back(it1);
-            vecIncludePath.push_back(genData.m_includePath);
+            vecIncludePath.push_back(genData.m_headerFilePath);
         }
-        CIncludesHelper::WriteIncludeDirectives(vecIncludePath, linesIncludes);
+        ASSERT(false);
+        //CIncludesHelper::WriteIncludeDirectives(vecIncludePath, linesIncludes);
         {
             CCodeTemplate tpl;
             tpl.ReadFromRawData(HardCodedTemplate::ModuleRegPrivateH);

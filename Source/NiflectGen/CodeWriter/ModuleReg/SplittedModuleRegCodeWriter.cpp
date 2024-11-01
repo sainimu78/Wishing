@@ -38,7 +38,7 @@ namespace NiflectGen
             }
             dataForInvokation.m_invokationRegisterTypes.push_back(ReplaceLabelToText1(HardCodedTemplate::SplittedModuleRegInvokationRegisterTypes, LABEL_1, splittedModuleName));
             dataForInvokation.m_invokationInitTypes.push_back(ReplaceLabelToText1(HardCodedTemplate::SplittedModuleRegInvokationInitTypes, LABEL_1, splittedModuleName));
-            data.m_includePath = NiflectUtil::FormatString("%s/Splitted/_%s%s", writingCtx.m_moduleRegBasePath.c_str(), splittedModuleName.c_str(), NiflectGenDefinition::FileExt::H);
+            data.m_headerFilePath = NiflectUtil::FormatString("%s/Splitted/_%s%s", writingCtx.m_moduleRegBasePath.c_str(), splittedModuleName.c_str(), NiflectGenDefinition::FileExt::H);
 
             {
                 CCodeTemplate tpl;
@@ -52,7 +52,7 @@ namespace NiflectGen
             CCodeLines linesInvokationRegisterType;
             CCodeLines linesInvokationInitType;
             CNoDupPathCollector includesNoDup;
-            includesNoDup.Add(data.m_includePath);
+            includesNoDup.Add(data.m_headerFilePath);
             for (uint32 idx1 = 0; idx1 < vecTypeRegIndex.size(); ++idx1)
             {
                 auto& refInfo = writingCtx.m_vecTypeRegRefInfo[vecTypeRegIndex[idx1]];
@@ -76,7 +76,8 @@ namespace NiflectGen
                 //}
             }
             CCodeLines linesIncludes;
-            CIncludesHelper::Write(includesNoDup, linesIncludes);
+            ASSERT(false);
+            //CIncludesHelper::Write(includesNoDup, linesIncludes);
 
             CCodeLines linesInvokationRegisterTypeScope;
             {

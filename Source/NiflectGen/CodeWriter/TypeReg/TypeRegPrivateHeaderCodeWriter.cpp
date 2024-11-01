@@ -22,7 +22,8 @@ namespace NiflectGen
 				namespacesNoDup.Add(it1);
 		}
 		CCodeLines linesIncludes;
-		CIncludesHelper::Write(includesNoDup, linesIncludes);
+		ASSERT(false);
+		//CIncludesHelper::Write(includesNoDup, linesIncludes);
 		CCodeLines linesNamespaces;
 		CIncludesHelper::WriteUsingNamespaces(namespacesNoDup, linesNamespaces);
 

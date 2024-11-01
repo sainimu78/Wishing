@@ -29,17 +29,21 @@ R"(void )" MAKELABEL(LABEL_2) R"(()
 
 )" MAKELABEL(LABEL_5) R"(
 )";
-		static const char* FieldLayoutSpecCpp = SplittedModuleRegCpp;
-//"" MAKELABEL(LABEL_4) R"(
-//
-//)" MAKELABEL(LABEL_5) R"(
-//)";
+		static const char* FieldLayoutSpecCpp = 
+"" MAKELABEL(LABEL_4) R"(
+
+namespace Niflect
+{
+	)" MAKELABEL(LABEL_5) R"(
+})";
 		static const char* FieldLayoutSpecH = 
 "#pragma once" R"(
 )" MAKELABEL(LABEL_4) R"(
 
-)" MAKELABEL(LABEL_6) R"(
-)";
+namespace Niflect
+{
+	)" MAKELABEL(LABEL_6) R"(
+})";
 		static const char* ImplScope =
 R"({
 	)" MAKELABEL(LABEL_3) R"(

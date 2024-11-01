@@ -24,7 +24,7 @@ namespace NiflectGen
 	public:
 		CCodeLines m_h;
 		CCodeLines m_cpp;
-		Niflect::CString m_includePath;
+		Niflect::CString m_headerFilePath;
 	};
 
 	class CSplittedGenData
@@ -56,7 +56,7 @@ namespace NiflectGen
 		Niflect::TArrayNif<const CTypeRegWritingData2*> m_vecTypeRegDataRef;
 	};
 
-	struct SSplittedFieldLayoutSpecWritingContext
+	struct SSplittedCreateTypeAccessorSpecWritingContext
 	{
 		const CModuleRegInfoValidated& m_moduleRegInfo;
 		const Niflect::TArrayNif<CSplittedModuleRegInfo>& m_vecItem;
@@ -72,26 +72,26 @@ namespace NiflectGen
 		Niflect::CString m_privateHIncludePath;
 	};
 
-	class CFieldLayoutSpecData
+	class CCreateTypeAccessorSpecData
 	{
 	public:
 		CCodeLines m_decl;
-		Niflect::CString m_declIncludePath;
+		Niflect::CString m_declHeaderFilePath;
 		CCodeLines m_impl;
-		Niflect::CString m_implIncludePath;
+		Niflect::CString m_implHeaderFilePath;
 	};
 
 	struct SSplittedModuleRegWritingContext2
 	{
 		const CModuleRegInfoValidated& m_moduleRegInfo;
 		const Niflect::TArrayNif<CSplittedModuleRegInfo>& m_vecItem;
-		const Niflect::TArrayNif<CFieldLayoutSpecData>& m_vecFieldLayoutSpecData;
+		const Niflect::TArrayNif<CCreateTypeAccessorSpecData>& m_vecCreateTypeAccessorSpecData;
 		CGenLog* m_log;
 	};
 
-	struct SSplittedFieldLayoutSpecWritingData
+	struct SSplittedCreateTypeAccessorSpecWritingData
 	{
-		Niflect::TArrayNif<CFieldLayoutSpecData>& m_vecFieldLayoutSpecData;
+		Niflect::TArrayNif<CCreateTypeAccessorSpecData>& m_vecCreateTypeAccessorSpecData;
 	};
 
 	class CSplittedModuleRegFunctionsName

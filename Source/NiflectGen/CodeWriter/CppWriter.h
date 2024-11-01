@@ -30,29 +30,48 @@ namespace NiflectGen
 	class CIncludesHelper
 	{
 	public:
-		static void Write(const CNoDupPathCollector& pathCollector, CCodeLines& lines)
+		struct SIncludeDerectiveData
 		{
-			WriteIncludeDirectives(pathCollector.m_vecPath, lines);
+			Niflect::CString m_incPath;
+			bool m_isFromSystemHeaderSearchPaths;
+		};
+		static void Write(const Niflect::TArrayNif<SIncludeDerectiveData>& vecIncData, CCodeLines& lines)
+		{
+			WriteIncludeDirectives(vecIncData, lines);
 		}
-		static void WriteIncludeDirectives(const CCodeLines& vecIncludePath, CCodeLines& lines)
+		static void WriteIncludeDirectives(const Niflect::TArrayNif<SIncludeDerectiveData>& vecIncData, CCodeLines& lines)
 		{
-			for (auto& it : vecIncludePath)
-				lines.push_back(NiflectUtil::FormatString("#include \"%s\"", it.c_str()));
+			for (auto& it : vecIncData)
+				lines.push_back(NiflectUtil::FormatString("#include \"%s\"", it.m_incPath.c_str()));
 		}
-		static Niflect::CString ConvertToIncludePath(const Niflect::CString& filePathAbs, const Niflect::TArrayNif<Niflect::CString>& vecSearchPath)
+		static Niflect::CString ConvertToIncludePath(const Niflect::CString& filePath, const Niflect::TArrayNif<Niflect::CString>& vecSearchPath)
 		{
-			for (auto& it : vecSearchPath)
+			Niflect::CString incPath;
+			InternalConvertToIncludePath(filePath, vecSearchPath, incPath);
+			return incPath;
+		}
+		static void ConvertFromHeaderFilePaths(const CCodeLines& vecFilePath, const CWritingHeaderSearchPaths& paths, CCodeLines& linesInclude)
+		{
+			Niflect::TArrayNif<SIncludeDerectiveData> vecIncData;
+			CNoDupPathCollectorRef collectorRegular;
+			CNoDupPathCollectorRef collectorBypass;
+			for (auto& it : vecFilePath)
 			{
-				ASSERT(!it.empty());
-				auto pos = filePathAbs.find(it);
-				if (pos != std::string::npos)
+				auto incPath = it;
+				InternalConvertToIncludePath(it, paths.m_vecForRegularConversion, incPath);
+				bool convertedOfRegular = collectorRegular.Cache(incPath);
+				if (!convertedOfRegular)
 				{
-					auto prefixLength = pos + it.length();
-					auto incPath = filePathAbs.substr(prefixLength + 1, filePathAbs.length() - prefixLength);
-					return incPath;
+					InternalConvertToIncludePath(it, paths.m_vecForBypassConversion, incPath);
+					collectorBypass.Cache(incPath);
+				}
+				if (convertedOfRegular)
+				{
+					vecIncData.push_back({incPath, false});
 				}
 			}
-			return filePathAbs;
+
+			Write(vecIncData, linesInclude);
 		}
 		static void WriteUsingNamespaces(const CNoDupPathCollector& pathCollector, CCodeLines& lines)
 		{
@@ -62,6 +81,25 @@ namespace NiflectGen
 		{
 			for (auto& it : vecIncludePath)
 				lines.push_back(NiflectUtil::FormatString("using namespace %s;", it.c_str()));
+		}
+
+	private:
+		static bool InternalConvertToIncludePath(const Niflect::CString& filePath, const Niflect::TArrayNif<Niflect::CString>& vecSearchPath, Niflect::CString& incPath)
+		{
+			bool converted = false;
+			for (auto& it : vecSearchPath)
+			{
+				ASSERT(!it.empty());
+				auto pos = filePath.find(it);
+				if (pos != std::string::npos)
+				{
+					auto prefixLength = pos + it.length();
+					incPath = filePath.substr(prefixLength + 1, filePath.length() - prefixLength);
+					converted = true;
+					break;
+				}
+			}
+			return converted;
 		}
 	};
 
