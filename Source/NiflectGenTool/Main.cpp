@@ -6,6 +6,7 @@
 #include "NiflectGen/Base/NiflectGenDefinition.h"
 #include "Niflect/Memory/Default/DefaultMemory.h"
 #include "NiflectGen/Test/TestGen.h"
+#include "NiflectGen/Generator/GenData.h"
 
 //代码中的用语
 //1. StaticRegStage, 在静态初始化阶段的注册过程
@@ -59,12 +60,12 @@
 
 int main()
 {
-	if (true)//if (false)
+	if (false)//if (true)//
 	{
 		TestGen::TestCollector();
 	}
 
-	if (false)//if (true)
+	if (true)//if (false)//
 	{
 		using namespace NiflectGen;
 
@@ -88,8 +89,9 @@ int main()
 				//end
 				Test::AddHeaderSearchPaths(info.m_vecParsingHeaderSearchPath, info.m_writingHeaderSearchPaths);
 				gen->InitModuleRegInfo(info);
-				gen->Generate();
-				gen->Save();
+				CCodeGenData genData;
+				gen->Generate(genData);
+				gen->Save2(genData);
 			}
 		}
 	}

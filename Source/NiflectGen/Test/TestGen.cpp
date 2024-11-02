@@ -21,7 +21,8 @@ namespace TestGen
 			info.m_vecBindingSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestAccessorBindingAccessorTypeAliass.h"));
 			Test::AddHeaderSearchPaths(info.m_vecParsingHeaderSearchPath, info.m_writingHeaderSearchPaths);
 			gen->InitModuleRegInfo(info);
-			gen->Generate([](void* cursorAddr)
+			CCodeGenData genData;
+			gen->Generate(genData, [](void* cursorAddr)
 				{
 					auto& cursor = *static_cast<CXCursor*>(cursorAddr);
 					CTaggedNode2 taggedRoot;
@@ -50,7 +51,8 @@ namespace TestGen
 			info.m_vecBindingSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestBindingTypesNoDup.h"));
 			Test::AddHeaderSearchPaths(info.m_vecParsingHeaderSearchPath, info.m_writingHeaderSearchPaths);
 			gen->InitModuleRegInfo(info);
-			gen->Generate([](void* cursorAddr)
+			CCodeGenData genData;
+			gen->Generate(genData, [](void* cursorAddr)
 				{
 					auto& cursor = *static_cast<CXCursor*>(cursorAddr);
 					CTaggedNode2 taggedRoot;
@@ -73,7 +75,8 @@ namespace TestGen
 			info.m_vecBindingSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestBindingTypesDup.h"));
 			Test::AddHeaderSearchPaths(info.m_vecParsingHeaderSearchPath, info.m_writingHeaderSearchPaths);
 			gen->InitModuleRegInfo(info);
-			gen->Generate([](void* cursorAddr)
+			CCodeGenData genData;
+			gen->Generate(genData, [](void* cursorAddr)
 				{
 					auto& cursor = *static_cast<CXCursor*>(cursorAddr);
 					CTaggedNode2 taggedRoot;
@@ -97,7 +100,8 @@ namespace TestGen
 			info.m_vecBindingSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestBindingTypesFullScopes.h"));
 			Test::AddHeaderSearchPaths(info.m_vecParsingHeaderSearchPath, info.m_writingHeaderSearchPaths);
 			gen->InitModuleRegInfo(info);
-			gen->Generate([](void* cursorAddr)
+			CCodeGenData genData;
+			gen->Generate(genData, [](void* cursorAddr)
 				{
 					auto& cursor = *static_cast<CXCursor*>(cursorAddr);
 					CTaggedNode2 taggedRoot;
@@ -200,7 +204,8 @@ namespace TestGen
 			info.m_vecBindingSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestAccessorBindingAccessorFinding.h"));
 			Test::AddHeaderSearchPaths(info.m_vecParsingHeaderSearchPath, info.m_writingHeaderSearchPaths);
 			gen->InitModuleRegInfo(info);
-			gen->Generate([&gen](void* cursorAddr)
+			CCodeGenData genData;
+			gen->Generate(genData, [&gen](void* cursorAddr)
 				{
 					auto& cursor = *static_cast<CXCursor*>(cursorAddr);
 					CTaggedNode2 taggedRoot;
@@ -252,7 +257,8 @@ namespace TestGen
 			info.m_vecBindingSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestAccessorBindingRequiredHeader.h"));
 			Test::AddHeaderSearchPaths(info.m_vecParsingHeaderSearchPath, info.m_writingHeaderSearchPaths);
 			gen->InitModuleRegInfo(info);
-			gen->Generate([&gen](void* cursorAddr)
+			CCodeGenData genData;
+			gen->Generate(genData, [&gen](void* cursorAddr)
 				{
 					auto& cursor = *static_cast<CXCursor*>(cursorAddr);
 					CTaggedNode2 taggedRoot;
@@ -300,7 +306,8 @@ namespace TestGen
 			info.m_vecBindingSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestAccessorBindingResocursorName.h"));
 			Test::AddHeaderSearchPaths(info.m_vecParsingHeaderSearchPath, info.m_writingHeaderSearchPaths);
 			gen->InitModuleRegInfo(info);
-			gen->Generate([&info](void* cursorAddr)
+			CCodeGenData genData;
+			gen->Generate(genData, [&info](void* cursorAddr)
 				{
 					auto& cursor = *static_cast<CXCursor*>(cursorAddr);
 					CTaggedNode2 taggedRoot;
@@ -356,7 +363,7 @@ namespace TestGen
 			Test::AddHeaderSearchPaths(info.m_vecParsingHeaderSearchPath, info.m_writingHeaderSearchPaths);
 			gen->InitModuleRegInfo(info);
 			CCodeGenData genData;
-			gen->Generate([&gen, &genData](void* cursorAddr)
+			gen->Generate(genData, [&gen, &genData](void* cursorAddr)
 				{
 					auto& cursor = *static_cast<CXCursor*>(cursorAddr);
 					CTaggedNode2 taggedRoot;

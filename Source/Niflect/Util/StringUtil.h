@@ -77,7 +77,7 @@ namespace NiflectUtil
 		auto posSlash = fileOrDirPath.find_last_of('/');
 		if (posSlash != std::string::npos)
 		{
-			parentDirPath = fileOrDirPath.substr(0, fileOrDirPath.length() - posSlash - 1);
+			parentDirPath = fileOrDirPath.substr(0, posSlash);
 			return true;
 		}
 		return false;

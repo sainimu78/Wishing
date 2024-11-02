@@ -4,26 +4,10 @@
 #include "NiflectGen/CodeWriter/TypeReg/TypeRegCode.h"
 #include "NiflectGen/CodeWriter/ModuleReg/SplittedModuleRegCode.h"
 #include "NiflectGen/CodeWriter/ModuleReg/ModuleRegCode.h"
+#include "NiflectGen/Generator/GenData.h"
 
 namespace NiflectGen
 {
-	class CModuleRegGenData
-	{
-	public:
-		CCodeLines m_privateH;
-		Niflect::CString m_privateHIncludePath;
-	};
-
-	class CCodeGenData
-	{
-	public:
-		CModuleRegGenData m_moduleRegGenData;
-		Niflect::TArrayNif<CSplittedModuleRegGenData> m_vecSplittedModuleRegGenData;
-		//Niflect::TArrayNif<CSplittedGenData> m_vecSplittedTypeRegGenData;
-		Niflect::TArrayNif<CTypeRegGenData> m_vecTypeRegGenData;
-		Niflect::TArrayNif<CCreateTypeAccessorSpecData> m_vecCreateTypeAccessorSpecGenData;
-	};
-
 	struct SModuleRegWritingContext2
 	{
 		const Niflect::TArrayNif<CSplittedModuleRegInfo>& m_vecItem;

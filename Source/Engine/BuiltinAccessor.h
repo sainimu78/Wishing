@@ -33,7 +33,28 @@ namespace Engine
 	using CFloatAccessor = TBasicTypeAccessor<float>;
 	//typedef TBasicTypeAccessor<float> CFloatAccessor;
 	using CStringAccessor = TBasicTypeAccessor<Niflect::CString>;
-	using CStdStringAccessor = TBasicTypeAccessor<std::string>;
+
+	class CStdStringAccessor : public Niflect::CAccessor
+	{
+	public:
+		virtual bool SaveToRwNode2222(const AddrType offsetBase, CRwNode* rw) const override
+		{
+			auto& instance = *static_cast<const std::string*>(offsetBase);
+			ASSERT(!rw->IsValue());
+			auto rwValue = rw->ToValue();
+			Niflect::CString str = instance.c_str();
+			SetRwValueAs(rwValue, str);
+			return true;
+		}
+		virtual bool LoadFromRwNode2222(AddrType offsetBase, const CRwNode* rw) const override
+		{
+			auto& instance = *static_cast<std::string*>(offsetBase);
+			ASSERT(rw->IsValue());
+			auto rwValue = rw->GetValue();
+			instance = GetRwValueAs<Niflect::CString>(rwValue).c_str();
+			return true;
+		}
+	};
 
 	class CArrayAccessor : public Niflect::CAccessor
 	{

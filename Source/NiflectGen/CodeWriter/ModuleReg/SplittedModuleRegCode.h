@@ -2,6 +2,7 @@
 #include "NiflectGen/CodeWriter/ModuleReg/ModuleRegCode.h"
 #include "NiflectGen/CodeWriter/CodeWriter.h"
 #include "NiflectGen/CodeWriter/TypeReg/TypeRegCodeWriter.h"
+#include "NiflectGen/Generator/GenData.h"
 
 namespace NiflectGen
 {
@@ -17,14 +18,6 @@ namespace NiflectGen
 		const Niflect::CString& m_moduleName;
 		const Niflect::CString& m_moduleRegBasePath;
 		const Niflect::TArrayNif<SSplittedModuleRefInfo>& m_vecTypeRegRefInfo;
-	};
-
-	class CSplittedModuleRegGenData
-	{
-	public:
-		CCodeLines m_h;
-		CCodeLines m_cpp;
-		Niflect::CString m_headerFilePath;
 	};
 
 	class CSplittedGenData
@@ -61,24 +54,6 @@ namespace NiflectGen
 		const CModuleRegInfoValidated& m_moduleRegInfo;
 		const Niflect::TArrayNif<CSplittedModuleRegInfo>& m_vecItem;
 		CGenLog* m_log;
-	};
-
-	class CTypeRegGenData
-	{
-	public:
-		CCodeLines m_genH;
-		Niflect::CString m_genHIncludePath;
-		CCodeLines m_privateH;
-		Niflect::CString m_privateHIncludePath;
-	};
-
-	class CCreateTypeAccessorSpecData
-	{
-	public:
-		CCodeLines m_decl;
-		Niflect::CString m_declHeaderFilePath;
-		CCodeLines m_impl;
-		Niflect::CString m_implHeaderFilePath;
 	};
 
 	struct SSplittedModuleRegWritingContext2

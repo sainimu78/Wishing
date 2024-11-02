@@ -33,7 +33,7 @@ namespace NiflectGen
 	void CMiscTypeRegCodeWriter::WriteResocursorNodeBodyCode(CCodeLines& linesResoBodyCode) const
 	{
 		//linesResoBodyCode.push_back(NiflectUtil::FormatString("My Name: %s", m_bindingTypeIndexedRoot->m_resocursorName.c_str()));
-		ASSERT(m_bindingTypeIndexedRoot->m_accessorBindingIndex);
+		ASSERT(m_bindingTypeIndexedRoot->m_accessorBindingIndex != INDEX_NONE);
 		if (m_bindingTypeIndexedRoot->m_untaggedTemplateIndex != INDEX_NONE)
 		{
 			//linesResoBodyCode.push_back("---------------");

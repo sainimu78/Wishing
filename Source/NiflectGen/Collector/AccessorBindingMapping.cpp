@@ -273,7 +273,8 @@ namespace NiflectGen
 		}
 		else
 		{
-			canRecurs = clang_getCursorKind(parentSubcursor.m_cursorDecl) != CXCursor_TypeAliasDecl;
+			auto kind = clang_getCursorKind(parentSubcursor.m_cursorDecl);
+			canRecurs = kind != CXCursor_TypeAliasDecl && kind != CXCursor_TypedefDecl;
 		}
 		if ((canRecurs) && (parentSubcursor.m_vecChild.size() > 0))
 		{

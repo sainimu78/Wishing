@@ -14,7 +14,7 @@ void TestAPI_C()
 
 #include "ModuleReg/Engine/Engine_private.h"
 #include "Niflect/NiflectTable.h"
-#include "NiflectGen/Test/TestOriginalCodeGen0.h"
+#include "Engine/EngineObject.h"
 #include "Niflect/Serialization/JsonFormat.h"
 
 static Niflect::TSharedPtr<Niflect::CNiflectTable> g_defaultTable;
@@ -34,11 +34,18 @@ void TestEngineRun()
 	//	printf("%s\n", type->GetTypeName().c_str());
 	//}
 
-	auto type = Niflect::StaticGetType<TestMyFinding::CMyClass_0>();
+	auto type = Niflect::StaticGetType<Engine::CEngineObject>();
 	auto accessor = type->CreateAccessor();
 	RwTree::CRwNode rw;
-	auto instance = type->MakeSharedInstance<void*>();
-	accessor->SaveToRwNode(instance.Get(), &rw);
+	Engine::CEngineObject srcData;
+	{
+		srcData.InitForTest();
+		accessor->SaveToRwNode(&srcData, &rw);
+	}
+	auto instance = type->MakeSharedInstance<Engine::CEngineObject>();
+	Engine::CEngineObject& dstData = *instance;
+	accessor->LoadFromRwNode(&dstData, &rw);
+	ASSERT(srcData == dstData);
 	Niflect::CStringStream ss;
 	RwTree::CJsonFormat::Write(&rw, ss);
 	printf("%s", ss.str().c_str());
