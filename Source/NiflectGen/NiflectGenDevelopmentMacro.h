@@ -22,7 +22,7 @@
 //#define TODO_SIMPLIFY_TAGGED_TYPE_INDEXED_ROOT_INITIALIZATION
 
 //实现枚举的代码生成流程, 如专门的 AccessorBinding, CodeWriter
-//#define TODO_ENUM_CODE_GEN_PIPELINE
+#define TODO_ENUM_CODE_GEN_PIPELINE
 
 //BindingType 重复指定检查
 //2024.10.18, 实验结论为, 未找到可行的通用办法实现重复指定 BindingType 检查. 对非模板别名具可行性, 但对于模板别名, 无法实现区分部分特化的情况

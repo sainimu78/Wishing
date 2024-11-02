@@ -25,11 +25,12 @@ R"(void )" MAKELABEL(LABEL_2) R"((Niflect::CNiflectTable* table)
 	using namespace Niflect;
 	)" MAKELABEL(LABEL_3) R"(
 })";
-		static const char* FuncDecl =
+		static const char* InitTypesFuncDecl =
 R"(void )" MAKELABEL(LABEL_2) R"(();)";
-		static const char* FuncImpl =
+		static const char* InitTypesFuncImpl =
 R"(void )" MAKELABEL(LABEL_2) R"(()
 {
+	using namespace Niflect;
 	)" MAKELABEL(LABEL_3) R"(
 })";
 		static const char* SplittedModuleRegH =

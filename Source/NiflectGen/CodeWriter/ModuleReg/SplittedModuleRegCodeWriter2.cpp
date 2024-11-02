@@ -134,7 +134,7 @@ namespace NiflectGen
                     if (linesInvokeInitTypes.size() > 0)
                     {
                         initTypesFuncName = ReplaceLabelToText2(HardCodedTemplate::InitTypesFuncName, LABEL_0, LABEL_1, context.m_moduleRegInfo.m_userProvided.m_moduleName, strIdx);
-                        auto funcSignature = ReplaceLabelToText1(HardCodedTemplate::FuncDecl, LABEL_2, initTypesFuncName);
+                        auto funcSignature = ReplaceLabelToText1(HardCodedTemplate::InitTypesFuncDecl, LABEL_2, initTypesFuncName);
                         linesDecl.push_back(funcSignature);
                     }
                     {
@@ -173,7 +173,7 @@ namespace NiflectGen
                     if (linesInvokeInitTypes.size() > 0)
                     {
                         CCodeTemplate tpl1;
-                        tpl1.ReadFromRawData(HardCodedTemplate::FuncImpl);
+                        tpl1.ReadFromRawData(HardCodedTemplate::InitTypesFuncImpl);
                         CLabelToCodeMapping map;
                         MapLabelToText(map, LABEL_2, initTypesFuncName);
                         MapLabelToLines(map, LABEL_3, linesInvokeInitTypes);

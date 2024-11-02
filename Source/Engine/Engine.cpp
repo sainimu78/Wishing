@@ -23,6 +23,7 @@ void TestEngineCreate()
 {
 	g_defaultTable = Niflect::MakeShared<Niflect::CNiflectTable>();
 	Niflect::GeneratedInitialReg(g_defaultTable.Get());
+	Niflect::GeneratedInitTypes();
 }
 void TestEngineRun()
 {

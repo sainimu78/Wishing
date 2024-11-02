@@ -3,6 +3,7 @@
 #include "NiflectGen/CodeWriter/HardCoded/EnumTemplate.h"
 #include "NiflectGen/CodeWriter/CodeTemplate.h"
 #include "NiflectGen/CodeWriter/CppWriter.h"
+#include "NiflectGen/Resolver/ResolvedData.h"
 
 namespace NiflectGen
 {
@@ -23,7 +24,8 @@ namespace NiflectGen
 	}
 	Niflect::CString CEnumRegCodeWriter::WriteTypeRegClassName() const
 	{
-		return ReplaceLabelToText1(HardCodedTemplate::TypeRegClassScopeName_Enum, LABEL_SHARED_3, m_typeName);
+		//return ReplaceLabelToText1(HardCodedTemplate::TypeRegClassScopeName_Enum, LABEL_SHARED_3, m_typeName);
+		return "";
 	}
 	void CEnumRegCodeWriter::GetInvokationRequirement(CTypeRegInvokationData& data) const
 	{
@@ -45,28 +47,38 @@ namespace NiflectGen
 	void CEnumRegCodeWriter2::CollectDependencyHeaderFilePathAddrs(CDependencyHeaderFilePathAddrs& dependencyHeaderFilePathAddrs) const
 	{
 	}
-	void CEnumRegCodeWriter2::WriteTypeRegRegisterTypeAndFieldLayout(const CWritingContext& context, CTypeRegRegisterAndFieldLayoutWritingData& data) const
-	{
-#ifdef TODO_ENUM_CODE_GEN_PIPELINE
-		asdf
-#else
-		data.m_linesInvokeRegisterType.push_back(NiflectUtil::FormatString("Reserved RegisterType for enum: %s", m_bindingTypeIndexedRoot->m_resocursorName.c_str()));
-		data.m_linesCreateFieldLayoutOfTypeDecl.push_back(NiflectUtil::FormatString("Reserved FieldLayoutDecl for enum: %s", m_bindingTypeIndexedRoot->m_resocursorName.c_str()));
-		data.m_linesCreateFieldLayoutOfTypeImpl.push_back(NiflectUtil::FormatString("Reserved FieldLayoutImpl for enum: %s", m_bindingTypeIndexedRoot->m_resocursorName.c_str()));
-#endif
-	}
-	void CEnumRegCodeWriter2::Deprecated_WriteTypeRegClass(const STypeRegClassWritingContext& context, CTypeRegClassWritingData2& data) const
-	{
-#ifdef TODO_ENUM_CODE_GEN_PIPELINE
-		asdf
-#else
-		data.m_linesImpl.push_back(NiflectUtil::FormatString("Reserved RegClass for enum: %s", m_bindingTypeIndexedRoot->m_resocursorName.c_str()));
-#endif
-	}
+//	void CEnumRegCodeWriter2::WriteTypeRegRegisterTypeAndFieldLayout(const CWritingContext& context, CTypeRegRegisterAndFieldLayoutWritingData& data) const
+//	{
+//#ifdef TODO_ENUM_CODE_GEN_PIPELINE
+//		asdf
+//#else
+//		data.m_linesInvokeRegisterType.push_back(NiflectUtil::FormatString("Reserved RegisterType for enum: %s", m_bindingTypeIndexedRoot->m_resocursorName.c_str()));
+//		data.m_linesCreateFieldLayoutOfTypeDecl.push_back(NiflectUtil::FormatString("Reserved FieldLayoutDecl for enum: %s", m_bindingTypeIndexedRoot->m_resocursorName.c_str()));
+//		data.m_linesCreateFieldLayoutOfTypeImpl.push_back(NiflectUtil::FormatString("Reserved FieldLayoutImpl for enum: %s", m_bindingTypeIndexedRoot->m_resocursorName.c_str()));
+//#endif
+//	}
+
 	void CEnumRegCodeWriter2::WriteInvokeInitType(const STypeRegClassWritingContext& context, CTypeRegTaggedTypeInitWritingData2& data) const
 	{
 #ifdef TODO_ENUM_CODE_GEN_PIPELINE
-		asdf
+		auto& tt = m_resolvedData->m_taggedMapping.m_vecType[m_bindingTypeIndexedRoot->m_taggedTypeIndex];
+		CCodeTemplate tpl1;
+		tpl1.ReadFromRawData(HardCodedTemplate::InitTypeCode);
+		CLabelToCodeMapping map;
+		MapLabelToText(map, LABEL_0, m_bindingTypeIndexedRoot->m_resocursorName);
+		CCodeLines linesAddConsts;
+		{
+			for (uint32 idx = 0; idx < tt->GetChildrenCount(); ++idx)
+			{
+				auto ec = tt->GetChild(idx);
+				auto enumConstName = CXStringToCString(clang_getCursorSpelling(ec->GetCursor()));
+				auto line = ReplaceLabelToText1(HardCodedTemplate::AddEnumConsts, LABEL_2, enumConstName);
+				linesAddConsts.push_back(line);
+			}
+		}
+		MapLabelToLines(map, LABEL_1, linesAddConsts);
+		Niflect::TSet<Niflect::CString> setReplacedLabel;
+		tpl1.ReplaceLabels(map, data.m_lines, &setReplacedLabel);
 #else
 		data.m_lines.push_back(NiflectUtil::FormatString("//Reserved InvokeInitType for enum: %s", m_bindingTypeIndexedRoot->m_resocursorName.c_str()));
 #endif

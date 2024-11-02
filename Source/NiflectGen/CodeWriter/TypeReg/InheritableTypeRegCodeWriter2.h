@@ -17,12 +17,9 @@ namespace NiflectGen
 		virtual void CollectDependencyHeaderFilePathAddrs(CDependencyHeaderFilePathAddrs& dependencyHeaderFilePathAddrs) const override;
 
 	public:
-		virtual void WriteTypeRegRegisterTypeAndFieldLayout(const CWritingContext& context, CTypeRegRegisterAndFieldLayoutWritingData& data) const override;
-		virtual void Deprecated_WriteTypeRegClass(const STypeRegClassWritingContext& context, CTypeRegClassWritingData2& data) const override;
 		virtual void WriteInvokeInitType(const STypeRegClassWritingContext& context, CTypeRegTaggedTypeInitWritingData2& data) const override;
 
 	private:
-		void WriteStaticRegisterType(const STypeRegClassWritingContext& context, CCodeLines& lines) const;
 		void WriteStaticInitType(const STypeRegClassWritingContext& context, CCodeLines& lines) const;
 
 	private:
