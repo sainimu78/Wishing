@@ -2,7 +2,7 @@
 #include "NiflectGen/Collector/TaggedNode.h"
 #include "NiflectGen/CodeWriter/TypeReg/TypeRegCodeWriter.h"
 #include "NiflectGen/Util/CursorMap.h"
-#include "NiflectGen/Collector/AccessorBindingMapping.h"
+#include "NiflectGen/Collector/AccessorSettingMapping.h"
 
 namespace NiflectGen
 {

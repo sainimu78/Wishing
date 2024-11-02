@@ -1,4 +1,4 @@
-#include "NiflectGen/Collector/AccessorBindingMapping.h"
+#include "NiflectGen/Collector/AccessorSettingMapping.h"
 #include "NiflectGen/Base/NiflectGenDefinition.h"
 #include "NiflectGen/TaggedType/TaggedType.h"
 #include "NiflectGen/Util/CursorUtil.h"

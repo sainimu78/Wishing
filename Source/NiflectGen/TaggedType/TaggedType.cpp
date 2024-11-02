@@ -61,7 +61,7 @@ namespace NiflectGen
 		实际上在插入到 taggedMapping 时, 就已经能正确获取 IndexedRoot 需要的信息, 因此可考虑简化流程
 #else
 #endif
-		if (!taggedMapping.InitIndexedNodeForClassDecl(cursor, context.m_mappings.m_accessorBinding, m_taggedResoRoot))
+		if (!taggedMapping.InitIndexedNodeForClassDecl(cursor, context.m_mappings.m_accessorSetting, m_taggedResoRoot))
 		{
 			ASSERT(false);
 		}
@@ -73,7 +73,7 @@ namespace NiflectGen
 		for (auto& it : m_vecType)
 			it->ResolveForResocursorNode();
 	}
-	bool CTaggedTypesMapping::InitIndexedNodeForClassDecl(const CXCursor& cursor, const CAccessorBindingMapping2& accessorBindingMapping, CResolvedCursorNode& indexedParent) const
+	bool CTaggedTypesMapping::InitIndexedNodeForClassDecl(const CXCursor& cursor, const CAccessorBindingMapping2& accessorSettingMapping, CResolvedCursorNode& indexedParent) const
 	{
 		auto itFound = m_mapCursorToIndex.find(cursor);
 		if (itFound != m_mapCursorToIndex.end())
@@ -82,8 +82,8 @@ namespace NiflectGen
 			auto headerFilePath = GetCursorFilePath(cursor);
 			ASSERT(!headerFilePath.empty());
 			uint32 taggedTypeIdx = INDEX_NONE;
-			auto itFound2 = accessorBindingMapping.m_mapSpecializedCursorToIndex.find(cursor);
-			if (itFound2 != accessorBindingMapping.m_mapSpecializedCursorToIndex.end())
+			auto itFound2 = accessorSettingMapping.m_mapSpecializedCursorToIndex.find(cursor);
+			if (itFound2 != accessorSettingMapping.m_mapSpecializedCursorToIndex.end())
 				taggedTypeIdx = itFound2->second;
 			indexedParent.InitForClassDecl(m_vecType[itFound->second]->m_resocursorName, itFound->second, taggedTypeIdx, headerFilePath);
 			return true;

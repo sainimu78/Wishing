@@ -68,7 +68,7 @@ namespace NiflectGen
 			auto& it0 = m_vecMember[idx0];
 			auto& indexedRoot = m_vecMemberIndexedRoot[idx0];
 			auto& fieldCursor = it0->GetCursor();
-			context.m_mappings.m_accessorBinding.InitIndexedNodeForField(fieldCursor, it0->m_vecDetailCursor, taggedMapping, context.m_mappings.m_untaggedTemplate, indexedRoot);
+			context.m_mappings.m_accessorSetting.InitIndexedNodeForField(fieldCursor, it0->m_vecDetailCursor, taggedMapping, context.m_mappings.m_untaggedTemplate, indexedRoot);
 			if (!indexedRoot.IsValid())
 			{
 				//不计划支持 Field 的类型为 BindingType 的别名, 因为这样可能滥用别名, 导致与 AccessorBinding 的对应关系不直观, 如需要使用别名, 应在 AccessorBinding 中指定, 在 Field 中使用时, 应直接使用别名

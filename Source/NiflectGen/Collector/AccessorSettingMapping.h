@@ -138,7 +138,7 @@ namespace NiflectGen
 
 	struct SResolvedMappings
 	{
-		const CAccessorBindingMapping2& m_accessorBinding;
+		const CAccessorBindingMapping2& m_accessorSetting;
 		const CTaggedTypesMapping& m_tagged;
 		const CUntaggedTemplatesMapping& m_untaggedTemplate;
 	};

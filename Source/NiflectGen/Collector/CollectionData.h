@@ -1,6 +1,6 @@
 #pragma once
 #include "NiflectGen/Util/CursorMap.h"
-#include "NiflectGen/Collector/AccessorBindingMapping.h"
+#include "NiflectGen/Collector/AccessorSettingMapping.h"
 #include "NiflectGen/Collector/AliasChain.h"
 
 namespace NiflectGen
