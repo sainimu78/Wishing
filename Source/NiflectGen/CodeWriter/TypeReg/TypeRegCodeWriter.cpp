@@ -89,27 +89,11 @@ namespace NiflectGen
 			tpl0.ReadFromRawData(hct);
 			CLabelToCodeMapping map;
 			MapLabelToText(map, LABEL_0, m_bindingTypeIndexedRoot->m_resocursorName);
-			Niflect::CString infoTypeName = NiflectGenDefinition::NiflectFramework::InfoTypeName::NiflectType;
+			auto infoTypeName = m_resolvedData->m_taggedMapping.GetInfoTypeName(m_bindingTypeIndexedRoot->m_taggedTypeIndex);
+			if (m_bindingTypeIndexedRoot->m_taggedTypeIndex != INDEX_NONE)
 			{
-				if (m_bindingTypeIndexedRoot->m_taggedTypeIndex != INDEX_NONE)
-				{
-					auto& tagged = m_resolvedData->m_taggedMapping.m_vecType[m_bindingTypeIndexedRoot->m_taggedTypeIndex];
-					auto& cursor = tagged->GetCursor();
-					auto kind = clang_getCursorKind(cursor);
-					switch (kind)
-					{
-					case CXCursor_ClassDecl: infoTypeName = NiflectGenDefinition::NiflectFramework::InfoTypeName::Class; break;
-					case CXCursor_StructDecl: infoTypeName = NiflectGenDefinition::NiflectFramework::InfoTypeName::Struct; break;
-					case CXCursor_EnumDecl: infoTypeName = NiflectGenDefinition::NiflectFramework::InfoTypeName::Enum; break;
-					default:
-						break;
-					}
-
-					{
-						ASSERT(data.m_taggedTypeHeaderFilePathAddr == NULL);
-						data.m_taggedTypeHeaderFilePathAddr = m_bindingTypeIndexedRoot->GetHeaderFilePathAddrForTaggedType();
-					}
-				}
+				ASSERT(data.m_taggedTypeHeaderFilePathAddr == NULL);
+				data.m_taggedTypeHeaderFilePathAddr = m_bindingTypeIndexedRoot->GetHeaderFilePathAddrForTaggedType();
 			}
 			MapLabelToText(map, LABEL_1, infoTypeName);
 			MapLabelToText(map, LABEL_2, data.m_createFieldLayoutOfTypeFuncName);

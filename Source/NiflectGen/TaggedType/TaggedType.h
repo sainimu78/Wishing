@@ -11,6 +11,8 @@ namespace NiflectGen
 	public:
 		void Resolve();
 		bool InitIndexedNodeForClassDecl(const CXCursor& cursor, const CAccessorBindingMapping2& accessorBindingMapping, CResolvedCursorNode& indexedParent) const;
+		Niflect::CString GetInfoTypeName(uint32 taggedTypeIdx) const;
+		bool GetDerivedInfoTypeName(uint32 taggedTypeIdx, Niflect::CString& infoTypeName) const;
 		TCursorMap<uint32> m_mapCursorToIndex;
 		Niflect::TArrayNif<CTaggedType*> m_vecType;
 	};

@@ -1,6 +1,6 @@
 #include "NiflectGen/CodeWriter/TypeReg/InheritableTypeRegCodeWriter2.h"
 #include "NiflectGen/util/CursorUtil.h"
-//#include "NiflectGen/CodeWriter/HardCoded/InheritableTypeTemplate.h"
+#include "NiflectGen/CodeWriter/HardCoded/InheritableTypeTemplate2.h"
 #include "NiflectGen/CodeWriter/CodeTemplate.h"
 #include "NiflectGen/CodeWriter/CppWriter.h"
 #include "NiflectGen/Base/NiflectGenDefinition.h"
@@ -52,35 +52,48 @@ namespace NiflectGen
 	}
 	void CInheritableTypeRegCodeWriter2::WriteStaticInitType(const STypeRegClassWritingContext& context, CCodeLines& lines) const
 	{
-		if (m_baseTaggedType != NULL)
-		{
-			static const char* aaaaaaaaaaaaaaaaa =
-R"(static void StaticInitType()
-{
-	auto type = (Cast)StaticGetType<${Nihao}>();
-	type->InitInheritableTypeMeta(StaticGetType<${Bucuo}>);
-})";
-			CCodeTemplate tpl1;
-			tpl1.ReadFromRawData(aaaaaaaaaaaaaaaaa);
-			CLabelToCodeMapping map;
-			MapLabelToText(map, "Nihao", m_bindingTypeIndexedRoot->m_resocursorName);
-			MapLabelToText(map, "Bucuo", m_baseTaggedType->m_taggedResoRoot.m_resocursorName);
-			Niflect::TSet<Niflect::CString> setReplacedLabel;
-			tpl1.ReplaceLabels(map, lines, &setReplacedLabel);
-		}
+		ASSERT(false);
+//		if (m_baseTaggedType != NULL)
+//		{
+//			static const char* aaaaaaaaaaaaaaaaa =
+//R"(static void StaticInitType()
+//{
+//	auto type = (Cast)StaticGetType<${Nihao}>();
+//	type->InitInheritableTypeMeta(StaticGetType<${Bucuo}>);
+//})";
+//			CCodeTemplate tpl1;
+//			tpl1.ReadFromRawData(aaaaaaaaaaaaaaaaa);
+//			CLabelToCodeMapping map;
+//			MapLabelToText(map, "Nihao", m_bindingTypeIndexedRoot->m_resocursorName);
+//			MapLabelToText(map, "Bucuo", m_baseTaggedType->m_taggedResoRoot.m_resocursorName);
+//			Niflect::TSet<Niflect::CString> setReplacedLabel;
+//			tpl1.ReplaceLabels(map, lines, &setReplacedLabel);
+//		}
 	}
 	void CInheritableTypeRegCodeWriter2::WriteInvokeInitType(const STypeRegClassWritingContext& context, CTypeRegTaggedTypeInitWritingData2& data) const
 	{
 		if (m_baseTaggedType != NULL)
 		{
-			static const char* aaaaaaaaaaaaaaaaa =
-R"(auto type = (Cast)StaticGetType<${Nihao}>();
-type->InitInheritableTypeMeta(StaticGetType<${Bucuo}>);)";
 			CCodeTemplate tpl1;
-			tpl1.ReadFromRawData(aaaaaaaaaaaaaaaaa);
+			tpl1.ReadFromRawData(HardCodedTemplate::InitTypeCode);
 			CLabelToCodeMapping map;
-			MapLabelToText(map, "Nihao", m_bindingTypeIndexedRoot->m_resocursorName);
-			MapLabelToText(map, "Bucuo", m_baseTaggedType->m_taggedResoRoot.m_resocursorName);
+			auto& resocursorName = m_bindingTypeIndexedRoot->m_resocursorName;
+			MapLabelToText(map, LABEL_0, resocursorName);
+			Niflect::CString codeGetType;
+			{
+				Niflect::CString infoTypeName;
+				if (m_resolvedData->m_taggedMapping.GetDerivedInfoTypeName(m_bindingTypeIndexedRoot->m_taggedTypeIndex, infoTypeName))
+				{
+					codeGetType = ReplaceLabelToText2(HardCodedTemplate::CastGetTypeCode, LABEL_0, LABEL_1, resocursorName, infoTypeName);
+				}
+				else
+				{
+					ASSERT(false);//CNiflectType 不支持 InitInheritableTypeMeta, 因此是一种不应出现的错误, 仅留作备用, 未来可移除
+					codeGetType = ReplaceLabelToText1(HardCodedTemplate::GetTypeCode, LABEL_0, resocursorName);
+				}
+			}
+			MapLabelToText(map, LABEL_2, codeGetType);
+			MapLabelToText(map, LABEL_3, m_baseTaggedType->m_taggedResoRoot.m_resocursorName);
 			Niflect::TSet<Niflect::CString> setReplacedLabel;
 			tpl1.ReplaceLabels(map, data.m_lines, &setReplacedLabel);
 		}

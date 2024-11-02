@@ -12,9 +12,10 @@ void TestAPI_C()
 	fflush(stdout);
 }
 
+#ifdef ENABLED_TEST_MODULEREG_GEN_BY_NGT
 #include "ModuleReg/Engine/Engine_private.h"
 #include "Niflect/NiflectTable.h"
-#include "Engine/EngineObject.h"
+#include "Engine/DerivedObject.h"
 #include "Niflect/Serialization/JsonFormat.h"
 
 static Niflect::TSharedPtr<Niflect::CNiflectTable> g_defaultTable;
@@ -34,16 +35,17 @@ void TestEngineRun()
 	//	printf("%s\n", type->GetTypeName().c_str());
 	//}
 
-	auto type = Niflect::StaticGetType<Engine::CEngineObject>();
+	using CTestType = Engine::CDerivedObject;
+	auto type = Niflect::StaticGetType<CTestType>();
 	auto accessor = type->CreateAccessor();
 	RwTree::CRwNode rw;
-	Engine::CEngineObject srcData;
+	CTestType srcData;
 	{
 		srcData.InitForTest();
 		accessor->SaveToRwNode(&srcData, &rw);
 	}
-	auto instance = type->MakeSharedInstance<Engine::CEngineObject>();
-	Engine::CEngineObject& dstData = *instance;
+	auto instance = type->MakeSharedInstance<CTestType>();
+	CTestType& dstData = *instance;
 	accessor->LoadFromRwNode(&dstData, &rw);
 	ASSERT(srcData == dstData);
 	Niflect::CStringStream ss;
@@ -54,3 +56,14 @@ void TestEngineDestroy()
 {
 	g_defaultTable = NULL;
 }
+#else
+void TestEngineCreate()
+{
+}
+void TestEngineRun()
+{
+}
+void TestEngineDestroy()
+{
+}
+#endif

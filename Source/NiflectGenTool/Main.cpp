@@ -60,12 +60,12 @@
 
 int main()
 {
-	if (true)//if (false)//
+	if (false)//if (true)//
 	{
 		TestGen::TestCollector();
 	}
 
-	if (false)//if (true)//
+	if (true)//if (false)//
 	{
 		using namespace NiflectGen;
 
@@ -82,10 +82,10 @@ int main()
 				info.m_genBasePath = "F:/Fts/Proj/Test/Interedit/Generated";
 				//begin, 指定需要解析的头文件列表
 				info.m_vecModuleHeader.push_back("F:/Fts/Proj/Test/Interedit/Source/Engine/EngineObject.h");
-				//info.m_vecOriginalHeader.push_back("F:/Fts/Proj/Test/Interedit/Source/Engine/Asset.h");
+				info.m_vecModuleHeader.push_back("F:/Fts/Proj/Test/Interedit/Source/Engine/DerivedObject.h");
 				//end
 				//begin, 指定BindingSetting头文件列表
-				info.m_vecAccessorSettingHeader.push_back("F:/Fts/Proj/Test/Interedit/Source/Engine/EngineTypeBindingSetting.h");
+				info.m_vecAccessorSettingHeader.push_back("F:/Fts/Proj/Test/Interedit/Source/Engine/EngineAccessorSetting.h");
 				//end
 				Test::AddHeaderSearchPaths(info.m_vecParsingHeaderSearchPath, info.m_writingHeaderSearchPaths);
 				gen->InitModuleRegInfo(info);

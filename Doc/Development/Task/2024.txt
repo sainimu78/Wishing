@@ -61,3 +61,6 @@
 	2. 但考虑到StaticGetType本就无法实现区分别名与原始类型, 因此可简单地不支持同时指定BindingType的别名与原始类型
 29. NiflectGen, 收集 NIF_AS_B, 框架应调整为可扩展其它类型的 NIF_AS
 30. NiflectGen, 重构实现统一流程 NIF_AS 系列检查, 应只在使用时检查是否有效, 因为定义并不一定使用
+31. NiflectGen, 生成 Inheritable 的 InitType, 获取 InfoType 见 CTypeRegCodeWriter2::WriteInvokeRegisterType
+32. NiflectGen, 生成 _gen.h, 可访问 private 成员
+33. Niflect, 封装如 StaticGetEnum, StaticGetClass 等, 确认是否可正确获取如导出的 StaticGetType, 因此也需要在 _gen.h 实现后再进行

@@ -305,7 +305,7 @@ namespace Niflect
 	public:
 		static CInheritableType* Cast(CNiflectType* base)
 		{
-			ASSERT(base == NULL || dynamic_cast<CInheritableType*>(base) != NULL);
+			ASSERT(dynamic_cast<CInheritableType*>(base) != NULL);
 			return static_cast<CInheritableType*>(base);
 		}
 		static CInheritableType* CastChecked(CNiflectType* base)
@@ -326,7 +326,7 @@ namespace Niflect
 	public:
 		static CClass* Cast(CNiflectType* base)
 		{
-			ASSERT(base == NULL || dynamic_cast<CClass*>(base) != NULL);
+			ASSERT(dynamic_cast<CClass*>(base) != NULL);
 			return static_cast<CClass*>(base);
 		}
 

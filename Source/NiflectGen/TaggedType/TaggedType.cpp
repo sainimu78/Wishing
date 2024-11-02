@@ -1,6 +1,7 @@
 #include "NiflectGen/TaggedType/TaggedType.h"
 #include "NiflectGen/Util/CursorUtil.h"
 #include "Niflect/Util/DebugUtil.h"
+#include "NiflectGen/Base/NiflectGenDefinition.h"
 
 namespace NiflectGen
 {
@@ -89,6 +90,34 @@ namespace NiflectGen
 			return true;
 		}
 		return false;
+	}
+	Niflect::CString CTaggedTypesMapping::GetInfoTypeName(uint32 taggedTypeIdx) const
+	{
+		Niflect::CString infoTypeName = NiflectGenDefinition::NiflectFramework::InfoTypeName::NiflectType;
+		this->GetDerivedInfoTypeName(taggedTypeIdx, infoTypeName);
+		return infoTypeName;
+	}
+	bool CTaggedTypesMapping::GetDerivedInfoTypeName(uint32 taggedTypeIdx, Niflect::CString& infoTypeName) const
+	{
+		bool isDerivedType = false;
+		if (taggedTypeIdx != INDEX_NONE)
+		{
+			auto& tagged = m_vecType[taggedTypeIdx];
+			auto& cursor = tagged->GetCursor();
+			auto kind = clang_getCursorKind(cursor);
+			switch (kind)
+			{
+			case CXCursor_ClassDecl: infoTypeName = NiflectGenDefinition::NiflectFramework::InfoTypeName::Class; break;
+			case CXCursor_StructDecl: infoTypeName = NiflectGenDefinition::NiflectFramework::InfoTypeName::Struct; break;
+			case CXCursor_EnumDecl: infoTypeName = NiflectGenDefinition::NiflectFramework::InfoTypeName::Enum; break;
+			default:
+				ASSERT(false);
+				return false;//‘§¡ÙµƒºÏ≤È, –Î±‹√‚∑µªÿtrue
+				break;
+			}
+			isDerivedType = true;
+		}
+		return isDerivedType;
 	}
 
 	void CTaggedType::ResolveForResocursorNode()
