@@ -8,14 +8,14 @@
 namespace TestGen
 {
 	using namespace NiflectGen;
-	static void TestFailure_BindingAlias0()
+	static void TestFailure_BindingTypeAlias0()
 	{
 #ifdef BINDING_TYPE_DUPLICATION_VERIFICATION
 		auto memTest = Niflect::GetDefaultMemoryStats();
 		{
 			auto gen = CreateGenerator();
 			CModuleRegInfo info;
-			info.m_vecBindingSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestAccessorBindingBindingTypeAlias0.h"));
+			info.m_vecBindingSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestAccessorSettingBindingTypeAlias0.h"));
 			NiflectGenDefinition::Test::AddBasicHeaderSearchPaths(info.m_vecHeaderSearchPath);
 			gen->SetModuleRegInfo(info);
 			gen->Generate([&info](void* cursorAddr)
@@ -34,8 +34,8 @@ namespace TestGen
 #else
 #endif
 	}
-	void TestFailure_BindingAlias()
+	void TestFailure_BindingTypeAlias()
 	{
-		TestFailure_BindingAlias0();
+		TestFailure_BindingTypeAlias0();
 	}
 }

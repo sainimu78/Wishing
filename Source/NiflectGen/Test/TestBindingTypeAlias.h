@@ -2,5 +2,5 @@
 
 namespace TestGen
 {
-	void TestFailure_BindingAlias();
+	void TestFailure_BindingTypeAlias();
 }

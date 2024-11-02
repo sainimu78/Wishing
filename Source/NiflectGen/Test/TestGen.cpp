@@ -4,7 +4,7 @@
 #include "Niflect/Memory/Default/DefaultMemory.h"
 #include "NiflectGen/Collector/Collector.h"
 #include "NiflectGen/Resolver/Resolver.h"
-#include "NiflectGen/Test/TestTypeRegSignature.h"
+#include "NiflectGen/Test/TestFieldResocursorName.h"
 #include "NiflectGen/CodeWriter/ModuleReg/ModuleRegCodeWriter.h"
 #include "NiflectGen/Test/TestBindingTypeAlias.h"
 
@@ -12,13 +12,13 @@ namespace TestGen
 {
 	using namespace NiflectGen;
 
-	static void TestSuccess_AccessorAlias()
+	static void TestSuccess_AccessorTypeAlias()
 	{
 		auto memTest = Niflect::GetDefaultMemoryStats();
 		{
 			auto gen = CreateGenerator();
 			CModuleRegInfo info;
-			info.m_vecBindingSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestAccessorBindingAccessorTypeAliass.h"));
+			info.m_vecBindingSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestAccessorSettingAccessorTypeAliass.h"));
 			Test::AddHeaderSearchPaths(info.m_vecParsingHeaderSearchPath, info.m_writingHeaderSearchPaths);
 			gen->InitModuleRegInfo(info);
 			CCodeGenData genData;
@@ -27,7 +27,7 @@ namespace TestGen
 					auto& cursor = *static_cast<CXCursor*>(cursorAddr);
 					CTaggedNode2 taggedRoot;
 					CGenLog log;
-					log.Config(CGenLogOption().SetAssertionOnAddingItem(false).SetCachedItems(true));
+					//log.Config(CGenLogOption().SetAssertionOnAddingItem(false).SetCachedItems(true));
 					CCollectingContext context(&log);
 					CCollectionData collectionData;
 					CDataCollector collector;
@@ -48,7 +48,7 @@ namespace TestGen
 		{
 			auto gen = CreateGenerator();
 			CModuleRegInfo info;
-			info.m_vecBindingSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestBindingTypesNoDup.h"));
+			info.m_vecBindingSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestAccessorSettingBindingTypesAllUnique.h"));
 			Test::AddHeaderSearchPaths(info.m_vecParsingHeaderSearchPath, info.m_writingHeaderSearchPaths);
 			gen->InitModuleRegInfo(info);
 			CCodeGenData genData;
@@ -72,7 +72,7 @@ namespace TestGen
 		{
 			auto gen = CreateGenerator();
 			CModuleRegInfo info;
-			info.m_vecBindingSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestBindingTypesDup.h"));
+			info.m_vecBindingSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestAccessorSettingBindingTypesDuplicated.h"));
 			Test::AddHeaderSearchPaths(info.m_vecParsingHeaderSearchPath, info.m_writingHeaderSearchPaths);
 			gen->InitModuleRegInfo(info);
 			CCodeGenData genData;
@@ -97,7 +97,7 @@ namespace TestGen
 		{
 			auto gen = CreateGenerator();
 			CModuleRegInfo info;
-			info.m_vecBindingSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestBindingTypesFullScopes.h"));
+			info.m_vecBindingSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestAccessorSettingFullScopes.h"));
 			Test::AddHeaderSearchPaths(info.m_vecParsingHeaderSearchPath, info.m_writingHeaderSearchPaths);
 			gen->InitModuleRegInfo(info);
 			CCodeGenData genData;
@@ -200,8 +200,8 @@ namespace TestGen
 		{
 			auto gen = CreateGenerator();
 			CModuleRegInfo info;
-			info.m_vecOriginalHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestOriginalTypeAccessorFinding.h"));
-			info.m_vecBindingSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestAccessorBindingAccessorFinding.h"));
+			info.m_vecOriginalHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestModuleHeaderAccessorFinding.h"));
+			info.m_vecBindingSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestAccessorSettingAccessorFinding.h"));
 			Test::AddHeaderSearchPaths(info.m_vecParsingHeaderSearchPath, info.m_writingHeaderSearchPaths);
 			gen->InitModuleRegInfo(info);
 			CCodeGenData genData;
@@ -247,63 +247,13 @@ namespace TestGen
 				});
 		}
 	}
-	static void TestSuccess_RequiredHeader()
+	static void TestSuccess_AccessorResocursorName()
 	{
 		auto memTest = Niflect::GetDefaultMemoryStats();
 		{
 			auto gen = CreateGenerator();
 			CModuleRegInfo info;
-			info.m_vecOriginalHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestOriginalRequiredHeader.h"));
-			info.m_vecBindingSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestAccessorBindingRequiredHeader.h"));
-			Test::AddHeaderSearchPaths(info.m_vecParsingHeaderSearchPath, info.m_writingHeaderSearchPaths);
-			gen->InitModuleRegInfo(info);
-			CCodeGenData genData;
-			gen->Generate(genData, [&gen](void* cursorAddr)
-				{
-					auto& cursor = *static_cast<CXCursor*>(cursorAddr);
-					CTaggedNode2 taggedRoot;
-					CGenLog log;
-					CCollectingContext context(&log);
-					CCollectionData collectionData;
-					CDataCollector collector;
-					collector.Collect(cursor, &taggedRoot, context, collectionData);
-					ASSERT(log.m_vecText.size() == 0);
-					CResolvingContext resolvingContext(&log);
-					CResolver resolver(collectionData, gen->GetModuleRegInfo());
-					CResolvedData resolvedData;
-					resolver.Resolve4(&taggedRoot, resolvingContext, resolvedData);
-					ASSERT(log.m_vecText.size() == 0);
-					Niflect::TArrayNif<Niflect::CString> vecExpected;
-					vecExpected.push_back("NiflectGen/Test/TestSomeTypes.h");
-					vecExpected.push_back("NiflectGen/Test/TestOriginalRequiredHeader.h");//类本身indexedRoot所在头文件
-					vecExpected.push_back("Niflect/NiflectBase.h");
-					vecExpected.push_back("Engine/Test/TestMyTransform.h");
-					vecExpected.push_back("BypassCode/NiflectSTL/string");
-					vecExpected.push_back("NiflectGen/Test/TestOriginalRequiredHeader.h");//自定义TMyArray所在头文件
-					uint32 idxExpected = 0;
-					for (auto& it0 : resolvedData.m_signatureMapping.m_vecItem)
-					{
-						for (auto& it1 : it0.m_resoRoot.DebugGetHeaderFilePaths())
-						{
-							auto pos = it1.find(vecExpected[idxExpected]);
-							ASSERT(pos != std::string::npos);
-							idxExpected++;
-							//printf("%s\n", it1.c_str());
-						}
-						//printf("################\n");
-					}
-					ASSERT(idxExpected == vecExpected.size());
-				});
-		}
-	}
-	static void TestSuccess_ResocursorName()
-	{
-		auto memTest = Niflect::GetDefaultMemoryStats();
-		{
-			auto gen = CreateGenerator();
-			CModuleRegInfo info;
-			info.m_vecOriginalHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestOriginalTypeResocursorName.h"));
-			info.m_vecBindingSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestAccessorBindingResocursorName.h"));
+			info.m_vecBindingSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestAccessorSettingAccessorResocursorName.h"));
 			Test::AddHeaderSearchPaths(info.m_vecParsingHeaderSearchPath, info.m_writingHeaderSearchPaths);
 			gen->InitModuleRegInfo(info);
 			CCodeGenData genData;
@@ -348,7 +298,56 @@ namespace TestGen
 				});
 		}
 	}
-#ifdef ACCESSOR_SETTING_ABCD
+	static void TestSuccess_RequiredHeader()
+	{
+		auto memTest = Niflect::GetDefaultMemoryStats();
+		{
+			auto gen = CreateGenerator();
+			CModuleRegInfo info;
+			auto moduleHeader = CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestModuleHeaderRequiredHeader.h");
+			info.m_vecOriginalHeader.push_back(moduleHeader);
+			info.m_vecBindingSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestAccessorSettingRequiredHeader.h"));
+			Test::AddHeaderSearchPaths(info.m_vecParsingHeaderSearchPath, info.m_writingHeaderSearchPaths);
+			gen->InitModuleRegInfo(info);
+			CCodeGenData genData;
+			gen->Generate(genData, [&gen, &moduleHeader](void* cursorAddr)
+				{
+					auto& cursor = *static_cast<CXCursor*>(cursorAddr);
+					CTaggedNode2 taggedRoot;
+					CGenLog log;
+					CCollectingContext context(&log);
+					CCollectionData collectionData;
+					CDataCollector collector;
+					collector.Collect(cursor, &taggedRoot, context, collectionData);
+					ASSERT(log.m_vecText.size() == 0);
+					CResolvingContext resolvingContext(&log);
+					CResolver resolver(collectionData, gen->GetModuleRegInfo());
+					CResolvedData resolvedData;
+					resolver.Resolve4(&taggedRoot, resolvingContext, resolvedData);
+					ASSERT(log.m_vecText.size() == 0);
+					Niflect::TArrayNif<Niflect::CString> vecExpected;
+					vecExpected.push_back("Niflect/NiflectBase.h");
+					vecExpected.push_back("Engine/Test/TestMyTransform.h");
+					vecExpected.push_back("BypassCode/NiflectSTL/string");
+					vecExpected.push_back(moduleHeader);//类本身ResocursorNode所在头文件
+					vecExpected.push_back("NiflectGen/Test/TestSomeTypes.h");
+					vecExpected.push_back(moduleHeader);//自定义TMyArray所在头文件
+					uint32 idxExpected = 0;
+					for (auto& it0 : resolvedData.m_signatureMapping.m_vecItem)
+					{
+						for (auto& it1 : it0.m_resoRoot.DebugGetHeaderFilePaths())
+						{
+							auto pos = it1.find(vecExpected[idxExpected]);
+							ASSERT(pos != std::string::npos);
+							idxExpected++;
+							//printf("%s\n", it1.c_str());
+						}
+						//printf("################\n");
+					}
+					ASSERT(idxExpected == vecExpected.size());
+				});
+		}
+	}
 	static void TestSuccess_TypeRegCodeGen0()
 	{
 		auto memTest = Niflect::GetDefaultMemoryStats();
@@ -358,7 +357,7 @@ namespace TestGen
 			info.m_moduleName = "Engine";
 			info.m_genIncludeBasePath = "NiflectGenerated";
 			info.m_genBasePath = "F:/Fts/Proj/Test/Interedit/Generated";
-			info.m_vecOriginalHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestOriginalCodeGen0.h"));
+			info.m_vecOriginalHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestModuleHeaderCodeGen0.h"));
 			info.m_vecBindingSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestAccessorSettingCodeGen0.h"));
 			Test::AddHeaderSearchPaths(info.m_vecParsingHeaderSearchPath, info.m_writingHeaderSearchPaths);
 			gen->InitModuleRegInfo(info);
@@ -385,60 +384,17 @@ namespace TestGen
 			gen->Save2(genData);
 		}
 	}
-#else
-	static void TestSuccess_TypeRegCodeGenOld()
-	{
-		auto memTest = Niflect::GetDefaultMemoryStats();
-		{
-			auto gen = CreateGenerator();
-			CModuleRegInfo info;
-			info.m_moduleName = "Engine";
-			info.m_genIncludeBasePath = "NiflectGenerated";
-			info.m_genBasePath = "F:/Fts/Proj/Test/Interedit/Generated";
-			info.m_vecOriginalHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestOriginalTypeTypeRegCodeGen.h"));
-			info.m_vecBindingSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestAccessorBindingTypeTypeRegCodeGen.h"));
-			NiflectGenDefinition::Test::AddBasicHeaderSearchPaths(info.m_vecHeaderSearchPath);
-			gen->SetModuleRegInfo(info);
-			CCodeGenData genData;
-			gen->Generate([&info, &genData](void* cursorAddr)
-				{
-					auto& cursor = *static_cast<CXCursor*>(cursorAddr);
-					CTaggedNode2 taggedRoot;
-					CGenLog log;
-					CCollectingContext context(&log);
-					CCollectionData collectionData;
-					CDataCollector collector;
-					collector.Collect(cursor, &taggedRoot, context, collectionData);
-					ASSERT(log.m_vecText.size() == 0);
-					CResolvingContext resolvingContext(&log);
-					CModuleRegInfoValidated validatedModuleRegInfo(info);
-					CResolver resolver(collectionData, validatedModuleRegInfo);
-					CResolvedData resolvedData;
-					resolver.Resolve4(&taggedRoot, resolvingContext, resolvedData);
-					ASSERT(log.m_vecText.size() == 0);
-					CTemplateBasedCppWriter writer(resolvedData, validatedModuleRegInfo);
-					CWritingContext writingContext(&log);
-					writer.Write3(writingContext, genData);
-				});
-			gen->Save2(genData);
-		}
-	}
-#endif
 	void TestCollector()
 	{
-		//TestSuccess_AccessorAlias();
-		//TestFailure_BindingAlias();
-		//TestSuccess_BindingTypesAllUnique();
-		//TestFailure_BindingTypesDuplicated();
-		//TestSuccess_FullScopes();
-		//TestSuccess_TypeRegSignature();
-		//TestSuccess_AccessorFinding();
-		//TestSuccess_ResocursorName();
-		//TestSuccess_RequiredHeader();
-#ifdef ACCESSOR_SETTING_ABCD
-		TestSuccess_TypeRegCodeGen0();
-#else
-		TestSuccess_TypeRegCodeGenOld();
-#endif
+		TestSuccess_AccessorTypeAlias();
+		TestFailure_BindingTypeAlias();
+		TestSuccess_BindingTypesAllUnique();
+		TestFailure_BindingTypesDuplicated();
+		TestSuccess_FullScopes();
+		TestSuccess_FieldResocursorName();
+		TestSuccess_AccessorFinding();
+		TestSuccess_AccessorResocursorName();
+		TestSuccess_RequiredHeader();
+		//TestSuccess_TypeRegCodeGen0();
 	}
 }

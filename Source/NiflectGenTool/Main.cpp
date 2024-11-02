@@ -60,12 +60,12 @@
 
 int main()
 {
-	if (false)//if (true)//
+	if (true)//if (false)//
 	{
 		TestGen::TestCollector();
 	}
 
-	if (true)//if (false)//
+	if (false)//if (true)//
 	{
 		using namespace NiflectGen;
 

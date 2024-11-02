@@ -1,6 +1,6 @@
-#include "Niflect/NiflectBindingSetting.h"
+#include "Niflect/NiflectAccessorSetting.h"
 #include "Niflect/NiflectAccessor.h"
-#include "NiflectGen/Test/TestOriginalTypeAccessorFinding.h"
+#include "NiflectGen/Test/TestModuleHeaderAccessorFinding.h"
 
 namespace MyAccessor
 {
@@ -15,9 +15,10 @@ namespace MyAccessor
 
 namespace EngineTypeBindingSettingScope
 {
+	using namespace NiflectAccessorSetting;
 	using namespace Niflect;
 	using namespace TestMyFinding;
 	using namespace MyAccessor;
-	NIF_BS() TBindingSetting<CMyClassAccessor, CMyClass_0>;
-	NIF_BS() TBindingSetting<CMyFloatAccessor, float>;
+	NIF_AS_A() TSetting<CMyClassAccessor, CMyClass_0>;
+	NIF_AS_A() TSetting<CMyFloatAccessor, float>;
 }

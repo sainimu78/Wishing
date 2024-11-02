@@ -1079,6 +1079,12 @@ namespace NiflectGen
 		SRecursCollectingData recursCollectiingData{ aliasChain.Get(), accessorSettings };
 		this->CollectDataRecurs2(cursor, g_invalidCursor, taggedParent, context, recursCollectiingData);
 
+		if (accessorSettings.m_vecAccessorBindingSetting.size() == 0)
+		{
+			GenLogError(context.m_log, "There is no valid accessor setting");
+			return;
+		}
+
 #ifdef BINDING_TYPE_DUPLICATION_VERIFICATION
 		this->CollectUntaggedTypesRecurs(taggedParent, *untaggedTypesMapping);
 
