@@ -82,7 +82,7 @@ namespace NiflectGen
 		CXCursor m_actualFieldDeclCursor;//todo: 应废弃, 改为通过aliasChain查找
 		CSubcursor m_subcursorRoot;
 		CAccessorData m_accessorData;//todo: 应废弃, 改为通过AccessorBindingMapping查找并获取对应信息
-		Niflect::CString m_bindingTypeCursorName;
+		Niflect::CString m_bindingResocursorName;
 		CAccessorResocursorNodeInfo m_accessorResocursorNodeInfo;
 	};
 

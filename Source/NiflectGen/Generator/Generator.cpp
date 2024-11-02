@@ -198,9 +198,9 @@ namespace NiflectGen
         tempSource.m_filePath = "TempSource.cpp";
         CSimpleCppWriter writer(tempSource.m_data);
         writer.AddHeaderFirstLine();
-        for (auto& it1 : userProvided.m_vecBindingSettingHeader)
+        for (auto& it1 : userProvided.m_vecAccessorSettingHeader)
             writer.AddInclude(it1);
-        for (auto& it1 : userProvided.m_vecOriginalHeader)
+        for (auto& it1 : userProvided.m_vecModuleHeader)
             writer.AddInclude(it1);
 
         CCompilerOption opt;

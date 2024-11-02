@@ -594,7 +594,7 @@ namespace NiflectGen
 		for (auto& it0 : data.m_taggedMapping.m_vecType)
 		{
 			bool found = false;
-			for (auto& it1 : m_moduleRegInfo.m_userProvided.m_vecOriginalHeader)
+			for (auto& it1 : m_moduleRegInfo.m_userProvided.m_vecModuleHeader)
 			{
 				auto filePath = GetCursorFilePath(it0->GetCursor());
 				if (it1 == filePath)

@@ -132,7 +132,7 @@ namespace NiflectGen
 		if (this->InitResocursorNodeIfFound(result, resultIndexedParent))
 		{
 			auto& bindingSetting = m_settings.m_vecAccessorBindingSetting[resultIndexedParent.m_accessorBindingIndex];
-			resultIndexedParent.InitForTemplateBegin(bindingSetting.m_bindingTypeCursorName);
+			resultIndexedParent.InitForTemplateBegin(bindingSetting.m_bindingResocursorName);
 
 			if (result.m_continuing)
 			{
@@ -162,7 +162,7 @@ namespace NiflectGen
 					for (auto& it : vecElemResocursorNode)
 					{
 						auto& elemSetting = m_settings.m_vecAccessorBindingSetting[it->m_accessorBindingIndex];
-						it->InitForTemplate(elemSetting.m_bindingTypeCursorName, *pIndexedParent, isTemplateFormat);
+						it->InitForTemplate(elemSetting.m_bindingResocursorName, *pIndexedParent, isTemplateFormat);
 					}
 				}
 				else
@@ -207,7 +207,7 @@ namespace NiflectGen
 		None,
 		Stop,
 	};
-	static void GenerateAccessorBindingCursorNameRecurs(const CSubcursor& parentSubcursor, EGenerateAccessorBindingCursorNameVisitingState& visitingState, Niflect::CString& text)
+	static void GenerateResocursorNameRecurs(const CSubcursor& parentSubcursor, EGenerateAccessorBindingCursorNameVisitingState& visitingState, Niflect::CString& text)
 	{
 		//该函数与旧实验 GenerateTemplateInstanceCode 流程类似, 主要区别为
 		//1. 仅支持生成 FullScope 的名称
@@ -282,7 +282,7 @@ namespace NiflectGen
 			for (uint32 idx = 0; idx < parentSubcursor.m_vecChild.size(); ++idx)
 			{
 				Niflect::CString childText;
-				GenerateAccessorBindingCursorNameRecurs(parentSubcursor.m_vecChild[idx], visitingState, childText);
+				GenerateResocursorNameRecurs(parentSubcursor.m_vecChild[idx], visitingState, childText);
 
 				if (visitingState == EGenerateAccessorBindingCursorNameVisitingState::Stop)
 					break;
@@ -299,15 +299,15 @@ namespace NiflectGen
 			}
 		}
 	}
-	static void GenerateAccessorSettingCursorName(const CSubcursor& parentSubcursor, Niflect::CString& text)
+	static void GenerateResocursorName(const CSubcursor& parentSubcursor, Niflect::CString& text)
 	{
 		auto visitingState = EGenerateAccessorBindingCursorNameVisitingState::None;
-		GenerateAccessorBindingCursorNameRecurs(parentSubcursor, visitingState, text);
+		GenerateResocursorNameRecurs(parentSubcursor, visitingState, text);
 	}
 	static void GenerateAccessorResocursorNodeInfo(const CSubcursor& parentSubcursor, CAccessorResocursorNodeInfo& info)
 	{
 		auto visitingState = EGenerateAccessorBindingCursorNameVisitingState::None;
-		GenerateAccessorBindingCursorNameRecurs(parentSubcursor, visitingState, info.m_resocursorName);
+		GenerateResocursorNameRecurs(parentSubcursor, visitingState, info.m_resocursorName);
 		info.m_requiredHeaderFilePath = GetCursorFilePath(parentSubcursor.m_cursorDecl);
 	}
 	void CAccessorBindingMapping2::InitPatterns()
@@ -322,7 +322,7 @@ namespace NiflectGen
 			//it.m_bindingTypePattern = GenerateBindingTypeCursorName(bSubcursor.m_cursorDecl, bSubcursor.m_CXType);
 
 			GenerateAccessorResocursorNodeInfo(it.GetAccessorTypeDecl(), it.m_accessorResocursorNodeInfo);
-			GenerateAccessorSettingCursorName(it.GetBindingTypeDecl(), it.m_bindingTypeCursorName);
+			GenerateResocursorName(it.GetBindingTypeDecl(), it.m_bindingResocursorName);
 		}
 		if (m_settings.m_settingCompound.IsValid())
 			GenerateAccessorResocursorNodeInfo(m_settings.m_settingCompound.GetAccessorTypeDecl(), m_settings.m_settingCompound.m_accessorResocursorNodeInfo);

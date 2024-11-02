@@ -9,11 +9,22 @@ namespace NiflectGen
 		Niflect::CString m_moduleName;
 		Niflect::CString m_genIncludeBasePath;
 		Niflect::CString m_genBasePath;
-		Niflect::TArrayNif<Niflect::CString> m_vecOriginalHeader;
-		Niflect::TArrayNif<Niflect::CString> m_vecBindingSettingHeader;
+		Niflect::TArrayNif<Niflect::CString> m_vecModuleHeader;
+		Niflect::TArrayNif<Niflect::CString> m_vecAccessorSettingHeader;
 		//Niflect::TArrayNif<Niflect::CString> m_vecDependencyHeader;
 		Niflect::TArrayNif<Niflect::CString> m_vecParsingHeaderSearchPath;//header search paths for libclang parsing
 		CWritingHeaderSearchPaths m_writingHeaderSearchPaths;
+	};
+
+	class CModuleRegInfoValidated
+	{
+	public:
+		void Init(const CModuleRegInfo& info);
+
+		Niflect::CString m_typeRegBasePath;
+		Niflect::CString m_moduleRegBasePath;
+		CModuleRegInfo m_userProvided;
+		Niflect::CString m_outputRootPath;
 	};
 
 	namespace Test
@@ -31,14 +42,4 @@ namespace NiflectGen
 		}
 	}
 
-	class CModuleRegInfoValidated
-	{
-	public:
-		void Init(const CModuleRegInfo& info);
-
-		Niflect::CString m_typeRegBasePath;
-		Niflect::CString m_moduleRegBasePath;
-		CModuleRegInfo m_userProvided;
-		Niflect::CString m_outputRootPath;
-	};
 }

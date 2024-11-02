@@ -14,8 +14,8 @@ namespace TestGen
 	{
 		CModuleRegInfo info;
 		auto moduleHeader = NiflectUtil::FormatString("%s%u.h", CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestModuleHeaderFieldResocursorName"), idx);
-		info.m_vecOriginalHeader.push_back(moduleHeader);
-		info.m_vecBindingSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestAccessorSettingFieldResocursorName.h"));
+		info.m_vecModuleHeader.push_back(moduleHeader);
+		info.m_vecAccessorSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestAccessorSettingFieldResocursorName.h"));
 		Test::AddHeaderSearchPaths(info.m_vecParsingHeaderSearchPath, info.m_writingHeaderSearchPaths);
 		gen.InitModuleRegInfo(info);
 	}
