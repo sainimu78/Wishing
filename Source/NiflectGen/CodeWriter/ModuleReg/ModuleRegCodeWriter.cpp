@@ -421,6 +421,7 @@ namespace NiflectGen
                 Niflect::TArrayNif<CHeaderFilePathData> vecHeaderData;
                 for (auto& it1 : context.m_vecSplittedModuleRegGenData)
                     vecHeaderData.push_back(it1.m_headerFilePath);
+                //vecHeaderData.push_back(NiflectGenDefinition::NiflectFramework::FilePath::NiflectTableHeader);
                 CIncludesHelper::ConvertFromHeaderFilePaths(vecHeaderData, m_moduleRegInfo.m_userProvided.m_writingHeaderSearchPaths, linesInclude);
                 MapLabelToLines(map, LABEL_0, linesInclude);
             }

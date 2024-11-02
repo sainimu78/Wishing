@@ -14,6 +14,7 @@ ENDFUNCTION(create_source_group)
 if (WIN32)
 	#避免如 freopen 的 Warning C4996
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+    add_compile_options(/MP)
 endif()
 
 set(CMAKE_CXX_STANDARD 14)

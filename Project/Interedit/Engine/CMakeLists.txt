@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10.0)
+cmake_minimum_required(VERSION 3.20.0)
 
 set(ModuleName Engine)
 
@@ -10,10 +10,16 @@ list(APPEND SrcAll ${ModuleSrc})
 
 create_source_group(${RootSourcePath} ${SrcAll})
 
-get_filename_component(RootNiflectGeneratedPath "${RootSourcePath}/../Generated/NiflectGenerated" ABSOLUTE)
-set(GeneratedSrcPath ${RootNiflectGeneratedPath}/ModuleReg/${ModuleName}/Splitted)
+get_filename_component(NiflectGeneratedRootPath "${RootSourcePath}/../Generated/NiflectGenerated" ABSOLUTE)
+set(GeneratedSrcPath ${NiflectGeneratedRootPath}/ModuleReg/${ModuleName})
 file(GLOB_RECURSE GeneratedSrc ${GeneratedSrcPath}/*.cpp ${GeneratedSrcPath}/*.h)
-create_source_group(${RootNiflectGeneratedPath} ${GeneratedSrc})
+create_source_group(${NiflectGeneratedRootPath} ${GeneratedSrc})
+#set_property(SOURCE ${GeneratedSrc} PROPERTY FOLDER "Hidden")
+list(APPEND SrcAll ${GeneratedSrc})
+set(GeneratedSrcPath ${NiflectGeneratedRootPath}/TypeReg/${ModuleName})
+file(GLOB_RECURSE GeneratedSrc ${GeneratedSrcPath}/*.cpp ${GeneratedSrcPath}/*.h)
+create_source_group(${NiflectGeneratedRootPath} ${GeneratedSrc})
+#set_property(SOURCE ${GeneratedSrc} PROPERTY FOLDER "Hidden")
 list(APPEND SrcAll ${GeneratedSrc})
 
 add_library(${ModuleName} SHARED ${SrcAll})
@@ -35,7 +41,7 @@ target_include_directories(${ModuleName}
 )
 
 target_include_directories(${ModuleName}
-	PRIVATE ${RootNiflectGeneratedPath}
+	PRIVATE ${NiflectGeneratedRootPath}
 )
 target_compile_definitions(${ModuleName}
 	PRIVATE -DENGINE_EXPORTS

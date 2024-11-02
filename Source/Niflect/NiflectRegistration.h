@@ -12,7 +12,11 @@ namespace Niflect
 typedef Niflect::CNiflectRegistration* (*FuncGeneratedNiflectRegistrationGet)();
 typedef void (*FuncGeneratedNiflectRegistrationRelease)();
 
-NIFLECTMODULEREG_API Niflect::CNiflectRegistration* GeneratedNiflectRegistrationGet();
+//NIFLECTMODULEREG_API Niflect::CNiflectRegistration* GeneratedNiflectRegistrationGet();
+static Niflect::CNiflectRegistration* GeneratedNiflectRegistrationGet()
+{
+	return NULL;
+}
 NIFLECTMODULEREG_API void GeneratedNiflectRegistrationRelease();
 NIFLECTMODULEREG_API void GeneratedNiflectRegistrationInitialReg();
 NIFLECTMODULEREG_API void GeneratedNiflectRegistrationInitTypes();

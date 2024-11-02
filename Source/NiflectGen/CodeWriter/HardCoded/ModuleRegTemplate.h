@@ -12,13 +12,16 @@ namespace NiflectGen
 		static const char* ModuleRegImpl =
 "" MAKELABEL(LABEL_0) R"(
 
-void GeneratedNiflectRegistrationInitialReg()
+namespace Niflect
 {
-	)" MAKELABEL(LABEL_1) R"(
-}
-void GeneratedNiflectRegistrationInitTypes()
-{
-	)" MAKELABEL(LABEL_2) R"(
+	static void GeneratedInitialReg(Niflect::CNiflectTable* table)
+	{
+		)" MAKELABEL(LABEL_1) R"(
+	}
+	static void GeneratedInitTypes()
+	{
+		)" MAKELABEL(LABEL_2) R"(
+	}
 })";
 	}
 }

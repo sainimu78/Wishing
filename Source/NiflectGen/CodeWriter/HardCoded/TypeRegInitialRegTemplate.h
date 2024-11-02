@@ -19,11 +19,13 @@ namespace NiflectGen
 		constexpr const char* CreateTypeAccessorFuncName =
 R"(CreateTypeAccessor<)" MAKELABEL(LABEL_9) ">";
 		constexpr const char* InvokeRegisterType =
-R"(table.RegisterType2<)" MAKELABEL(LABEL_0) ", " MAKELABEL(LABEL_1) R"(>(")" MAKELABEL(LABEL_0) R"(", &)" MAKELABEL(LABEL_2) R"())";
+R"(table->RegisterType2<)" MAKELABEL(LABEL_0) ", " MAKELABEL(LABEL_1) R"(>(")" MAKELABEL(LABEL_0) R"(", &)" MAKELABEL(LABEL_2) R"();)";
 		constexpr const char* CreateTypeAccessorDecl =
-"CSharedAccessor " MAKELABEL(LABEL_2) "();";
+R"(template <>
+CSharedAccessor )" MAKELABEL(LABEL_2) "();";
 		constexpr const char* CreateTypeAccessorImpl =
-"CSharedAccessor " MAKELABEL(LABEL_2) R"(()
+R"(template <>
+CSharedAccessor )" MAKELABEL(LABEL_2) R"(()
 {
 	)" MAKELABEL(LABEL_3) R"(
 })";

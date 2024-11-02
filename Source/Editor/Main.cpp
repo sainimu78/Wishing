@@ -10,6 +10,7 @@
 #include "Niflect/NiflectRegistration.h"
 #include "Niflect/Memory/Default/DefaultMemory.h"
 #include "Engine/Test/TestAccessor2.h"
+#include "Engine/Engine.h"
 
 class CMyClassForSimplifiedMakeShared
 {
@@ -46,13 +47,13 @@ int main(int argc, char** argv)
 
 	//TestSerializationRwTree::TestSerialization();
 
-	//auto memTest = Niflect::GetDefaultMemoryStats();
-	//TestEngineCreate();
-	//TestEngineRun();
-	//TestEngineDestroy();
+	auto memTest = Niflect::GetDefaultMemoryStats();
+	TestEngineCreate();
+	TestEngineRun();
+	TestEngineDestroy();
 
 
-	TestAccessor2::TestFieldLayout();
+	//TestAccessor2::TestFieldLayout();
 
 
 	//{

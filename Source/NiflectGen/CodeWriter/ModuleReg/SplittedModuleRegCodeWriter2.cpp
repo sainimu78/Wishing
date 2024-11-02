@@ -144,7 +144,7 @@ namespace NiflectGen
                         CCodeLines linesInclude;
                         {
                             Niflect::TArrayNif<CHeaderFilePathData> vecHeaderData;
-                            vecHeaderData.push_back(NiflectGenDefinition::NiflectFramework::FilePath::NiflectTableHeader);
+                            //vecHeaderData.push_back(NiflectGenDefinition::NiflectFramework::FilePath::NiflectTableHeader);
                             CIncludesHelper::ConvertFromHeaderFilePaths(vecHeaderData, context.m_moduleRegInfo.m_userProvided.m_writingHeaderSearchPaths, linesInclude);
                         }
                         MapLabelToLines(map, LABEL_4, linesInclude);
@@ -189,6 +189,7 @@ namespace NiflectGen
                         {
                             Niflect::TArrayNif<CHeaderFilePathData> vecHeaderData;
                             vecHeaderData.push_back({ splittedRegData.m_headerFilePath, true });
+                            vecHeaderData.push_back(NiflectGenDefinition::NiflectFramework::FilePath::NiflectTableHeader);
                             vecHeaderData.push_back(createTypeAccessorSpecData.m_declHeaderFilePath);
                             CIncludesHelper::ConvertFromHeaderFilePaths(vecHeaderData, context.m_moduleRegInfo.m_userProvided.m_writingHeaderSearchPaths, linesInclude);
                         }
