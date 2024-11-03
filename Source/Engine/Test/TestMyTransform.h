@@ -146,15 +146,15 @@ namespace TestAccessor2
 	class TMyTransformAccessor : public Niflect::CAccessor
 	{
 	public:
-		virtual bool SaveToRwNode2222(const AddrType offsetBase, CRwNode* rw) const override
+		virtual bool SaveInstanceImpl(const AddrType base, CRwNode* rw) const override
 		{
-			auto& instance = *static_cast<const TMyTransform<T>*>(offsetBase);
+			auto& instance = *static_cast<const TMyTransform<T>*>(base);
 			SaveMyTransformToRwNode<T>(instance, rw);
 			return true;
 		}
-		virtual bool LoadFromRwNode2222(AddrType offsetBase, const CRwNode* rw) const override
+		virtual bool LoadInstanceImpl(AddrType base, const CRwNode* rw) const override
 		{
-			auto& instance = *static_cast<TMyTransform<T>*>(offsetBase);
+			auto& instance = *static_cast<TMyTransform<T>*>(base);
 			LoadMyTransformFromRwNode<T>(rw, instance);
 			return true;
 		}

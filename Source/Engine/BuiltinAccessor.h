@@ -10,17 +10,17 @@ namespace Engine
 	class TBasicTypeAccessor : public Niflect::CAccessor
 	{
 	public:
-		virtual bool SaveToRwNode2222(const AddrType offsetBase, CRwNode* rw) const override
+		virtual bool SaveInstanceImpl(const AddrType base, CRwNode* rw) const override
 		{
-			auto& instance = *static_cast<const TValue*>(offsetBase);
+			auto& instance = *static_cast<const TValue*>(base);
 			ASSERT(!rw->IsValue());
 			auto rwValue = rw->ToValue();
 			SetRwValueAs<TValue>(rwValue, instance);
 			return true;
 		}
-		virtual bool LoadFromRwNode2222(AddrType offsetBase, const CRwNode* rw) const override
+		virtual bool LoadInstanceImpl(AddrType base, const CRwNode* rw) const override
 		{
-			auto& instance = *static_cast<TValue*>(offsetBase);
+			auto& instance = *static_cast<TValue*>(base);
 			ASSERT(rw->IsValue());
 			auto rwValue = rw->GetValue();
 			instance = GetRwValueAs<TValue>(rwValue);
@@ -37,18 +37,18 @@ namespace Engine
 	class CStdStringAccessor : public Niflect::CAccessor
 	{
 	public:
-		virtual bool SaveToRwNode2222(const AddrType offsetBase, CRwNode* rw) const override
+		virtual bool SaveInstanceImpl(const AddrType base, CRwNode* rw) const override
 		{
-			auto& instance = *static_cast<const std::string*>(offsetBase);
+			auto& instance = *static_cast<const std::string*>(base);
 			ASSERT(!rw->IsValue());
 			auto rwValue = rw->ToValue();
 			Niflect::CString str = instance.c_str();
 			SetRwValueAs(rwValue, str);
 			return true;
 		}
-		virtual bool LoadFromRwNode2222(AddrType offsetBase, const CRwNode* rw) const override
+		virtual bool LoadInstanceImpl(AddrType base, const CRwNode* rw) const override
 		{
-			auto& instance = *static_cast<std::string*>(offsetBase);
+			auto& instance = *static_cast<std::string*>(base);
 			ASSERT(rw->IsValue());
 			auto rwValue = rw->GetValue();
 			instance = GetRwValueAs<Niflect::CString>(rwValue).c_str();
@@ -156,9 +156,9 @@ namespace Engine
 	class TStlArrayAccessor : public CArrayAccessor
 	{
 	public:
-		virtual bool SaveToRwNode2222(const AddrType offsetBase, CRwNode* rw) const override
+		virtual bool SaveInstanceImpl(const AddrType base, CRwNode* rw) const override
 		{
-			auto& instance = *static_cast<const TStlArray*>(offsetBase);
+			auto& instance = *static_cast<const TStlArray*>(base);
 			ASSERT(!rw->IsArray());
 			auto rwArray = rw->ToArray();
 			auto elemAccessor = this->GetElementAccessor();
@@ -171,9 +171,9 @@ namespace Engine
 			}
 			return true;
 		}
-		virtual bool LoadFromRwNode2222(AddrType offsetBase, const CRwNode* rw) const override
+		virtual bool LoadInstanceImpl(AddrType base, const CRwNode* rw) const override
 		{
-			auto& instance = *static_cast<TStlArray*>(offsetBase);
+			auto& instance = *static_cast<TStlArray*>(base);
 			ASSERT(rw->IsArray());
 			auto rwArray = rw->GetArray();
 			auto elemAccessor = this->GetElementAccessor();
@@ -207,18 +207,18 @@ namespace Engine
 	class TStlBitsArrayAccessor : public CBitsArrayAccessor
 	{
 	public:
-		virtual bool SaveToRwNode2222(const AddrType offsetBase, CRwNode* rw) const override
+		virtual bool SaveInstanceImpl(const AddrType base, CRwNode* rw) const override
 		{
-			auto& instance = *static_cast<const TStlArray*>(offsetBase);
+			auto& instance = *static_cast<const TStlArray*>(base);
 			ASSERT(!rw->IsArray());
 			auto rwArray = rw->ToArray();
 			for (auto idx = 0; idx < instance.size(); ++idx)
 				rwArray->AddItemBool(instance[idx]);
 			return true;
 		}
-		virtual bool LoadFromRwNode2222(AddrType offsetBase, const CRwNode* rw) const override
+		virtual bool LoadInstanceImpl(AddrType base, const CRwNode* rw) const override
 		{
-			auto& instance = *static_cast<TStlArray*>(offsetBase);
+			auto& instance = *static_cast<TStlArray*>(base);
 			ASSERT(rw->IsArray());
 			auto rwArray = rw->GetArray();
 			instance.resize(GetRwItemsCount(rwArray));
@@ -250,9 +250,9 @@ namespace Engine
 	{
 		using TElem = typename TStlMap::allocator_type::value_type;
 	public:
-		virtual bool SaveToRwNode2222(const AddrType offsetBase, CRwNode* rw) const override
+		virtual bool SaveInstanceImpl(const AddrType base, CRwNode* rw) const override
 		{
-			auto& instance = *static_cast<const TStlMap*>(offsetBase);
+			auto& instance = *static_cast<const TStlMap*>(base);
 			ASSERT(!rw->IsArray());
 			auto rwArray = rw->ToArray();
 			auto elemAccessor = this->GetElementAccessor();
@@ -265,9 +265,9 @@ namespace Engine
 			}
 			return true;
 		}
-		virtual bool LoadFromRwNode2222(AddrType offsetBase, const CRwNode* rw) const override
+		virtual bool LoadInstanceImpl(AddrType base, const CRwNode* rw) const override
 		{
-			auto& instance = *static_cast<TStlMap*>(offsetBase);
+			auto& instance = *static_cast<TStlMap*>(base);
 			ASSERT(rw->IsArray());
 			auto rwArray = rw->GetArray();
 			auto elemAccessor = this->GetElementAccessor();

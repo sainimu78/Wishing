@@ -10,7 +10,7 @@ namespace Engine
 	{
 		typedef Niflect::CAccessor inherited;
 	public:
-		virtual bool SaveToRwNode2222(const AddrType offsetBase, CRwNode* rw) const override
+		virtual bool SaveInstanceImpl(const AddrType base, CRwNode* rw) const override
 		{
 			//typename std::underlying_type<TEnum>::type >, 可获取枚举对应的整数类型
 
@@ -19,9 +19,9 @@ namespace Engine
 			uint32 idx = INDEX_NONE;
 			switch (et->GetTypeSize())
 			{
-			case 1: idx = *static_cast<const uint8*>(offsetBase); break;
-			case 2: idx = *static_cast<const uint16*>(offsetBase); break;
-			case 4: idx = *static_cast<const uint32*>(offsetBase); break;
+			case 1: idx = *static_cast<const uint8*>(base); break;
+			case 2: idx = *static_cast<const uint16*>(base); break;
+			case 4: idx = *static_cast<const uint32*>(base); break;
 			default:
 				ASSERT(false);
 				break;
@@ -30,7 +30,7 @@ namespace Engine
 			rwValue->SetString(name);
 			return true;
 		}
-		virtual bool LoadFromRwNode2222(AddrType offsetBase, const CRwNode* rw) const override
+		virtual bool LoadInstanceImpl(AddrType base, const CRwNode* rw) const override
 		{
 			auto et = this->GetEnum();
 			auto rwValue = rw->GetValue();
@@ -39,9 +39,9 @@ namespace Engine
 			ASSERT(idx != INDEX_NONE);//可能由于此枚举类型的版本不同导致查找失败
 			switch (et->GetTypeSize())
 			{
-			case 1: *static_cast<uint8*>(offsetBase) = idx; break;
-			case 2: *static_cast<uint16*>(offsetBase) = idx; break;
-			case 4: *static_cast<uint32*>(offsetBase) = idx; break;
+			case 1: *static_cast<uint8*>(base) = idx; break;
+			case 2: *static_cast<uint16*>(base) = idx; break;
+			case 4: *static_cast<uint32*>(base) = idx; break;
 			default:
 				ASSERT(false);
 				break;
@@ -60,12 +60,12 @@ namespace Engine
 	{
 		typedef Niflect::CAccessor inherited;
 	public:
-		virtual bool SaveToRwNode2222(const AddrType offsetBase, CRwNode* rw) const override
+		virtual bool SaveInstanceImpl(const AddrType base, CRwNode* rw) const override
 		{
 			//typename std::underlying_type<TEnum>::type >, 可获取枚举对应的整数类型
 			return true;
 		}
-		virtual bool LoadFromRwNode2222(AddrType offsetBase, const CRwNode* rw) const override
+		virtual bool LoadInstanceImpl(AddrType base, const CRwNode* rw) const override
 		{
 			return true;
 		}

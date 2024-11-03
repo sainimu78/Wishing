@@ -19,22 +19,17 @@ namespace Niflect
 		CAccessor()
 			: m_type(NULL)
 		{
-
 		}
 
 	public:
 		bool SaveToRwNode(const AddrType base, CRwNode* rw) const
 		{
-			return this->SaveToRwNode2222(this->GetAddr(base), rw);
+			return this->SaveInstanceImpl(this->GetAddrFromBase(base), rw);
 		}
 		bool LoadFromRwNode(AddrType base, const CRwNode* rw) const
 		{
-			return this->LoadFromRwNode2222(this->GetAddr(base), rw);
+			return this->LoadInstanceImpl(this->GetAddrFromBase(base), rw);
 		}
-
-	protected:
-		virtual bool SaveToRwNode2222(const AddrType offsetBase, CRwNode* rw) const = 0;
-		virtual bool LoadFromRwNode2222(AddrType offsetBase, const CRwNode* rw) const = 0;
 
 	public:
 		void InitMemberMeta(const CString& name, const AddrOffsetType& offset)
@@ -99,11 +94,15 @@ namespace Niflect
 		}
 
 	protected:
-		inline const AddrType GetAddr(const AddrType& base) const
+		virtual bool SaveInstanceImpl(const AddrType base, CRwNode* rw) const = 0;
+		virtual bool LoadInstanceImpl(AddrType base, const CRwNode* rw) const = 0;
+
+	private:
+		inline const AddrType GetAddrFromBase(const AddrType& base) const
 		{
 			return static_cast<const char*>(base) + m_addrOffset.GetOffset();
 		}
-		inline AddrType GetAddr(AddrType& base) const
+		inline AddrType GetAddrFromBase(AddrType& base) const
 		{
 			return static_cast<char*>(base) + m_addrOffset.GetOffset();
 		}
@@ -119,7 +118,7 @@ namespace Niflect
 	class CCompoundAccessor : public CAccessor
 	{
 	public:
-		virtual bool SaveToRwNode2222(const AddrType offsetBase, CRwNode* rw) const override
+		virtual bool SaveInstanceImpl(const AddrType base, CRwNode* rw) const override
 		{
 			auto count = this->GetChildrenCount();
 			for (uint32 idx = 0; idx < count; ++idx)
@@ -127,12 +126,12 @@ namespace Niflect
 				auto childAccessor = this->GetChild(idx);
 				ASSERT(!childAccessor->GetName().empty());
 				auto rwChild = CreateRwNode();
-				if (childAccessor->SaveToRwNode(offsetBase, rwChild.Get()))
+				if (childAccessor->SaveToRwNode(base, rwChild.Get()))
 					AddExistingRwNode(rw, childAccessor->GetName(), rwChild);
 			}
 			return true;
 		}
-		virtual bool LoadFromRwNode2222(AddrType offsetBase, const CRwNode* rw) const override
+		virtual bool LoadInstanceImpl(AddrType base, const CRwNode* rw) const override
 		{
 			auto count = this->GetChildrenCount();
 			for (uint32 idx = 0; idx < count; ++idx)
@@ -140,7 +139,7 @@ namespace Niflect
 				auto childAccessor = this->GetChild(idx);
 				ASSERT(!childAccessor->GetName().empty());
 				auto rwChild = FindRwNode(rw, childAccessor->GetName());
-				childAccessor->LoadFromRwNode(offsetBase, rwChild);
+				childAccessor->LoadFromRwNode(base, rwChild);
 			}
 			return true;
 		}
