@@ -61,8 +61,12 @@
 	2. 但考虑到StaticGetType本就无法实现区分别名与原始类型, 因此可简单地不支持同时指定BindingType的别名与原始类型
 29. NiflectGen, 收集 NIF_AS_B, 框架应调整为可扩展其它类型的 NIF_AS
 30. NiflectGen, 重构实现统一流程 NIF_AS 系列检查, 应只在使用时检查是否有效, 因为定义并不一定使用
-31. NiflectGen, 生成 Inheritable 的 InitType, 获取 InfoType 见 CTypeRegCodeWriter2::WriteInvokeRegisterType
+31. Done, NiflectGen, 生成 Inheritable 的 InitType, 获取 InfoType 见 CTypeRegCodeWriter2::WriteInvokeRegisterType
 32. NiflectGen, 生成 _gen.h, 可访问 private 成员
 33. Niflect, 封装如 StaticGetEnum, StaticGetClass 等, 确认是否可正确获取如导出的 StaticGetType, 因此也需要在 _gen.h 实现后再进行
 34. NiflectGen, 重构支持直接在生成代码中初始化完整的accessor, 以支持inheritable序列化
-35. NiflectGen, 废弃 TypeReg 概念, 另定义对应概念; 可能须定义 CTypeLayout, 其中有 Accessor 数组;
+35. Done, NiflectGen, 可能须定义 CTypeLayout, 其中有 Accessor 数组;
+36. NiflectGen, 生成代码后不应重新生成工程
+	1. 提问"我制作了代码生成工具, 如何用cmake实现生成的代码加到对应模块的源码进行编译, 同时模块的工程不需要因为增加或减少了生成的代码而重新生成"
+37. NiflectGen, 模块间Type依赖验证
+38. NiflectGen, 废弃 TypeReg 概念, 另定义对应概念;
