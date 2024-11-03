@@ -490,3 +490,266 @@ if __name__ == "__main__":
 3. **支持路径**：传入的文件路径应在生成工具内进行合理的处理，确保可以找到这些文件（如检查文件是否存在等）。
 
 通过以上方法，您可以有效地解析 `file(GLOB_RECURSE ...)` 收集到的文件，并在您的代码生成工具中使用这些输入文件进行处理。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+我制作了代码生成工具, 如何用cmake实现生成的代码加到对应模块的源码进行编译, 同时模块的工程不需要因为增加或减少了生成的代码而重新生成
+
+AI
+
+在 CMake 中实现代码生成的同时又不影响主模块工程的编译，可以采取以下方式：
+
+1. **使用 CMake 的自定义命令**： 利用 CMake 的 `add_custom_command` 和 `add_custom_target` 来生成代码，并将生成的代码输出到一个指定的目录。
+2. **将生成的代码包含在目标中**： 在主模块的 CMakeLists.txt 中添加相应的 `include_directories` 或 `target_sources` 指令，将生成的代码包括进来。
+3. **避免重复构建**： 通过设置适当的依赖关系，使得生成的代码在文件没有变化时不触发重新编译。
+
+下面是一个基本的示例来说明这一过程：
+
+### 项目目录结构
+
+```
+/your_project/
+├── CMakeLists.txt
+├── src/
+│   ├── module1.cpp
+│   └── module1.h
+├── generated/
+│   └── generated_code.cpp
+└── tools/
+    ├── code_generator.cpp
+    └── CMakeLists.txt
+```
+
+### 顶层 CMakeLists.txt
+
+```cmake
+cmake_minimum_required(VERSION 3.10)
+project(YourProject)
+
+# 指定源文件和头文件
+add_subdirectory(src)
+add_subdirectory(tools)
+```
+
+### src/CMakeLists.txt
+
+```cmake
+add_library(module1 src/module1.cpp src/module1.h)
+
+# 添加生成的代码
+file(GLOB_RECURSE GENERATED_CODE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/../generated/*.cpp")
+
+# 如果没有生成代码，则过滤，避免多余的编译
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/../generated/")
+    target_sources(module1 PRIVATE ${GENERATED_CODE_FILES})
+endif()
+```
+
+### tools/CMakeLists.txt
+
+```cmake
+# 设置这个工具的可执行文件
+add_executable(code_generator code_generator.cpp)
+
+# 自定义命令生成代码
+add_custom_command(
+    OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/../generated/generated_code.cpp
+    COMMAND ${CMAKE_COMMAND} -E echo "Generating code..." # 替换为实际生成代码的命令
+    DEPENDS code_generator
+)
+
+# 创建一个自定义目标，用于生成代码
+add_custom_target(generate ALL DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/../generated/generated_code.cpp)
+```
+
+### 说明：
+
+1. **code_generator** 编译后的可执行文件可以用于代码生成。
+2. **add_custom_command** 是在每次 `generate` 目标构建时执行的，而 `OUTPUT` 设定了生成的文件。
+3. 在 `src/CMakeLists.txt` 中，使用 `file(GLOB_RECURSE ...)` 来查找生成的 `.cpp` 文件，并将其添加到 `module1` 的编译目标中。
+4. 通过 `${CMAKE_CURRENT_SOURCE_DIR}/../generated/` 判定生成的代码目录是否存在，并且在存在时再加入到 `module1` 的编译。
+
+这种方式可以有效地将生成的代码集成到你的项目中，并避免因代码的增加或删除而重新生成其他模块的过程。注意，你可以根据实际的生成过程调整 `COMMAND` 部分的内容。
+
+
+
+这样实现, 生成的代码会被加到如VS的工程中吗, 我不希望生成的代码被加到vs工程中
+
+AI
+
+为了在 CMake 中生成代码并将其编译到模块中，同时确保生成的代码不会在 Visual Studio 等 IDE 中显示，您可以采取以下措施：
+
+1. **使用自定义命令生成代码**，但不把生成的文件直接添加到目标的源文件列表中，而是将其放入一个专门的构建目录中。
+2. **通过条件编译**或设置标志来控制代码的编译。
+
+下面是一个示例，展示如何实现这一过程：
+
+### 1. 项目结构
+
+```
+/your_project/
+├── CMakeLists.txt
+├── src/
+│   ├── module1.cpp
+│   └── module1.h
+├── generated/
+│   └── generated_code.cpp  # 这个文件不会被直接添加到工程中
+└── tools/
+    ├── code_generator.cpp
+    └── CMakeLists.txt
+```
+
+### 2. 顶层 `CMakeLists.txt`
+
+```cmake
+cmake_minimum_required(VERSION 3.10)
+project(YourProject)
+
+# 指定模块的源路径
+add_subdirectory(src)
+add_subdirectory(tools)
+```
+
+### 3. `src/CMakeLists.txt`
+
+在这里，我们添加生成的代码，但不直接将其包括在 IDE 项目中，通过条件编译来处理。
+
+```cmake
+# 创建库或可执行文件
+add_library(module1 src/module1.cpp src/module1.h)
+
+# 生成代码的输入和输出路径
+set(GENERATED_CODE_DIR "${CMAKE_BINARY_DIR}/generated")
+file(MAKE_DIRECTORY ${GENERATED_CODE_DIR})
+set(GENERATED_CODE_FILE "${GENERATED_CODE_DIR}/generated_code.cpp")
+
+# 如果需要检查代码生成是否需要重新生成，参考以下代码
+add_custom_command(
+    OUTPUT ${GENERATED_CODE_FILE}
+    COMMAND ${CMAKE_COMMAND} -E echo "Generating code..."
+    DEPENDS code_generator   # 依赖于代码生成工具
+)
+
+# 添加目标，但不添加到显示的源码中
+add_custom_target(generate_code ALL DEPENDS ${GENERATED_CODE_FILE})
+
+# 将生成的代码包含到编译过程中，但不直接在 IDE 中显示
+target_sources(module1 PRIVATE ${GENERATED_CODE_FILE})
+```
+
+### 4. `tools/CMakeLists.txt`
+
+```cmake
+# 定义代码生成工具
+add_executable(code_generator code_generator.cpp)
+
+# 自定义命令，生成代码
+add_custom_command(
+    TARGET code_generator
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E echo "Code generation complete."
+)
+
+# 使 generate_code 目标依赖于此工具的成果（可选改善）
+add_dependencies(generate_code code_generator)
+```
+
+### 说明
+
+1. **GENERATED_CODE_DIR**: 生成的代码文件保存在构建目录中，而不是源代码目录中，减少对源代码的污染。
+2. **target_sources**: 使用 `PRIVATE` 将生成的文件添加到模块中，这样它不会显示在 Visual Studio 的项目文件中，避免直接依赖这个文件。
+3. **自定义命令**: 通过 `add_custom_command` 和 `add_custom_target` 来控制代码生成，并确保运行生成器。
+
+这个结构保证了生成的代码不会影响已有模块的编译，您可以用自定义的方式来控制生成和编译的过程，而不会在 IDE 中看到所有生成的代码文件。
