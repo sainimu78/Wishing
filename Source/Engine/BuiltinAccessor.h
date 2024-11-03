@@ -115,9 +115,9 @@ namespace Engine
 	class TStlArrayAccessor_HandledBitsBasedBoolArray : public CArrayAccessor
 	{
 	public:
-		virtual bool SaveToRwNode2222(const AddrType offsetBase, CRwNode* rw) const override
+		virtual bool SaveInstanceImpl(const AddrType base, CRwNode* rw) const override
 		{
-			auto& instance = *static_cast<const TStlArray*>(offsetBase);
+			auto& instance = *static_cast<const TStlArray*>(base);
 			ASSERT(!rw->IsArray());
 			auto rwArray = rw->ToArray();
 			auto elemAccessor = this->GetElementAccessor();
@@ -132,9 +132,9 @@ namespace Engine
 			}
 			return true;
 		}
-		virtual bool LoadFromRwNode2222(AddrType offsetBase, const CRwNode* rw) const override
+		virtual bool LoadInstanceImpl(AddrType base, const CRwNode* rw) const override
 		{
-			auto& instance = *static_cast<TStlArray*>(offsetBase);
+			auto& instance = *static_cast<TStlArray*>(base);
 			ASSERT(rw->IsArray());
 			auto rwArray = rw->GetArray();
 			auto elemAccessor = this->GetElementAccessor();
