@@ -70,3 +70,5 @@
 	1. 提问"我制作了代码生成工具, 如何用cmake实现生成的代码加到对应模块的源码进行编译, 同时模块的工程不需要因为增加或减少了生成的代码而重新生成"
 37. NiflectGen, 模块间Type依赖验证
 38. NiflectGen, 废弃 TypeReg 概念, 另定义对应概念;
+39. NiflectGen, 检查moduleHeader是否include _gen.h
+40. NiflectGen, 生成 friend CreateTypeAccessor 行号宏
