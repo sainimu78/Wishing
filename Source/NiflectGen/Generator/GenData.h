@@ -25,7 +25,28 @@ namespace NiflectGen
 		CCodeLines m_decl;
 		Niflect::CString m_declHeaderFilePath;
 		CCodeLines m_impl;
-		Niflect::CString m_implHeaderFilePath;
+		Niflect::CString m_implSourceFilePath;
+	};
+
+	class CTypeRegCreateTypeAccessorSpecData
+	{
+	public:
+		Niflect::TArrayNif<CCreateTypeAccessorSpecData> m_vecCreateTypeAccessorSpecData;
+	};
+
+	class CStaticGetTypeSpecData
+	{
+	public:
+		CCodeLines m_genH;
+		Niflect::CString m_genHHeaderFilePath;
+		CCodeLines m_impl;
+		Niflect::CString m_implSourceFilePath;
+	};
+
+	class CTypeRegStaticGetTypeSpecData
+	{
+	public:
+		Niflect::TArrayNif<CStaticGetTypeSpecData> m_vecStaticGetTypeSpecData;
 	};
 
 	class CModuleRegGenData
@@ -41,7 +62,7 @@ namespace NiflectGen
 		CModuleRegGenData m_moduleRegGenData;
 		Niflect::TArrayNif<CSplittedModuleRegGenData> m_vecSplittedModuleRegGenData;
 		//Niflect::TArrayNif<CSplittedGenData> m_vecSplittedTypeRegGenData;
-		Niflect::TArrayNif<CTypeRegGenData> m_vecTypeRegGenData;
-		Niflect::TArrayNif<CCreateTypeAccessorSpecData> m_vecCreateTypeAccessorSpecGenData;
+		CTypeRegCreateTypeAccessorSpecData m_typeRegCreateTypeAccessorSpecGenData;
+		CTypeRegStaticGetTypeSpecData m_typeRegStaticGetTypeSpecGenData;
 	};
 }

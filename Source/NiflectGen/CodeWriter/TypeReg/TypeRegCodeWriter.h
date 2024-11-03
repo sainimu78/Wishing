@@ -129,11 +129,20 @@ namespace NiflectGen
 		CCodeLines m_lines;
 	};
 
+	class CTypeRegTaggedTypeGeneratedHeaderData
+	{
+	public:
+		CCodeLines m_linesFullScopedTypeDecl;
+		CCodeLines m_linesStaticGetTypeSpecDecl;
+		CCodeLines m_linesStaticGetTypeSpecImpl;
+	};
+
 	class CTypeRegWritingData2
 	{
 	public:
 		CTypeRegRegisterAndFieldLayoutWritingData m_registerTypeAndfieldLayout;
 		CTypeRegTaggedTypeInitWritingData2 m_taggedTypeInit;
+		CTypeRegTaggedTypeGeneratedHeaderData m_taggedTypeGeneratedBody;
 	};
 
 	struct STypeRegClassWritingContext
@@ -150,6 +159,13 @@ namespace NiflectGen
 		Niflect::CString m_createFieldLayoutOfTypeFuncName;
 	};
 
+	struct STypeRegClassGenHWritingContext
+	{
+		//const Niflect::CString& m_staticGetTypeFuncName;
+		const Niflect::CString& m_moduleApiMacro;
+		CGenLog* m_log;
+	};
+
 	struct STypeRegCreateTypeAccessorWritingContext
 	{
 		const Niflect::CString& m_createTypeAccessorFuncName;
@@ -163,15 +179,21 @@ namespace NiflectGen
 		CDependencyHeaderFilePathAddrs& m_dependencyHeaderFilePathAddrs;
 	};
 
+	struct STypeRegRegisterTypeContext
+	{
+		CGenLog* m_log;
+	};
+
 	class CTypeRegCodeWriter2
 	{
 	public:
 		CTypeRegCodeWriter2();
 		void Init(const CResolvedData* resolvedData, const CResolvedCursorNode* bindingTypeIndexedRoot);
-		virtual void WriteInvokeRegisterType(const CWritingContext& context, STypeRegInvokeRegisterTypeWritingData& data) const;
+		virtual void WriteInvokeRegisterType(const STypeRegRegisterTypeContext& context, STypeRegInvokeRegisterTypeWritingData& data) const;
 		void WriteWriteCreateTypeAccessorFunc(const STypeRegCreateTypeAccessorWritingContext& context, STypeRegCreateTypeAccessorWritingData& data) const;
 		virtual void Deprecated_WriteTypeRegClass(const STypeRegClassWritingContext& context, CTypeRegClassWritingData2& data) const {}
 		virtual void WriteInvokeInitType(const STypeRegClassWritingContext& context, CTypeRegTaggedTypeInitWritingData2& data) const {}
+		virtual void WriteGeneratedBody(const STypeRegClassGenHWritingContext& context, CTypeRegTaggedTypeGeneratedHeaderData& data) const;
 
 	protected:
 		virtual void WriteResocursorNodeBodyCode(CCodeLines& linesResoBodyCode) const {}

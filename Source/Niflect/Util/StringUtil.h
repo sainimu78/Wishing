@@ -2,6 +2,7 @@
 #include "Niflect/NiflectBase.h"
 #include <stdarg.h>
 #include <fstream>
+#include <algorithm>
 
 namespace NiflectUtil
 {
@@ -116,5 +117,10 @@ namespace NiflectUtil
 			data.append(buffer, ifs.gcount());
 		data.append(buffer, ifs.gcount());
 		return data;
+	}
+	static Niflect::CString ConvertToUpperCase(Niflect::CString str)
+	{
+		std::transform(str.begin(), str.end(), str.begin(), [](unsigned char c) { return std::toupper(c); });
+		return str;
 	}
 }

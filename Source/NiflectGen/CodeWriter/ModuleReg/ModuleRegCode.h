@@ -11,9 +11,10 @@ namespace NiflectGen
 		Niflect::CString m_genBasePath;
 		Niflect::TArrayNif<Niflect::CString> m_vecModuleHeader;
 		Niflect::TArrayNif<Niflect::CString> m_vecAccessorSettingHeader;
-		//Niflect::TArrayNif<Niflect::CString> m_vecDependencyHeader;
 		Niflect::TArrayNif<Niflect::CString> m_vecParsingHeaderSearchPath;//header search paths for libclang parsing
 		CWritingHeaderSearchPaths m_writingHeaderSearchPaths;
+		Niflect::CString m_moduleApiMacro;
+		Niflect::CString m_moduleApiMacroHeader;
 	};
 
 	class CModuleRegInfoValidated
@@ -22,6 +23,7 @@ namespace NiflectGen
 		void Init(const CModuleRegInfo& info);
 
 		Niflect::CString m_typeRegBasePath;
+		Niflect::CString m_genHBasePath;
 		Niflect::CString m_moduleRegBasePath;
 		CModuleRegInfo m_userProvided;
 		Niflect::CString m_outputRootPath;

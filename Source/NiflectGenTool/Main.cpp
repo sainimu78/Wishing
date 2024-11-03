@@ -83,6 +83,8 @@ int main()
 				//begin, 指定需要解析的头文件列表
 				info.m_vecModuleHeader.push_back("F:/Fts/Proj/Test/Interedit/Source/Engine/EngineObject.h");
 				info.m_vecModuleHeader.push_back("F:/Fts/Proj/Test/Interedit/Source/Engine/DerivedObject.h");
+				info.m_moduleApiMacro = "ENGINE_API";
+				info.m_moduleApiMacroHeader = "F:/Fts/Proj/Test/Interedit/Source/Engine/EngineCommon.h";
 				//end
 				//begin, 指定BindingSetting头文件列表
 				info.m_vecAccessorSettingHeader.push_back("F:/Fts/Proj/Test/Interedit/Source/Engine/EngineAccessorSetting.h");

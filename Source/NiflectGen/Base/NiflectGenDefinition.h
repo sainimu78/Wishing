@@ -10,6 +10,7 @@ namespace NiflectGenDefinition
 	namespace FileExt
 	{
 		constexpr const char* Cpp = ".cpp";
+		constexpr const char* GenCpp = "_gen.cpp";
 		constexpr const char* H = ".h";
 		constexpr const char* PrivateH = "_private.h";
 		constexpr const char* GenH = "_gen.h";
@@ -28,6 +29,7 @@ namespace NiflectGenDefinition
 	{
 		constexpr const char* ModuleReg = "ModuleReg";
 		constexpr const char* TypeReg = "TypeReg";
+		constexpr const char* GenH = "GenH";
 	}
 
 	namespace CodeTag

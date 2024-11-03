@@ -349,7 +349,7 @@ namespace NiflectGen
     void CGenerator::Save2(const CCodeGenData& genData) const
     {
         const auto& outputRootPath = m_moduleRegInfo.m_outputRootPath;
-        for (auto& it0 : genData.m_vecCreateTypeAccessorSpecGenData)
+        for (auto& it0 : genData.m_typeRegCreateTypeAccessorSpecGenData.m_vecCreateTypeAccessorSpecData)
         {
             {
                 CCppWriter writer;
@@ -361,9 +361,30 @@ namespace NiflectGen
             {
                 CCppWriter writer;
                 writer.WriteLines(it0.m_impl);
-                auto filePath = NiflectUtil::ConcatPath(outputRootPath, it0.m_implHeaderFilePath);
+                auto filePath = NiflectUtil::ConcatPath(outputRootPath, it0.m_implSourceFilePath);
                 NiflectUtil::MakeDirectories(filePath);
                 NiflectUtil::WriteStringToFile(writer.m_code, filePath);
+            }
+        }
+        for (auto& it0 : genData.m_typeRegStaticGetTypeSpecGenData.m_vecStaticGetTypeSpecData)
+        {
+            {
+                if (it0.m_genH.size() > 0)
+                {
+                    CCppWriter writer;
+                    writer.WriteLines(it0.m_genH);
+                    auto filePath = NiflectUtil::ConcatPath(outputRootPath, it0.m_genHHeaderFilePath);
+                    NiflectUtil::MakeDirectories(filePath);
+                    NiflectUtil::WriteStringToFile(writer.m_code, filePath);
+                }
+                if (it0.m_impl.size() > 0)
+                {
+                    CCppWriter writer;
+                    writer.WriteLines(it0.m_impl);
+                    auto filePath = NiflectUtil::ConcatPath(outputRootPath, it0.m_implSourceFilePath);
+                    NiflectUtil::MakeDirectories(filePath);
+                    NiflectUtil::WriteStringToFile(writer.m_code, filePath);
+                }
             }
         }
         {

@@ -60,13 +60,8 @@ namespace NiflectGen
 	{
 		const CModuleRegInfoValidated& m_moduleRegInfo;
 		const Niflect::TArrayNif<CSplittedModuleRegInfo>& m_vecItem;
-		const Niflect::TArrayNif<CCreateTypeAccessorSpecData>& m_vecCreateTypeAccessorSpecData;
+		const CTypeRegCreateTypeAccessorSpecData& m_typeRegCreateTypeAccessorSpecGenData;
 		CGenLog* m_log;
-	};
-
-	struct SSplittedCreateTypeAccessorSpecWritingData
-	{
-		Niflect::TArrayNif<CCreateTypeAccessorSpecData>& m_vecCreateTypeAccessorSpecData;
 	};
 
 	class CSplittedModuleRegFunctionsName

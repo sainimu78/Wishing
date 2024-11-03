@@ -44,6 +44,7 @@ namespace NiflectGen
 	void FindNamespaceAndScopeNameRecursOld(const CXCursor& cursor, Niflect::TArrayNif<Niflect::CString>& vecNamespace, Niflect::TArrayNif<Niflect::CString>& vecScope);
 	void FindNamespaceAndScopeNameRecurs2(const CXCursor& cursor, Niflect::TArrayNif<Niflect::CString>& vecScope);
 	Niflect::CString GenerateNamespacesAndScopesCode(const CXCursor& cursor);
+	Niflect::CString GenerateScopesCodeFromScopeNames(const Niflect::TArrayNif<Niflect::CString>& vecScopeName);
 	void RemoveUnnessesaryNamespacees(const Niflect::TArrayNif<Niflect::CString>& vecNamespaceReference, Niflect::TArrayNif<Niflect::CString>& vecNamespace);
 	bool IsCursorKindTemplateDecl(const CXCursorKind& kind);
 	bool IsCursorTemplateDecl(const CXCursor& cursor);

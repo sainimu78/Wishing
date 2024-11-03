@@ -21,6 +21,11 @@ file(GLOB_RECURSE GeneratedSrc ${GeneratedSrcPath}/*.cpp ${GeneratedSrcPath}/*.h
 create_source_group(${NiflectGeneratedRootPath} ${GeneratedSrc})
 #set_property(SOURCE ${GeneratedSrc} PROPERTY FOLDER "Hidden")
 list(APPEND SrcAll ${GeneratedSrc})
+set(GeneratedSrcPath ${NiflectGeneratedRootPath}/GenH/${ModuleName})
+file(GLOB_RECURSE GeneratedSrc ${GeneratedSrcPath}/*.cpp ${GeneratedSrcPath}/*.h)
+create_source_group(${NiflectGeneratedRootPath} ${GeneratedSrc})
+#set_property(SOURCE ${GeneratedSrc} PROPERTY FOLDER "Hidden")
+list(APPEND SrcAll ${GeneratedSrc})
 
 add_library(${ModuleName} SHARED ${SrcAll})
 

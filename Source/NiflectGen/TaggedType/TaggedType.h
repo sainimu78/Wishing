@@ -75,6 +75,7 @@ namespace NiflectGen
 
 	public:
 		Niflect::CString m_resocursorName;
+		Niflect::TArrayNif<Niflect::CString> m_vecScopeName;
 		CResolvedCursorNode m_taggedResoRoot;
 	};
 

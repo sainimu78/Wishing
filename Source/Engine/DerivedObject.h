@@ -1,5 +1,6 @@
 #pragma once
 #include "Engine/EngineObject.h"
+#include "GenH/Engine/Engine/DerivedObject_gen.h"
 
 namespace Engine
 {

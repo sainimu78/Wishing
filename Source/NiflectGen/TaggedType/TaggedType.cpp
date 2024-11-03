@@ -123,7 +123,9 @@ namespace NiflectGen
 	void CTaggedType::ResolveForResocursorNode()
 	{
 		auto& cursor = this->GetCursor();
-		auto resocursorName = GenerateNamespacesAndScopesCode(cursor);
+		ASSERT(m_vecScopeName.size() == 0);
+		FindNamespaceAndScopeNameRecurs2(cursor, m_vecScopeName);
+		auto resocursorName = GenerateScopesCodeFromScopeNames(m_vecScopeName);;
 		resocursorName += CXStringToCString(clang_getCursorSpelling(cursor));
 		m_resocursorName = resocursorName;
 	}

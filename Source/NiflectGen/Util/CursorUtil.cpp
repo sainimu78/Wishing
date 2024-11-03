@@ -226,14 +226,18 @@ namespace NiflectGen
 			return;
 		}
 	}
+	Niflect::CString GenerateScopesCodeFromScopeNames(const Niflect::TArrayNif<Niflect::CString>& vecScopeName)
+	{
+		Niflect::CString strScope;
+		for (uint32 idx2 = 0; idx2 < vecScopeName.size(); ++idx2)
+			strScope += vecScopeName[idx2] + "::";
+		return strScope;
+	}
 	Niflect::CString GenerateNamespacesAndScopesCode(const CXCursor& cursor)
 	{
-		Niflect::TArrayNif<Niflect::CString> vecScope;
-		FindNamespaceAndScopeNameRecurs2(cursor, vecScope);
-		Niflect::CString strScope;
-		for (uint32 idx2 = 0; idx2 < vecScope.size(); ++idx2)
-			strScope += vecScope[idx2] + "::";
-		return strScope;
+		Niflect::TArrayNif<Niflect::CString> vecScopeName;
+		FindNamespaceAndScopeNameRecurs2(cursor, vecScopeName);
+		return GenerateScopesCodeFromScopeNames(vecScopeName);
 	}
 	void RemoveUnnessesaryNamespacees(const Niflect::TArrayNif<Niflect::CString>& vecNamespaceReference, Niflect::TArrayNif<Niflect::CString>& vecNamespace)
 	{

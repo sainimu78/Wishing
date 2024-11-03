@@ -13,6 +13,9 @@ namespace NiflectGen
 #define LABEL_7 "Offset"
 #define LABEL_8 "FieldName"
 #define LABEL_9 "TypeForLastTemplateArg"
+#define LABEL_10 "API"
+#define LABEL_11 "Namespace"
+#define LABEL_12 "ScopedCode"
 
 	namespace HardCodedTemplate
 	{
@@ -46,5 +49,22 @@ R"(Niflect::GetFieldOffset(&)" MAKELABEL(LABEL_0) "::" MAKELABEL(LABEL_8) R"())"
 	constexpr const char* InitElementAccessor =
 R"(node1->InitForElement();
 node0->InitElementAccessor(node1);)";
+	constexpr const char* StaticGetTypeFuncName =
+R"(StaticGetType<)" MAKELABEL(LABEL_9) ">";
+	constexpr const char* StaticGetTypeSpecDecl =
+R"(template <>
+)" MAKELABEL(LABEL_10) " CNiflectType* " MAKELABEL(LABEL_2) R"(();)";
+	constexpr const char* StaticGetTypeSpecImpl =
+R"(template <>
+CNiflectType* )" MAKELABEL(LABEL_2) R"(()
+{
+	return TRegisteredType<)" MAKELABEL(LABEL_9) R"(>::s_type;
+})";
+	constexpr const char* NamespaceScopeCode =
+"namespace " MAKELABEL(LABEL_11) R"(
+{
+	)" MAKELABEL(LABEL_12) R"(
+}
+)";
 	}
 }

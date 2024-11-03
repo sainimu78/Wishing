@@ -19,6 +19,11 @@ namespace NiflectGen
 	{
 		CModuleRegGenData& m_moduleRegGenData;
 	};
+	struct SSLKDJFSLKJFContext
+	{
+		const CModuleRegInfoValidated& m_moduleRegInfo;
+		CGenLog* m_log;
+	};
 
 	class CTemplateBasedCppWriter
 	{
@@ -35,7 +40,7 @@ namespace NiflectGen
 		//void WriteModuleRegs(const CWritingContext& context, const Niflect::TArrayNif<CTypeRegWritingData>& vecTypeRegData, Niflect::TArrayNif<CModuleRegWritingData>& vecModuleRegData);
 		//void CreateWriters(const CWritingContext& context, Niflect::TArrayNif<CTypeRegGenFileInfo>& vecTypeRegGenFileInfo);
 		void CreateWriters3(const CWritingContext& context, Niflect::TArrayNif<CTypeRegGenFileInfo>& vecTypeRegGenFileInfo);
-		void WriteTypeRegs3(const CWritingContext& context, Niflect::TArrayNif<CTypeRegWritingData2>& vecTypeRegData);
+		void WriteTypeRegs3(const SSLKDJFSLKJFContext& context, Niflect::TArrayNif<CTypeRegWritingData2>& vecTypeRegData);
 		void WriteModuleReg(const SModuleRegWritingContext2& context, SModuleRegWritingData2& data) const;
 		void WriteVerificationCode();
 

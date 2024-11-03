@@ -193,7 +193,7 @@ namespace NiflectGen
             m_vecWriter2.push_back(writer);
         }
     }
-    void CTemplateBasedCppWriter::WriteTypeRegs3(const CWritingContext& context, Niflect::TArrayNif<CTypeRegWritingData2>& vecTypeRegData)
+    void CTemplateBasedCppWriter::WriteTypeRegs3(const SSLKDJFSLKJFContext& context, Niflect::TArrayNif<CTypeRegWritingData2>& vecTypeRegData)
     {
         vecTypeRegData.resize(m_vecWriter2.size());
         for (uint32 idx0 = 0; idx0 < m_vecWriter2.size(); ++idx0)
@@ -201,11 +201,12 @@ namespace NiflectGen
             auto& data = vecTypeRegData[idx0];
             auto& it0 = m_vecWriter2[idx0];
 
+            STypeRegRegisterTypeContext invokeRegisterTypeCtx{ context.m_log };
             STypeRegInvokeRegisterTypeWritingData invokeRegisterTypeData{
                 data.m_registerTypeAndfieldLayout.m_linesInvokeRegisterType, 
                 data.m_registerTypeAndfieldLayout.m_taggedTypeHeaderFilePathAddr
             };
-            it0->WriteInvokeRegisterType(context, invokeRegisterTypeData);
+            it0->WriteInvokeRegisterType(invokeRegisterTypeCtx, invokeRegisterTypeData);
 
             STypeRegCreateTypeAccessorWritingContext createTypeAccessorCtx{ invokeRegisterTypeData.m_createFieldLayoutOfTypeFuncName, context.m_log };
             STypeRegCreateTypeAccessorWritingData createTypeAccessorData{
@@ -215,12 +216,10 @@ namespace NiflectGen
             };
             it0->WriteWriteCreateTypeAccessorFunc(createTypeAccessorCtx, createTypeAccessorData);
 
-            //it0->WriteTypeRegRegisterTypeAndFieldLayout(context, data.m_registerTypeAndfieldLayout);
-
-            //{
-            //    STypeRegClassWritingContext regClassCtx{ data.m_registerTypeAndfieldLayout.m_linesRegisterType, data.m_registerTypeAndfieldLayout.m_fieldLayoutFuncName, context.m_log };
-            //    it0->WriteTypeRegClass(regClassCtx, data.m_regClass);
-            //}
+            {
+                STypeRegClassGenHWritingContext regClassCtx{ context.m_moduleRegInfo.m_userProvided.m_moduleApiMacro, context.m_log };
+                it0->WriteGeneratedBody(regClassCtx, data.m_taggedTypeGeneratedBody);
+            }
             {
                 STypeRegClassWritingContext regClassCtx{ data.m_registerTypeAndfieldLayout.m_linesInvokeRegisterType, data.m_registerTypeAndfieldLayout.m_fieldLayoutFuncName, context.m_log };
                 it0->WriteInvokeInitType(regClassCtx, data.m_taggedTypeInit);
@@ -299,7 +298,8 @@ namespace NiflectGen
         this->CreateWriters3(context, vecTypeRegGenFileInfo);
 
         Niflect::TArrayNif<CTypeRegWritingData2> vecTypeRegData;
-        this->WriteTypeRegs3(context, vecTypeRegData);
+        SSLKDJFSLKJFContext myTypeRegCtx{ m_moduleRegInfo, context.m_log };
+        this->WriteTypeRegs3(myTypeRegCtx, vecTypeRegData);
 
         //CSplittedTypeRegWritingContext splittedModTypesCtx(m_moduleRegInfo, context.m_log);
         //CSplittedModuleReg2 smr;
@@ -367,10 +367,9 @@ namespace NiflectGen
         SplitModuleReg(moduleSplittingCtx, vecSplittedModuleRegInfo);
 
         SSplittedCreateTypeAccessorSpecWritingContext splittedModTypesCtx{ m_moduleRegInfo, vecSplittedModuleRegInfo, context.m_log };
-        SSplittedCreateTypeAccessorSpecWritingData createTypeAccessorSpecsData{ data.m_vecCreateTypeAccessorSpecGenData };
-        WriteSplittedCreateTypeAccessorSpec(splittedModTypesCtx, createTypeAccessorSpecsData);
+        WriteSplittedSpec(splittedModTypesCtx, data.m_typeRegCreateTypeAccessorSpecGenData, data.m_typeRegStaticGetTypeSpecGenData);
 
-        SSplittedModuleRegWritingContext2 splittedModulesCtx{ m_moduleRegInfo, splittedModTypesCtx.m_vecItem, data.m_vecCreateTypeAccessorSpecGenData, context.m_log };
+        SSplittedModuleRegWritingContext2 splittedModulesCtx{ m_moduleRegInfo, splittedModTypesCtx.m_vecItem, data.m_typeRegCreateTypeAccessorSpecGenData, context.m_log };
         Niflect::TArrayNif<CSplittedModuleRegFunctionsName> vecSplittedModuleRegFuncsName;
         SSplittedModuleRegWritingData2 splittedModuleRegsData{ data.m_vecSplittedModuleRegGenData, vecSplittedModuleRegFuncsName };
         WriteSplittedModuleRegs3(splittedModulesCtx, splittedModuleRegsData);

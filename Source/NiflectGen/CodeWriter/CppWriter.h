@@ -47,12 +47,13 @@ namespace NiflectGen
 		}
 		CHeaderFilePathData(const Niflect::CString& path, bool isPreservedHeadersOrder)
 			: m_path(path)
-			, m_isPreservedHeadersOrder(m_isPreservedHeadersOrder)
+			, m_isPreservedHeadersOrder(isPreservedHeadersOrder)
 		{
 		}
 		const Niflect::CString m_path;
 		const bool m_isPreservedHeadersOrder;
 	};
+	using CHeaderFilePathDataArray = Niflect::TArrayNif<CHeaderFilePathData>;
 
 	class CIncludesHelper
 	{
@@ -86,7 +87,7 @@ namespace NiflectGen
 			InternalConvertToIncludePath(filePath, vecSearchPath, incPath);
 			return incPath;
 		}
-		static void ConvertFromHeaderFilePaths(const Niflect::TArrayNif<CHeaderFilePathData>& vecHeaderData, const CWritingHeaderSearchPaths& paths, CCodeLines& linesInclude)
+		static void ConvertFromHeaderFilePaths(const CHeaderFilePathDataArray& vecHeaderData, const CWritingHeaderSearchPaths& paths, CCodeLines& linesInclude)
 		{
 			Niflect::TArrayNif<Niflect::CString> vecIncPathPreservedOrder;
 			Niflect::TArrayNif<Niflect::CString> vecIncPathSystem;

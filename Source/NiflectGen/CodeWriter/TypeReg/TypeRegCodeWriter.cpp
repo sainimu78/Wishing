@@ -75,7 +75,7 @@ namespace NiflectGen
 		m_bindingTypeIndexedRoot = bindingTypeIndexedRoot;
 		m_resolvedData = resolvedData;
 	}
-	void CTypeRegCodeWriter2::WriteInvokeRegisterType(const CWritingContext& context, STypeRegInvokeRegisterTypeWritingData& data) const
+	void CTypeRegCodeWriter2::WriteInvokeRegisterType(const STypeRegRegisterTypeContext& context, STypeRegInvokeRegisterTypeWritingData& data) const
 	{
 		{
 			auto& hct = HardCodedTemplate::CreateTypeAccessorFuncName;
@@ -202,5 +202,84 @@ namespace NiflectGen
 #ifdef DEBUG_FOR_TYPE_REG
 		DebugPrintCodeLines(dataImpl);
 #endif
+	}
+	static void GenerateFullScopedTypeDeclCodeRecurs(const Niflect::TArrayNif<Niflect::CString>& vecScopeName, const Niflect::CString& typeDeclCode, CCodeLines& linesParent, uint32 frontIdx = 0)
+	{
+		if (vecScopeName.size() == frontIdx)
+		{
+			linesParent.push_back(typeDeclCode);
+			return;
+		}
+		auto& scopeName = vecScopeName[frontIdx];
+
+		CCodeTemplate tpl0;
+		tpl0.ReadFromRawData(HardCodedTemplate::NamespaceScopeCode);
+		CLabelToCodeMapping map;
+		MapLabelToText(map, LABEL_11, scopeName);
+		CCodeLines linesNext;
+		GenerateFullScopedTypeDeclCodeRecurs(vecScopeName, typeDeclCode, linesNext, frontIdx + 1);
+		MapLabelToLines(map, LABEL_12, linesNext);
+		Niflect::TSet<Niflect::CString> setReplacedLabel;
+		tpl0.ReplaceLabels(map, linesParent, &setReplacedLabel);
+		ASSERT(setReplacedLabel.size() == map.size());
+	}
+	void CTypeRegCodeWriter2::WriteGeneratedBody(const STypeRegClassGenHWritingContext& context, CTypeRegTaggedTypeGeneratedHeaderData& data) const
+	{
+		auto& ttIdx = m_bindingTypeIndexedRoot->m_taggedTypeIndex;
+		if (ttIdx != INDEX_NONE)
+		{
+			Niflect::CString staticGetTypeFuncName;
+			auto resocursorNameForLastTemplateArg = m_bindingTypeIndexedRoot->GetResocursorNameForLastTemplateArg();
+			{
+				auto& hct = HardCodedTemplate::StaticGetTypeFuncName;
+				staticGetTypeFuncName = ReplaceLabelToText1(hct, LABEL_9, resocursorNameForLastTemplateArg);
+			}
+			{
+				auto& tt = m_resolvedData->m_taggedMapping.m_vecType[ttIdx];
+				auto& cursor = tt->GetCursor();
+				auto kind = clang_getCursorKind(cursor);
+				Niflect::CString cppTypeKeyword;
+				switch (kind)
+				{
+				case CXCursor_ClassDecl:
+					cppTypeKeyword = "class";
+					break;
+				case CXCursor_StructDecl:
+					cppTypeKeyword = "struct";
+					break;
+				case CXCursor_EnumDecl:
+					if (clang_EnumDecl_isScoped(cursor))
+						cppTypeKeyword = "enum class";
+					else
+						cppTypeKeyword = "enum";
+					break;
+				default:
+					ASSERT(false);
+					break;
+				}
+				auto declCode = NiflectUtil::FormatString("%s %s;", cppTypeKeyword.c_str(), CXStringToCString(clang_getCursorSpelling(cursor)).c_str());
+				GenerateFullScopedTypeDeclCodeRecurs(tt->m_vecScopeName, declCode, data.m_linesFullScopedTypeDecl);
+			}
+			{
+				CCodeTemplate tpl0;
+				tpl0.ReadFromRawData(HardCodedTemplate::StaticGetTypeSpecDecl);
+				CLabelToCodeMapping map;
+				MapLabelToText(map, LABEL_2, staticGetTypeFuncName);
+				MapLabelToText(map, LABEL_10, context.m_moduleApiMacro);
+				Niflect::TSet<Niflect::CString> setReplacedLabel;
+				tpl0.ReplaceLabels(map, data.m_linesStaticGetTypeSpecDecl, &setReplacedLabel);
+				ASSERT(setReplacedLabel.size() == map.size());
+			}
+			{
+				CCodeTemplate tpl0;
+				tpl0.ReadFromRawData(HardCodedTemplate::StaticGetTypeSpecImpl);
+				CLabelToCodeMapping map;
+				MapLabelToText(map, LABEL_2, staticGetTypeFuncName);
+				MapLabelToText(map, LABEL_9, resocursorNameForLastTemplateArg);
+				Niflect::TSet<Niflect::CString> setReplacedLabel;
+				tpl0.ReplaceLabels(map, data.m_linesStaticGetTypeSpecImpl, &setReplacedLabel);
+				ASSERT(setReplacedLabel.size() == map.size());
+			}
+		}
 	}
 }

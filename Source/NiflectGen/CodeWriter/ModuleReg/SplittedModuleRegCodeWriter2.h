@@ -3,6 +3,6 @@
 
 namespace NiflectGen
 {
-    void WriteSplittedCreateTypeAccessorSpec(const SSplittedCreateTypeAccessorSpecWritingContext& context, SSplittedCreateTypeAccessorSpecWritingData& data);
+    void WriteSplittedSpec(const SSplittedCreateTypeAccessorSpecWritingContext& context, CTypeRegCreateTypeAccessorSpecData& createTypeAccessorSpecGendata, CTypeRegStaticGetTypeSpecData& staticGetTypeSpecGenData);
     void WriteSplittedModuleRegs3(const SSplittedModuleRegWritingContext2& context, SSplittedModuleRegWritingData2& data);
 }
