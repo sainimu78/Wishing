@@ -40,6 +40,12 @@ namespace Niflect
 	class CNiflectType;
 	using CStaticNiflectTypeAddr = CNiflectType*;
 
+	class CTypeLayout
+	{
+	public:
+		Niflect::TArrayNif<CSharedAccessor> m_vecAccessor;
+	};
+
 	class CNiflectType
 	{
 	public:
@@ -97,6 +103,30 @@ namespace Niflect
 		{
 			return m_niflectTypeSize;//对于C++ Built in类型, 返回类型为const ref是为了方便赋值类型用auto
 		}
+		const CTypeLayout& GetTypeLayout() const
+		{
+			return m_layout;
+		}
+
+	public:
+		bool SaveInstanceToRwNode(const AddrType base, CRwNode* rw) const
+		{
+			for (auto& it : m_layout.m_vecAccessor)
+			{
+				if (!it->SaveToRwNode(base, rw))
+					return false;
+			}
+			return true;
+		}
+		bool LoadInstanceFromRwNode(AddrType base, const CRwNode* rw) const
+		{
+			for (auto& it : m_layout.m_vecAccessor)
+			{
+				if (!it->LoadFromRwNode(base, rw))
+					return false;
+			}
+			return true;
+		}
 
 	public:
 		//void Construct(void* instanceBase) const
@@ -127,6 +157,12 @@ namespace Niflect
 			//todo: 未确定方案, 用到再创建还是在Module初始化时统一遍历创建, 现用后者实验
 			ASSERT(m_fieldRoot == NULL);
 			m_fieldRoot = this->CreateFieldLayout();
+		}
+		virtual void InitTypeLayout()
+		{
+			ASSERT(m_layout.m_vecAccessor.size() == 0);
+			if (m_cb.m_CreateTypeAccessorFunc != NULL)
+				m_layout.m_vecAccessor.push_back(m_cb.m_CreateTypeAccessorFunc());
 		}
 		template <typename TBase>
 		TSharedPtr<TBase> MakeSharedInstance() const
@@ -183,8 +219,12 @@ namespace Niflect
 			return typeid(T).hash_code();
 		}
 
-	private:
-		virtual void DebugFuncForDynamicCast() {}//仅为动态检查类型避免错误, 如已定义非调试用的virtual函数则可移除, 备注: error C2683: 'dynamic_cast': 'XXX' is not a polymorphic type 
+	//private:
+	//	virtual void DebugFuncForDynamicCast() {}//仅为动态检查类型避免错误, 如已定义非调试用的virtual函数则可移除, 备注: error C2683: 'dynamic_cast': 'XXX' is not a polymorphic type 
+
+	protected:
+		CTypeLayout m_layout;
+		CTypeInvokations m_cb;//todo: 计划改名为 m_typeFuncs
 
 	private:
 		//todo: 计划改名为 m_id, 通常为 natiev type name
@@ -195,7 +235,6 @@ namespace Niflect
 		CTypeIndex m_index;//todo: 计划改名为 m_tableIdx;
 		uint32 m_niflectTypeSize;//todo: 计划改名为 m_nativeTypeSize;
 		CSharedAccessor m_fieldRoot;//todo: 计划废弃
-		CTypeInvokations m_cb;//todo: 计划改名为 m_typeFuncs
 		size_t m_typeHash;
 		CSharedNatimeta m_natimeta;
 		CStaticNiflectTypeAddr* m_staticTypePtrAddr;
@@ -276,6 +315,21 @@ namespace Niflect
 		CInheritableType* GetParent() const
 		{
 			return m_parent;
+		}
+		virtual void InitTypeLayout() override
+		{
+			inherited::InitTypeLayout();
+			if (m_parent != NULL)
+			{
+				ASSERT(m_layout.m_vecAccessor.size() == 1);
+				auto par = m_parent;
+				while (par != NULL)
+				{
+					ASSERT(par->m_cb.m_CreateTypeAccessorFunc != NULL);
+					m_layout.m_vecAccessor.insert(m_layout.m_vecAccessor.begin(), par->m_cb.m_CreateTypeAccessorFunc());
+					par = par->m_parent;
+				}
+			}
 		}
 
 	//private:

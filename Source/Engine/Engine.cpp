@@ -25,28 +25,21 @@ void TestEngineCreate()
 	g_defaultTable = Niflect::MakeShared<Niflect::CNiflectTable>();
 	Niflect::GeneratedInitialReg(g_defaultTable.Get());
 	Niflect::GeneratedInitTypes();
+	g_defaultTable->InitTypesLayout();
 }
 void TestEngineRun()
 {
-	//printf("##############################\n");
-	//for (uint32 idx = 0; idx < g_defaultTable->GetTypesCount(); ++idx)
-	//{
-	//	auto type = g_defaultTable->GetTypeByIndex(idx);
-	//	printf("%s\n", type->GetTypeName().c_str());
-	//}
-
 	using CTestType = Engine::CDerivedObject;
 	auto type = Niflect::StaticGetType<CTestType>();
-	auto accessor = type->CreateAccessor();
 	RwTree::CRwNode rw;
 	CTestType srcData;
 	{
 		srcData.InitForTest();
-		accessor->SaveToRwNode(&srcData, &rw);
+		type->SaveInstanceToRwNode(&srcData, &rw);
 	}
 	auto instance = type->MakeSharedInstance<CTestType>();
 	CTestType& dstData = *instance;
-	accessor->LoadFromRwNode(&dstData, &rw);
+	type->LoadInstanceFromRwNode(&dstData, &rw);
 	ASSERT(srcData == dstData);
 	Niflect::CStringStream ss;
 	RwTree::CJsonFormat::Write(&rw, ss);

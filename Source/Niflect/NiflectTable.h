@@ -85,6 +85,11 @@ namespace Niflect
 				return m_vecType[itFound->second].Get();
 			return NULL;
 		}
+		void InitTypesLayout() const
+		{
+			for (auto& it : m_vecType)
+				it->InitTypeLayout();
+		}
 		
 	private:
 		uint32 AddType(const CSharedNiflectType& type)
