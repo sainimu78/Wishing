@@ -11,6 +11,8 @@
 #include "Niflect/Memory/Default/DefaultMemory.h"
 #include "Engine/Test/TestAccessor2.h"
 #include "Engine/Engine.h"
+//#include "Engine/DerivedObject.h"
+//#include "Niflect/Serialization/JsonFormat.h"
 
 class CMyClassForSimplifiedMakeShared
 {
@@ -49,6 +51,16 @@ int main(int argc, char** argv)
 
 	auto memTest = Niflect::GetDefaultMemoryStats();
 	TestEngineCreate();
+	//begin, 如须测试, Editor cmake未接入生成代码的头文件搜索路径时, 应将Engine的相应路径改为PUBLIC
+	//auto a = Niflect::StaticGetType<Engine::CDerivedObject>();
+	//auto b = a->MakeSharedInstance<Engine::CDerivedObject>();
+	//b->InitForTest();
+	//RwTree::CRwNode rw;
+	//a->SaveInstanceToRwNode(b.Get(), &rw);
+	//Niflect::CStringStream ss;
+	//RwTree::CJsonFormat::Write(&rw, ss);
+	//printf("%s\n", ss.str().c_str());
+	//end
 	TestEngineRun();
 	TestEngineDestroy();
 
