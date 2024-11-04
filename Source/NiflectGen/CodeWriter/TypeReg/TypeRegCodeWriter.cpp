@@ -261,6 +261,19 @@ namespace NiflectGen
 				GenerateFullScopedTypeDeclCodeRecurs(tt->m_vecScopeName, declCode, data.m_linesFullScopedTypeDecl);
 			}
 			{
+				SCollectingGeneratedBodyWritingData forGenHData{ data.m_generatedBodyLineNumber };
+				this->CollectDataForGenH(forGenHData);
+			}
+			{
+				CCodeTemplate tpl0;
+				tpl0.ReadFromRawData(HardCodedTemplate::MacroBodyExposeToAccessor);
+				CLabelToCodeMapping map;
+				MapLabelToText(map, LABEL_9, resocursorNameForLastTemplateArg);
+				Niflect::TSet<Niflect::CString> setReplacedLabel;
+				tpl0.ReplaceLabels(map, data.m_linesMacroBodyExposeToAccessor, &setReplacedLabel);
+				ASSERT(setReplacedLabel.size() == map.size());
+			}
+			{
 				CCodeTemplate tpl0;
 				tpl0.ReadFromRawData(HardCodedTemplate::StaticGetTypeSpecDecl);
 				CLabelToCodeMapping map;

@@ -132,9 +132,15 @@ namespace NiflectGen
 	class CTypeRegTaggedTypeGeneratedHeaderData
 	{
 	public:
+		CTypeRegTaggedTypeGeneratedHeaderData()
+			: m_generatedBodyLineNumber(INDEX_NONE)
+		{
+		}
 		CCodeLines m_linesFullScopedTypeDecl;
 		CCodeLines m_linesStaticGetTypeSpecDecl;
 		CCodeLines m_linesStaticGetTypeSpecImpl;
+		uint32 m_generatedBodyLineNumber;
+		CCodeLines m_linesMacroBodyExposeToAccessor;
 	};
 
 	class CTypeRegWritingData2
@@ -184,6 +190,12 @@ namespace NiflectGen
 		CGenLog* m_log;
 	};
 
+	struct SCollectingGeneratedBodyWritingData
+	{
+	public:
+		uint32& m_generatedBodyLineNumber;
+	};
+
 	class CTypeRegCodeWriter2
 	{
 	public:
@@ -198,6 +210,7 @@ namespace NiflectGen
 	protected:
 		virtual void WriteResocursorNodeBodyCode(CCodeLines& linesResoBodyCode) const {}
 		virtual void CollectDependencyHeaderFilePathAddrs(CDependencyHeaderFilePathAddrs& dependencyHeaderFilePathAddrs) const = 0;
+		virtual void CollectDataForGenH(SCollectingGeneratedBodyWritingData& data) const {}
 
 	private:
 		void WriteCreateTypeAccessor(const STypeRegCreateTypeAccessorWritingContext& context, CCodeLines& dataDecl, CCodeLines& dataImpl, STypeRegCreateTypeAccessorWritingData& data) const;

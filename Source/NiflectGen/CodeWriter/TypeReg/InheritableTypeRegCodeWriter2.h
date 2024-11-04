@@ -10,11 +10,12 @@ namespace NiflectGen
 	{
 		typedef CTypeRegCodeWriter2 inherited;
 	public:
-		CInheritableTypeRegCodeWriter2(const Niflect::TArrayNif<CResolvedCursorNode>& vecFieldResocursorNode, const Niflect::TArrayNif<CTaggedInheritableTypeMember*>& vecField, const CTaggedType* baseTaggedType);
+		CInheritableTypeRegCodeWriter2(const Niflect::TArrayNif<CResolvedCursorNode>& vecFieldResocursorNode, const Niflect::TArrayNif<CTaggedInheritableTypeMember*>& vecField, const CTaggedType* baseTaggedType, uint32 generatedBodyLineNumber);
 
 	protected:
 		virtual void WriteResocursorNodeBodyCode(CCodeLines& linesResoBodyCode) const override;
 		virtual void CollectDependencyHeaderFilePathAddrs(CDependencyHeaderFilePathAddrs& dependencyHeaderFilePathAddrs) const override;
+		virtual void CollectDataForGenH(SCollectingGeneratedBodyWritingData& data) const override;
 
 	public:
 		virtual void WriteInvokeInitType(const STypeRegClassWritingContext& context, CTypeRegTaggedTypeInitWritingData2& data) const override;
@@ -26,5 +27,6 @@ namespace NiflectGen
 		const Niflect::TArrayNif<CResolvedCursorNode>& m_vecFieldResocursorNode;
 		const Niflect::TArrayNif<CTaggedInheritableTypeMember*>& m_vecField;
 		const CTaggedType* m_baseTaggedType;
+		const uint32 m_generatedBodyLineNumber;
 	};
 }

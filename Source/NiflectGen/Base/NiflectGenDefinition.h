@@ -43,6 +43,8 @@ namespace NiflectGenDefinition
 #else
 		constexpr const char* BindingSetting = "__NiflectGen_BindingSetting";
 #endif
+		constexpr const char* GeneratedBody = "__NiflectGen_GeneratedBody";
+
 		constexpr const char* Type = "__NiflectGen_Type";
 		constexpr const char* Field = "__NiflectGen_Field";
 		constexpr const char* Method = "__NiflectGen_Method";
@@ -71,18 +73,18 @@ namespace NiflectGenDefinition
 			return NiflectUtil::StartsWith(text, NiflectGenDefinition::CodeTag::BindingSetting);
 		}
 #endif
-		static bool IsType(const Niflect::CString& text)
-		{
-			return NiflectUtil::StartsWith(text, NiflectGenDefinition::CodeTag::Type);
-		}
-		static bool IsField(const Niflect::CString& text)
-		{
-			return NiflectUtil::StartsWith(text, NiflectGenDefinition::CodeTag::Field);
-		}
-		static bool IsMethod(const Niflect::CString& text)
-		{
-			return NiflectUtil::StartsWith(text, NiflectGenDefinition::CodeTag::Method);
-		}
+		//static bool IsType(const Niflect::CString& text)
+		//{
+		//	return NiflectUtil::StartsWith(text, NiflectGenDefinition::CodeTag::Type);
+		//}
+		//static bool IsField(const Niflect::CString& text)
+		//{
+		//	return NiflectUtil::StartsWith(text, NiflectGenDefinition::CodeTag::Field);
+		//}
+		//static bool IsMethod(const Niflect::CString& text)
+		//{
+		//	return NiflectUtil::StartsWith(text, NiflectGenDefinition::CodeTag::Method);
+		//}
 	}
 
 	namespace CodeStyle
@@ -151,6 +153,7 @@ namespace NiflectGenDefinition
 #endif
 			constexpr const char* NiflectTypeHeader = "Niflect/NiflectType.h";
 			constexpr const char* NiflectTableHeader = "Niflect/NiflectTable.h";
+			constexpr const char* NiflectMacroHeader = "Niflect/NiflectMacro.h";
 		}
 
 		namespace Setting

@@ -7,6 +7,7 @@ namespace Engine
 	NIF_T()
 	class CDerivedObject : public CEngineObject
 	{
+		GENERATED_BODY()
 		typedef CEngineObject inherited;
 	public:
 		CDerivedObject()

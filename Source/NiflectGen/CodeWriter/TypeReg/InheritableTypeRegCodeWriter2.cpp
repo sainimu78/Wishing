@@ -9,10 +9,11 @@
 
 namespace NiflectGen
 {
-	CInheritableTypeRegCodeWriter2::CInheritableTypeRegCodeWriter2(const Niflect::TArrayNif<CResolvedCursorNode>& vecFieldResocursorNode, const Niflect::TArrayNif<CTaggedInheritableTypeMember*>& vecField, const CTaggedType* baseTaggedType)
+	CInheritableTypeRegCodeWriter2::CInheritableTypeRegCodeWriter2(const Niflect::TArrayNif<CResolvedCursorNode>& vecFieldResocursorNode, const Niflect::TArrayNif<CTaggedInheritableTypeMember*>& vecField, const CTaggedType* baseTaggedType, uint32 generatedBodyLineNumber)
 		: m_vecFieldResocursorNode(vecFieldResocursorNode)
 		, m_vecField(vecField)
 		, m_baseTaggedType(baseTaggedType)
+		, m_generatedBodyLineNumber(generatedBodyLineNumber)
 	{
 
 	}
@@ -49,6 +50,10 @@ namespace NiflectGen
 		dependencyHeaderFilePathAddrs.m_vecDecl.push_back(m_bindingTypeIndexedRoot->GetHeaderFilePathAddrForTaggedType());
 		for (auto& it0 : m_vecFieldResocursorNode)
 			it0.GetHeaderFilePathAddrs(dependencyHeaderFilePathAddrs.m_vecImpl);
+	}
+	void CInheritableTypeRegCodeWriter2::CollectDataForGenH(SCollectingGeneratedBodyWritingData& data) const
+	{
+		data.m_generatedBodyLineNumber = m_generatedBodyLineNumber;
 	}
 	void CInheritableTypeRegCodeWriter2::WriteStaticInitType(const STypeRegClassWritingContext& context, CCodeLines& lines) const
 	{

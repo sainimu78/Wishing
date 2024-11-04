@@ -85,6 +85,7 @@ int main()
 				info.m_vecModuleHeader.push_back("F:/Fts/Proj/Test/Interedit/Source/Engine/DerivedObject.h");
 				info.m_moduleApiMacro = "ENGINE_API";
 				info.m_moduleApiMacroHeader = "F:/Fts/Proj/Test/Interedit/Source/Engine/EngineCommon.h";
+				info.m_genFileMode = EGeneratingHeaderAndSourceFileMode::ESourceAndHeader;
 				//end
 				//begin, 指定BindingSetting头文件列表
 				info.m_vecAccessorSettingHeader.push_back("F:/Fts/Proj/Test/Interedit/Source/Engine/EngineAccessorSetting.h");

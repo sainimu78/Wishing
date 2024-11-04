@@ -11,6 +11,8 @@ namespace NiflectGen
 
 	protected:
 		void InitBaseTypeSpecifierCursor(const CXCursor& cursor);
+		bool CollectGeneratedBodyTag(const CXCursor& cursor, const CXCursorKind& kind);
+		void ErrorIfNoGeneratedBodyTag(const CXCursor& cursor) const;
 
 	public:
 		virtual void Deprecated_ResolveDependcies(const TCursorMap<CTaggedType*>& mapCursorDeclToTaggedType) override;
@@ -27,5 +29,6 @@ namespace NiflectGen
 		CTaggedType* m_baseTaggedType;
 		Niflect::TArrayNif<CTaggedInheritableTypeMember*> m_vecMember;
 		Niflect::TArrayNif<CResolvedCursorNode> m_vecMemberIndexedRoot;
+		uint32 m_generatedBodyLineNumber;
 	};
 }

@@ -1,5 +1,4 @@
 #pragma once
-#include "Niflect/NiflectMacro.h"
 //#include <vector>
 #include "Niflect/NiflectBase.h"
 #include "Engine/EngineObject_gen.h"
@@ -9,6 +8,7 @@ namespace Engine
 	NIF_T()
 	class CEngineObject
 	{
+		GENERATED_BODY()
 	public:
 		CEngineObject()
 			: m_float_0(0.0f)

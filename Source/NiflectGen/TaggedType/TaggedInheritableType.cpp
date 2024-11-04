@@ -4,18 +4,38 @@
 #include "Niflect/Util/TypeUtil.h"
 #include "Niflect/Util/DebugUtil.h"
 #include "NiflectGen/CodeWriter/TypeReg/InheritableTypeRegCodeWriter2.h"
+#include "NiflectGen/Base/NiflectGenDefinition.h"
 
 namespace NiflectGen
 {
 	CTaggedInheritableType::CTaggedInheritableType()
 		: m_baseTypeSpecifierCursor(g_invalidCursor)
 		, m_baseTaggedType(NULL)
+		, m_generatedBodyLineNumber(INDEX_NONE)
 	{
 	}
 	void CTaggedInheritableType::InitBaseTypeSpecifierCursor(const CXCursor& cursor)
 	{
 		ASSERT(clang_Cursor_isNull(m_baseTypeSpecifierCursor));
 		m_baseTypeSpecifierCursor = cursor;
+	}
+	bool CTaggedInheritableType::CollectGeneratedBodyTag(const CXCursor& cursor, const CXCursorKind& kind)
+	{
+		if (FindTagByDisplayName(cursor, NiflectGenDefinition::CodeTag::GeneratedBody))
+		{
+			ASSERT(m_generatedBodyLineNumber == INDEX_NONE);
+			CXSourceLocation location = clang_getCursorLocation(cursor);
+			uint32 lineNumber;
+			clang_getSpellingLocation(location, NULL, &lineNumber, NULL, NULL);
+			m_generatedBodyLineNumber = lineNumber;
+			return true;
+		}
+		return false;
+	}
+	void CTaggedInheritableType::ErrorIfNoGeneratedBodyTag(const CXCursor& cursor) const
+	{
+		auto a = CXStringToCString(clang_getCursorSpelling(cursor));
+		ASSERT(m_generatedBodyLineNumber != INDEX_NONE);
 	}
 	void CTaggedInheritableType::Deprecated_ResolveDependcies(const TCursorMap<CTaggedType*>& mapCursorDeclToTaggedType)
 	{
@@ -111,7 +131,7 @@ namespace NiflectGen
 		//	baseTypeCursorDecl = m_baseTaggedType->GetCursor();
 		//return Niflect::MakeShared<CInheritableTypeRegCodeWriter_ObjectAccessor>(this->GetCursor(), setting, baseTypeCursorDecl, m_vecMember);
 
-		return Niflect::MakeShared<CInheritableTypeRegCodeWriter2>(m_vecMemberIndexedRoot, m_vecMember, m_baseTaggedType);
+		return Niflect::MakeShared<CInheritableTypeRegCodeWriter2>(m_vecMemberIndexedRoot, m_vecMember, m_baseTaggedType, m_generatedBodyLineNumber);
 	}
 	void CTaggedInheritableType::DebugDerivedPrint(FILE* fp) const
 	{

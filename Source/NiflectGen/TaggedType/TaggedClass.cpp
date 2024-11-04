@@ -21,13 +21,20 @@ namespace NiflectGen
 			auto kind = clang_getCursorKind(cursor);
 			if (kind == CXCursor_TypedefDecl)
 			{
-				auto found = FindTagByDisplayName(cursor, NiflectGenDefinition::CodeTag::Field);
-				if (!found)
-					found = FindTagByDisplayName(cursor, NiflectGenDefinition::CodeTag::Method);
-				if (found)
+				if (this->CollectGeneratedBodyTag(cursor, kind))
 				{
-					m_tagLocation = clang_getCursorLocation(cursor);
-					m_stage = EStage::FoundMember;
+
+				}
+				else
+				{
+					auto found = FindTagByDisplayName(cursor, NiflectGenDefinition::CodeTag::Field);
+					if (!found)
+						found = FindTagByDisplayName(cursor, NiflectGenDefinition::CodeTag::Method);
+					if (found)
+					{
+						m_tagLocation = clang_getCursorLocation(cursor);
+						m_stage = EStage::FoundMember;
+					}
 				}
 			}
 			else if (kind == CXCursor_CXXAccessSpecifier)
@@ -41,6 +48,8 @@ namespace NiflectGen
 		}
 		else if (m_stage == EStage::FoundMember)
 		{
+			this->ErrorIfNoGeneratedBodyTag(cursor);
+
 			bool ok = false;
 			auto kind = clang_getCursorKind(cursor);
 			if (kind == CXCursor_FieldDecl)
