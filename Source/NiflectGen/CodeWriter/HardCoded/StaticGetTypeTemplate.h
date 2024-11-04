@@ -9,15 +9,18 @@ namespace NiflectGen
 #define LABEL_3 "Impl"
 #define LABEL_4 "FileID"
 #define LABEL_6 "Macros"
+#define LABEL_7 "LineNum"
+#define LABEL_8 "Header"
 #define LABEL_9 "MacroDefinitionItems"
 #define LABEL_10 "MacroDefinitionRoot"
 
 	namespace HardCodedTemplate
 	{
 		static const char* LineNumberMacros =
-"" MAKELABEL(LABEL_9) R"(
-
+"//This is the expansion of GENERATED_BODY at the line " MAKELABEL(LABEL_7) " of " MAKELABEL(LABEL_8) R"(
+)" MAKELABEL(LABEL_9) R"(
 )" MAKELABEL(LABEL_10) R"(
+
 )";
 		static const char* GenH =
 R"(#pragma once

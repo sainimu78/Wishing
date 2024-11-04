@@ -87,31 +87,19 @@ namespace Engine
 		Niflect::TArrayNif<Niflect::TArrayNif<bool> > m_array_bits_8;
 	};
 
-	//NIF_T()
-	//class CEngineObject
-	//{
-	//public:
-	//	CEngineObject();
+	NIF_T()
+	class CComponentObject
+	{
+		GENERATED_BODY()
+	public:
+		CComponentObject()
+			: m_float_0(0.0f)
+		{
 
-	//public:
-	//	void InitForTest()
-	//	{
-	//	}
-	//	bool operator==(const CEngineObject& rhs) const
-	//	{
-	//		return false;
-	//	}
+		}
 
-	//public:
-	//	//NIF_F()
-	//	//Niflect::TArrayNif<float> m_array_float_0;
-	//	//NIF_F()
-	//	//std::vector<bool> m_array_bool_1;
-	//	//NIF_F()
-	//	//Niflect::TMap<Niflect::CString, Niflect::TArrayNif<Niflect::TMap<Niflect::CString, float> > > m_map_string_float_2;
-	//	//NIF_F()
-	//	//Niflect::TArrayNif<Niflect::TMap<Niflect::CString, float> > m_map_string_float_2;
-	//	NIF_F()
-	//	Niflect::TMap<Niflect::CString, float> m_map_string_float_2;
-	//};
+	private:
+		NIF_F()
+		float m_float_0;
+	};
 }

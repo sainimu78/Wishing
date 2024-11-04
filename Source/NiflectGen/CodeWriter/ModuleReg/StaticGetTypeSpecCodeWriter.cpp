@@ -27,8 +27,8 @@ namespace NiflectGen
             auto& it0 = context.m_vecItem[idx0];
             if (it0.m_taggedTypeHeaderFilePathAddr != NULL)
             {
-                auto relativeTypeRegFilePathNoExt = CIncludesHelper::ConvertToIncludePath(*it0.m_taggedTypeHeaderFilePathAddr, context.m_moduleRegInfo.m_userProvided.m_writingHeaderSearchPaths.m_vecForRegularConversion);
-                relativeTypeRegFilePathNoExt = NiflectUtil::RemoveFileExt(relativeTypeRegFilePathNoExt);
+                auto headerFilePath = CIncludesHelper::ConvertToIncludePath(*it0.m_taggedTypeHeaderFilePathAddr, context.m_moduleRegInfo.m_userProvided.m_writingHeaderSearchPaths.m_vecForRegularConversion);
+                auto relativeTypeRegFilePathNoExt = NiflectUtil::RemoveFileExt(headerFilePath);
                 auto& staticGetTypeSpecData = data.m_vecStaticGetTypeSpecData[idx0];
                 auto typeRegSplittedFilePathNoExt = NiflectUtil::ConcatPath(context.m_moduleRegInfo.m_genHBasePath, relativeTypeRegFilePathNoExt);
                 staticGetTypeSpecData.m_genHHeaderFilePath = typeRegSplittedFilePathNoExt + NiflectGenDefinition::FileExt::GenH;
@@ -94,6 +94,8 @@ namespace NiflectGen
                                     CCodeTemplate tpl1;
                                     tpl1.ReadFromRawData(HardCodedTemplate::LineNumberMacros);
                                     CLabelToCodeMapping map;
+                                    MapLabelToText(map, LABEL_7, NiflectUtil::FormatString("%u", lineNumber));
+                                    MapLabelToText(map, LABEL_8, headerFilePath);
                                     MapLabelToLines(map, LABEL_9, linesItemsDefinition);
                                     MapLabelToLines(map, LABEL_10, linesRootDefinition);
                                     Niflect::TSet<Niflect::CString> setReplacedLabel;
