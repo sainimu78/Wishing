@@ -182,4 +182,16 @@ namespace NiflectGen
 		writer.WriteLines(lines);
 		printf("%s", writer.m_code.c_str());
 	}
+
+	static Niflect::CString ConvertToInternalFilePath(const Niflect::CString& relativeTypeRegFilePathNoExt)
+	{
+		auto fileNameNoExt = NiflectUtil::GetFileName(relativeTypeRegFilePathNoExt);
+		auto internalFileNameNoExt = "_" + fileNameNoExt;
+		Niflect::CString dirPath;
+		NiflectUtil::GetParentDirPathSafe(relativeTypeRegFilePathNoExt, dirPath);
+		auto internalRelativeTypeRegFilePathNoExt = internalFileNameNoExt;
+		if (!dirPath.empty())
+			internalRelativeTypeRegFilePathNoExt = NiflectUtil::ConcatPath(dirPath, internalFileNameNoExt);
+		return internalRelativeTypeRegFilePathNoExt;
+	}
 }

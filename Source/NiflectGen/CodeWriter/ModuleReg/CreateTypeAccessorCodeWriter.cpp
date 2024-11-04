@@ -25,15 +25,19 @@ namespace NiflectGen
                 {
                     relativeTypeRegFilePathNoExt = NiflectUtil::FormatString("Misc_%u", idx0);
                 }
-                auto fileNameNoExt = NiflectUtil::GetFileName(relativeTypeRegFilePathNoExt);
-                auto internalFileNameNoExt = "_" + fileNameNoExt;
-                Niflect::CString dirPath;
-                NiflectUtil::GetParentDirPathSafe(relativeTypeRegFilePathNoExt, dirPath);
-                auto internalRelativeTypeRegFilePathNoExt = internalFileNameNoExt;
-                if (!dirPath.empty())
-                    internalRelativeTypeRegFilePathNoExt = NiflectUtil::ConcatPath(dirPath, internalFileNameNoExt);
+
+                //auto fileNameNoExt = NiflectUtil::GetFileName(relativeTypeRegFilePathNoExt);
+                //auto internalFileNameNoExt = "_" + fileNameNoExt;
+                //Niflect::CString dirPath;
+                //NiflectUtil::GetParentDirPathSafe(relativeTypeRegFilePathNoExt, dirPath);
+                //auto internalRelativeTypeRegFilePathNoExt = internalFileNameNoExt;
+                //if (!dirPath.empty())
+                //    internalRelativeTypeRegFilePathNoExt = NiflectUtil::ConcatPath(dirPath, internalFileNameNoExt);
+
+                auto internalRelativeTypeRegFilePathNoExt = ConvertToInternalFilePath(relativeTypeRegFilePathNoExt);
+
                 auto typeRegSplittedFilePathNoExt = NiflectUtil::ConcatPath(context.m_moduleRegInfo.m_typeRegBasePath, internalRelativeTypeRegFilePathNoExt);
-                typeRegData.m_implSourceFilePath = typeRegSplittedFilePathNoExt + NiflectGenDefinition::FileExt::Cpp;
+                typeRegData.m_implSourceFilePath = typeRegSplittedFilePathNoExt + context.m_moduleRegInfo.GetSourceFileExtForGenFileMode();
                 typeRegData.m_declHeaderFilePath = typeRegSplittedFilePathNoExt + NiflectGenDefinition::FileExt::H;
 
                 CCodeLines linesH;

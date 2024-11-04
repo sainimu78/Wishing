@@ -20,7 +20,8 @@ namespace NiflectGen
                 auto& staticGetTypeSpecData = data.m_vecStaticGetTypeSpecData[idx0];
                 auto typeRegSplittedFilePathNoExt = NiflectUtil::ConcatPath(context.m_moduleRegInfo.m_genHBasePath, relativeTypeRegFilePathNoExt);
                 staticGetTypeSpecData.m_genHHeaderFilePath = typeRegSplittedFilePathNoExt + NiflectGenDefinition::FileExt::GenH;
-                staticGetTypeSpecData.m_implSourceFilePath = typeRegSplittedFilePathNoExt + NiflectGenDefinition::FileExt::GenCpp;
+                auto internalRelativeTypeRegFilePathNoExt = NiflectUtil::ConcatPath(context.m_moduleRegInfo.m_typeRegBasePath, ConvertToInternalFilePath(relativeTypeRegFilePathNoExt));
+                staticGetTypeSpecData.m_implSourceFilePath = internalRelativeTypeRegFilePathNoExt + NiflectGenDefinition::FileNamePostfix::Gen + context.m_moduleRegInfo.GetSourceFileExtForGenFileMode();
 
                 {
                     CCodeLines linesGenHInclude;

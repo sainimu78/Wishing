@@ -20,4 +20,10 @@ namespace NiflectGen
 		NiflectUtil::DeleteDirectory(NiflectUtil::ConcatPath(m_outputRootPath, m_typeRegBasePath));
 		NiflectUtil::DeleteDirectory(NiflectUtil::ConcatPath(m_outputRootPath, m_genHBasePath));
 	}
+	Niflect::CString CModuleRegInfoValidated::GetSourceFileExtForGenFileMode() const
+	{
+		if (m_userProvided.m_genFileMode == EGeneratingHeaderAndSourceFileMode::EHeaderOnly)
+			return NiflectGenDefinition::FileExt::PrivateH;
+		return NiflectGenDefinition::FileExt::Cpp;
+	}
 }

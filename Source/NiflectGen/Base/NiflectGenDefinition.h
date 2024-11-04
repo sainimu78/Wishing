@@ -7,13 +7,18 @@
 
 namespace NiflectGenDefinition
 {
+#define FILE_NAME_POSTFIX "_gen"
+
+	namespace FileNamePostfix
+	{
+		constexpr const char* Gen = FILE_NAME_POSTFIX;
+	}
 	namespace FileExt
 	{
 		constexpr const char* Cpp = ".cpp";
-		constexpr const char* GenCpp = "_gen.cpp";
 		constexpr const char* H = ".h";
 		constexpr const char* PrivateH = "_private.h";
-		constexpr const char* GenH = "_gen.h";
+		constexpr const char* GenH = CONCAT_CONST_CHAR_2(FILE_NAME_POSTFIX, ".h");//"_gen.h";
 
 		static bool IsCpp(const Niflect::CString& text)
 		{

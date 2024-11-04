@@ -391,15 +391,15 @@ namespace NiflectGen
             {
                 for (auto& it0 : genData.m_vecSplittedModuleRegGenData)
                 {
-                    auto filePath = NiflectUtil::ConcatPath(outputRootPath, it0.m_headerFilePath);
                     {
+                        auto filePath = NiflectUtil::ConcatPath(outputRootPath, it0.m_headerFilePath);
                         CCppWriter writer;
                         writer.WriteLines(it0.m_h);
                         NiflectUtil::MakeDirectories(filePath);
                         NiflectUtil::WriteStringToFile(writer.m_code, filePath);
                     }
-                    filePath = NiflectUtil::ReplaceFilePathExt(filePath, NiflectGenDefinition::FileExt::H, NiflectGenDefinition::FileExt::Cpp);
                     {
+                        auto filePath = NiflectUtil::ConcatPath(outputRootPath, it0.m_sourceFilePath);
                         CCppWriter writer;
                         writer.WriteLines(it0.m_cpp);
                         NiflectUtil::MakeDirectories(filePath);

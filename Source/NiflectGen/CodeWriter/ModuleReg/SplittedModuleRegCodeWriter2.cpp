@@ -29,7 +29,7 @@ namespace NiflectGen
                 {
                     auto filePathNoExt = NiflectUtil::FormatString("%s/_%s_%u", splittedModuleRegDirPath.c_str(), context.m_moduleRegInfo.m_userProvided.m_moduleName.c_str(), idx0);
                     splittedRegData.m_headerFilePath = filePathNoExt + NiflectGenDefinition::FileExt::H;
-                    splittedRegData.m_sourceFilePath = filePathNoExt + NiflectGenDefinition::FileExt::Cpp;
+                    splittedRegData.m_sourceFilePath = filePathNoExt + context.m_moduleRegInfo.GetSourceFileExtForGenFileMode();
                 }
 
                 CCodeLines linesInvokeInitTypes;
