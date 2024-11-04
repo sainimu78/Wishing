@@ -2,7 +2,7 @@
 #include "Niflect/NiflectMacro.h"
 //#include <vector>
 #include "Niflect/NiflectBase.h"
-#include "GenH/Engine/Engine/EngineObject_gen.h"
+#include "Engine/EngineObject_gen.h"
 
 namespace Engine
 {

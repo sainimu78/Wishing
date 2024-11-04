@@ -11,6 +11,7 @@ list(APPEND SrcAll ${ModuleSrc})
 create_source_group(${RootSourcePath} ${SrcAll})
 
 get_filename_component(NiflectGeneratedRootPath "${RootSourcePath}/../Generated/NiflectGenerated" ABSOLUTE)
+set(NiflectGenHPath ${NiflectGeneratedRootPath}/GenH/${ModuleName})
 #set(GeneratedSrcPath ${NiflectGeneratedRootPath}/ModuleReg/${ModuleName})
 #file(GLOB_RECURSE GeneratedSrc ${GeneratedSrcPath}/*.cpp ${GeneratedSrcPath}/*.h)
 #create_source_group(${NiflectGeneratedRootPath} ${GeneratedSrc})
@@ -21,7 +22,7 @@ get_filename_component(NiflectGeneratedRootPath "${RootSourcePath}/../Generated/
 #create_source_group(${NiflectGeneratedRootPath} ${GeneratedSrc})
 ##set_property(SOURCE ${GeneratedSrc} PROPERTY FOLDER "Hidden")
 #list(APPEND SrcAll ${GeneratedSrc})
-#set(GeneratedSrcPath ${NiflectGeneratedRootPath}/GenH/${ModuleName})
+#set(GeneratedSrcPath ${NiflectGenHPath})
 #file(GLOB_RECURSE GeneratedSrc ${GeneratedSrcPath}/*.cpp ${GeneratedSrcPath}/*.h)
 #create_source_group(${NiflectGeneratedRootPath} ${GeneratedSrc})
 ##set_property(SOURCE ${GeneratedSrc} PROPERTY FOLDER "Hidden")
@@ -47,6 +48,7 @@ target_include_directories(${ModuleName}
 
 target_include_directories(${ModuleName}
 	PRIVATE ${NiflectGeneratedRootPath}
+	PUBLIC ${NiflectGenHPath}
 )
 target_compile_definitions(${ModuleName}
 	PRIVATE -DENGINE_EXPORTS
