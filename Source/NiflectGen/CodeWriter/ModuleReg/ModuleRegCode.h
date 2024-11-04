@@ -3,9 +3,19 @@
 
 namespace NiflectGen
 {
+	enum class EGeneratingHeaderAndSourceFileMode
+	{
+		EHeaderOnly,
+		ESourceAndHeader,
+	};
+
 	class CModuleRegInfo
 	{
 	public:
+		CModuleRegInfo()
+			: m_genFileMode(EGeneratingHeaderAndSourceFileMode::EHeaderOnly)
+		{
+		}
 		Niflect::CString m_moduleName;
 		Niflect::CString m_genIncludeBasePath;
 		Niflect::CString m_genBasePath;
@@ -15,6 +25,7 @@ namespace NiflectGen
 		CWritingHeaderSearchPaths m_writingHeaderSearchPaths;
 		Niflect::CString m_moduleApiMacro;
 		Niflect::CString m_moduleApiMacroHeader;
+		EGeneratingHeaderAndSourceFileMode m_genFileMode;
 	};
 
 	class CModuleRegInfoValidated

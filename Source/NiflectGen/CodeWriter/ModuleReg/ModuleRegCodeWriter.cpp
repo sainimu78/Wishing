@@ -369,12 +369,12 @@ namespace NiflectGen
         SSplittedCreateTypeAccessorSpecWritingContext splittedModTypesCtx{ m_moduleRegInfo, vecSplittedModuleRegInfo, context.m_log };
         WriteSplittedSpec(splittedModTypesCtx, data.m_typeRegCreateTypeAccessorSpecGenData, data.m_typeRegStaticGetTypeSpecGenData);
 
-        SSplittedModuleRegWritingContext2 splittedModulesCtx{ m_moduleRegInfo, splittedModTypesCtx.m_vecItem, data.m_typeRegCreateTypeAccessorSpecGenData, context.m_log };
+        SSplittedModuleRegWritingContext2 splittedModulesCtx{ m_moduleRegInfo, splittedModTypesCtx.m_vecItem, data.m_typeRegCreateTypeAccessorSpecGenData, data.m_typeRegStaticGetTypeSpecGenData, context.m_log };
         Niflect::TArrayNif<CSplittedModuleRegFunctionsName> vecSplittedModuleRegFuncsName;
         SSplittedModuleRegWritingData2 splittedModuleRegsData{ data.m_vecSplittedModuleRegGenData, vecSplittedModuleRegFuncsName };
         WriteSplittedModuleRegs3(splittedModulesCtx, splittedModuleRegsData);
 
-        SModuleRegWritingContext2 moduleRegCtx{ splittedModulesCtx.m_vecItem, vecSplittedModuleRegFuncsName, data.m_vecSplittedModuleRegGenData, context.m_log };
+        SModuleRegWritingContext2 moduleRegCtx{ m_moduleRegInfo, splittedModulesCtx.m_vecItem, vecSplittedModuleRegFuncsName, data.m_vecSplittedModuleRegGenData, context.m_log };
         SModuleRegWritingData2 moduleRegData{ data.m_moduleRegGenData };
         this->WriteModuleReg(moduleRegCtx, moduleRegData);
 
@@ -419,7 +419,11 @@ namespace NiflectGen
             {
                 Niflect::TArrayNif<CHeaderFilePathData> vecHeaderData;
                 for (auto& it1 : context.m_vecSplittedModuleRegGenData)
+                {
                     vecHeaderData.push_back(it1.m_headerFilePath);
+                    if (context.m_moduleRegInfo.m_userProvided.m_genFileMode == EGeneratingHeaderAndSourceFileMode::EHeaderOnly)
+                        vecHeaderData.push_back(it1.m_sourceFilePath);
+                }
                 //vecHeaderData.push_back(NiflectGenDefinition::NiflectFramework::FilePath::NiflectTableHeader);
                 CIncludesHelper::ConvertFromHeaderFilePaths(vecHeaderData, m_moduleRegInfo.m_userProvided.m_writingHeaderSearchPaths, linesInclude);
                 MapLabelToLines(map, LABEL_0, linesInclude);

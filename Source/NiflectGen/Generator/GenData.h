@@ -8,6 +8,7 @@ namespace NiflectGen
 		CCodeLines m_h;
 		CCodeLines m_cpp;
 		Niflect::CString m_headerFilePath;
+		Niflect::CString m_sourceFilePath;
 	};
 
 	class CTypeRegGenData

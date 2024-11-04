@@ -10,6 +10,7 @@ namespace NiflectGen
 {
 	struct SModuleRegWritingContext2
 	{
+		const CModuleRegInfoValidated& m_moduleRegInfo;
 		const Niflect::TArrayNif<CSplittedModuleRegInfo>& m_vecItem;
 		const Niflect::TArrayNif<CSplittedModuleRegFunctionsName>& m_vecSplittedModuleRegFuncsName;
 		const Niflect::TArrayNif<CSplittedModuleRegGenData>& m_vecSplittedModuleRegGenData;

@@ -61,6 +61,7 @@ namespace NiflectGen
 		const CModuleRegInfoValidated& m_moduleRegInfo;
 		const Niflect::TArrayNif<CSplittedModuleRegInfo>& m_vecItem;
 		const CTypeRegCreateTypeAccessorSpecData& m_typeRegCreateTypeAccessorSpecGenData;
+		const CTypeRegStaticGetTypeSpecData& m_typeRegStaticGetTypeSpecGenData;
 		CGenLog* m_log;
 	};
 

@@ -19,6 +19,7 @@ namespace NiflectGen
     }
 	void WriteSplittedModuleRegs(const CWritingContext& context, const CSplittedModuleRegWritingContext& writingCtx, Niflect::TArrayNif<CSplittedModuleRegInvokationData>& vecSplittedModuleRegInvokationData, Niflect::TArrayNif<CSplittedModuleRegGenData>& vecSplittedModuleRegData)
 	{
+        ASSERT(false);
         Niflect::TArrayNif<Niflect::TArrayNif<uint32> > vecSplittedModuleRegToTypeRegs;
         DetermineSplitting(writingCtx.m_vecTypeRegRefInfo, vecSplittedModuleRegInvokationData, vecSplittedModuleRegData, vecSplittedModuleRegToTypeRegs);
         ASSERT(vecSplittedModuleRegInvokationData.size() == vecSplittedModuleRegData.size());
@@ -38,7 +39,9 @@ namespace NiflectGen
             }
             dataForInvokation.m_invokationRegisterTypes.push_back(ReplaceLabelToText1(HardCodedTemplate::SplittedModuleRegInvokationRegisterTypes, LABEL_1, splittedModuleName));
             dataForInvokation.m_invokationInitTypes.push_back(ReplaceLabelToText1(HardCodedTemplate::SplittedModuleRegInvokationInitTypes, LABEL_1, splittedModuleName));
-            data.m_headerFilePath = NiflectUtil::FormatString("%s/Splitted/_%s%s", writingCtx.m_moduleRegBasePath.c_str(), splittedModuleName.c_str(), NiflectGenDefinition::FileExt::H);
+            auto filePathNoExt = NiflectUtil::FormatString("%s/Splitted/_%s", writingCtx.m_moduleRegBasePath.c_str(), splittedModuleName.c_str());
+            data.m_headerFilePath = filePathNoExt + NiflectGenDefinition::FileExt::H;
+            data.m_sourceFilePath = filePathNoExt + NiflectGenDefinition::FileExt::Cpp;
 
             {
                 CCodeTemplate tpl;

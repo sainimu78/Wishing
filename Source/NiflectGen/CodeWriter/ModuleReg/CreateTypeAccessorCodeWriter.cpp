@@ -29,7 +29,9 @@ namespace NiflectGen
                 auto internalFileNameNoExt = "_" + fileNameNoExt;
                 Niflect::CString dirPath;
                 NiflectUtil::GetParentDirPathSafe(relativeTypeRegFilePathNoExt, dirPath);
-                auto internalRelativeTypeRegFilePathNoExt = NiflectUtil::ConcatPath(dirPath, internalFileNameNoExt);
+                auto internalRelativeTypeRegFilePathNoExt = internalFileNameNoExt;
+                if (!dirPath.empty())
+                    internalRelativeTypeRegFilePathNoExt = NiflectUtil::ConcatPath(dirPath, internalFileNameNoExt);
                 auto typeRegSplittedFilePathNoExt = NiflectUtil::ConcatPath(context.m_moduleRegInfo.m_typeRegBasePath, internalRelativeTypeRegFilePathNoExt);
                 typeRegData.m_implSourceFilePath = typeRegSplittedFilePathNoExt + NiflectGenDefinition::FileExt::Cpp;
                 typeRegData.m_declHeaderFilePath = typeRegSplittedFilePathNoExt + NiflectGenDefinition::FileExt::H;

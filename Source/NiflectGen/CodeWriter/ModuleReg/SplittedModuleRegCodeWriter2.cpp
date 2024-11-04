@@ -27,8 +27,9 @@ namespace NiflectGen
                 auto& splittedRegData = data.m_vecSplittedModuleRegGenData[idx0];
 
                 {
-                    auto fileName = NiflectUtil::FormatString("_%s_%u%s", context.m_moduleRegInfo.m_userProvided.m_moduleName.c_str(), idx0, NiflectGenDefinition::FileExt::H);
-                    splittedRegData.m_headerFilePath = NiflectUtil::ConcatPath(splittedModuleRegDirPath, fileName);
+                    auto filePathNoExt = NiflectUtil::FormatString("%s/_%s_%u", splittedModuleRegDirPath.c_str(), context.m_moduleRegInfo.m_userProvided.m_moduleName.c_str(), idx0);
+                    splittedRegData.m_headerFilePath = filePathNoExt + NiflectGenDefinition::FileExt::H;
+                    splittedRegData.m_sourceFilePath = filePathNoExt + NiflectGenDefinition::FileExt::Cpp;
                 }
 
                 CCodeLines linesInvokeInitTypes;
@@ -114,7 +115,15 @@ namespace NiflectGen
                             Niflect::TArrayNif<CHeaderFilePathData> vecHeaderData;
                             vecHeaderData.push_back({ splittedRegData.m_headerFilePath, true });
                             vecHeaderData.push_back(NiflectGenDefinition::NiflectFramework::FilePath::NiflectTableHeader);
+                            if (context.m_moduleRegInfo.m_userProvided.m_genFileMode == EGeneratingHeaderAndSourceFileMode::EHeaderOnly)
+                            {
+                                auto genCppFilePath = context.m_typeRegStaticGetTypeSpecGenData.m_vecStaticGetTypeSpecData[idx0].m_implSourceFilePath;
+                                if (!genCppFilePath.empty())
+                                    vecHeaderData.push_back(genCppFilePath);
+                            }
                             vecHeaderData.push_back(createTypeAccessorSpecData.m_declHeaderFilePath);
+                            if (context.m_moduleRegInfo.m_userProvided.m_genFileMode == EGeneratingHeaderAndSourceFileMode::EHeaderOnly)
+                                vecHeaderData.push_back(createTypeAccessorSpecData.m_implSourceFilePath);
                             CIncludesHelper::ConvertFromHeaderFilePaths(vecHeaderData, context.m_moduleRegInfo.m_userProvided.m_writingHeaderSearchPaths, linesInclude);
                         }
                         MapLabelToLines(map, LABEL_4, linesInclude);
