@@ -19,9 +19,7 @@ namespace NiflectGen
 		static const char* LineNumberMacros =
 "//This is the expansion of GENERATED_BODY at the line " MAKELABEL(LABEL_7) " of " MAKELABEL(LABEL_8) R"(
 )" MAKELABEL(LABEL_9) R"(
-)" MAKELABEL(LABEL_10) R"(
-
-)";
+)" MAKELABEL(LABEL_10);
 		static const char* GenH =
 R"(#pragma once
 #include "Niflect/NiflectMacro.h"
@@ -37,9 +35,7 @@ namespace Niflect
 )" MAKELABEL(LABEL_6) R"(
 
 #undef CURRENT_FILE_ID
-#define CURRENT_FILE_ID )" MAKELABEL(LABEL_4) R"(
-
-)";
+#define CURRENT_FILE_ID )" MAKELABEL(LABEL_4);
 		static const char* GenCpp =
 "" MAKELABEL(LABEL_0) R"(
 

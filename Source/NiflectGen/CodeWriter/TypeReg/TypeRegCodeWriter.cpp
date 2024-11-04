@@ -265,7 +265,6 @@ namespace NiflectGen
 					SCollectingGeneratedBodyWritingData forGenHData{ data.m_lineNumberMacroData.m_generatedBodyLineNumber };
 					this->CollectDataForGenH(forGenHData);
 				}
-
 				{
 					CMacroDefinitionData md;
 					md.m_namePostfix = "ExposeToAccessor";

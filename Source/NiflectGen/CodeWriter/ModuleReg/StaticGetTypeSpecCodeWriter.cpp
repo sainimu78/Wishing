@@ -68,39 +68,48 @@ namespace NiflectGen
 
                     CCodeLines linesMacros;
                     {
-                        for (auto& it1 : it0.m_vecTypeRegDataRef)
+                        Niflect::TArrayNif<const CTypeLineNumberMacroData*> vecValidLineNumberMacroData;
+                        for (uint32 idx1 = 0; idx1 < it0.m_vecTypeRegDataRef.size(); ++idx1)
                         {
-                            auto& lineNumber = it1->m_taggedTypeGeneratedBody.m_lineNumberMacroData.m_generatedBodyLineNumber;
+                            auto& lineNumberMacroData = it0.m_vecTypeRegDataRef[idx1]->m_taggedTypeGeneratedBody.m_lineNumberMacroData;
+                            auto& lineNumber = lineNumberMacroData.m_generatedBodyLineNumber;
                             if (lineNumber != INDEX_NONE)
+                                vecValidLineNumberMacroData.push_back(&lineNumberMacroData);
+                        }
+                        auto cnt1 = vecValidLineNumberMacroData.size();
+                        for (uint32 idx1 = 0; idx1 < cnt1; ++idx1)
+                        {
+                            auto& lineNumberMacroData = *vecValidLineNumberMacroData[idx1];
+                            auto& lineNumber = lineNumberMacroData.m_generatedBodyLineNumber;
+                            CCodeLines linesItemsDefinition;
+                            CCodeLines linesRootBody;
+                            auto cnt2 = lineNumberMacroData.m_vecMacroDefinitionData.size();
+                            for (uint32 idx2 = 0; idx2 < cnt2; ++idx2)
                             {
-                                CCodeLines linesItemsDefinition;
-                                CCodeLines linesRootBody;
-                                auto cnt2 = it1->m_taggedTypeGeneratedBody.m_lineNumberMacroData.m_vecMacroDefinitionData.size();
-                                for (uint32 idx2 = 0; idx2 < cnt2; ++idx2)
-                                {
-                                    auto& it2 = it1->m_taggedTypeGeneratedBody.m_lineNumberMacroData.m_vecMacroDefinitionData[idx2];
-                                    auto macroName = GenerateLineNumberMacroName(genHFileId, lineNumber, it2.m_namePostfix);
-                                    WriteLineNumberMacroDefinition(macroName, it2.m_linesBody, linesItemsDefinition);
-                                    if (idx2 != cnt2 - 1)
-                                        macroName += '\\';
-                                    linesRootBody.push_back(macroName);
-                                }
-                                CCodeLines linesRootDefinition;
-                                {
-                                    auto macroName = GenerateLineNumberMacroName(genHFileId, lineNumber, "GENERATED_BODY");
-                                    WriteLineNumberMacroDefinition(macroName, linesRootBody, linesRootDefinition);
-                                }
-                                {
-                                    CCodeTemplate tpl1;
-                                    tpl1.ReadFromRawData(HardCodedTemplate::LineNumberMacros);
-                                    CLabelToCodeMapping map;
-                                    MapLabelToText(map, LABEL_7, NiflectUtil::FormatString("%u", lineNumber));
-                                    MapLabelToText(map, LABEL_8, headerFilePath);
-                                    MapLabelToLines(map, LABEL_9, linesItemsDefinition);
-                                    MapLabelToLines(map, LABEL_10, linesRootDefinition);
-                                    Niflect::TSet<Niflect::CString> setReplacedLabel;
-                                    tpl1.ReplaceLabels(map, linesMacros, &setReplacedLabel);
-                                }
+                                auto& it2 = lineNumberMacroData.m_vecMacroDefinitionData[idx2];
+                                auto macroName = GenerateLineNumberMacroName(genHFileId, lineNumber, it2.m_namePostfix);
+                                WriteLineNumberMacroDefinition(macroName, it2.m_linesBody, linesItemsDefinition);
+                                if (idx2 != cnt2 - 1)
+                                    macroName += '\\';
+                                linesRootBody.push_back(macroName);
+                            }
+                            CCodeLines linesRootDefinition;
+                            {
+                                auto macroName = GenerateLineNumberMacroName(genHFileId, lineNumber, "GENERATED_BODY");
+                                WriteLineNumberMacroDefinition(macroName, linesRootBody, linesRootDefinition);
+                                if (idx1 != cnt1 - 1)
+                                    linesRootDefinition.push_back(EscapeChar::EmptyLine);
+                            }
+                            {
+                                CCodeTemplate tpl1;
+                                tpl1.ReadFromRawData(HardCodedTemplate::LineNumberMacros);
+                                CLabelToCodeMapping map;
+                                MapLabelToText(map, LABEL_7, NiflectUtil::FormatString("%u", lineNumber));
+                                MapLabelToText(map, LABEL_8, headerFilePath);
+                                MapLabelToLines(map, LABEL_9, linesItemsDefinition);
+                                MapLabelToLines(map, LABEL_10, linesRootDefinition);
+                                Niflect::TSet<Niflect::CString> setReplacedLabel;
+                                tpl1.ReplaceLabels(map, linesMacros, &setReplacedLabel);
                             }
                         }
                     }
