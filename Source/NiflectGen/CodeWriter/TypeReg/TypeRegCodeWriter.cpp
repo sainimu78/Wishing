@@ -261,17 +261,23 @@ namespace NiflectGen
 				GenerateFullScopedTypeDeclCodeRecurs(tt->m_vecScopeName, declCode, data.m_linesFullScopedTypeDecl);
 			}
 			{
-				SCollectingGeneratedBodyWritingData forGenHData{ data.m_generatedBodyLineNumber };
-				this->CollectDataForGenH(forGenHData);
-			}
-			{
-				CCodeTemplate tpl0;
-				tpl0.ReadFromRawData(HardCodedTemplate::MacroBodyExposeToAccessor);
-				CLabelToCodeMapping map;
-				MapLabelToText(map, LABEL_9, resocursorNameForLastTemplateArg);
-				Niflect::TSet<Niflect::CString> setReplacedLabel;
-				tpl0.ReplaceLabels(map, data.m_linesMacroBodyExposeToAccessor, &setReplacedLabel);
-				ASSERT(setReplacedLabel.size() == map.size());
+				{
+					SCollectingGeneratedBodyWritingData forGenHData{ data.m_lineNumberMacroData.m_generatedBodyLineNumber };
+					this->CollectDataForGenH(forGenHData);
+				}
+
+				{
+					CMacroDefinitionData md;
+					md.m_namePostfix = "ExposeToAccessor";
+					ReplaceLabelToLines1(HardCodedTemplate::MacroBodyExposeToAccessor, LABEL_9, resocursorNameForLastTemplateArg, md.m_linesBody);
+					data.m_lineNumberMacroData.m_vecMacroDefinitionData.push_back(md);
+				}
+				{
+					CMacroDefinitionData md;
+					md.m_namePostfix = "AnotherExample0";
+					ReplaceLabelToLines1(HardCodedTemplate::MacroBodyAnotherExample0, LABEL_9, resocursorNameForLastTemplateArg, md.m_linesBody);
+					data.m_lineNumberMacroData.m_vecMacroDefinitionData.push_back(md);
+				}
 			}
 			{
 				CCodeTemplate tpl0;

@@ -6,38 +6,18 @@
 
 namespace NiflectGen
 {
-    static Niflect::CString removeNonAlphanumeric(const Niflect::CString& path) {
-        auto result = path; // 创建一个副本以进行修改
-
-        // 使用 std::remove_if 和 std::erase 方法删除非字母和数字字符
-        result.erase(std::remove_if(result.begin(), result.end(),
-            [](unsigned char c) {
-                return !std::isalnum(c); // 检查字符是否为字母或数字
-            }),
-            result.end());
-
-        return result; // 返回处理后的字符串
-    }
     static Niflect::CString ConvertHeaderFilePathToGenHFileId(const Niflect::CString& filePath)
     {
-        return removeNonAlphanumeric(filePath);
+        Niflect::CString result;
+        for (auto& it : filePath)
+        {
+            if (std::isalnum(it))
+                result += it;
+            else
+                result += '_';
+        }
+        return result;
     }
-    static Niflect::CString GenerateLineNumberMacroName(const char* hct, const Niflect::CString& fileId, uint32 lineNumber)
-    {
-        auto lineNumberInString = NiflectUtil::FormatString("%u", lineNumber);
-        return ReplaceLabelToText2(hct, LABEL_4, LABEL_5, fileId, lineNumberInString);
-    }
-    static void GenerateLineNumberMacroDefinition(const char* hct, const Niflect::CString& macroName, const CCodeLines& linesBody, CCodeLines& linesDefinition)
-    {
-        CCodeTemplate tpl1;
-        tpl1.ReadFromRawData(hct);
-        CLabelToCodeMapping map;
-        MapLabelToText(map, LABEL_7, macroName);
-        MapLabelToLines(map, LABEL_8, linesBody);
-        Niflect::TSet<Niflect::CString> setReplacedLabel;
-        tpl1.ReplaceLabels(map, linesDefinition, &setReplacedLabel);
-    }
-
     void WriteSplittedStaticGetTypeSpec(const SSplittedCreateTypeAccessorSpecWritingContext& context, CTypeRegStaticGetTypeSpecData& data)
     {
         auto splitsCount = context.m_vecItem.size();
@@ -90,20 +70,25 @@ namespace NiflectGen
                     {
                         for (auto& it1 : it0.m_vecTypeRegDataRef)
                         {
-                            auto& lineNumber = it1->m_taggedTypeGeneratedBody.m_generatedBodyLineNumber;
+                            auto& lineNumber = it1->m_taggedTypeGeneratedBody.m_lineNumberMacroData.m_generatedBodyLineNumber;
                             if (lineNumber != INDEX_NONE)
                             {
                                 CCodeLines linesItemsDefinition;
                                 CCodeLines linesRootBody;
+                                auto cnt2 = it1->m_taggedTypeGeneratedBody.m_lineNumberMacroData.m_vecMacroDefinitionData.size();
+                                for (uint32 idx2 = 0; idx2 < cnt2; ++idx2)
                                 {
-                                    auto macroNameItem0 = GenerateLineNumberMacroName(HardCodedTemplate::LineNumberMacroExposeToAccessor, genHFileId, lineNumber);
-                                    linesRootBody.push_back(ReplaceLabelToText1(HardCodedTemplate::LineNumberMacroItem, LABEL_7, macroNameItem0));
-                                    GenerateLineNumberMacroDefinition(HardCodedTemplate::LineNumberMacroDefinition, macroNameItem0, it1->m_taggedTypeGeneratedBody.m_linesMacroBodyExposeToAccessor, linesItemsDefinition);
+                                    auto& it2 = it1->m_taggedTypeGeneratedBody.m_lineNumberMacroData.m_vecMacroDefinitionData[idx2];
+                                    auto macroName = GenerateLineNumberMacroName(genHFileId, lineNumber, it2.m_namePostfix);
+                                    WriteLineNumberMacroDefinition(macroName, it2.m_linesBody, linesItemsDefinition);
+                                    if (idx2 != cnt2 - 1)
+                                        macroName += '\\';
+                                    linesRootBody.push_back(macroName);
                                 }
                                 CCodeLines linesRootDefinition;
                                 {
-                                    auto macroNameRoot = GenerateLineNumberMacroName(HardCodedTemplate::LineNumberMacroGeneratedBody, genHFileId, lineNumber);
-                                    GenerateLineNumberMacroDefinition(HardCodedTemplate::LineNumberMacroDefinition, macroNameRoot, linesRootBody, linesRootDefinition);
+                                    auto macroName = GenerateLineNumberMacroName(genHFileId, lineNumber, "GENERATED_BODY");
+                                    WriteLineNumberMacroDefinition(macroName, linesRootBody, linesRootDefinition);
                                 }
                                 {
                                     CCodeTemplate tpl1;

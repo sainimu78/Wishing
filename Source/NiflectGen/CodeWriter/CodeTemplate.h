@@ -264,6 +264,17 @@ namespace NiflectGen
 		ASSERT(lines0.size() == 1);
 		return lines0.back();
 	}
+	static void ReplaceLabelToLines1(const Niflect::CString& templateText, const Niflect::CString& label0, const Niflect::CString& text0, CCodeLines& linesResult)
+	{
+		CCodeTemplate tpl0;
+		tpl0.ReadFromRawData(templateText.c_str());
+		CLabelToCodeMapping map0;
+		MapLabelToText(map0, label0, text0);
+		CCodeLines lines0;
+		Niflect::TSet<Niflect::CString> setReplacedLabel;
+		tpl0.ReplaceLabels(map0, linesResult, &setReplacedLabel);
+		ASSERT(setReplacedLabel.size() == map0.size());
+	}
 	static void ReplaceLabelToImplScopeLines(const CCodeLines& linesInScope, CCodeLines& vecLine)
 	{
 		const char* hct = 

@@ -4,6 +4,7 @@
 #include "clang-c/Index.h"
 #include "NiflectGen/CodeWriter/CodeRequirement.h"
 #include "NiflectGen/Resolver/ResocursorNode.h"
+#include "NiflectGen/CodeWriter/MacroDefinitionWriter.h"
 
 namespace NiflectGen
 {
@@ -132,15 +133,10 @@ namespace NiflectGen
 	class CTypeRegTaggedTypeGeneratedHeaderData
 	{
 	public:
-		CTypeRegTaggedTypeGeneratedHeaderData()
-			: m_generatedBodyLineNumber(INDEX_NONE)
-		{
-		}
 		CCodeLines m_linesFullScopedTypeDecl;
 		CCodeLines m_linesStaticGetTypeSpecDecl;
 		CCodeLines m_linesStaticGetTypeSpecImpl;
-		uint32 m_generatedBodyLineNumber;
-		CCodeLines m_linesMacroBodyExposeToAccessor;
+		CTypeLineNumberMacroData m_lineNumberMacroData;
 	};
 
 	class CTypeRegWritingData2
