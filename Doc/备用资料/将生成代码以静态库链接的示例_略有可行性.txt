@@ -1,0 +1,56 @@
+cmake_minimum_required(VERSION 3.20.0)
+
+set(ModuleName Engine)
+
+set(SourcePath ${RootSourcePath}/Engine)
+
+file(GLOB_RECURSE ModuleSrc ${SourcePath}/*.cpp ${SourcePath}/*.h)
+set(SrcAll "")
+list(APPEND SrcAll ${ModuleSrc})
+
+create_source_group(${RootSourcePath} ${SrcAll})
+
+get_filename_component(NiflectGeneratedRootPath "${RootSourcePath}/../Generated/NiflectGenerated" ABSOLUTE)
+
+add_library(${ModuleName} SHARED ${SrcAll})
+
+target_precompile_headers(${ModuleName} PRIVATE ${SourcePath}/EngineDevelopmentMacro.h)
+
+#set_target_properties(${ModuleName} PROPERTIES LINKER_LANGUAGE CXX)
+set_target_properties(${ModuleName} PROPERTIES 
+    RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG}
+    RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE}
+)
+
+#target_include_directories(${ModuleName} PUBLIC ${RootSourcePath})
+
+#target_include_directories(${ModuleName} PRIVATE ${NiflectGeneratedRootPath})
+#target_compile_definitions(${ModuleName} PRIVATE -DENGINE_EXPORTS PRIVATE -DENGINE_C_EXPORTS)
+
+target_link_libraries(${ModuleName} PRIVATE Niflect)
+
+
+set(SrcAll "")
+set(GeneratedSrcPath ${NiflectGeneratedRootPath}/ModuleReg/${ModuleName})
+file(GLOB_RECURSE GeneratedSrc ${GeneratedSrcPath}/*.cpp ${GeneratedSrcPath}/*.h)
+#create_source_group(${NiflectGeneratedRootPath} ${GeneratedSrc})
+#set_property(SOURCE ${GeneratedSrc} PROPERTY FOLDER "Hidden")
+list(APPEND SrcAll ${GeneratedSrc})
+set(GeneratedSrcPath ${NiflectGeneratedRootPath}/TypeReg/${ModuleName})
+file(GLOB_RECURSE GeneratedSrc ${GeneratedSrcPath}/*.cpp ${GeneratedSrcPath}/*.h)
+#create_source_group(${NiflectGeneratedRootPath} ${GeneratedSrc})
+#set_property(SOURCE ${GeneratedSrc} PROPERTY FOLDER "Hidden")
+list(APPEND SrcAll ${GeneratedSrc})
+set(GeneratedSrcPath ${NiflectGeneratedRootPath}/GenH/${ModuleName})
+file(GLOB_RECURSE GeneratedSrc ${GeneratedSrcPath}/*.cpp ${GeneratedSrcPath}/*.h)
+#create_source_group(${NiflectGeneratedRootPath} ${GeneratedSrc})
+#set_property(SOURCE ${GeneratedSrc} PROPERTY FOLDER "Hidden")
+list(APPEND SrcAll ${GeneratedSrc})
+
+set(GenModuleName ${ModuleName}_gen)
+
+add_library(${GenModuleName} ${SrcAll})
+target_compile_definitions(${GenModuleName} PUBLIC -DENGINE_EXPORTS)
+target_include_directories(${GenModuleName} PUBLIC ${RootSourcePath})
+target_include_directories(${GenModuleName} PUBLIC ${NiflectGeneratedRootPath})
+target_link_libraries(${ModuleName} PRIVATE ${GenModuleName})
