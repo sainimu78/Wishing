@@ -1,9 +1,9 @@
 1. Done, NiflectGen, CField 改写为 CAccessor, 废弃要求指定NIF_T, 因为设想Accessor可为模板
 2. Done, NiflectGen, 可区分出特化类型, 特化类型以直接生成的方式生成代码, 同MyTransform
-3. NiflectGen, 重构
+3. Done, NiflectGen, 重构
 	1. AccessorBinding 可定义N维模板
 	2. 用通用的流程递归N维Accessor
-4. NiflectGen, 为模板类型的 Field 生成代码
+4. Done, NiflectGen, 为模板类型的 Field 生成代码
 	1. 生成如函数模板, 将实例化的模板类型当作一种类型, 用于复用, 同时也能减少编译消耗
 	2. 模板实例当作一种类型后, 意味着生成代码流程可统一, 模板实例的 Field 与非模板的 Field 的生成方式类似
 	3. 打算以 cursorDecl 为key, 用underlyingType生成模板实例或生成函数名
@@ -17,12 +17,12 @@
 		2. 在反射创建实例时, 通过Type创建Native实例
 		3. Accessor 作为一种特定类型, 用于实例序列化
 		4. 在查找实例时, 通过入口 ArrayAccessor + 其中的 ElementAccessor 组合查找
-7. NiflectGen, Builtin与实例化的模板的StaticGetType只定义在模块范围内, 不为这些类型生成StaticGetType特化导出
-8. NiflectGen, Builtin与实例化的模板生成FieldLayout创建函数可统一流程
-9. NiflectGen, Builtin与实例化的模板在InitialReg中注册到MiscTable中
+7. Done, NiflectGen, Builtin与实例化的模板的StaticGetType只定义在模块范围内, 不为这些类型生成StaticGetType特化导出
+8. Done, NiflectGen, Builtin与实例化的模板生成FieldLayout创建函数可统一流程
+9. Done, NiflectGen, Builtin与实例化的模板在InitialReg中注册到MiscTable中
 10. Done, NiflectGen, (设想)确认BindingSetting的BindingType与Member的Type是否具有唯一性, 整理一个专门的类处理此繁琐解析过程
 11. Done, NiflectGen, Resolve, 遍历所有TaggedType, 收集需要生成的UntaggedType, 如float, TArrayNif
-12. NiflectGen, Resolve, AccessorBinding对非1维收集需要生成的UntaggedType, 如pair
+12. Done, NiflectGen, Resolve, AccessorBinding对非1维收集需要生成的UntaggedType, 如pair
 	1. 检查成员, 如类中未指定为TypeReg的friend, 则是否都为public
 13. Done, NiflectGen, Resolve, 生成Field类型与m_vecAccessorBindingSetting的查找表, 方便在Write阶段查找
 	1. 对于模板嵌套, 需要解析模板实例, 查找每一层模板对应的AccessorBinding, 因此需要考虑是否为特化的完整模板实例生成对应的AccessorBinding索引序列
@@ -30,7 +30,7 @@
 14. Deprecated, NiflectGen, 只有非1维BindingType需要实际定义的结构, 用BindingType在收集到的UntaggedTemplate中查找, 整理查找方法
 15. Done, NiflectGen, Field查找测试, 即遍历测试类的各类Field, 验证在AccessorBindingMapping中都能找到对应项, 完成后即具备重构后的生成代码基础
 16. Done, NiflectGen, 生成CSubcursor的CodePattern, 用于代码生成阶段快速获取固定的Pattern
-17. NiflectGen, 确认相同member的cursor其hash是否相同, 是则可用作特化FieldLayout函数signature的key
+17. Deprecated, (现认为不太可能相同, 即使相同也基本无优化) NiflectGen, 确认相同member的cursor其hash是否相同, 是则可用作特化FieldLayout函数signature的key
 18. Deprecated, NiflectGen, 改进缺陷, 无法认定1参数结构模板, 见 CAccessorBindingMapping2::IterateForTemplate
 	1. 考虑限制模板用途认定规则, 见Main.cpp, 12, 13, 14
 19. NiflectGen, using与typedef支持NIF_T, 仅注册不提供结构的用法
@@ -38,7 +38,7 @@
 21, Deprecated, NiflectGen, 增加其它Accessor
 	1. 一种AccessorBinding用于指定枚举的Accessor, 且不可重复指定
 	2. 一种AccessorBinding用于指定非枚举的默认Accessor (现 CCompoundAccessor), 且不可重复指定
-22. NiflectGen, Splitted模式, cmake设置不添加到VS中
+22. Deprecated, (无效果) NiflectGen, Splitted模式, cmake设置不添加到VS中
 	1. 示例
 		# 单个文件
 		set_source_files_properties(hidden_file.cpp PROPERTIES HEADER_FILE_ONLY TRUE)
@@ -46,29 +46,33 @@
 		foreach(source_file ${HIDDEN_SOURCE_FILES})
 			set_source_files_properties(${source_file} PROPERTIES HEADER_FILE_ONLY TRUE)
 		endforeach()
-23, NiflectGen, 根据行数分配MiscTypeReg, 保存一个模块的MiscTypeReg的分配信息, 可确保每次生成MiscTypeReg不影响其它SplittedModuleReg
+23, Deprecated, (现HeaderOnly模式下, 此方法无意义, 如能够实现SourceAndHeader, 才有必要考虑此方法) NiflectGen, 根据行数分配MiscTypeReg, 保存一个模块的MiscTypeReg的分配信息, 可确保每次生成MiscTypeReg不影响其它SplittedModuleReg
 	1. 下次生成时获取, 先按信息中指定的分配, 剩余的追加
 	2. 在检测到保存的信息中对应类型已不存在, 则只删除对应的SplittedModuleReg中的信息
 24. NiflectGen, 生成的文件是否有差异, 是则写无则不写
 	1. 需要先确认是否直接写, 即使无差异, 在Build时也会执行编译
 25. Deprecated, (现废弃 TypeReg, 改为一系列 FieldLayoutSpec) NiflectGen, 生成正确的TypeReg
-26. NiflectGen, 头文件路径统一为绝对路径, 只对Module中的OriginalHeader生成代码
-	1. 对绝对路径的头文件搜索时, 应实现一种简单优化, 从末尾开始查找
+26. Done, NiflectGen, 头文件路径统一为绝对路径, 只对Module中的OriginalHeader生成代码
+	1. Deprecated, 对绝对路径的头文件搜索时, 应实现一种简单优化, 从末尾开始查找
 	2. 大概在代码位置 CTaggedInheritableType::ResolveDependcies, 改为只对Module内的TaggedType成员进一步生成IndexedNode
 27. NiflectGen, 应支持或避免 BindingType 为 Accessor 类型的用法
 28. Deprecated, (已决定继续用此风格, 因为在Runtime本就无法支持hash_code相同的StaticGetType) NiflectGen, BindingType别名与原始类型同时指定时, 无法使用特化风格的CreateFieldLayoutOfType
 	1. 如需要支持同时使用别名与原始类型, 则需要通过类似key的生成方法构造一种id用于生成CreateFieldLayout_SomeId
 	2. 但考虑到StaticGetType本就无法实现区分别名与原始类型, 因此可简单地不支持同时指定BindingType的别名与原始类型
-29. NiflectGen, 收集 NIF_AS_B, 框架应调整为可扩展其它类型的 NIF_AS
+29. Done, NiflectGen, 收集 NIF_AS_B, 框架应调整为可扩展其它类型的 NIF_AS
 30. NiflectGen, 重构实现统一流程 NIF_AS 系列检查, 应只在使用时检查是否有效, 因为定义并不一定使用
 31. Done, NiflectGen, 生成 Inheritable 的 InitType, 获取 InfoType 见 CTypeRegCodeWriter2::WriteInvokeRegisterType
-32. NiflectGen, 生成 _gen.h, 可访问 private 成员
+32. Done, NiflectGen, 生成 _gen.h, 可访问 private 成员
 33. Niflect, 封装如 StaticGetEnum, StaticGetClass 等, 确认是否可正确获取如导出的 StaticGetType, 因此也需要在 _gen.h 实现后再进行
-34. NiflectGen, 重构支持直接在生成代码中初始化完整的accessor, 以支持inheritable序列化
+34. Deprecated, (通过NiflectType的虚函数 InitTypeLayout 实现) NiflectGen, 重构支持直接在生成代码中初始化完整的accessor, 以支持inheritable序列化
 35. Done, NiflectGen, 可能须定义 CTypeLayout, 其中有 Accessor 数组;
-36. NiflectGen, 生成代码后不应重新生成工程
+36. Done, (实验结论为现无法通过cmake实现SourceAndHeader模式生成代码后不执行cmake, 因此实际只能用HeaderOnly) NiflectGen, 生成代码后不应重新生成工程
 	1. 提问"我制作了代码生成工具, 如何用cmake实现生成的代码加到对应模块的源码进行编译, 同时模块的工程不需要因为增加或减少了生成的代码而重新生成"
 37. NiflectGen, 模块间Type依赖验证
 38. NiflectGen, 废弃 TypeReg 概念, 另定义对应概念;
 39. NiflectGen, 检查moduleHeader是否include _gen.h
-40. NiflectGen, 生成 friend CreateTypeAccessor 行号宏
+40. Done, NiflectGen, 生成 friend CreateTypeAccessor 行号宏
+41. NiflectGen, bypass code 改为内存中生成, HardcodedTemplate 风格, 相应地, m_vecForBypassConversion 可考虑移除
+42. Niflect, 子类 Accessor 全部归到 Accessor 目录, 作为常用的Accessor, 也作 Accessor 的实现示例. 另提供默认的 DefaultAccessorSetting.h
+43. NiflectGen, 命令行解析
+44. NiflectGen, 将 libclang 改为静态链接, 只需要发布1个exe即可

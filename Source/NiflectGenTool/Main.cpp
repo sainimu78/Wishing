@@ -78,8 +78,7 @@ int main()
 			{
 				CModuleRegInfo info;
 				info.m_moduleName = "Engine";
-				info.m_genIncludeBasePath = "NiflectGenerated";
-				info.m_genBasePath = "F:/Fts/Proj/Test/Interedit/Generated";
+				info.m_outputRootPath_genIncludeSearchPath = "F:/Fts/Proj/Test/Interedit/Generated/NiflectGenerated";
 				//begin, 指定需要解析的头文件列表
 				info.m_vecModuleHeader.push_back("F:/Fts/Proj/Test/Interedit/Source/Engine/EngineObject.h");
 				info.m_vecModuleHeader.push_back("F:/Fts/Proj/Test/Interedit/Source/Engine/DerivedObject.h");

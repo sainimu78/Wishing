@@ -355,8 +355,7 @@ namespace TestGen
 			auto gen = CreateGenerator();
 			CModuleRegInfo info;
 			info.m_moduleName = "Engine";
-			info.m_genIncludeBasePath = "NiflectGenerated";
-			info.m_genBasePath = "F:/Fts/Proj/Test/Interedit/Generated";
+			info.m_outputRootPath_genIncludeSearchPath = "F:/Fts/Proj/Test/Interedit/Generated/NiflectGenerated";
 			info.m_vecModuleHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestModuleHeaderCodeGen0.h"));
 			info.m_vecAccessorSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestAccessorSettingCodeGen0.h"));
 			Test::AddHeaderSearchPaths(info.m_vecParsingHeaderSearchPath, info.m_writingHeaderSearchPaths);

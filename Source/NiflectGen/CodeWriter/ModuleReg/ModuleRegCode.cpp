@@ -8,7 +8,6 @@ namespace NiflectGen
 	void CModuleRegInfoValidated::Init(const CModuleRegInfo& info)
 	{
 		m_userProvided = info;
-		m_outputRootPath_genIncludeSearchPath = NiflectUtil::ConcatPath(m_userProvided.m_genBasePath, m_userProvided.m_genIncludeBasePath);
 		m_moduleRegBasePath = NiflectUtil::ConcatPath(info.m_moduleName, NiflectGenDefinition::DirName::ModuleReg);
 		m_typeRegBasePath = NiflectUtil::ConcatPath(info.m_moduleName, NiflectGenDefinition::DirName::TypeReg);
 		m_genHBasePath = NiflectUtil::ConcatPath(info.m_moduleName, NiflectGenDefinition::DirName::GenH);
@@ -16,7 +15,7 @@ namespace NiflectGen
 		//if (m_userProvided.m_specifiedModuleApiMacro.empty())
 		//	m_moduleApiMacro = NiflectUtil::FormatString("%s_API", NiflectUtil::ConvertToUpperCase(info.m_moduleName).c_str());
 
-		NiflectUtil::DeleteDirectory(NiflectUtil::ConcatPath(m_outputRootPath_genIncludeSearchPath, info.m_moduleName));
+		NiflectUtil::DeleteDirectory(NiflectUtil::ConcatPath(info.m_outputRootPath_genIncludeSearchPath, info.m_moduleName));
 	}
 	Niflect::CString CModuleRegInfoValidated::GetSourceFileExtForGenFileMode() const
 	{

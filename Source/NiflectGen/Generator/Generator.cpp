@@ -348,7 +348,7 @@ namespace NiflectGen
     //}
     void CGenerator::Save2(const CCodeGenData& genData) const
     {
-        const auto& outputRootPath = m_moduleRegInfo.m_outputRootPath_genIncludeSearchPath;
+        const auto& outputRootPath = m_moduleRegInfo.m_userProvided.m_outputRootPath_genIncludeSearchPath;
         for (auto& it0 : genData.m_typeRegCreateTypeAccessorSpecGenData.m_vecCreateTypeAccessorSpecData)
         {
             {
