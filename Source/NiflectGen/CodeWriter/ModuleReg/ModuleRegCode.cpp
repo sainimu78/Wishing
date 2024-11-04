@@ -8,17 +8,15 @@ namespace NiflectGen
 	void CModuleRegInfoValidated::Init(const CModuleRegInfo& info)
 	{
 		m_userProvided = info;
-		m_moduleRegBasePath = NiflectUtil::ConcatPath(NiflectGenDefinition::DirName::ModuleReg, info.m_moduleName);
-		m_typeRegBasePath = NiflectUtil::ConcatPath(NiflectGenDefinition::DirName::TypeReg, info.m_moduleName);
-		m_genHBasePath = NiflectUtil::ConcatPath(NiflectGenDefinition::DirName::GenH, info.m_moduleName);
-		m_outputRootPath = NiflectUtil::ConcatPath(m_userProvided.m_genBasePath, m_userProvided.m_genIncludeBasePath);
+		m_outputRootPath_genIncludeSearchPath = NiflectUtil::ConcatPath(m_userProvided.m_genBasePath, m_userProvided.m_genIncludeBasePath);
+		m_moduleRegBasePath = NiflectUtil::ConcatPath(info.m_moduleName, NiflectGenDefinition::DirName::ModuleReg);
+		m_typeRegBasePath = NiflectUtil::ConcatPath(info.m_moduleName, NiflectGenDefinition::DirName::TypeReg);
+		m_genHBasePath = NiflectUtil::ConcatPath(info.m_moduleName, NiflectGenDefinition::DirName::GenH);
 
 		//if (m_userProvided.m_specifiedModuleApiMacro.empty())
 		//	m_moduleApiMacro = NiflectUtil::FormatString("%s_API", NiflectUtil::ConvertToUpperCase(info.m_moduleName).c_str());
 
-		NiflectUtil::DeleteDirectory(NiflectUtil::ConcatPath(m_outputRootPath, m_moduleRegBasePath));
-		NiflectUtil::DeleteDirectory(NiflectUtil::ConcatPath(m_outputRootPath, m_typeRegBasePath));
-		NiflectUtil::DeleteDirectory(NiflectUtil::ConcatPath(m_outputRootPath, m_genHBasePath));
+		NiflectUtil::DeleteDirectory(NiflectUtil::ConcatPath(m_outputRootPath_genIncludeSearchPath, info.m_moduleName));
 	}
 	Niflect::CString CModuleRegInfoValidated::GetSourceFileExtForGenFileMode() const
 	{

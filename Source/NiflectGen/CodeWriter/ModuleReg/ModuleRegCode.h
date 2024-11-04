@@ -42,7 +42,7 @@ namespace NiflectGen
 		Niflect::CString m_genHBasePath;
 		Niflect::CString m_moduleRegBasePath;
 		CModuleRegInfo m_userProvided;
-		Niflect::CString m_outputRootPath;
+		Niflect::CString m_outputRootPath_genIncludeSearchPath;
 	};
 
 	namespace Test
