@@ -1,14 +1,13 @@
 #pragma once
 #include "Niflect/NiflectBase.h"
-
-struct CXUnsavedFile;
+#include "clang-c/Index.h"
 
 namespace NiflectGen
 {
 	class CSourceInMemory
 	{
 	public:
-		void FillData(CXUnsavedFile* handle) const;
+		CXUnsavedFile GetCXUnsavedFileHandle() const;
 
 	public:
 		Niflect::CString m_filePath;

@@ -1,6 +1,5 @@
 #pragma once
 #include "NiflectGen/NiflectGenCommon.h"
-#include "NiflectGen/Generator/SourceInMemory.h"
 #include "NiflectGen/CodeWriter/ModuleReg/ModuleRegCode.h"
 
 //仅为避免引用clang头文件将cursor类型定义为void*
@@ -20,7 +19,6 @@ namespace NiflectGen
 		NIFLECTGEN_API void AddTypeBindingSettingHeader(const Niflect::CString& filePath);
 		NIFLECTGEN_API void AddFileForSearching(const Niflect::CString& filePath);
 		NIFLECTGEN_API void AddIncludePath(const Niflect::CString& dirPath);
-		NIFLECTGEN_API void ParseSourceFiles();
 		NIFLECTGEN_API void InitModuleRegInfo(const CModuleRegInfo& userProvied);
 		NIFLECTGEN_API void Generate(CCodeGenData& genData, TestInterfaceFunc TestFunc = NULL);
 		//NIFLECTGEN_API void Save() const;
@@ -30,12 +28,7 @@ namespace NiflectGen
 		const CModuleRegInfoValidated& GetModuleRegInfo() const { return m_moduleRegInfo; }
 
 	private:
-		void PrepareSourceFiles();
-		//void GetUnsavedSourceFiles(Niflect::TArrayNif<CXUnsavedFile>& vecUnsavedFileHandle);
-
-	private:
 		Niflect::TArrayNif<Niflect::CString> m_vecTypeBindingSettingFilePath;
-		CSourceInMemory m_tempSource;
 		Niflect::TArrayNif<Niflect::CString> m_vecFileForSearchingCpp;
 		Niflect::TArrayNif<Niflect::CString> m_vecFileForSearchingH;
 		Niflect::TArrayNif<Niflect::CString> m_vecHeaderSearchPath;

@@ -3,12 +3,12 @@
 
 namespace NiflectGen
 {
-	using namespace Niflect;
-
-	void CSourceInMemory::FillData(CXUnsavedFile* handle) const
+	CXUnsavedFile CSourceInMemory::GetCXUnsavedFileHandle() const
 	{
-		handle->Filename = m_filePath.data();
-		handle->Contents = m_data.data();
-		handle->Length = static_cast<uint32>(m_data.length());
+		CXUnsavedFile handle;
+		handle.Filename = m_filePath.data();
+		handle.Contents = m_data.data();
+		handle.Length = static_cast<uint32>(m_data.length());
+		return handle;
 	}
 }

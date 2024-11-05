@@ -13,6 +13,7 @@
 #include "NiflectGen/CodeWriter/ModuleReg/ModuleRegCodeWriter.h"
 #include "NiflectGen/Resolver/Resolver.h"
 #include "Niflect/Util/SystemUtil.h"
+#include "NiflectGen/Generator/SourceInMemory.h"
 
 //#include <fstream>//std::getline
 //#include <stack>
@@ -41,23 +42,6 @@ namespace NiflectGen
         ASSERT(NiflectGenDefinition::FileExt::IsH(filePath));
         m_vecTypeBindingSettingFilePath.push_back(filePath);
     }
-    void CGenerator::PrepareSourceFiles()
-    {
-        m_tempSource.m_filePath = "TempSource.cpp";
-
-        CSimpleCppWriter writer(m_tempSource.m_data);
-        writer.AddHeaderFirstLine();
-        for (auto& it : m_vecTypeBindingSettingFilePath)
-            writer.AddInclude(it);
-        for (auto& it : m_vecFileForSearchingH)
-            writer.AddInclude(it);
-    }
-    static void GetUnsavedSourceFiles(Niflect::TArrayNif<CXUnsavedFile>& vecUnsavedFileHandle, CSourceInMemory& tempSource)
-    {
-        vecUnsavedFileHandle.resize(1);
-
-        tempSource.FillData(&vecUnsavedFileHandle.back());
-    }
     static void AddSourceFile(const CString& filePath, TArrayNif<CString>& vecCpp, TArrayNif<CString>& vecH)
     {
         if (NiflectGenDefinition::FileExt::IsCpp(filePath))
@@ -78,110 +62,6 @@ namespace NiflectGen
     {
         m_vecHeaderSearchPath.push_back(dirPath);
     }
-    void CGenerator::ParseSourceFiles()
-    {
-        this->PrepareSourceFiles();
-        Niflect::TArrayNif<CXUnsavedFile> vecUnsavedFileHandle;
-        GetUnsavedSourceFiles(vecUnsavedFileHandle, m_tempSource);
-
-        CCompilerOption opt;
-        opt.InitDefault();
-        opt.AddIncludePaths(m_vecHeaderSearchPath);
-
-        bool displayDiagnostics = true;
-        auto index = clang_createIndex(true, displayDiagnostics);
-
-        auto translation_unit = clang_parseTranslationUnit(index, m_tempSource.m_filePath.c_str(), opt.GetArgV(), 
-            opt.GetArgC(), vecUnsavedFileHandle.data(), 
-            static_cast<uint32>(vecUnsavedFileHandle.size()), CXTranslationUnit_DetailedPreprocessingRecord | CXTranslationUnit_SkipFunctionBodies
-        );
-
-        if (false)//if (true)//
-        {
-            auto cursor = clang_getTranslationUnitCursor(translation_unit);
-#pragma warning( disable : 4996 )
-            FILE* fp = fopen("E:/a.txt", "w");
-#pragma warning( default : 4996 )
-            int level = 0;
-            CVisitCallbacks callbacks;
-            callbacks.m_EnterFunc = [&fp, &level](const CXCursor& cursor)
-                {
-                    DebugPrintCursor(fp, cursor, level);
-                    level++;
-                };
-            callbacks.m_LeaveFunc = [&level](const CXCursor& cursor)
-                {
-                    level--;
-                };
-            VisitCursorRecurs(cursor, callbacks);
-            fclose(fp);
-            printf("");
-        }
-
-        if (true)//if (false)//
-        {
-            auto cursor = clang_getTranslationUnitCursor(translation_unit);
-            CTaggedNode2 taggedRoot;
-#pragma warning( disable : 4996 )
-            FILE* fp = fopen("E:/b.txt", "w");
-#pragma warning( default : 4996 )
-            CGenLog log;
-            CCollectingContext context(&log);
-            CVisitingDebugData debugData;
-            debugData.Init(cursor, fp);
-            context.m_debugData = &debugData;
-            CCollectionData collectionData;
-            m_collector.Collect(cursor, &taggedRoot, context, collectionData);
-            //if (false)
-            //{
-            //    for (auto& it : collectionData.m_vecBindingSetting)
-            //    {
-            //        PrintTemplateSubcursor333333333(it.m_subCursorRoot, 0);
-            //        ASSERT(it.m_subCursorRoot.m_vecChild.size() == 2);
-            //        printf("---------\n");
-            //    }
-            //}
-            if (true)
-            {
-                CResolvingContext resolvingContext(&log);
-                CModuleRegInfo moduleRegInfo_reserved;
-                CResolver resolver(collectionData, m_moduleRegInfo);
-                CResolvedData resolvedData;
-                resolver.Deprecated_Resolve2(&taggedRoot, resolvingContext, resolvedData);
-                //resolver.DebugFinish(resolvedData);
-                CTemplateBasedCppWriter writer(resolvedData, m_moduleRegInfo);
-                CWritingContext writingContext(&log);
-                CCodeGenData genData;
-                //writer.Deprecated_Write2(writingContext, genData);
-                ASSERT(false);
-                printf("");
-            }
-            if (false)
-            {
-                TArrayNif<CTaggedType*> vecOrderedNode;
-                SortTaggedNodesInDependencyOrder(&taggedRoot, vecOrderedNode);
-                for (auto& it : vecOrderedNode)
-                {
-                    auto& cursor = it->GetCursor();
-                    auto strName = CXStringToCString(clang_getCursorSpelling(cursor));
-                    auto type = clang_getCursorType(cursor);
-                    auto strType = CXStringToCString(clang_getTypeSpelling(type));
-                    printf("%s\n", strName.c_str());
-                }
-            }
-            debugData.Check();
-            m_collector.DebugFinish2(&taggedRoot, collectionData);
-            fclose(fp);
-            printf("");
-        }
-
-
-        if (translation_unit)
-            clang_disposeTranslationUnit(translation_unit);
-
-        if (index)
-            clang_disposeIndex(index);
-    }
     void CGenerator::InitModuleRegInfo(const CModuleRegInfo& userProvied)
     {
         m_moduleRegInfo.Init(userProvied);
@@ -194,14 +74,17 @@ namespace NiflectGen
 
         //预留清理module, 从module输出目录中的缓存可获取生成的所有文件
 
-        CSourceInMemory tempSource;
-        tempSource.m_filePath = "TempSource.cpp";
-        CSimpleCppWriter writer(tempSource.m_data);
-        writer.AddHeaderFirstLine();
-        for (auto& it1 : userProvided.m_vecAccessorSettingHeader)
-            writer.AddInclude(it1);
-        for (auto& it1 : userProvided.m_vecModuleHeader)
-            writer.AddInclude(it1);
+        CSourceInMemory memSrcMain;
+        {
+            auto& memSrc = memSrcMain;
+            memSrc.m_filePath = "memSrcMain.cpp";
+            CSimpleCppWriter writer(memSrc.m_data);
+            writer.AddHeaderFirstLine();
+            for (auto& it1 : userProvided.m_vecAccessorSettingHeader)
+                writer.AddInclude(it1);
+            for (auto& it1 : userProvided.m_vecModuleHeader)
+                writer.AddInclude(it1);
+        }
 
         CCompilerOption opt;
         opt.InitDefault();
@@ -209,17 +92,17 @@ namespace NiflectGen
 
         //#2, Parse headers
         Niflect::TArrayNif<CXUnsavedFile> vecUnsavedFileHandle;
-        GetUnsavedSourceFiles(vecUnsavedFileHandle, tempSource);
+        vecUnsavedFileHandle.push_back(memSrcMain.GetCXUnsavedFileHandle());
 
         const bool displayDiagnostics = true;
         auto index = clang_createIndex(true, displayDiagnostics);
 
-        auto translation_unit = clang_parseTranslationUnit(index, tempSource.m_filePath.c_str(), opt.GetArgV(),
+        auto translation_unit = clang_parseTranslationUnit(index, memSrcMain.m_filePath.c_str(), opt.GetArgV(),
             opt.GetArgC(), vecUnsavedFileHandle.data(),
             static_cast<uint32>(vecUnsavedFileHandle.size()), CXTranslationUnit_DetailedPreprocessingRecord | CXTranslationUnit_SkipFunctionBodies
         );
 
-        if (false)//if (true)//
+        if (true)//if (false)//
         {
             auto cursor = clang_getTranslationUnitCursor(translation_unit);
 #pragma warning( disable : 4996 )
