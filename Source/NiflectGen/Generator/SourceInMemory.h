@@ -4,13 +4,22 @@
 
 namespace NiflectGen
 {
-	class CSourceInMemory
+	class CMemSource
 	{
-	public:
-		CXUnsavedFile GetCXUnsavedFileHandle() const;
-
 	public:
 		Niflect::CString m_filePath;
 		Niflect::CString m_data;
+	};
+	using CSharedMemSource = Niflect::TSharedPtr<CMemSource>;
+
+	class CMemSourceReferenceCache
+	{
+	public:
+		void AddMemSrcRef(CMemSource& memSrc);
+		CMemSource& AddTempMemSrc();
+
+	public:
+		Niflect::TArrayNif<CXUnsavedFile> m_vecHandle;
+		Niflect::TArrayNif<CSharedMemSource> m_vecTempMemSrc;
 	};
 }

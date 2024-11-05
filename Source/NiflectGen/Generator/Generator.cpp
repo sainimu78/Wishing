@@ -14,6 +14,7 @@
 #include "NiflectGen/Resolver/Resolver.h"
 #include "Niflect/Util/SystemUtil.h"
 #include "NiflectGen/Generator/SourceInMemory.h"
+#include "NiflectGen/Generator/BypassSource.h"
 
 //#include <fstream>//std::getline
 //#include <stack>
@@ -74,32 +75,39 @@ namespace NiflectGen
 
         //预留清理module, 从module输出目录中的缓存可获取生成的所有文件
 
-        CSourceInMemory memSrcMain;
+        CMemSourceReferenceCache memSrcCache;
+        auto& memSrcMain = memSrcCache.AddTempMemSrc();
         {
             auto& memSrc = memSrcMain;
             memSrc.m_filePath = "memSrcMain.cpp";
             CSimpleCppWriter writer(memSrc.m_data);
+
             writer.AddHeaderFirstLine();
             for (auto& it1 : userProvided.m_vecAccessorSettingHeader)
                 writer.AddInclude(it1);
             for (auto& it1 : userProvided.m_vecModuleHeader)
                 writer.AddInclude(it1);
+
+            //begin, Debug
+            writer.AddInclude("F:/Fts/Proj/Test/Interedit/Source/memSrcMyNihao.h");
+            //end
+
+            memSrcCache.AddMemSrcRef(memSrc);
         }
+
+        GenerateSTLBypassMemSource(memSrcCache);
 
         CCompilerOption opt;
         opt.InitDefault();
         opt.AddIncludePaths(userProvided.m_vecParsingHeaderSearchPath);
 
-        //#2, Parse headers
-        Niflect::TArrayNif<CXUnsavedFile> vecUnsavedFileHandle;
-        vecUnsavedFileHandle.push_back(memSrcMain.GetCXUnsavedFileHandle());
 
         const bool displayDiagnostics = true;
         auto index = clang_createIndex(true, displayDiagnostics);
 
         auto translation_unit = clang_parseTranslationUnit(index, memSrcMain.m_filePath.c_str(), opt.GetArgV(),
-            opt.GetArgC(), vecUnsavedFileHandle.data(),
-            static_cast<uint32>(vecUnsavedFileHandle.size()), CXTranslationUnit_DetailedPreprocessingRecord | CXTranslationUnit_SkipFunctionBodies
+            opt.GetArgC(), memSrcCache.m_vecHandle.data(),
+            static_cast<uint32>(memSrcCache.m_vecHandle.size()), CXTranslationUnit_DetailedPreprocessingRecord | CXTranslationUnit_SkipFunctionBodies
         );
 
         if (true)//if (false)//

@@ -6,8 +6,15 @@
 
 namespace NiflectGen
 {
-	class CCppWriter
+	class CCppWriterRef
 	{
+	public:
+		CCppWriterRef(Niflect::CString& code)
+			: m_code(code)
+		{
+
+		}
+
 	public:
 		void WriteLine(const Niflect::CString& line)
 		{
@@ -24,7 +31,19 @@ namespace NiflectGen
 		}
 
 	public:
-		Niflect::CString m_code;
+		Niflect::CString& m_code;
+	};
+	class CCppWriter : public CCppWriterRef
+	{
+		typedef CCppWriterRef inherited;
+	public:
+		CCppWriter()
+			: inherited(m_stm)
+		{
+		}
+
+	private:
+		Niflect::CString m_stm;
 	};
 
 	class CHeaderFilePathData
