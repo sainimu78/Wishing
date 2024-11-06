@@ -76,3 +76,4 @@
 42. Niflect, 子类 Accessor 全部归到 Accessor 目录, 作为常用的Accessor, 也作 Accessor 的实现示例. 另提供默认的 DefaultAccessorSetting.h
 43. NiflectGen, 命令行解析
 44. NiflectGen, 将 libclang 改为静态链接, 只需要发布1个exe即可
+45. Niflect, 为之后实现类型指针的序列化, 应考虑将Table注册到ModuleReg中统一管理
