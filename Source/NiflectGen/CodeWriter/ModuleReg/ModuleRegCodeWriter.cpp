@@ -425,7 +425,7 @@ namespace NiflectGen
                         vecHeaderData.push_back(it1.m_sourceFilePath);
                 }
                 //vecHeaderData.push_back(NiflectGenDefinition::NiflectFramework::FilePath::NiflectTableHeader);
-                CIncludesHelper::ConvertFromHeaderFilePaths(vecHeaderData, m_moduleRegInfo.m_userProvided.m_writingHeaderSearchPaths, linesInclude);
+                CIncludesHelper::ConvertFromHeaderFilePaths(vecHeaderData, m_moduleRegInfo.m_writingHeaderSearchPaths, linesInclude);
                 MapLabelToLines(map, LABEL_0, linesInclude);
             }
             CCodeLines linesInvokeRegisterTypes;

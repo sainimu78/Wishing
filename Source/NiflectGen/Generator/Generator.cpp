@@ -14,7 +14,6 @@
 #include "NiflectGen/Resolver/Resolver.h"
 #include "Niflect/Util/SystemUtil.h"
 #include "NiflectGen/Generator/SourceInMemory.h"
-#include "NiflectGen/Generator/BypassSource.h"
 
 //#include <fstream>//std::getline
 //#include <stack>
@@ -76,31 +75,22 @@ namespace NiflectGen
         //预留清理module, 从module输出目录中的缓存可获取生成的所有文件
 
         CMemSourceReferenceCache memSrcCache;
-        auto& memSrcMain = memSrcCache.AddTempMemSrc();
+        auto& memSrcMain = memSrcCache.CreateTempMemSource();
         {
             auto& memSrc = memSrcMain;
             memSrc.m_filePath = "memSrcMain.cpp";
             CSimpleCppWriter writer(memSrc.m_data);
-
             writer.AddHeaderFirstLine();
             for (auto& it1 : userProvided.m_vecAccessorSettingHeader)
                 writer.AddInclude(it1);
             for (auto& it1 : userProvided.m_vecModuleHeader)
                 writer.AddInclude(it1);
-
-            //begin, Debug
-            writer.AddInclude("F:/Fts/Proj/Test/Interedit/Source/memSrcMyNihao.h");
-            //end
-
-            memSrcCache.AddMemSrcRef(memSrc);
+            memSrcCache.AddMemSourceRef(memSrc);
         }
-
-        GenerateSTLBypassMemSource(memSrcCache);
 
         CCompilerOption opt;
         opt.InitDefault();
-        opt.AddIncludePaths(userProvided.m_vecParsingHeaderSearchPath);
-
+        opt.AddIncludePaths(m_moduleRegInfo.m_vecParsingHeaderSearchPath);
 
         const bool displayDiagnostics = true;
         auto index = clang_createIndex(true, displayDiagnostics);
@@ -110,7 +100,7 @@ namespace NiflectGen
             static_cast<uint32>(memSrcCache.m_vecHandle.size()), CXTranslationUnit_DetailedPreprocessingRecord | CXTranslationUnit_SkipFunctionBodies
         );
 
-        if (true)//if (false)//
+        if (false)//if (true)//
         {
             auto cursor = clang_getTranslationUnitCursor(translation_unit);
 #pragma warning( disable : 4996 )

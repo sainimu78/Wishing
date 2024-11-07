@@ -24,8 +24,7 @@ namespace NiflectGen
 		Niflect::CString m_outputRootPath_genIncludeSearchPath;
 		Niflect::TArrayNif<Niflect::CString> m_vecModuleHeader;
 		Niflect::TArrayNif<Niflect::CString> m_vecAccessorSettingHeader;
-		Niflect::TArrayNif<Niflect::CString> m_vecParsingHeaderSearchPath;//header search paths for libclang parsing
-		CWritingHeaderSearchPaths m_writingHeaderSearchPaths;
+		Niflect::TArrayNif<Niflect::CString> m_vecModuleHeaderSearchPath;//header search paths for libclang parsing
 		Niflect::CString m_moduleApiMacro;
 		Niflect::CString m_moduleApiMacroHeader;
 		EGeneratingHeaderAndSourceFileMode m_genFileMode;
@@ -40,21 +39,16 @@ namespace NiflectGen
 		Niflect::CString m_typeRegBasePath;
 		Niflect::CString m_genHBasePath;
 		Niflect::CString m_moduleRegBasePath;
+		Niflect::TArrayNif<Niflect::CString> m_vecParsingHeaderSearchPath;
+		CWritingHeaderSearchPaths m_writingHeaderSearchPaths;
 		CModuleRegInfo m_userProvided;
 	};
 
 	namespace Test
 	{
-		static void AddHeaderSearchPaths(Niflect::TArrayNif<Niflect::CString>& vecParsingHeaderSearchPath, CWritingHeaderSearchPaths& writingHeadaerSearchPaths)
+		static void AddModuleHeaderSearchPaths(Niflect::TArrayNif<Niflect::CString>& vecModuleHeaderSearchPath)
 		{
-			writingHeadaerSearchPaths.m_vecForRegularConversion.push_back("F:/Fts/Proj/Test/Interedit/Source");
-			//todo: 旁路代码极简单, 可考虑只在内存中生成
-			writingHeadaerSearchPaths.m_vecForBypassConversion.push_back("F:/Fts/Proj/Test/Interedit/Source/BypassCode/NiflectSTL");
-
-			for (auto& it : writingHeadaerSearchPaths.m_vecForRegularConversion)
-				vecParsingHeaderSearchPath.push_back(it);
-			for (auto& it : writingHeadaerSearchPaths.m_vecForBypassConversion)
-				vecParsingHeaderSearchPath.push_back(it);
+			vecModuleHeaderSearchPath.push_back("F:/Fts/Proj/Test/Interedit/Source");
 		}
 	}
 

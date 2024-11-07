@@ -15,8 +15,8 @@ namespace NiflectGen
 	class CMemSourceReferenceCache
 	{
 	public:
-		void AddMemSrcRef(CMemSource& memSrc);
-		CMemSource& AddTempMemSrc();
+		void AddMemSourceRef(CMemSource& memSrc);
+		CMemSource& CreateTempMemSource();
 
 	public:
 		Niflect::TArrayNif<CXUnsavedFile> m_vecHandle;

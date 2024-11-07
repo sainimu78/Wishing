@@ -18,7 +18,7 @@ namespace NiflectGen
                 Niflect::CString relativeTypeRegFilePathNoExt;
                 if (it0.m_taggedTypeHeaderFilePathAddr != NULL)
                 {
-                    relativeTypeRegFilePathNoExt = CIncludesHelper::ConvertToIncludePath(*it0.m_taggedTypeHeaderFilePathAddr, context.m_moduleRegInfo.m_userProvided.m_writingHeaderSearchPaths.m_vecForRegularConversion);
+                    relativeTypeRegFilePathNoExt = CIncludesHelper::ConvertToIncludePath(*it0.m_taggedTypeHeaderFilePathAddr, context.m_moduleRegInfo.m_writingHeaderSearchPaths.m_vecForRegularConversion);
                     relativeTypeRegFilePathNoExt = NiflectUtil::RemoveFileExt(relativeTypeRegFilePathNoExt);
                 }
                 else
@@ -62,7 +62,7 @@ namespace NiflectGen
                             for (auto& it2 : it1->m_registerTypeAndfieldLayout.m_dependencyHeaderFilePathAddrs.m_vecDecl)
                                 vecHeaderData.push_back(*it2);
                         }
-                        CIncludesHelper::ConvertFromHeaderFilePaths(vecHeaderData, context.m_moduleRegInfo.m_userProvided.m_writingHeaderSearchPaths, linesHInclude);
+                        CIncludesHelper::ConvertFromHeaderFilePaths(vecHeaderData, context.m_moduleRegInfo.m_writingHeaderSearchPaths, linesHInclude);
                     }
                     MapLabelToLines(map, LABEL_4, linesHInclude);
                     MapLabelToLines(map, LABEL_6, linesH);
@@ -83,7 +83,7 @@ namespace NiflectGen
                             for (auto& it2 : it1->m_registerTypeAndfieldLayout.m_dependencyHeaderFilePathAddrs.m_vecImpl)
                                 vecHeaderData.push_back(*it2);
                         }
-                        CIncludesHelper::ConvertFromHeaderFilePaths(vecHeaderData, context.m_moduleRegInfo.m_userProvided.m_writingHeaderSearchPaths, linesCppInclude);
+                        CIncludesHelper::ConvertFromHeaderFilePaths(vecHeaderData, context.m_moduleRegInfo.m_writingHeaderSearchPaths, linesCppInclude);
                         //linesCppInclude = linesFilePath;
                     }
                     MapLabelToLines(map, LABEL_4, linesCppInclude);

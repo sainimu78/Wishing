@@ -70,7 +70,7 @@ namespace NiflectGen
                         {
                             Niflect::TArrayNif<CHeaderFilePathData> vecHeaderData;
                             //vecHeaderData.push_back(NiflectGenDefinition::NiflectFramework::FilePath::NiflectTableHeader);
-                            CIncludesHelper::ConvertFromHeaderFilePaths(vecHeaderData, context.m_moduleRegInfo.m_userProvided.m_writingHeaderSearchPaths, linesInclude);
+                            CIncludesHelper::ConvertFromHeaderFilePaths(vecHeaderData, context.m_moduleRegInfo.m_writingHeaderSearchPaths, linesInclude);
                         }
                         MapLabelToLines(map, LABEL_4, linesInclude);
                         MapLabelToLines(map, LABEL_6, linesDecl);
@@ -124,7 +124,7 @@ namespace NiflectGen
                             vecHeaderData.push_back(createTypeAccessorSpecData.m_declHeaderFilePath);
                             if (context.m_moduleRegInfo.m_userProvided.m_genFileMode == EGeneratingHeaderAndSourceFileMode::EHeaderOnly)
                                 vecHeaderData.push_back(createTypeAccessorSpecData.m_implSourceFilePath);
-                            CIncludesHelper::ConvertFromHeaderFilePaths(vecHeaderData, context.m_moduleRegInfo.m_userProvided.m_writingHeaderSearchPaths, linesInclude);
+                            CIncludesHelper::ConvertFromHeaderFilePaths(vecHeaderData, context.m_moduleRegInfo.m_writingHeaderSearchPaths, linesInclude);
                         }
                         MapLabelToLines(map, LABEL_4, linesInclude);
                         MapLabelToLines(map, LABEL_5, linesImpl);

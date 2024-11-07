@@ -1,9 +1,0 @@
-#pragma once
-
-namespace std
-{
-template<class _Ty>
-	class allocator
-	{
-	};
-}

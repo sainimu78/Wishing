@@ -160,5 +160,11 @@ namespace NiflectGenDefinition
 		{
 			constexpr uint32 ThresholdLinesCountForModuleRegSplitting = 10;
 		}
+
+		namespace BypassSTL
+		{
+			constexpr const char* HeadersDirName = "BypassSTL";
+			constexpr const char* DefaultHeaderFileName = "NiflectSTLDeclaration.h";
+		}
 	}
 }

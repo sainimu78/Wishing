@@ -183,6 +183,10 @@ namespace NiflectGen
 		{
 			this->AddLine(NiflectUtil::FormatString("#include \"%s\"", filePath.c_str()));
 		}
+		void AddSystemInclude(const Niflect::CString& filePath)
+		{
+			this->AddLine(NiflectUtil::FormatString("#include <%s>", filePath.c_str()));
+		}
 
 	private:
 		void AddLine(const Niflect::CString& text)

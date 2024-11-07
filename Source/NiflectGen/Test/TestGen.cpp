@@ -19,7 +19,7 @@ namespace TestGen
 			auto gen = CreateGenerator();
 			CModuleRegInfo info;
 			info.m_vecAccessorSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestAccessorSettingAccessorTypeAliass.h"));
-			Test::AddHeaderSearchPaths(info.m_vecParsingHeaderSearchPath, info.m_writingHeaderSearchPaths);
+			Test::AddModuleHeaderSearchPaths(info.m_vecModuleHeaderSearchPath);
 			gen->InitModuleRegInfo(info);
 			CCodeGenData genData;
 			gen->Generate(genData, [](void* cursorAddr)
@@ -49,7 +49,7 @@ namespace TestGen
 			auto gen = CreateGenerator();
 			CModuleRegInfo info;
 			info.m_vecAccessorSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestAccessorSettingBindingTypesAllUnique.h"));
-			Test::AddHeaderSearchPaths(info.m_vecParsingHeaderSearchPath, info.m_writingHeaderSearchPaths);
+			Test::AddModuleHeaderSearchPaths(info.m_vecModuleHeaderSearchPath);
 			gen->InitModuleRegInfo(info);
 			CCodeGenData genData;
 			gen->Generate(genData, [](void* cursorAddr)
@@ -73,7 +73,7 @@ namespace TestGen
 			auto gen = CreateGenerator();
 			CModuleRegInfo info;
 			info.m_vecAccessorSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestAccessorSettingBindingTypesDuplicated.h"));
-			Test::AddHeaderSearchPaths(info.m_vecParsingHeaderSearchPath, info.m_writingHeaderSearchPaths);
+			Test::AddModuleHeaderSearchPaths(info.m_vecModuleHeaderSearchPath);
 			gen->InitModuleRegInfo(info);
 			CCodeGenData genData;
 			gen->Generate(genData, [](void* cursorAddr)
@@ -98,7 +98,7 @@ namespace TestGen
 			auto gen = CreateGenerator();
 			CModuleRegInfo info;
 			info.m_vecAccessorSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestAccessorSettingFullScopes.h"));
-			Test::AddHeaderSearchPaths(info.m_vecParsingHeaderSearchPath, info.m_writingHeaderSearchPaths);
+			Test::AddModuleHeaderSearchPaths(info.m_vecModuleHeaderSearchPath);
 			gen->InitModuleRegInfo(info);
 			CCodeGenData genData;
 			gen->Generate(genData, [](void* cursorAddr)
@@ -202,7 +202,7 @@ namespace TestGen
 			CModuleRegInfo info;
 			info.m_vecModuleHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestModuleHeaderAccessorFinding.h"));
 			info.m_vecAccessorSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestAccessorSettingAccessorFinding.h"));
-			Test::AddHeaderSearchPaths(info.m_vecParsingHeaderSearchPath, info.m_writingHeaderSearchPaths);
+			Test::AddModuleHeaderSearchPaths(info.m_vecModuleHeaderSearchPath);
 			gen->InitModuleRegInfo(info);
 			CCodeGenData genData;
 			gen->Generate(genData, [&gen](void* cursorAddr)
@@ -254,7 +254,7 @@ namespace TestGen
 			auto gen = CreateGenerator();
 			CModuleRegInfo info;
 			info.m_vecAccessorSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestAccessorSettingAccessorResocursorName.h"));
-			Test::AddHeaderSearchPaths(info.m_vecParsingHeaderSearchPath, info.m_writingHeaderSearchPaths);
+			Test::AddModuleHeaderSearchPaths(info.m_vecModuleHeaderSearchPath);
 			gen->InitModuleRegInfo(info);
 			CCodeGenData genData;
 			gen->Generate(genData, [&info](void* cursorAddr)
@@ -307,7 +307,7 @@ namespace TestGen
 			auto moduleHeader = CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestModuleHeaderRequiredHeader.h");
 			info.m_vecModuleHeader.push_back(moduleHeader);
 			info.m_vecAccessorSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestAccessorSettingRequiredHeader.h"));
-			Test::AddHeaderSearchPaths(info.m_vecParsingHeaderSearchPath, info.m_writingHeaderSearchPaths);
+			Test::AddModuleHeaderSearchPaths(info.m_vecModuleHeaderSearchPath);
 			gen->InitModuleRegInfo(info);
 			CCodeGenData genData;
 			gen->Generate(genData, [&gen, &moduleHeader](void* cursorAddr)
@@ -358,7 +358,7 @@ namespace TestGen
 			info.m_outputRootPath_genIncludeSearchPath = "F:/Fts/Proj/Test/Interedit/Generated/NiflectGenerated";
 			info.m_vecModuleHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestModuleHeaderCodeGen0.h"));
 			info.m_vecAccessorSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestAccessorSettingCodeGen0.h"));
-			Test::AddHeaderSearchPaths(info.m_vecParsingHeaderSearchPath, info.m_writingHeaderSearchPaths);
+			Test::AddModuleHeaderSearchPaths(info.m_vecModuleHeaderSearchPath);
 			gen->InitModuleRegInfo(info);
 			CCodeGenData genData;
 			gen->Generate(genData, [&gen, &genData](void* cursorAddr)

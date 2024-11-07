@@ -27,7 +27,7 @@ namespace NiflectGen
             auto& it0 = context.m_vecItem[idx0];
             if (it0.m_taggedTypeHeaderFilePathAddr != NULL)
             {
-                auto headerFilePath = CIncludesHelper::ConvertToIncludePath(*it0.m_taggedTypeHeaderFilePathAddr, context.m_moduleRegInfo.m_userProvided.m_writingHeaderSearchPaths.m_vecForRegularConversion);
+                auto headerFilePath = CIncludesHelper::ConvertToIncludePath(*it0.m_taggedTypeHeaderFilePathAddr, context.m_moduleRegInfo.m_writingHeaderSearchPaths.m_vecForRegularConversion);
                 auto relativeTypeRegFilePathNoExt = NiflectUtil::RemoveFileExt(headerFilePath);
                 auto& staticGetTypeSpecData = data.m_vecStaticGetTypeSpecData[idx0];
                 auto typeRegSplittedFilePathNoExt = NiflectUtil::ConcatPath(context.m_moduleRegInfo.m_genHBasePath, relativeTypeRegFilePathNoExt);
@@ -41,7 +41,7 @@ namespace NiflectGen
                     ASSERT(!context.m_moduleRegInfo.m_userProvided.m_moduleApiMacroHeader.empty());
                     vecHeaderData.push_back(NiflectGenDefinition::NiflectFramework::FilePath::NiflectTypeHeader);
                     vecHeaderData.push_back(context.m_moduleRegInfo.m_userProvided.m_moduleApiMacroHeader);
-                    CIncludesHelper::ConvertFromHeaderFilePaths(vecHeaderData, context.m_moduleRegInfo.m_userProvided.m_writingHeaderSearchPaths, linesGenHInclude);
+                    CIncludesHelper::ConvertFromHeaderFilePaths(vecHeaderData, context.m_moduleRegInfo.m_writingHeaderSearchPaths, linesGenHInclude);
 
                     CCodeTemplate tpl1;
                     tpl1.ReadFromRawData(HardCodedTemplate::GenH);
@@ -123,7 +123,7 @@ namespace NiflectGen
                     CHeaderFilePathDataArray vecHeaderData;
                     ASSERT(!context.m_moduleRegInfo.m_userProvided.m_moduleApiMacroHeader.empty());
                     vecHeaderData.push_back(staticGetTypeSpecData.m_genHHeaderFilePath);
-                    CIncludesHelper::ConvertFromHeaderFilePaths(vecHeaderData, context.m_moduleRegInfo.m_userProvided.m_writingHeaderSearchPaths, linesGenCppInclude);
+                    CIncludesHelper::ConvertFromHeaderFilePaths(vecHeaderData, context.m_moduleRegInfo.m_writingHeaderSearchPaths, linesGenCppInclude);
 
                     CCodeTemplate tpl1;
                     tpl1.ReadFromRawData(HardCodedTemplate::GenCpp);

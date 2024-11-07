@@ -89,7 +89,7 @@ int main()
 				//begin, 指定BindingSetting头文件列表
 				info.m_vecAccessorSettingHeader.push_back("F:/Fts/Proj/Test/Interedit/Source/Engine/EngineAccessorSetting.h");
 				//end
-				Test::AddHeaderSearchPaths(info.m_vecParsingHeaderSearchPath, info.m_writingHeaderSearchPaths);
+				Test::AddModuleHeaderSearchPaths(info.m_vecModuleHeaderSearchPath);
 				gen->InitModuleRegInfo(info);
 				CCodeGenData genData;
 				gen->Generate(genData);

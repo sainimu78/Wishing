@@ -3,7 +3,7 @@
 
 namespace NiflectGen
 {
-	void CMemSourceReferenceCache::AddMemSrcRef(CMemSource& memSrc)
+	void CMemSourceReferenceCache::AddMemSourceRef(CMemSource& memSrc)
 	{
 		m_vecHandle.push_back(CXUnsavedFile{});
 		auto& handle = m_vecHandle.back();
@@ -11,7 +11,7 @@ namespace NiflectGen
 		handle.Contents = memSrc.m_data.data();
 		handle.Length = static_cast<uint32>(memSrc.m_data.length());
 	}
-	CMemSource& CMemSourceReferenceCache::AddTempMemSrc()
+	CMemSource& CMemSourceReferenceCache::CreateTempMemSource()
 	{
 		m_vecTempMemSrc.push_back(Niflect::MakeShared<CMemSource>());
 		return *m_vecTempMemSrc.back();
