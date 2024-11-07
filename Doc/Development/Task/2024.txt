@@ -72,7 +72,7 @@
 38. NiflectGen, 废弃 TypeReg 概念, 另定义对应概念;
 39. NiflectGen, 检查moduleHeader是否include _gen.h
 40. Done, NiflectGen, 生成 friend CreateTypeAccessor 行号宏
-41. NiflectGen, bypass code 改为内存中生成, HardcodedTemplate 风格, 相应地, m_vecForBypassConversion 可考虑移除
+41. Done, (仍须生成文件, 但可避免指定bypass的include路径) NiflectGen, bypass code 改为内存中生成, HardcodedTemplate 风格, 相应地, m_vecForBypassConversion 可考虑移除
 42. Niflect, 子类 Accessor 全部归到 Accessor 目录, 作为常用的Accessor, 也作 Accessor 的实现示例. 另提供默认的 DefaultAccessorSetting.h
 43. NiflectGen, 命令行解析
 44. NiflectGen, 将 libclang 改为静态链接, 只需要发布1个exe即可
