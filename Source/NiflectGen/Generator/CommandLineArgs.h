@@ -1,6 +1,14 @@
 #pragma once
+#include "Niflect/NiflectBase.h"
 
 namespace NiflectGen
 {
-	//ÓÃ Natimeta ¸ÄÐ´ CModuleRegInfo
+	class CCommandLineArgs
+	{
+	public:
+		static void CreateAccessor();
+
+	public:
+		Niflect::CString m_moduleName;
+	};
 }
