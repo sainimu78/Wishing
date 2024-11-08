@@ -1,6 +1,8 @@
 #include "Engine/Test/TestRegistration.h"
 #include "Niflect/NiflectRegistration.h"
-#include "Engine/BuiltinAccessor.h"
+#include "Niflect/CommonlyUsed/CompoundAccessor.h"
+#include "Niflect/CommonlyUsed/ValueTypeAccessor.h"
+#include "Niflect/CommonlyUsed/ContainerTypeAccessor.h"
 #include "Engine/Engine.h"
 #include "Niflect/Memory/Default/DefaultMemory.h"
 #include "Niflect/Serialization/JsonFormat.h"
@@ -58,8 +60,6 @@ namespace Niflect
 
 namespace TestRegistration
 {
-	using namespace Engine;
-
 	static Niflect::CNiflectTable* GetSSSSSS()
 	{
 		static Niflect::CNiflectTable* s_table = NULL;
@@ -153,7 +153,7 @@ namespace TestRegistration
 			auto memTest = GetDefaultMemoryStats();
 
 			CNiflectTable table;
-			auto type = GetOrRegisterType<Niflect::TArrayNif<float>, TStlArrayAccessor<Niflect::TArrayNif<float> >, CNiflectType>(&table, "Niflect::TArrayNif<float>");
+			auto type = GetOrRegisterType<Niflect::TArrayNif<float>, TArrayAccessor<Niflect::TArrayNif<float> >, CNiflectType>(&table, "Niflect::TArrayNif<float>");
 			auto layout = type->CreateFieldLayout();
 			{
 				auto type = GetOrRegisterType<float, CFloatAccessor, CNiflectType>(&table, "float");

@@ -132,6 +132,8 @@ namespace NiflectUtil
 namespace NiflectUtil
 {
     bool DeleteDirectory(const Niflect::CString& dir) {
+        if (dir.empty())
+            return false;
 #ifdef _WIN32
         WIN32_FIND_DATA fileData;
         HANDLE hFind;
@@ -217,6 +219,27 @@ namespace NiflectUtil
 #else
         struct stat buffer;
         return (stat(path.c_str(), &buffer) == 0);
+#endif
+    }
+
+#ifdef _WIN32
+#include <windows.h>
+#else
+#include <unistd.h>
+#include <limits.h>
+#endif
+
+    Niflect::CString GetCurrentWorkingDirPath() {
+#ifdef _WIN32
+        char buffer[MAX_PATH];
+        GetCurrentDirectoryA(MAX_PATH, buffer);
+        Niflect::CString result(buffer);
+        std::replace(result.begin(), result.end(), '\\', '/');
+        return result;
+#else
+        char buffer[PATH_MAX];
+        getcwd(buffer, sizeof(buffer));
+        return Niflect::CString(buffer);
 #endif
     }
 }

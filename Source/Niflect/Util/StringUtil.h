@@ -71,7 +71,59 @@ namespace NiflectUtil
 	}
 	static Niflect::CString ConcatPath(const Niflect::CString& a, const Niflect::CString& b)
 	{
-		return a + "/" + b;
+		constexpr const int JoinABWithSlash = 0;
+		constexpr const int ATrailingSlash = 1;
+		constexpr const int BLeadingSlash = 2;
+		constexpr const int BothHaveSlash = 3;
+		constexpr const int BothEmpty = 4;
+
+		auto mode = JoinABWithSlash;
+		if (!a.empty() || !b.empty())
+		{
+			if (a.size() > 0)
+			{
+				if (a[a.size() - 1] == '/')
+					mode = ATrailingSlash;
+			}
+			if (b.size() > 0)
+			{
+				if (b[0] == '/')
+				{
+					if (mode != ATrailingSlash)
+						mode = BLeadingSlash;
+					else
+						mode = BothHaveSlash;
+				}
+			}
+		}
+		else
+		{
+			mode = BothEmpty;
+		}
+		Niflect::CString result;
+		switch (mode)
+		{
+		case JoinABWithSlash:
+		{
+			result = a + '/' + b;
+			break;
+		}
+		case ATrailingSlash:
+		case BLeadingSlash:
+		{
+			result = a + b;
+			break;
+		}
+		case BothHaveSlash:
+		{
+			result = b.substr(1, b.length() - 1);
+			result = a + result;
+			break;
+		}
+		default:
+			break;
+		}
+		return result;
 	}
 	static bool GetParentDirPathSafe(const Niflect::CString& fileOrDirPath, Niflect::CString& parentDirPath)
 	{

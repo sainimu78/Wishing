@@ -1,5 +1,5 @@
 #include "Niflect/NiflectAccessorSetting.h"
-#include "Engine/BuiltinAccessor.h"
+#include "Niflect/NiflectAccessor.h"
 #include "Engine/Test/TestMyTransform.h"
 
 namespace TestAccessor2

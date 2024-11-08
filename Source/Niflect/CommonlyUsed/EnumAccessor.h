@@ -2,13 +2,11 @@
 #include "Niflect/NiflectAccessor.h"
 #include "Niflect/NiflectType.h"
 
-namespace Engine
+namespace Niflect
 {
-	using namespace RwTree;
-
-	class CEnumClassAccessor : public Niflect::CAccessor
+	class CEnumClassAccessor : public CAccessor
 	{
-		typedef Niflect::CAccessor inherited;
+		typedef CAccessor inherited;
 	public:
 		virtual bool SaveInstanceImpl(const AddrType base, CRwNode* rw) const override
 		{
@@ -50,15 +48,15 @@ namespace Engine
 		}
 
 	private:
-		Niflect::CEnum* GetEnum() const
+		CEnum* GetEnum() const
 		{
-			return Niflect::CEnum::Cast(inherited::GetType());
+			return CEnum::Cast(inherited::GetType());
 		}
 	};
 
-	class CEnumBitMaskAccessor : public Niflect::CAccessor
+	class CEnumBitMaskAccessor : public CAccessor
 	{
-		typedef Niflect::CAccessor inherited;
+		typedef CAccessor inherited;
 	public:
 		virtual bool SaveInstanceImpl(const AddrType base, CRwNode* rw) const override
 		{
@@ -71,9 +69,9 @@ namespace Engine
 		}
 
 	private:
-		Niflect::CEnum* GetEnum() const
+		CEnum* GetEnum() const
 		{
-			return Niflect::CEnum::Cast(inherited::GetType());
+			return CEnum::Cast(inherited::GetType());
 		}
 	};
 }

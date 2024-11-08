@@ -1,12 +1,14 @@
 #include "Engine/Test/TestAccessor2.h"
 #include <stdio.h>
-#include "Niflect/NiflectAccessor.h"
+#include "Niflect/CommonlyUsed/CompoundAccessor.h"
+#include "Niflect/CommonlyUsed/ValueTypeAccessor.h"
+#include "Niflect/CommonlyUsed/ContainerTypeAccessor.h"
+#include "Niflect/CommonlyUsed/STLContainerTypeAccessor.h"
 #include "Niflect/NiflectTable.h"
-#include "Engine/BuiltinAccessor.h"
 #include "Niflect/Util/StringUtil.h"
 #include "Niflect/Serialization/JsonFormat.h"
 #include "Engine/Test/TestMyTransform.h"
-#include "Engine/EnumAccessor.h"
+#include "Niflect/CommonlyUsed/EnumAccessor.h"
 
 namespace TestAccessor2
 {
@@ -37,7 +39,7 @@ namespace Engine
 	template <>
 	CSharedAccessor CreateSSSSSSSSSSSS<Niflect::TArrayNif<float> >()
 	{
-		auto accessor0 = Niflect::MakeShared<TStlArrayAccessor<Niflect::TArrayNif<float> > >();
+		auto accessor0 = Niflect::MakeShared<TArrayAccessor<Niflect::TArrayNif<float> > >();
 		accessor0->InitType(StaticGetType<Niflect::TArrayNif<float> >());
 		{
 			auto type = StaticGetType<float>();
@@ -50,7 +52,7 @@ namespace Engine
 	template <>
 	CSharedAccessor CreateSSSSSSSSSSSS<Niflect::TArrayNif<Niflect::CString> >()
 	{
-		auto accessor0 = Niflect::MakeShared<TStlArrayAccessor<Niflect::TArrayNif<Niflect::CString> > >();
+		auto accessor0 = Niflect::MakeShared<TArrayAccessor<Niflect::TArrayNif<Niflect::CString> > >();
 		accessor0->InitType(StaticGetType<Niflect::TArrayNif<Niflect::CString> >());
 		{
 			auto type = StaticGetType<Niflect::CString>();
@@ -63,7 +65,7 @@ namespace Engine
 	template <>
 	CSharedAccessor CreateSSSSSSSSSSSS<Niflect::TArrayNif<TestAccessor2::TMyTransform<float> > >()
 	{
-		auto accessor0 = Niflect::MakeShared<TStlArrayAccessor<Niflect::TArrayNif<TestAccessor2::TMyTransform<float> > > >();
+		auto accessor0 = Niflect::MakeShared<TArrayAccessor<Niflect::TArrayNif<TestAccessor2::TMyTransform<float> > > >();
 		accessor0->InitType(StaticGetType<Niflect::TArrayNif<TestAccessor2::TMyTransform<float> > >());
 		{
 			auto type = StaticGetType<TestAccessor2::TMyTransform<float> >();
@@ -76,21 +78,21 @@ namespace Engine
 	template <>
 	CSharedAccessor CreateSSSSSSSSSSSS<Niflect::TArrayNif<bool> >()
 	{
-		auto accessor0 = Niflect::MakeShared<TStlBitsArrayAccessor<Niflect::TArrayNif<bool> > >();
+		auto accessor0 = Niflect::MakeShared<TBitsArrayAccessor<Niflect::TArrayNif<bool> > >();
 		accessor0->InitType(StaticGetType<Niflect::TArrayNif<bool> >());
 		return accessor0;
 	}
 	template <>
 	CSharedAccessor CreateSSSSSSSSSSSS<std::vector<bool> >()
 	{
-		auto accessor0 = Niflect::MakeShared<TStlBitsArrayAccessor<std::vector<bool> > >();
+		auto accessor0 = Niflect::MakeShared<TSTLBitsArrayAccessor<std::vector<bool> > >();
 		accessor0->InitType(StaticGetType<std::vector<bool> >());
 		return accessor0;
 	}
 	template <>
 	CSharedAccessor CreateSSSSSSSSSSSS<Niflect::TArrayNif<Niflect::TArrayNif<float> > >()
 	{
-		auto accessor0 = Niflect::MakeShared<TStlArrayAccessor<Niflect::TArrayNif<Niflect::TArrayNif<float> > > >();
+		auto accessor0 = Niflect::MakeShared<TArrayAccessor<Niflect::TArrayNif<Niflect::TArrayNif<float> > > >();
 		accessor0->InitType(StaticGetType<Niflect::TArrayNif<Niflect::TArrayNif<float> > >());
 		{
 			auto type = StaticGetType<Niflect::TArrayNif<float> >();
@@ -122,7 +124,7 @@ namespace Engine
 	template <>
 	CSharedAccessor CreateSSSSSSSSSSSS<Niflect::TMap<Niflect::CString, float> >()
 	{
-		auto accessor0 = Niflect::MakeShared<TStlMapAccessor<Niflect::TMap<Niflect::CString, float> > >();
+		auto accessor0 = Niflect::MakeShared<TMapAccessor<Niflect::TMap<Niflect::CString, float> > >();
 		accessor0->InitType(StaticGetType<Niflect::TMap<Niflect::CString, float> >());
 		{
 			auto type = StaticGetType<std::pair<Niflect::CString, float> >();

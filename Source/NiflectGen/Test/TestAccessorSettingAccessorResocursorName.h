@@ -1,5 +1,6 @@
 #include "Niflect/NiflectAccessorSetting.h"
-#include "Engine/BuiltinAccessor.h"
+#include "Niflect/CommonlyUsed/CompoundAccessor.h"
+#include "Niflect/CommonlyUsed/ContainerTypeAccessor.h"
 #include "Engine/Test/TestMyTransform.h"
 
 namespace MyScope2
@@ -23,7 +24,6 @@ namespace EngineTypeBindingSettingScope
 {
 	using namespace NiflectAccessorSetting;
 	using namespace Niflect;
-	using namespace Engine;
 	using namespace TestAccessor2;
 	using namespace MyScope2;
 	using namespace SubScope1;
@@ -36,7 +36,7 @@ namespace EngineTypeBindingSettingScope
 	NIF_AS_A() TSetting<TMyTransformAccessor<float>, SubScope1::TMySubScope1TM<int64> >;
 	NIF_AS_A() TSetting<TestAccessor2::TMyTransformAccessor<float>, TArrayNif<SMyStruct> >;
 	template <typename TInstance, typename T>
-	NIF_AS_A() TSetting<TStlArrayAccessor<TInstance>, TArrayNif<T> >;
+	NIF_AS_A() TSetting<TArrayAccessor<TInstance>, TArrayNif<T> >;
 	template <typename T0, typename T1>
 	NIF_AS_A() TSetting<CCompoundAccessor, pair<T0, T1> >;
 }

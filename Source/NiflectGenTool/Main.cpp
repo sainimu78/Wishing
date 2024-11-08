@@ -77,8 +77,6 @@ int main()
 			if (true)
 			{
 				CModuleRegInfo info;
-				info.m_moduleName = "Engine";
-				info.m_outputRootPath_genIncludeSearchPath = "F:/Fts/Proj/Test/Interedit/Generated/NiflectGenerated";
 				//begin, 指定需要解析的头文件列表
 				info.m_vecModuleHeader.push_back("F:/Fts/Proj/Test/Interedit/Source/Engine/EngineObject.h");
 				info.m_vecModuleHeader.push_back("F:/Fts/Proj/Test/Interedit/Source/Engine/DerivedObject.h");
@@ -89,7 +87,7 @@ int main()
 				//begin, 指定BindingSetting头文件列表
 				info.m_vecAccessorSettingHeader.push_back("F:/Fts/Proj/Test/Interedit/Source/Engine/EngineAccessorSetting.h");
 				//end
-				Test::AddModuleHeaderSearchPaths(info.m_vecModuleHeaderSearchPath);
+				Test::InitArgs(info);
 				gen->InitModuleRegInfo(info);
 				CCodeGenData genData;
 				gen->Generate(genData);

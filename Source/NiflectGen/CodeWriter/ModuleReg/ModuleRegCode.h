@@ -16,7 +16,7 @@ namespace NiflectGen
 	class CModuleRegInfo
 	{
 	public:
-		CModuleRegInfo()
+		CModuleRegInfo::CModuleRegInfo()
 			: m_genFileMode(EGeneratingHeaderAndSourceFileMode::EHeaderOnly)
 		{
 		}
@@ -46,9 +46,11 @@ namespace NiflectGen
 
 	namespace Test
 	{
-		static void AddModuleHeaderSearchPaths(Niflect::TArrayNif<Niflect::CString>& vecModuleHeaderSearchPath)
+		static void InitArgs(CModuleRegInfo& info)
 		{
-			vecModuleHeaderSearchPath.push_back("F:/Fts/Proj/Test/Interedit/Source");
+			info.m_moduleName = "Engine";
+			info.m_outputRootPath_genIncludeSearchPath = "F:/Fts/Proj/Test/Interedit/Generated/NiflectGenerated";
+			info.m_vecModuleHeaderSearchPath.push_back("F:/Fts/Proj/Test/Interedit/Source");
 		}
 	}
 

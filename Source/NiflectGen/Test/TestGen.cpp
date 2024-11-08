@@ -19,7 +19,7 @@ namespace TestGen
 			auto gen = CreateGenerator();
 			CModuleRegInfo info;
 			info.m_vecAccessorSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestAccessorSettingAccessorTypeAliass.h"));
-			Test::AddModuleHeaderSearchPaths(info.m_vecModuleHeaderSearchPath);
+			Test::InitArgs(info);
 			gen->InitModuleRegInfo(info);
 			CCodeGenData genData;
 			gen->Generate(genData, [](void* cursorAddr)
@@ -49,7 +49,7 @@ namespace TestGen
 			auto gen = CreateGenerator();
 			CModuleRegInfo info;
 			info.m_vecAccessorSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestAccessorSettingBindingTypesAllUnique.h"));
-			Test::AddModuleHeaderSearchPaths(info.m_vecModuleHeaderSearchPath);
+			Test::InitArgs(info);
 			gen->InitModuleRegInfo(info);
 			CCodeGenData genData;
 			gen->Generate(genData, [](void* cursorAddr)
@@ -73,7 +73,7 @@ namespace TestGen
 			auto gen = CreateGenerator();
 			CModuleRegInfo info;
 			info.m_vecAccessorSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestAccessorSettingBindingTypesDuplicated.h"));
-			Test::AddModuleHeaderSearchPaths(info.m_vecModuleHeaderSearchPath);
+			Test::InitArgs(info);
 			gen->InitModuleRegInfo(info);
 			CCodeGenData genData;
 			gen->Generate(genData, [](void* cursorAddr)
@@ -98,7 +98,7 @@ namespace TestGen
 			auto gen = CreateGenerator();
 			CModuleRegInfo info;
 			info.m_vecAccessorSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestAccessorSettingFullScopes.h"));
-			Test::AddModuleHeaderSearchPaths(info.m_vecModuleHeaderSearchPath);
+			Test::InitArgs(info);
 			gen->InitModuleRegInfo(info);
 			CCodeGenData genData;
 			gen->Generate(genData, [](void* cursorAddr)
@@ -202,7 +202,7 @@ namespace TestGen
 			CModuleRegInfo info;
 			info.m_vecModuleHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestModuleHeaderAccessorFinding.h"));
 			info.m_vecAccessorSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestAccessorSettingAccessorFinding.h"));
-			Test::AddModuleHeaderSearchPaths(info.m_vecModuleHeaderSearchPath);
+			Test::InitArgs(info);
 			gen->InitModuleRegInfo(info);
 			CCodeGenData genData;
 			gen->Generate(genData, [&gen](void* cursorAddr)
@@ -254,7 +254,7 @@ namespace TestGen
 			auto gen = CreateGenerator();
 			CModuleRegInfo info;
 			info.m_vecAccessorSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestAccessorSettingAccessorResocursorName.h"));
-			Test::AddModuleHeaderSearchPaths(info.m_vecModuleHeaderSearchPath);
+			Test::InitArgs(info);
 			gen->InitModuleRegInfo(info);
 			CCodeGenData genData;
 			gen->Generate(genData, [&info](void* cursorAddr)
@@ -281,7 +281,7 @@ namespace TestGen
 					vecExpectedB.push_back("MyScope2::SubScope1::TMySubScope1TM<int64>");
 					vecExpectedA.push_back("TestAccessor2::TMyTransformAccessor<float>");
 					vecExpectedB.push_back("Niflect::TArrayNif<MyScope2::SMyStruct>");
-					vecExpectedA.push_back("Engine::TStlArrayAccessor");
+					vecExpectedA.push_back("Niflect::TArrayAccessor");
 					vecExpectedB.push_back("Niflect::TArrayNif");
 					vecExpectedA.push_back("Niflect::CCompoundAccessor");
 					vecExpectedB.push_back("std::pair");
@@ -307,7 +307,7 @@ namespace TestGen
 			auto moduleHeader = CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestModuleHeaderRequiredHeader.h");
 			info.m_vecModuleHeader.push_back(moduleHeader);
 			info.m_vecAccessorSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestAccessorSettingRequiredHeader.h"));
-			Test::AddModuleHeaderSearchPaths(info.m_vecModuleHeaderSearchPath);
+			Test::InitArgs(info);
 			gen->InitModuleRegInfo(info);
 			CCodeGenData genData;
 			gen->Generate(genData, [&gen, &moduleHeader](void* cursorAddr)
@@ -328,7 +328,7 @@ namespace TestGen
 					Niflect::TArrayNif<Niflect::CString> vecExpected;
 					vecExpected.push_back("Niflect/NiflectBase.h");
 					vecExpected.push_back("Engine/Test/TestMyTransform.h");
-					vecExpected.push_back("BypassCode/NiflectSTL/string");
+					vecExpected.push_back("BypassSTL/string");
 					vecExpected.push_back(moduleHeader);//类本身ResocursorNode所在头文件
 					vecExpected.push_back("NiflectGen/Test/TestSomeTypes.h");
 					vecExpected.push_back(moduleHeader);//自定义TMyArray所在头文件
@@ -354,11 +354,9 @@ namespace TestGen
 		{
 			auto gen = CreateGenerator();
 			CModuleRegInfo info;
-			info.m_moduleName = "Engine";
-			info.m_outputRootPath_genIncludeSearchPath = "F:/Fts/Proj/Test/Interedit/Generated/NiflectGenerated";
 			info.m_vecModuleHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestModuleHeaderCodeGen0.h"));
 			info.m_vecAccessorSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestAccessorSettingCodeGen0.h"));
-			Test::AddModuleHeaderSearchPaths(info.m_vecModuleHeaderSearchPath);
+			Test::InitArgs(info);
 			gen->InitModuleRegInfo(info);
 			CCodeGenData genData;
 			gen->Generate(genData, [&gen, &genData](void* cursorAddr)

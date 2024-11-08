@@ -1,5 +1,7 @@
 #include "Niflect/NiflectAccessorSetting.h"
-#include "Engine/BuiltinAccessor.h"
+#include "Niflect/CommonlyUsed/ContainerTypeAccessor.h"
+#include "Niflect/CommonlyUsed/ValueTypeAccessor.h"
+#include "Niflect/CommonlyUsed/STLValueTypeAccessor.h"
 #include "Engine/Test/TestMyTransform.h"
 #include "NiflectGen/Test/TestModuleHeaderRequiredHeader.h"
 
@@ -9,9 +11,9 @@ namespace EngineTypeBindingSettingScope
 	using namespace Niflect;
 
 	template <typename TInstance, typename T>
-	NIF_AS_A() TSetting<Engine::TStlArrayAccessor<TInstance>, MyTestType::TMyArray<T> >;
-	NIF_AS_A() TSetting<Engine::CFloatAccessor, float>;
-	NIF_AS_A() TSetting<Engine::CStringAccessor, CString>;
+	NIF_AS_A() TSetting<Niflect::TArrayAccessor<TInstance>, MyTestType::TMyArray<T> >;
+	NIF_AS_A() TSetting<Niflect::CFloatAccessor, float>;
+	NIF_AS_A() TSetting<Niflect::CStringAccessor, CString>;
 	NIF_AS_A() TSetting<TestAccessor2::TMyTransformAccessor<float>, TestAccessor2::TMyTransform<float> >;
-	NIF_AS_A() TSetting<Engine::CStdStringAccessor, std::string>;
+	NIF_AS_A() TSetting<Niflect::CSTLStringAccessor, std::string>;
 }

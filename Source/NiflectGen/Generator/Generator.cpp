@@ -81,6 +81,7 @@ namespace NiflectGen
             memSrc.m_filePath = "memSrcMain.cpp";
             CSimpleCppWriter writer(memSrc.m_data);
             writer.AddHeaderFirstLine();
+            writer.AddInclude(NiflectGenDefinition::NiflectFramework::FilePath::NiflectMacroHeader);//_gen.h未生成时, 可解析标记
             for (auto& it1 : userProvided.m_vecAccessorSettingHeader)
                 writer.AddInclude(it1);
             for (auto& it1 : userProvided.m_vecModuleHeader)

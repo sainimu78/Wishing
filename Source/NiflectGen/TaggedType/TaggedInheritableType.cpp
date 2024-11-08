@@ -34,8 +34,8 @@ namespace NiflectGen
 	}
 	void CTaggedInheritableType::ErrorIfNoGeneratedBodyTag(const CXCursor& cursor) const
 	{
-		auto a = CXStringToCString(clang_getCursorSpelling(cursor));
-		ASSERT(m_generatedBodyLineNumber != INDEX_NONE);
+		//auto a = CXStringToCString(clang_getCursorSpelling(cursor));
+		//ASSERT(m_generatedBodyLineNumber != INDEX_NONE);
 	}
 	void CTaggedInheritableType::Deprecated_ResolveDependcies(const TCursorMap<CTaggedType*>& mapCursorDeclToTaggedType)
 	{
