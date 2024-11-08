@@ -30,12 +30,12 @@ namespace Niflect
 	};
 
 	//Native Meta
-	class CNatimeta
+	class CNata
 	{
 	private:
 		virtual void DebugFuncForDynamicCast() {}//仅为动态检查类型避免错误, 如已定义非调试用的virtual函数则可移除, 备注: error C2683: 'dynamic_cast': 'XXX' is not a polymorphic type 
 	};
-	using CSharedNatimeta = TSharedPtr<CNatimeta>;
+	using CSharedNata = TSharedPtr<CNata>;
 
 	class CNiflectType;
 	using CStaticNiflectTypeAddr = CNiflectType*;
@@ -197,19 +197,19 @@ namespace Niflect
 		}
 
 	public:
-		void InitNatimeta(const CSharedNatimeta& natimeta)
+		void InitNata(const CSharedNata& nata)
 		{
-			m_natimeta = natimeta;
+			m_nata = nata;
 		}
-		CNatimeta* GetNatimeta() const
+		CNata* GetNata() const
 		{
-			return m_natimeta.Get();
+			return m_nata.Get();
 		}
 		template <typename TDerived>
-		TDerived* GetDerivedNatimeta() const
+		TDerived* GetDerivedNata() const
 		{
-			ASSERT(dynamic_cast<TDerived*>(m_natimeta.Get()) != NULL);
-			return static_cast<TDerived*>(m_natimeta.Get());
+			ASSERT(dynamic_cast<TDerived*>(m_nata.Get()) != NULL);
+			return static_cast<TDerived*>(m_nata.Get());
 		}
 
 	public:
@@ -236,7 +236,7 @@ namespace Niflect
 		uint32 m_niflectTypeSize;//todo: 计划改名为 m_nativeTypeSize;
 		CSharedAccessor m_fieldRoot;//todo: 计划废弃
 		size_t m_typeHash;
-		CSharedNatimeta m_natimeta;
+		CSharedNata m_nata;
 		CStaticNiflectTypeAddr* m_staticTypePtrAddr;
 	};
 	using CSharedNiflectType = TSharedPtr<CNiflectType>;

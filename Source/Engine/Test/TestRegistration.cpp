@@ -92,11 +92,11 @@ namespace TestRegistration
 		return node0;
 	}
 
-	class CMyRegClassNatimeta : public Niflect::CNatimeta
+	class CMyRegClassNata : public Niflect::CNata
 	{
-		typedef CMyRegClassNatimeta CThis;
+		typedef CMyRegClassNata CThis;
 	public:
-		CMyRegClassNatimeta()
+		CMyRegClassNata()
 			: m_exampleValue(0.0f)
 		{
 
@@ -207,8 +207,8 @@ namespace TestRegistration
 
 				auto type = Niflect::StaticGetType<CMyRegClass>();
 
-				auto natimeta = type->GetDerivedNatimeta<CMyRegClassNatimeta>();
-				printf("Natimeta, exampleValue: %f\n", natimeta->m_exampleValue);
+				auto nata = type->GetDerivedNata<CMyRegClassNata>();
+				printf("Nata, exampleValue: %f\n", nata->m_exampleValue);
 
 				auto layout = type->CreateFieldLayout();
 				auto sharedSrcData = type->MakeSharedInstance<void*>();

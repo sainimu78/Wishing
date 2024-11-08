@@ -132,10 +132,10 @@ namespace Niflect
 		}
 	};
 
-	template <typename TNatimeta>
-	static const CSharedNatimeta& DuplicateDerivedNatimeta(const TNatimeta& derived)
+	template <typename TNata>
+	static const CSharedNata& DuplicateDerivedNata(const TNata& derived)
 	{
-		return Niflect::MakeShared<TNatimeta(derived);
+		return Niflect::MakeShared<TNata(derived);
 	}
 
 	template <typename TType, typename TInfo>
@@ -146,15 +146,15 @@ namespace Niflect
 		//{
 		//	table->RegisterType2<TType, TInfo>(id, Func);
 		//}
-		template <typename TNatimeta>
-		TStaticTypeRegger(CNiflectTable* table, const Niflect::CString& id, const CreateTypeAccessorFunc& Func, const TNatimeta& natimeta)
+		template <typename TNata>
+		TStaticTypeRegger(CNiflectTable* table, const Niflect::CString& id, const CreateTypeAccessorFunc& Func, const TNata& nata)
 			//: TStaticTypeRegger(table, id, Func)
 		{
 			table->RegisterType2<TType, TInfo>(id, Func);
-			if (sizeof(TNatimeta) > sizeof(CNatimeta))
+			if (CNiflectType::GetTypeHash<TNata>() != CNiflectType::GetTypeHash<CNata>())
 			{
 				auto type = StaticGetType<TType>();
-				type->InitNatimeta(Niflect::MakeShared<TNatimeta>(natimeta));
+				type->InitNata(Niflect::MakeShared<TNata>(nata));
 			}
 		}
 	};
@@ -185,9 +185,9 @@ namespace Niflect
 #define DEPRECATED_NIFLECT_REGISTER(niflectType, typeName, invokeGetTable, customDataObject)\
 	static Niflect::TStaticTableTypeReg<niflectType, typeName> s_typeReg_##typeName(invokeGetTable, #typeName, customDataObject);
 
-#define NIFLECT_TYPE_REGISTER(typeName, niflectType, invokeGetTable, staticCreateFieldLayoutFuncAddr, natimetaType, natimetaObj)\
-	static Niflect::TStaticTypeRegger<typeName, niflectType> s_typeReg_##typeName(invokeGetTable, #typeName, staticCreateFieldLayoutFuncAddr, natimetaType(natimetaObj))
+#define NIFLECT_TYPE_REGISTER(typeName, niflectType, invokeGetTable, staticCreateFieldLayoutFuncAddr, nataType, nataObj)\
+	static Niflect::TStaticTypeRegger<typeName, niflectType> s_typeReg_##typeName(invokeGetTable, #typeName, staticCreateFieldLayoutFuncAddr, nataType(nataObj))
 
-#define NIFLECT_CLASS_REGISTER(typeName, invokeGetTable, staticCreateFieldLayoutFuncAddr, natimetaType, natimetaObj)\
-	NIFLECT_TYPE_REGISTER(typeName, Niflect::CClass, invokeGetTable, staticCreateFieldLayoutFuncAddr, natimetaType, natimetaObj)
+#define NIFLECT_CLASS_REGISTER(typeName, invokeGetTable, staticCreateFieldLayoutFuncAddr, nataType, nataObj)\
+	NIFLECT_TYPE_REGISTER(typeName, Niflect::CClass, invokeGetTable, staticCreateFieldLayoutFuncAddr, nataType, nataObj)
 }
