@@ -17,12 +17,13 @@ void TestAPI_C()
 #include "Niflect/NiflectTable.h"
 #include "Engine/DerivedObject.h"
 #include "Niflect/Serialization/JsonFormat.h"
+#include "TestModule1/TestModule1.h"
 
 static Niflect::TSharedPtr<Niflect::CNiflectTable> g_defaultTable;
 
 void TestEngineCreate()
 {
-	TestModule1::TestModule1Create();
+	TestModule1Create();
 
 	g_defaultTable = Niflect::MakeShared<Niflect::CNiflectTable>();
 	Niflect::GeneratedInitialReg(g_defaultTable.Get());
@@ -49,7 +50,7 @@ void TestEngineRun()
 }
 void TestEngineDestroy()
 {
-	TestModule1::TestModule1Destroy();
+	TestModule1Destroy();
 	g_defaultTable = NULL;
 }
 #else

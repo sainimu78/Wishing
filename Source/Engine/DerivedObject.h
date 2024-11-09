@@ -1,6 +1,6 @@
 #pragma once
 #include "Engine/EngineObject.h"
-#include "TestModule1/TestModule1.h"
+#include "TestModule1/TestClass1.h"
 #include "Engine/DerivedObject_gen.h"
 
 namespace Engine
