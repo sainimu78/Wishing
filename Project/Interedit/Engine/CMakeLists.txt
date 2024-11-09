@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.20.0)
 
 set(ModuleName Engine)
 
-set(SourcePath ${RootSourcePath}/Engine)
+set(SourcePath ${RootSourcePath}/${ModuleName})
 
 file(GLOB_RECURSE ModuleSrc ${SourcePath}/*.cpp ${SourcePath}/*.h)
 set(SrcAll "")
@@ -34,7 +34,6 @@ add_library(${ModuleName} SHARED ${SrcAll})
 
 target_precompile_headers(${ModuleName} PRIVATE ${SourcePath}/EngineDevelopmentMacro.h)
 
-#set_target_properties(${ModuleName} PROPERTIES LINKER_LANGUAGE CXX)
 set_target_properties(${ModuleName} PROPERTIES 
     RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG}
     RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE}
@@ -58,17 +57,6 @@ target_compile_definitions(${ModuleName}
 )
 
 target_link_libraries(${ModuleName} PRIVATE Niflect)
+target_link_libraries(${ModuleName} PRIVATE TestModule1)
 
-set(LinkParentName ${ModuleName})
-#set(ThirdPartyPath "ThirdParty")
-
-#add_subdirectory(${ThirdPartyPath}/clang)
-#target_include_directories(${LinkParentName} 
-#	PRIVATE "${DependenciesPath}/include/llvm-project/clang/include"
-#	PRIVATE "${DependenciesPath}/include/llvm-project/llvm/include"
-#)
-#target_link_libraries(${LinkParentName} PRIVATE libclang)
-
-#target_include_directories(${LinkParentName}
-#	PRIVATE "${ThirdPartyPath}/mustache_From_Picolo/include"
-#)
+add_subdirectory(TestModule1)
