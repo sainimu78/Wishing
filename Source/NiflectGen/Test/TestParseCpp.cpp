@@ -29,6 +29,7 @@
 #  include <direct.h>
 #else
 #  include <unistd.h>
+#include <libgen.h>
 #endif
 /******************************************************************************/
 /* Utility functions.                                                         */
