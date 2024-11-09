@@ -25,7 +25,7 @@
 
 namespace NiflectUtil
 {
-    bool create_directory(const Niflect::CString& path) {
+    static bool create_directory(const Niflect::CString& path) {
         struct stat info;
 
         // 检查路径是否已存在
@@ -49,20 +49,25 @@ namespace NiflectUtil
     }
     void MakeDirectories(const Niflect::CString& file_path)
     {
-        // 获取文件路径的目录部分
-        std::string::size_type pos = file_path.find_last_of("/\\");
+        std::string::size_type pos = file_path.find_last_of('/');
         if (pos != std::string::npos) {
             auto dir = file_path.substr(0, pos);
 
-            // 分割路径并逐层创建目录
             Niflect::TArrayNif<Niflect::CString> path_segments;
             Niflect::CString current_path;
             for (char ch : dir) {
-                if (ch == '/' || ch == '\\') {
+                if (ch == '/') {
                     if (!current_path.empty()) {
                         path_segments.push_back(current_path);
                         current_path.clear();
                     }
+#ifdef _WIN32
+#else
+                    else
+                    {
+                        path_segments.push_back(current_path);
+                    }
+#endif
                 }
                 else {
                     current_path += ch;
@@ -72,10 +77,9 @@ namespace NiflectUtil
                 path_segments.push_back(current_path);
             }
 
-            // 创建每一层目录
             Niflect::CString constructed_path;
             for (const auto& segment : path_segments) {
-                constructed_path += segment + "/";
+                constructed_path += segment + '/';
                 if (!create_directory(constructed_path)) {
                     std::cerr << "Failed to create path: " << constructed_path << std::endl;
                     return;
