@@ -24,7 +24,7 @@ namespace RwTree
 		static void Read(CRwNode* rwNode, std::istream& stm)
 		{
 			SkipWhitespace(stm);
-			return ParseValue(rwNode, stm);
+			ParseValue(rwNode, stm);
 		}
 
 	private:

@@ -58,7 +58,124 @@
 //				1. 其中 MyVector1 为 template <typename T> using MyVector1 = std::vecotr<T, MyAllocator1<T> >;
 //					1. 其中 MyAllocator1 为 template <typename T> class MyAllocator1 { ... };
 
-int main()
+
+namespace NiflectGen
+{
+	//static bool FindOptionName(const Niflect::CString& str, const Niflect::CString& name, size_t& pos)
+	//{
+	//	pos = str.find(name);
+	//	bool found = pos != std::string::npos;
+	//	if (found)
+	//		pos += name.length();
+	//	return found;
+	//}
+	//static void GetAndAddOptionValue(const Niflect::CString& str, const size_t& pos, Niflect::TArrayNif<Niflect::CString>& vec)
+	//{
+	//	vec.push_back(str.substr(pos, str.length() - pos));
+	//}
+	//static void GetOptionValue(const Niflect::CString& str, const size_t& pos, Niflect::CString& out)
+	//{
+	//	out = str.substr(pos, str.length() - pos);
+	//}
+
+	//static void ParseOptions(int argc, const char** argv, CModuleRegInfo& info)
+	//{
+	//	ASSERT(argc > 1);
+	//	for (int idx = 1; idx < argc; ++idx)
+	//	{
+	//		Niflect::CString strV = argv[idx];
+	//		if (strV.length() >= 2)
+	//		{
+	//			size_t pos;
+	//			if (FindOptionName(strV, "-n", pos))
+	//			{
+	//				GetOptionValue(strV, pos, info.m_moduleName);
+	//			}
+	//			else if (FindOptionName(strV, "-h", pos))
+	//			{
+	//				GetAndAddOptionValue(strV, pos, info.m_vecModuleHeader);
+	//			}
+	//			else if (FindOptionName(strV, "-am", pos))
+	//			{
+	//				GetOptionValue(strV, pos, info.m_moduleApiMacro);
+	//			}
+	//			else if (FindOptionName(strV, "-mh", pos))
+	//			{
+	//				GetOptionValue(strV, pos, info.m_moduleApiMacroHeader);
+	//			}
+	//			else if (FindOptionName(strV, "-s", pos))
+	//			{
+	//				GetAndAddOptionValue(strV, pos, info.m_vecAccessorSettingHeader);
+	//			}
+	//			else if (FindOptionName(strV, "-I", pos))
+	//			{
+	//				GetAndAddOptionValue(strV, pos, info.m_vecModuleHeaderSearchPath);
+	//			}
+	//			else if (FindOptionName(strV, "-p", pos))
+	//			{
+	//				GetOptionValue(strV, pos, info.m_outputRootPath_genIncludeSearchPath);
+	//			}
+	//			else if (FindOptionName(strV, "-fs", pos))
+	//			{
+	//				info.m_genFileMode = EGeneratingHeaderAndSourceFileMode::ESourceAndHeader;
+	//			}
+	//			else
+	//			{
+	//				ASSERT(false);
+	//			}
+	//		}
+	//	}
+	//}
+
+
+	static void ParseOptions(int argc, const char** argv, CModuleRegInfo& info)
+	{
+		ASSERT(argc > 1);
+		for (int idx = 1; idx < argc; ++idx)
+		{
+			auto& pszV = argv[idx];
+			if (strcmp(pszV, "-n") == 0)
+			{
+				info.m_moduleName = argv[++idx];
+			}
+			else if (strcmp(pszV, "-h") == 0)
+			{
+				info.m_vecModuleHeader.push_back(argv[++idx]);
+			}
+			else if (strcmp(pszV, "-am") == 0)
+			{
+				info.m_moduleApiMacro = argv[++idx];
+			}
+			else if (strcmp(pszV, "-amh") == 0)
+			{
+				info.m_moduleApiMacroHeader = argv[++idx];
+			}
+			else if (strcmp(pszV, "-a") == 0)
+			{
+				info.m_vecAccessorSettingHeader.push_back(argv[++idx]);
+			}
+			else if (strcmp(pszV, "-I") == 0)
+			{
+				info.m_vecModuleHeaderSearchPath.push_back(argv[++idx]);
+			}
+			else if (strcmp(pszV, "-p") == 0)
+			{
+				info.m_outputRootPath_genIncludeSearchPath = argv[++idx];
+			}
+			else if (strcmp(pszV, "-fs") == 0)
+			{
+				info.m_genFileMode = EGeneratingHeaderAndSourceFileMode::ESourceAndHeader;
+			}
+			else
+			{
+				ASSERT(false);
+			}
+		}
+	}
+
+}
+
+int main(int argc, const char** argv)
 {
 	if (false)//if (true)//
 	{
@@ -77,17 +194,23 @@ int main()
 			if (true)
 			{
 				CModuleRegInfo info;
-				//begin, 指定需要解析的头文件列表
-				info.m_vecModuleHeader.push_back("F:/Fts/Proj/Test/Interedit/Source/Engine/EngineObject.h");
-				info.m_vecModuleHeader.push_back("F:/Fts/Proj/Test/Interedit/Source/Engine/DerivedObject.h");
-				info.m_moduleApiMacro = "ENGINE_API";
-				info.m_moduleApiMacroHeader = "F:/Fts/Proj/Test/Interedit/Source/Engine/EngineCommon.h";
-				//info.m_genFileMode = EGeneratingHeaderAndSourceFileMode::ESourceAndHeader;
-				//end
-				//begin, 指定BindingSetting头文件列表
-				info.m_vecAccessorSettingHeader.push_back("F:/Fts/Proj/Test/Interedit/Source/Engine/EngineAccessorSetting.h");
-				//end
-				Test::InitArgs(info);
+				
+				const char* argvTest[] = {
+					"Placeholder",
+					"-n", "Engine",
+					"-h", "F:/Fts/Proj/Test/Interedit/Source/Engine/EngineObject.h",
+					"-h", "F:/Fts/Proj/Test/Interedit/Source/Engine/DerivedObject.h",
+					"-am", "ENGINE_API",
+					"-amh", "F:/Fts/Proj/Test/Interedit/Source/Engine/EngineCommon.h",
+					"-a", "F:/Fts/Proj/Test/Interedit/Source/Engine/EngineAccessorSetting.h",
+					"-I", "F:/Fts/Proj/Test/Interedit/Source",
+					"-p", "F:/Fts/Proj/Test/Interedit/Generated/NiflectGenerated"
+				};
+				argc = sizeof(argvTest) / sizeof(const char*);
+				argv = argvTest;
+				
+				ParseOptions(argc, argv, info);
+
 				gen->InitModuleRegInfo(info);
 				CCodeGenData genData;
 				gen->Generate(genData);
