@@ -15,7 +15,7 @@
 
 // Include a redundant semicolon at the end of the generated code block, so that intellisense parsers can start parsing
 // a new declaration if the line number/generated code is out of date.
-#define GENERATED_BODY(...) BODY_MACRO_COMBINE(CURRENT_FILE_ID,_,__LINE__,_GENERATED_BODY)
+#define GENERATED_BODY(...) BODY_MACRO_COMBINE(CURRENT_FILE_ID,_,__LINE__,_GENERATED_BODY);
 
 #define NIFLECTGENTAG_TYPE 
 #define NIFLECTGENTAG_FIELD 

@@ -98,7 +98,7 @@ namespace NiflectGen
 				}
 			}
 			MapLabelToText(map, LABEL_2, codeGetType);
-			MapLabelToText(map, LABEL_3, m_baseTaggedType->m_taggedResoRoot.m_resocursorName);
+			MapLabelToText(map, LABEL_3, m_baseTaggedType->m_resocursorName);
 			Niflect::TSet<Niflect::CString> setReplacedLabel;
 			tpl1.ReplaceLabels(map, data.m_lines, &setReplacedLabel);
 		}

@@ -1,5 +1,6 @@
 #pragma once
 #include "Engine/EngineObject.h"
+#include "TestModule1/TestModule1.h"
 #include "Engine/DerivedObject_gen.h"
 
 namespace Engine
@@ -37,6 +38,46 @@ namespace Engine
 		bool m_derived_bool_1;
 		NIF_F()
 		float m_derived_float_2;
+	};
+
+	NIF_T()
+	class CDerivedFromModule1 : public TestModule1::CTestClass1
+	{
+		GENERATED_BODY()
+		typedef TestModule1::CTestClass1 inherited;
+	public:
+		CDerivedFromModule1()
+			: m_derived_bool_1(false)
+		{
+
+		}
+	public:
+		void InitForTest()
+		{
+			inherited::InitForTest();
+			m_derived_array_float_0.resize(3);
+			m_derived_array_float_0[0] = 1.0f;
+			m_derived_array_float_0[1] = 1.1f;
+			m_derived_array_float_0[2] = 1.2f;
+			m_derived_bool_1 = true;
+			m_derived_string_2 = "derived string 2";
+		}
+		bool operator==(const CDerivedFromModule1& rhs) const
+		{
+			return inherited::operator==(rhs)
+				&& m_derived_array_float_0 == rhs.m_derived_array_float_0
+				&& m_derived_bool_1 == rhs.m_derived_bool_1
+				&& m_derived_string_2 == rhs.m_derived_string_2
+				;
+		}
+
+	private:
+		NIF_F()
+		Niflect::TArrayNif<float> m_derived_array_float_0;
+		NIF_F()
+		bool m_derived_bool_1;
+		NIF_F()
+		Niflect::CString m_derived_string_2;
 	};
 
 	//NIF_T()

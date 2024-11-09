@@ -6,7 +6,7 @@
 
 namespace NiflectGen
 {
-    static Niflect::CString ConvertHeaderFilePathToGenHFileId(const Niflect::CString& filePath)
+    static Niflect::CString ConvertHeaderFilePathToUnderscoredStyle(const Niflect::CString& filePath)
     {
         Niflect::CString result;
         for (auto& it : filePath)
@@ -47,6 +47,16 @@ namespace NiflectGen
                     tpl1.ReadFromRawData(HardCodedTemplate::GenH);
                     CLabelToCodeMapping map;
                     MapLabelToLines(map, LABEL_0, linesGenHInclude);
+                    Niflect::CString genHHeaderMacro = ConvertHeaderFilePathToUnderscoredStyle(staticGetTypeSpecData.m_genHHeaderFilePath);
+                    {
+                        //_gen.h 改为无 pragma once, 并增加宏 #error 检查, _gen.h 是特殊写法, 
+                        // 由于定义 CURRENT_FILE_ID, 因此不能加 pragma once, 否则 CURRENT_FILE_ID 不能在 _gen.h 作为依赖时被包含解析, 导致 CURRENT_FILE_ID 预处理错误.
+                        // 现象为 CURRENT_FILE_ID 被解析为展开的 include 顺序中最先出现的 FID 定义.
+                        // 如 DerivedObject_gen.h 的 GENERATED_BODY 被解析为 TestModule1_gen.h 中的 FID_xxx_GENERATED_BODY
+                        MapLabelToText(map, LABEL_11, genHHeaderMacro);
+                        MapLabelToText(map, LABEL_12, staticGetTypeSpecData.m_genHHeaderFilePath);
+                        MapLabelToText(map, LABEL_13, headerFilePath);
+                    }
                     CCodeLines linesTypeDecls;
                     {
                         for (auto& it1 : it0.m_vecTypeRegDataRef)
@@ -63,7 +73,7 @@ namespace NiflectGen
                             linesStaticGetTypeSpecDecl.push_back(it2);
                     }
                     MapLabelToLines(map, LABEL_2, linesStaticGetTypeSpecDecl);
-                    Niflect::CString genHFileId = ConvertHeaderFilePathToGenHFileId(staticGetTypeSpecData.m_genHHeaderFilePath);
+                    Niflect::CString genHFileId = "FID_" + genHHeaderMacro;
                     MapLabelToText(map, LABEL_4, genHFileId);
 
                     CCodeLines linesMacros;
@@ -122,7 +132,7 @@ namespace NiflectGen
                     CCodeLines linesGenCppInclude;
                     CHeaderFilePathDataArray vecHeaderData;
                     ASSERT(!context.m_moduleRegInfo.m_userProvided.m_moduleApiMacroHeader.empty());
-                    vecHeaderData.push_back(staticGetTypeSpecData.m_genHHeaderFilePath);
+                    vecHeaderData.push_back(headerFilePath);
                     CIncludesHelper::ConvertFromHeaderFilePaths(vecHeaderData, context.m_moduleRegInfo.m_writingHeaderSearchPaths, linesGenCppInclude);
 
                     CCodeTemplate tpl1;

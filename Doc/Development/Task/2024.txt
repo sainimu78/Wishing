@@ -77,3 +77,6 @@
 43. Done, NiflectGen, 命令行解析
 44. NiflectGen, 将 libclang 改为静态链接, 只需要发布1个exe即可
 45. Niflect, 为之后实现类型指针的序列化, 应考虑将Table注册到ModuleReg中统一管理
+46. Niflect, 确认 GENERATED_BODY 有无末尾分号对intellisense的影响
+47. NiflectGen, 发现 inheritableType 的 InitType 基类名获取错误是由于成员误用引起, 应梳理代码, 相应改名, 明确概念等, 避免误用
+	1. CInheritableTypeRegCodeWriter2::WriteInvokeInitType 中的 m_baseTaggedType->m_resocursorName 被误用为 m_baseTaggedType->m_taggedResoRoot.m_resocursorName

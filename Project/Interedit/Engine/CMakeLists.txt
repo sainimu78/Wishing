@@ -59,4 +59,4 @@ target_compile_definitions(${ModuleName}
 target_link_libraries(${ModuleName} PRIVATE Niflect)
 target_link_libraries(${ModuleName} PRIVATE TestModule1)
 
-add_subdirectory(TestModule1)
+include(../TestModule1/TestModule1.cmake)

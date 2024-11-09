@@ -22,6 +22,8 @@ static Niflect::TSharedPtr<Niflect::CNiflectTable> g_defaultTable;
 
 void TestEngineCreate()
 {
+	TestModule1::TestModule1Create();
+
 	g_defaultTable = Niflect::MakeShared<Niflect::CNiflectTable>();
 	Niflect::GeneratedInitialReg(g_defaultTable.Get());
 	Niflect::GeneratedInitTypes();
@@ -29,7 +31,7 @@ void TestEngineCreate()
 }
 void TestEngineRun()
 {
-	using CTestType = Engine::CDerivedObject;
+	using CTestType = Engine::CDerivedFromModule1;
 	auto type = Niflect::StaticGetType<CTestType>();
 	RwTree::CRwNode rw;
 	CTestType srcData;
@@ -47,6 +49,7 @@ void TestEngineRun()
 }
 void TestEngineDestroy()
 {
+	TestModule1::TestModule1Destroy();
 	g_defaultTable = NULL;
 }
 #else

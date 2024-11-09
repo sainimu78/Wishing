@@ -603,10 +603,10 @@ namespace NiflectGen
 					break;
 				}
 			}
-			if (!found)
-				continue;
-
-			it0->ResolveDependcies(resolvingDepCtx, resolvingDepData);
+			if (found)
+			{
+				it0->ResolveDependcies(resolvingDepCtx, resolvingDepData);
+			}
 		}
 
 		//Niflect::TMap<Niflect::CString, SModuleRegIndicesAndIncludePath> mapOriginalFilePathToModuleRegIndicesAndIncPath;

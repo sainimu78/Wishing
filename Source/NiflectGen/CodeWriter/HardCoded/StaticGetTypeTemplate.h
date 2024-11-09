@@ -13,6 +13,9 @@ namespace NiflectGen
 #define LABEL_8 "Header"
 #define LABEL_9 "MacroDefinitionItems"
 #define LABEL_10 "MacroDefinitionRoot"
+#define LABEL_11 "GenHMacro"
+#define LABEL_12 "GenHFileName"
+#define LABEL_13 "ModuleHFileName"
 
 	namespace HardCodedTemplate
 	{
@@ -21,9 +24,13 @@ namespace NiflectGen
 )" MAKELABEL(LABEL_9) R"(
 )" MAKELABEL(LABEL_10);
 		static const char* GenH =
-R"(#pragma once
-#include "Niflect/NiflectMacro.h"
+R"(#include "Niflect/NiflectMacro.h"
 )" MAKELABEL(LABEL_0) R"(
+
+#ifdef )" MAKELABEL(LABEL_11) R"(
+#error ")" MAKELABEL(LABEL_12) R"( already included, missing '#pragma once' in )" MAKELABEL(LABEL_13) R"("
+#endif
+#define )" MAKELABEL(LABEL_11) R"(
 
 )" MAKELABEL(LABEL_1) R"(
 
