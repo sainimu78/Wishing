@@ -16,7 +16,7 @@ namespace NiflectGen
 	class CModuleRegInfo
 	{
 	public:
-		CModuleRegInfo::CModuleRegInfo()
+		CModuleRegInfo()
 			: m_genFileMode(EGeneratingHeaderAndSourceFileMode::EHeaderOnly)
 		{
 		}
