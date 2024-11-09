@@ -35,7 +35,6 @@
 /* Utility functions.                                                         */
 /******************************************************************************/
 
-#if defined(_MSC_VER) || defined(WIN32)
 char* basename(const char* path)
 {
     char* base1 = (char*)strrchr(path, '/');
@@ -65,8 +64,6 @@ char* dirname(char* path)
 
     return path;
 }
-#else
-#endif
 
 #pragma warning( disable : 4996 )
 CXIndex createIndexWithInvocationEmissionPath(int ExcludeDeclarationsFromPCH,
