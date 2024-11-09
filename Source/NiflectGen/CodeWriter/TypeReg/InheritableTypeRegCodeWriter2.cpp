@@ -1,5 +1,5 @@
 #include "NiflectGen/CodeWriter/TypeReg/InheritableTypeRegCodeWriter2.h"
-#include "NiflectGen/util/CursorUtil.h"
+#include "NiflectGen/Util/CursorUtil.h"
 #include "NiflectGen/CodeWriter/HardCoded/InheritableTypeTemplate2.h"
 #include "NiflectGen/CodeWriter/CodeTemplate.h"
 #include "NiflectGen/CodeWriter/CppWriter.h"

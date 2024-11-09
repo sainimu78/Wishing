@@ -1,5 +1,5 @@
 #include "NiflectGen/CodeWriter/TypeReg/EnumRegCodeWriter.h"
-#include "NiflectGen/util/CursorUtil.h"
+#include "NiflectGen/Util/CursorUtil.h"
 #include "NiflectGen/CodeWriter/HardCoded/EnumTemplate.h"
 #include "NiflectGen/CodeWriter/CodeTemplate.h"
 #include "NiflectGen/CodeWriter/CppWriter.h"

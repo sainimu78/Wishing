@@ -188,7 +188,7 @@ namespace NiflectUtil
 
             if (entry->d_type == DT_DIR) {
                 // Recursively delete subdirectory
-                delete_directory(full_path);
+                DeleteDirectory(full_path);
                 rmdir(full_path.c_str());
             }
             else {
