@@ -78,14 +78,14 @@ namespace NiflectUtil
 		constexpr const int BothEmpty = 4;
 
 		auto mode = JoinABWithSlash;
-		if (!a.empty() || !b.empty())
+		if (!a.empty() && !b.empty())
 		{
-			if (a.size() > 0)
+			if (!a.empty())
 			{
 				if (a[a.size() - 1] == '/')
 					mode = ATrailingSlash;
 			}
-			if (b.size() > 0)
+			if (!b.empty())
 			{
 				if (b[0] == '/')
 				{
@@ -96,10 +96,19 @@ namespace NiflectUtil
 				}
 			}
 		}
+		else if (a.empty() && !b.empty())
+		{
+			return b;
+		}
+		else if (!a.empty() && b.empty())
+		{
+			return a;
+		}
 		else
 		{
 			mode = BothEmpty;
 		}
+
 		Niflect::CString result;
 		switch (mode)
 		{

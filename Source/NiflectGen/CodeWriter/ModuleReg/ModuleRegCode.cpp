@@ -8,11 +8,11 @@ namespace NiflectGen
 	void CModuleRegInfoValidated::Init(const CModuleRegInfo& info)
 	{
 		ASSERT(!info.m_moduleName.empty());
-		ASSERT(!info.m_outputRootPath_genIncludeSearchPath.empty());
 
 		m_userProvided = info;
 
-		NiflectUtil::DeleteDirectory(NiflectUtil::ConcatPath(info.m_outputRootPath_genIncludeSearchPath, info.m_moduleName));
+		auto moduleGenDirPath = NiflectUtil::ConcatPath(info.m_outputRootPath_genIncludeSearchPath, info.m_moduleName);
+		NiflectUtil::DeleteDirectory(moduleGenDirPath);
 
 		m_moduleRegBasePath = NiflectUtil::ConcatPath(info.m_moduleName, NiflectGenDefinition::DirName::ModuleReg);
 		m_typeRegBasePath = NiflectUtil::ConcatPath(info.m_moduleName, NiflectGenDefinition::DirName::TypeReg);
@@ -21,8 +21,7 @@ namespace NiflectGen
 		for (auto& it : m_userProvided.m_vecModuleHeaderSearchPath)
 			m_writingHeaderSearchPaths.m_vecForRegularConversion.push_back(it);
 		
-		auto bypassSTL = NiflectUtil::ConcatPath(m_userProvided.m_outputRootPath_genIncludeSearchPath, info.m_moduleName);
-		bypassSTL = NiflectUtil::ConcatPath(bypassSTL, NiflectGenDefinition::NiflectFramework::BypassSTL::HeadersDirName);
+		auto bypassSTL = NiflectUtil::ConcatPath(moduleGenDirPath, NiflectGenDefinition::NiflectFramework::BypassSTL::HeadersDirName);
 		GenerateBypassSTLHeaders(bypassSTL);
 
 		m_writingHeaderSearchPaths.m_vecForBypassConversion.push_back(bypassSTL);

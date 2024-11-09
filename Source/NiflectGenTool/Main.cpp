@@ -204,7 +204,7 @@ int main(int argc, const char** argv)
 					"-amh", "F:/Fts/Proj/Test/Interedit/Source/Engine/EngineCommon.h",
 					"-a", "F:/Fts/Proj/Test/Interedit/Source/Engine/EngineAccessorSetting.h",
 					"-I", "F:/Fts/Proj/Test/Interedit/Source",
-					"-p", "F:/Fts/Proj/Test/Interedit/Generated/NiflectGenerated"
+					"-p", "F:/Fts/Proj/Test/Interedit/Generated/NiflectGenerated",
 				};
 				argc = sizeof(argvTest) / sizeof(const char*);
 				argv = argvTest;
