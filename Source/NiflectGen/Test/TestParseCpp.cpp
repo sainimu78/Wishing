@@ -29,6 +29,7 @@
 #  include <direct.h>
 #else
 #  include <unistd.h>
+#include <libgen.h>
 #endif
 /******************************************************************************/
 /* Utility functions.                                                         */
@@ -65,8 +66,6 @@ char* dirname(char* path)
     return path;
 }
 #else
-extern char* basename(const char*);
-extern char* dirname(char*);
 #endif
 
 #pragma warning( disable : 4996 )
