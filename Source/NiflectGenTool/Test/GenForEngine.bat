@@ -1,7 +1,7 @@
-set old=%cd%
-cd ../../../Build/NiflectGenTool/Windows/vs2022_NiflectGenTool_x64/Debug/NiflectGenTool
+@set old=%cd%
+@cd ../../../Build/NiflectGenTool/Windows/vs2022_NiflectGenTool_x64/Debug/NiflectGenTool
 
-NiflectGenTool ^
+@NiflectGenTool ^
 -n Engine ^
 -h F:/Fts/Proj/Test/Interedit/Source/Engine/EngineObject.h ^
 -h F:/Fts/Proj/Test/Interedit/Source/Engine/DerivedObject.h ^
@@ -11,4 +11,4 @@ NiflectGenTool ^
 -I F:/Fts/Proj/Test/Interedit/Source ^
 -p F:/Fts/Proj/Test/Interedit/Generated/NiflectGenerated 
 
-cd %old%
+@cd %old%
