@@ -5,9 +5,10 @@
 
 namespace NiflectGen
 {
-	void CModuleRegInfoValidated::Init(const CModuleRegInfo& info)
+	bool CModuleRegInfoValidated::Init(const CModuleRegInfo& info)
 	{
-		ASSERT(!info.m_moduleName.empty());
+		if (info.m_moduleName.empty())
+			return false;
 
 		m_userProvided = info;
 
@@ -33,6 +34,8 @@ namespace NiflectGen
 
 		//if (m_userProvided.m_specifiedModuleApiMacro.empty())
 		//	m_moduleApiMacro = NiflectUtil::FormatString("%s_API", NiflectUtil::ConvertToUpperCase(info.m_moduleName).c_str());
+
+		return true;
 	}
 	Niflect::CString CModuleRegInfoValidated::GetSourceFileExtForGenFileMode() const
 	{

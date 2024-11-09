@@ -33,7 +33,7 @@ namespace NiflectGen
 	class CModuleRegInfoValidated
 	{
 	public:
-		void Init(const CModuleRegInfo& info);
+		bool Init(const CModuleRegInfo& info);
 		Niflect::CString GetSourceFileExtForGenFileMode() const;
 
 		Niflect::CString m_typeRegBasePath;

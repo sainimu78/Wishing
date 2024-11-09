@@ -19,7 +19,7 @@ namespace NiflectGen
 		NIFLECTGEN_API void AddTypeBindingSettingHeader(const Niflect::CString& filePath);
 		NIFLECTGEN_API void AddFileForSearching(const Niflect::CString& filePath);
 		NIFLECTGEN_API void AddIncludePath(const Niflect::CString& dirPath);
-		NIFLECTGEN_API void InitModuleRegInfo(const CModuleRegInfo& userProvied);
+		NIFLECTGEN_API bool InitModuleRegInfo(const CModuleRegInfo& userProvied);
 		NIFLECTGEN_API void Generate(CCodeGenData& genData, TestInterfaceFunc TestFunc = NULL);
 		//NIFLECTGEN_API void Save() const;
 		NIFLECTGEN_API void Save2(const CCodeGenData& genData) const;

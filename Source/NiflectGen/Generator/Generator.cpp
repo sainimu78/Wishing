@@ -62,9 +62,9 @@ namespace NiflectGen
     {
         m_vecHeaderSearchPath.push_back(dirPath);
     }
-    void CGenerator::InitModuleRegInfo(const CModuleRegInfo& userProvied)
+    bool CGenerator::InitModuleRegInfo(const CModuleRegInfo& userProvied)
     {
-        m_moduleRegInfo.Init(userProvied);
+        return m_moduleRegInfo.Init(userProvied);
     }
     void CGenerator::Generate(CCodeGenData& genData, TestInterfaceFunc TestFunc)
     {

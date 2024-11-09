@@ -211,10 +211,16 @@ int main(int argc, const char** argv)
 				
 				ParseOptions(argc, argv, info);
 
-				gen->InitModuleRegInfo(info);
-				CCodeGenData genData;
-				gen->Generate(genData);
-				gen->Save2(genData);
+				if (gen->InitModuleRegInfo(info))
+				{
+					CCodeGenData genData;
+					gen->Generate(genData);
+					gen->Save2(genData);
+				}
+				else
+				{
+					ASSERT(false);
+				}
 			}
 		}
 	}
