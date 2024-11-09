@@ -34,7 +34,7 @@
 /* Utility functions.                                                         */
 /******************************************************************************/
 
-#ifdef _MSC_VER
+#if defined(_MSC_VER) || defined(WIN32)
 char* basename(const char* path)
 {
     char* base1 = (char*)strrchr(path, '/');

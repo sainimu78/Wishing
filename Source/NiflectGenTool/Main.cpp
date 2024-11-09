@@ -7,6 +7,7 @@
 #include "Niflect/Memory/Default/DefaultMemory.h"
 #include "NiflectGen/Test/TestGen.h"
 #include "NiflectGen/Generator/GenData.h"
+#include <cstring>
 
 //代码中的用语
 //1. StaticRegStage, 在静态初始化阶段的注册过程
