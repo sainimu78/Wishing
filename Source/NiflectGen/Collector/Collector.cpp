@@ -932,7 +932,7 @@ namespace NiflectGen
 	}
 #else
 #endif
-	static CXChildVisitResult VisitorCallback(CXCursor cursor, CXCursor parent, CXClientData data)
+	CXChildVisitResult VisitorCallback(CXCursor cursor, CXCursor parent, CXClientData data)
 	{
 		auto& d = *static_cast<SVisitorCallbackData*>(data);
 		d.m_this->Visit(cursor, d.m_taggedParent, d.m_context, d.m_aliasChain, d.m_visitingData);
