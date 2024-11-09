@@ -135,7 +135,7 @@ namespace Niflect
 	template <typename TNata>
 	static const CSharedNata& DuplicateDerivedNata(const TNata& derived)
 	{
-		return Niflect::MakeShared<TNata(derived);
+		return Niflect::MakeShared<TNata>(derived);
 	}
 
 	template <typename TType, typename TInfo>
