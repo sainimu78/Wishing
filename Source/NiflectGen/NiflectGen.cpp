@@ -5,5 +5,5 @@
 
 void TestFunc()
 {
-	printf("NiflectGen Test, %llu\n", typeid(std::vector<float>).hash_code());
+	printf("NiflectGen Test, %lu\n", static_cast<unsigned long>(typeid(std::vector<float>).hash_code()));
 }
