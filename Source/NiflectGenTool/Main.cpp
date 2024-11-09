@@ -127,6 +127,26 @@ namespace NiflectGen
 	//	}
 	//}
 
+	static Niflect::CString GetNextArgValue(const char** argv, int& idx)
+	{
+		idx += 1;
+		Niflect::CString str;
+		auto& psz = argv[idx];
+		if (psz[0] == '\"')
+		{
+			str = &psz[1];
+			ASSERT(str.length() >= 2);
+			if (str.back() == '\"')
+				str.erase(str.begin() + str.length() - 1);
+			else
+				ASSERT(false);
+		}
+		else
+		{
+			str = psz;
+		}
+		return str;
+	}
 
 	static void ParseOptions(int argc, const char** argv, CModuleRegInfo& info)
 	{
@@ -136,31 +156,31 @@ namespace NiflectGen
 			auto& pszV = argv[idx];
 			if (strcmp(pszV, "-n") == 0)
 			{
-				info.m_moduleName = argv[++idx];
+				info.m_moduleName = GetNextArgValue(argv, idx);
 			}
 			else if (strcmp(pszV, "-h") == 0)
 			{
-				info.m_vecModuleHeader.push_back(argv[++idx]);
+				info.m_vecModuleHeader.push_back(GetNextArgValue(argv, idx));
 			}
 			else if (strcmp(pszV, "-am") == 0)
 			{
-				info.m_moduleApiMacro = argv[++idx];
+				info.m_moduleApiMacro = GetNextArgValue(argv, idx);
 			}
 			else if (strcmp(pszV, "-amh") == 0)
 			{
-				info.m_moduleApiMacroHeader = argv[++idx];
+				info.m_moduleApiMacroHeader = GetNextArgValue(argv, idx);
 			}
 			else if (strcmp(pszV, "-a") == 0)
 			{
-				info.m_vecAccessorSettingHeader.push_back(argv[++idx]);
+				info.m_vecAccessorSettingHeader.push_back(GetNextArgValue(argv, idx));
 			}
 			else if (strcmp(pszV, "-I") == 0)
 			{
-				info.m_vecModuleHeaderSearchPath.push_back(argv[++idx]);
+				info.m_vecModuleHeaderSearchPath.push_back(GetNextArgValue(argv, idx));
 			}
 			else if (strcmp(pszV, "-p") == 0)
 			{
-				info.m_outputRootPath_genIncludeSearchPath = argv[++idx];
+				info.m_outputRootPath_genIncludeSearchPath = GetNextArgValue(argv, idx);
 			}
 			else if (strcmp(pszV, "-fs") == 0)
 			{
@@ -198,7 +218,7 @@ int main(int argc, const char** argv)
 				const char* argvTest[] = {
 					"Placeholder",
 					"-n", "Engine",
-					"-h", "F:/Fts/Proj/Test/Interedit/Source/Engine/EngineObject.h",
+					"-h", "\"F:/Fts/Proj/Test/Interedit/Source/Engine/EngineObject.h\"",
 					"-h", "F:/Fts/Proj/Test/Interedit/Source/Engine/DerivedObject.h",
 					"-am", "ENGINE_API",
 					"-amh", "F:/Fts/Proj/Test/Interedit/Source/Engine/EngineCommon.h",

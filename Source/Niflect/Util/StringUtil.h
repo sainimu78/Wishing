@@ -80,20 +80,14 @@ namespace NiflectUtil
 		auto mode = JoinABWithSlash;
 		if (!a.empty() && !b.empty())
 		{
-			if (!a.empty())
+			if (a.back() == '/')
+				mode = ATrailingSlash;
+			if (b[0] == '/')
 			{
-				if (a[a.size() - 1] == '/')
-					mode = ATrailingSlash;
-			}
-			if (!b.empty())
-			{
-				if (b[0] == '/')
-				{
-					if (mode != ATrailingSlash)
-						mode = BLeadingSlash;
-					else
-						mode = BothHaveSlash;
-				}
+				if (mode != ATrailingSlash)
+					mode = BLeadingSlash;
+				else
+					mode = BothHaveSlash;
 			}
 		}
 		else if (a.empty() && !b.empty())
