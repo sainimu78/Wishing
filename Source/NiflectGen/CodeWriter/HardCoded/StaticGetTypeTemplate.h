@@ -37,6 +37,7 @@ R"(#include "Niflect/NiflectMacro.h"
 )" MAKELABEL(LABEL_2) R"(
 
 )" MAKELABEL(LABEL_6) R"(
+
 #undef CURRENT_FILE_ID
 #define CURRENT_FILE_ID )" MAKELABEL(LABEL_4);
 		static const char* GenCpp =
