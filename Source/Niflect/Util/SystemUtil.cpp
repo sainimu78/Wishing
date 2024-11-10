@@ -246,7 +246,7 @@ namespace NiflectUtil
         return Niflect::CString(buffer);
 #endif
     }
-    Niflect::CString ResolvePath(const Niflect::CString& relativePath) {
+    bool ResolvePath(const Niflect::CString& relativePath, Niflect::CString& absolutePath) {
         auto currentPath = GetCurrentWorkingDirPath();
         Niflect::TArrayNif<Niflect::CString> parts;
 
@@ -295,7 +295,6 @@ namespace NiflectUtil
         }
 
         // 组合成绝对路径
-        Niflect::CString absolutePath;
         for (const auto& part : parts) {
             absolutePath += part + '/';
         }
@@ -305,6 +304,7 @@ namespace NiflectUtil
             absolutePath.pop_back();
         }
 
-        return absolutePath;
+        ASSERT(false);//该函数预留仅处理含 ../ 的路径, 现未使用, 实际使用时应充分测试, 并相应改写
+        return true;
     }
 }

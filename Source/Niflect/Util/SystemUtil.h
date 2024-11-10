@@ -9,5 +9,5 @@ namespace NiflectUtil
 	NIFLECT_API bool DirectoryExists(const Niflect::CString& dir);
 	NIFLECT_API bool FileExists(const Niflect::CString& path);
 	NIFLECT_API Niflect::CString GetCurrentWorkingDirPath();
-	NIFLECT_API Niflect::CString ResolvePath(const Niflect::CString& relativePath);
+	NIFLECT_API bool ResolvePath(const Niflect::CString& relativePath, Niflect::CString& absolutePath);
 }

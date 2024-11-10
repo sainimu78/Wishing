@@ -136,9 +136,10 @@ namespace NiflectGen
                 FILE* fp = NULL;
                 if (false)
                 {
-                    auto filePath = NiflectUtil::ResolvePath("../../../../../../../Generated/NiflectGenerated/b.txt");
-                    NiflectUtil::MakeDirectories(filePath);
-                    fp = fopen(filePath.c_str(), "w");
+                    Niflect::CString absFilePath;
+                    NiflectUtil::ResolvePath("../../../../../../../Generated/NiflectGenerated/b.txt", absFilePath);
+                    NiflectUtil::MakeDirectories(absFilePath);
+                    fp = fopen(absFilePath.c_str(), "w");
                 }
 #pragma warning( default : 4996 )
                 CGenLog log;
