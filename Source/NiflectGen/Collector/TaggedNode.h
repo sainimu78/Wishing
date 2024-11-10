@@ -19,12 +19,21 @@ namespace NiflectGen
 	public:
 		CMacroTagCollection2();
 		~CMacroTagCollection2();
+#ifdef SIMPLIFIED_MACRO_CURSOR_FINDING
+		bool PushMacroExpansion(CXCursorKind kind, const CXCursor& cursor);
+		void PopMacroExpansion(CXCursor& macroCursor);
+#else
 		bool CollectMacroExpansion(const CXCursor& cursor);
 		//void TakeByTagLocation(const CXSourceLocation& tagLocation, const CXCursor& typeCursor, CTaggedNode& taggedParent);
 		void TakeByTagLocation(const CXSourceLocation& tagLocation, CXCursor& macroCursor);
+#endif
 
 	private:
+#ifdef SIMPLIFIED_MACRO_CURSOR_FINDING
+		Niflect::TArrayNif<CXCursor> m_stkMacroCursor;
+#else
 		Niflect::TMap<CXSourceLocation, CXCursor, CXSourceLocationComp> m_mapLocationToMacroCursor;
+#endif
 	};
 
 	struct STaggedNodeCollectingContext

@@ -19,6 +19,9 @@ namespace NiflectGen
 			FoundMember,
 		};
 		EStage m_stage;
+#ifdef SIMPLIFIED_MACRO_CURSOR_FINDING
+#else
 		CXSourceLocation m_tagLocation;
+#endif
 	};
 }

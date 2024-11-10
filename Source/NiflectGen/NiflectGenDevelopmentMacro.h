@@ -34,3 +34,6 @@
 
 //原BindingSetting改为AccessorSetting
 #define ACCESSOR_SETTING_ABCD
+
+//废弃 map 查找, 改用 stack, 改写的原因有 1. linux 下通过 loc 找不到; 2. 已确定宏标签用法, 一定出现在类型定义之前最近一行
+#define SIMPLIFIED_MACRO_CURSOR_FINDING

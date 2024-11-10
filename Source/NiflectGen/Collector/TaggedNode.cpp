@@ -69,6 +69,23 @@ namespace NiflectGen
 	CMacroTagCollection2::~CMacroTagCollection2()
 	{
 	}
+#ifdef SIMPLIFIED_MACRO_CURSOR_FINDING
+	bool CMacroTagCollection2::PushMacroExpansion(CXCursorKind kind, const CXCursor& cursor)
+	{
+		if (kind == CXCursor_MacroExpansion)
+		{
+			m_stkMacroCursor.push_back(cursor);
+			return true;
+		}
+		return false;
+	}
+	void CMacroTagCollection2::PopMacroExpansion(CXCursor& macroCursor)
+	{
+		auto it = m_stkMacroCursor.begin();
+		it += m_stkMacroCursor.size() - 1;
+		m_stkMacroCursor.erase(it);
+	}
+#else
 	bool CMacroTagCollection2::CollectMacroExpansion(const CXCursor& cursor)
 	{
 		auto kind = clang_getCursorKind(cursor);
@@ -87,7 +104,6 @@ namespace NiflectGen
 		}
 		return false;
 	}
-
 	void CMacroTagCollection2::TakeByTagLocation(const CXSourceLocation& tagLocation, CXCursor& macroCursor)
 	{
 		auto itFound = m_mapLocationToMacroCursor.find(tagLocation);
@@ -101,6 +117,7 @@ namespace NiflectGen
 			ASSERT(false);
 		}
 	}
+#endif
 
 	CTaggedNode2::CTaggedNode2()
 		: m_cursor(g_invalidCursor)

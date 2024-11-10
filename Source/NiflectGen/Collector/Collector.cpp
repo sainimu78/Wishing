@@ -787,7 +787,11 @@ namespace NiflectGen
 			if (taggedChild != NULL)
 			{
 				CXCursor macroCursor;
+#ifdef SIMPLIFIED_MACRO_CURSOR_FINDING
+				m_tagCollection.PopMacroExpansion(macroCursor);
+#else
 				m_tagCollection.TakeByTagLocation(m_tagLocation, macroCursor);
+#endif
 				taggedParent->AddChildAndInitDefault(taggedChild, cursor, macroCursor);
 				m_stage = EStage::None;
 				addedTaggedChidl = true;
@@ -853,6 +857,45 @@ namespace NiflectGen
 	{
 		uint32 taggedChildIndex = taggedParent->GetChildrenCount();
 		bool addedTaggedChild = false;
+#ifdef SIMPLIFIED_MACRO_CURSOR_FINDING
+		auto kind = clang_getCursorKind(cursor);
+		if (!m_macroTagCollection.PushMacroExpansion(kind, cursor))
+		{
+			if (m_collectingClassBaseCursorDecl)
+			{
+
+				//if (IsTypeForBaseClassVerifying(kind))
+				//{
+				//	auto ret = m_mapCursorDeclToBaseCursorDecl.insert({ cursor, g_invalidCursor });
+				//	ASSERT(ret.second);
+				//}
+
+				if (kind == CXCursor_TypeAliasTemplateDecl)
+				{
+					aliasChain->AddLinkDecl(cursor);
+					addedTaggedChild = m_templateCollector.Collect(cursor, taggedParent, context.m_log);
+				}
+				else if (kind == CXCursor_TypeAliasDecl)
+				{
+					aliasChain->AddLinkDecl(cursor);
+				}
+				else if (kind == CXCursor_ClassTemplate)
+				{
+					aliasChain->AddLinkDecl(cursor);
+					addedTaggedChild = m_templateCollector.Collect(cursor, taggedParent, context.m_log);
+				}
+			}
+			if (!addedTaggedChild)
+			{
+				addedTaggedChild = m_taggedTypeCollector.Collect(cursor, taggedParent, context.m_log);
+				if (!addedTaggedChild)
+				{
+					STaggedNodeCollectingContext taggedNodeContext{ m_macroTagCollection, context.m_log };
+					addedTaggedChild = taggedParent->CollectSibling(cursor, taggedNodeContext);
+				}
+			}
+		}
+#else
 		if (!m_macroTagCollection.CollectMacroExpansion(cursor))
 		{
 			if (m_collectingClassBaseCursorDecl)
@@ -865,7 +908,7 @@ namespace NiflectGen
 				//	ASSERT(ret.second);
 				//}
 
-#ifdef BINDING_TYPE_DUPLICATION_VERIFICATION
+	#ifdef BINDING_TYPE_DUPLICATION_VERIFICATION
 				bool isUntagged = false;
 				switch (kind)
 				{
@@ -882,7 +925,7 @@ namespace NiflectGen
 					aliasChain->AddLinkDecl(cursor);
 					addedTaggedChild = m_untaggedTypeCollector.Collect(cursor, taggedParent, context.m_log);
 				}
-#else
+	#else
 				if (kind == CXCursor_TypeAliasTemplateDecl)
 				{
 					aliasChain->AddLinkDecl(cursor);
@@ -897,7 +940,7 @@ namespace NiflectGen
 					aliasChain->AddLinkDecl(cursor);
 					addedTaggedChild = m_templateCollector.Collect(cursor, taggedParent, context.m_log);
 				}
-#endif
+	#endif
 			}
 			if (!addedTaggedChild)
 			{
@@ -909,6 +952,7 @@ namespace NiflectGen
 				}
 			}
 		}
+#endif
 		if (addedTaggedChild)
 			data.m_vecTaggedChildIndex.push_back(taggedChildIndex);
 		else

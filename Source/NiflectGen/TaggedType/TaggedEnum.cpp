@@ -19,9 +19,13 @@ namespace NiflectGen
 				//CXStringToCString(clang_getCursorSpelling(m_enumCursor), displayName);
 				//printf("Belongs to enum: %s\n", displayName.c_str());
 
-				auto tagLocation = clang_getCursorLocation(cursor);
 				CXCursor macroCursor;
+#ifdef SIMPLIFIED_MACRO_CURSOR_FINDING
+				context.m_tagCollection.PopMacroExpansion(macroCursor);
+#else
+				auto tagLocation = clang_getCursorLocation(cursor);
 				context.m_tagCollection.TakeByTagLocation(tagLocation, macroCursor);
+#endif
 				this->SetMacroCursor(macroCursor);
 			}
 			return false;

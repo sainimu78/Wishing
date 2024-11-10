@@ -9,7 +9,10 @@ namespace NiflectGen
 
 	CTaggedStruct::CTaggedStruct()
 		: m_stage(EStage::None)
+#ifdef SIMPLIFIED_MACRO_CURSOR_FINDING
+#else
 		, m_tagLocation{}
+#endif
 	{
 	}
 	bool CTaggedStruct::CollectSibling(const CXCursor& cursor, const STaggedNodeCollectingContext& context)
@@ -29,7 +32,10 @@ namespace NiflectGen
 					auto found = FindTagByDisplayName(cursor, NiflectGenDefinition::CodeTag::Field);
 					if (found)
 					{
+#ifdef SIMPLIFIED_MACRO_CURSOR_FINDING
+#else
 						m_tagLocation = clang_getCursorLocation(cursor);
+#endif
 						m_stage = EStage::FoundMember;
 					}
 				}
@@ -50,7 +56,11 @@ namespace NiflectGen
 			if (ok)
 			{
 				CXCursor macroCursor;
+#ifdef SIMPLIFIED_MACRO_CURSOR_FINDING
+				context.m_tagCollection.PopMacroExpansion(macroCursor);
+#else
 				context.m_tagCollection.TakeByTagLocation(m_tagLocation, macroCursor);
+#endif
 				auto taggedChild = MakeShared<CTaggedInheritableTypeMember>();
 				this->AddChildAndInitDefault(taggedChild, cursor, macroCursor);
 				m_stage = EStage::None;
