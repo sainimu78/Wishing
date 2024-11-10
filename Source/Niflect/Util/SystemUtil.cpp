@@ -246,4 +246,65 @@ namespace NiflectUtil
         return Niflect::CString(buffer);
 #endif
     }
+    Niflect::CString ResolvePath(const Niflect::CString& relativePath) {
+        auto currentPath = GetCurrentWorkingDirPath();
+        Niflect::TArrayNif<Niflect::CString> parts;
+
+        // 将当前路径分割成部分
+        size_t start = 0;
+        size_t end = currentPath.find('/');
+
+        while (end != std::string::npos) {
+            parts.push_back(currentPath.substr(start, end - start));
+            start = end + 1;
+            end = currentPath.find('/', start);
+        }
+
+        // 处理最后的部分
+        parts.push_back(currentPath.substr(start));
+
+        // 解析相对路径
+        start = 0;
+        end = relativePath.find('/');
+
+        while (end != std::string::npos) {
+            auto  token = relativePath.substr(start, end - start);
+            if (token == "..") {
+                // 上层目录，移除当前目录的最后部分
+                if (!parts.empty()) {
+                    parts.pop_back();
+                }
+            }
+            else if (token != "." && !token.empty()) {
+                // 当前目录或非空部分，添加到路径
+                parts.push_back(token);
+            }
+            start = end + 1;
+            end = relativePath.find('/', start);
+        }
+
+        // 处理最后的部分
+        Niflect::CString token = relativePath.substr(start);
+        if (token == "..") {
+            if (!parts.empty()) {
+                parts.pop_back();
+            }
+        }
+        else if (token != "." && !token.empty()) {
+            parts.push_back(token);
+        }
+
+        // 组合成绝对路径
+        Niflect::CString absolutePath;
+        for (const auto& part : parts) {
+            absolutePath += part + '/';
+        }
+
+        // 去掉最后的斜杠
+        if (!absolutePath.empty()) {
+            absolutePath.pop_back();
+        }
+
+        return absolutePath;
+    }
 }

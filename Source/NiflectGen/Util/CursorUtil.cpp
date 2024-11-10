@@ -308,6 +308,9 @@ namespace NiflectGen
 	}
 	void DebugPrintCursor(FILE* fp, const CXCursor& handle, int level)
 	{
+		if (fp == NULL)
+			return;
+
 		auto strLevel = DebugIndentToString(level);
 
 		CString displayName;

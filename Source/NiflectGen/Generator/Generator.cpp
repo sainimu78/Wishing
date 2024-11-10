@@ -133,7 +133,13 @@ namespace NiflectGen
             {
                 CTaggedNode2 taggedRoot;
 #pragma warning( disable : 4996 )
-                FILE* fp = fopen("E:/b.txt", "w");
+                FILE* fp = NULL;
+                if (false)
+                {
+                    auto filePath = NiflectUtil::ResolvePath("../../../../../../../Generated/NiflectGenerated/b.txt");
+                    NiflectUtil::MakeDirectories(filePath);
+                    fp = fopen(filePath.c_str(), "w");
+                }
 #pragma warning( default : 4996 )
                 CGenLog log;
                 CCollectingContext context(&log);
@@ -156,7 +162,8 @@ namespace NiflectGen
                 }
                 debugData.Check();
                 //m_collector.DebugFinish2(&taggedRoot, collectionData);
-                fclose(fp);
+                if (fp != NULL)
+                    fclose(fp);
             }
             else
             {
