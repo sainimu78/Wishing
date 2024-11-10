@@ -1,6 +1,6 @@
 #pragma once
 #include "Niflect/NiflectCommon.h"
-#include "Niflect/Util/ConstCharConcat.h"
+#include "Niflect/Util/ConcatHardCodedStrings.h"
 
 #define CODETAG_PREFIX_ACCESSOR_SETTING "__NiflectGen_AccessorSetting"
 
@@ -16,10 +16,10 @@ namespace NiflectGen
 	};
 	//constexpr const char* AccessorSetting = CODETAG_PREFIX_ACCESSOR_SETTING;
 	constexpr const char* AccessorSetingTagNames[] = {
-		CONCAT_CONST_CHAR_2(CODETAG_PREFIX_ACCESSOR_SETTING, "_A"),
-		CONCAT_CONST_CHAR_2(CODETAG_PREFIX_ACCESSOR_SETTING, "_B"),
-		CONCAT_CONST_CHAR_2(CODETAG_PREFIX_ACCESSOR_SETTING, "_C"),
-		CONCAT_CONST_CHAR_2(CODETAG_PREFIX_ACCESSOR_SETTING, "_D")
+		CONCAT_HARDCODED_STRINGS_2(CODETAG_PREFIX_ACCESSOR_SETTING, "_A"),
+		CONCAT_HARDCODED_STRINGS_2(CODETAG_PREFIX_ACCESSOR_SETTING, "_B"),
+		CONCAT_HARDCODED_STRINGS_2(CODETAG_PREFIX_ACCESSOR_SETTING, "_C"),
+		CONCAT_HARDCODED_STRINGS_2(CODETAG_PREFIX_ACCESSOR_SETTING, "_D")
 	};
 	static uint32 GetAccessorSettingTypesCount()
 	{

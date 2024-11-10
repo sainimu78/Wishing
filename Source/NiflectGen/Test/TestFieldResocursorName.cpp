@@ -13,8 +13,8 @@ namespace TestGen
 	static void InitGenFieldResocursorName(CGenerator& gen, uint32 idx)
 	{
 		CModuleRegInfo info;
-		info.m_vecAccessorSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestAccessorSettingFieldResocursorName.h"));
-		auto moduleHeader = NiflectUtil::FormatString("%s%u.h", CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestModuleHeaderFieldResocursorName"), idx);
+		info.m_vecAccessorSettingHeader.push_back(CONCAT_HARDCODED_STRINGS_2(ROOT_TEST_PATH, "/TestAccessorSettingFieldResocursorName.h"));
+		auto moduleHeader = NiflectUtil::FormatString("%s%u.h", CONCAT_HARDCODED_STRINGS_2(ROOT_TEST_PATH, "/TestModuleHeaderFieldResocursorName"), idx);
 		info.m_vecModuleHeader.push_back(moduleHeader);
 		Test::InitArgs(info);
 		gen.InitModuleRegInfo(info);

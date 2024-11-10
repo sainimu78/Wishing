@@ -1,6 +1,6 @@
 #pragma once
 #include "Niflect/Util/StringUtil.h"
-#include "Niflect/Util/ConstCharConcat.h"
+#include "Niflect/Util/ConcatHardCodedStrings.h"
 
 #define DEVELOPMENT_ROOT_SOURCE_PATH "E:/S3/S3ResourceEditor_another/engine_ref"
 #define ROOT_TEST_PATH "F:/Fts/Proj/Test/Interedit/Source/NiflectGen/Test"
@@ -18,7 +18,7 @@ namespace NiflectGenDefinition
 		constexpr const char* Cpp = ".cpp";
 		constexpr const char* H = ".h";
 		constexpr const char* PrivateH = "_private.h";
-		constexpr const char* GenH = CONCAT_CONST_CHAR_2(FILE_NAME_POSTFIX, ".h");//"_gen.h";
+		constexpr const char* GenH = CONCAT_HARDCODED_STRINGS_2(FILE_NAME_POSTFIX, ".h");//"_gen.h";
 
 		static bool IsCpp(const Niflect::CString& text)
 		{
@@ -112,11 +112,11 @@ namespace NiflectGenDefinition
 	namespace Path
 	{
 		constexpr const char* CLangParserArgs_I2[] = {
-			CONCAT_CONST_CHAR_2(DEVELOPMENT_ROOT_SOURCE_PATH, "/S3Engine"),
+			CONCAT_HARDCODED_STRINGS_2(DEVELOPMENT_ROOT_SOURCE_PATH, "/S3Engine"),
 			//todo: 现代码未合并到引擎, 因此暂使用SampleTest的路径, 合并后可移除
-			CONCAT_CONST_CHAR_2(DEVELOPMENT_ROOT_SOURCE_PATH, "/SampleTest/SampleGamePrototyping/Cos/Client/ReflectionSystemDemo"),
+			CONCAT_HARDCODED_STRINGS_2(DEVELOPMENT_ROOT_SOURCE_PATH, "/SampleTest/SampleGamePrototyping/Cos/Client/ReflectionSystemDemo"),
 			//deprecated: 解析头文件要求依赖生成.gen.h, 如果无法避免依赖.h, 则需要生成该.h
-			CONCAT_CONST_CHAR_2(DEVELOPMENT_ROOT_SOURCE_PATH, "/Generated"),
+			CONCAT_HARDCODED_STRINGS_2(DEVELOPMENT_ROOT_SOURCE_PATH, "/Generated"),
 		};
 
 		//用于旁路clang_parseTranslationUnit过程中STL头文件解析, 可大幅减少耗时

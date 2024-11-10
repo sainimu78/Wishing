@@ -349,18 +349,18 @@ namespace NiflectGen
 	{
         //auto debugSettingCppFilePath = CONCAT_CONST_CHAR_2(DEVELOPMENT_ROOT_SOURCE_PATH, "/SampleTest/SampleGamePrototyping/Cos/Client/ReflectionSystemDemo/Test/TestTypeBindingSetting.cpp");
         //auto debugSettingCppFilePath = CONCAT_CONST_CHAR_2(DEVELOPMENT_ROOT_SOURCE_PATH, "/SampleTest/SampleGamePrototyping/Cos/Client/ReflectionSystemDemo/Test/TestTypesHeaderForGen0.h");
-        auto debugSettingCppFilePath = CONCAT_CONST_CHAR_2(DEVELOPMENT_ROOT_SOURCE_PATH, "/Generated/NiflectGenerated/SampleTest/TempHeader.h");
+        auto debugSettingCppFilePath = CONCAT_HARDCODED_STRINGS_2(DEVELOPMENT_ROOT_SOURCE_PATH, "/Generated/NiflectGenerated/SampleTest/TempHeader.h");
         //auto debugSettingCppFilePath = CONCAT_CONST_CHAR_2(DEVELOPMENT_ROOT_SOURCE_PATH, "/Generated/NiflectGenerated/SampleTest/TempSource.cpp");
         //auto debugSettingCppFilePath = CONCAT_CONST_CHAR_2(DEVELOPMENT_ROOT_SOURCE_PATH, "/SampleTest/SampleGamePrototyping/Cos/Client/ReflectionSystemDemo/Test/TestTypeBindingSetting.h");
         CCompilerOption opt;
         opt.InitDefault();
         Niflect::TArrayNif<Niflect::CString> vecIncludePath;
-        vecIncludePath.push_back(CONCAT_CONST_CHAR_2(DEVELOPMENT_ROOT_SOURCE_PATH, "/S3Engine"));
+        vecIncludePath.push_back(CONCAT_HARDCODED_STRINGS_2(DEVELOPMENT_ROOT_SOURCE_PATH, "/S3Engine"));
         //todo: 现代码未合并到引擎, 因此暂使用SampleTest的路径, 合并后可移除
-        vecIncludePath.push_back(CONCAT_CONST_CHAR_2(DEVELOPMENT_ROOT_SOURCE_PATH, "/SampleTest/SampleGamePrototyping/Cos/Client"));
+        vecIncludePath.push_back(CONCAT_HARDCODED_STRINGS_2(DEVELOPMENT_ROOT_SOURCE_PATH, "/SampleTest/SampleGamePrototyping/Cos/Client"));
         //deprecated: 解析头文件要求依赖生成.gen.h, 如果无法避免依赖.h, 则需要生成该.h
         //发现未指定为c++编译, 指定后则无报错
-        vecIncludePath.push_back(CONCAT_CONST_CHAR_2(DEVELOPMENT_ROOT_SOURCE_PATH, "/Generated"));
+        vecIncludePath.push_back(CONCAT_HARDCODED_STRINGS_2(DEVELOPMENT_ROOT_SOURCE_PATH, "/Generated"));
         opt.AddIncludePaths(vecIncludePath);
 
         bool displayDiagnostics = true;

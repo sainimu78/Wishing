@@ -2109,7 +2109,7 @@ void Test0()
     //clang_disposeIndex(m_index);
 
     std::vector<std::string> vecInclude;
-    vecInclude.push_back(CONCAT_CONST_CHAR_2(DEVELOPMENT_ROOT_SOURCE_PATH, "/Tools/Niflect"));
-    TestParseCpp(vecInclude, CONCAT_CONST_CHAR_2(DEVELOPMENT_ROOT_SOURCE_PATH, "/Tools/Niflect/NiflectGen/Test/Exp/Exp.cpp"));
+    vecInclude.push_back(CONCAT_HARDCODED_STRINGS_2(DEVELOPMENT_ROOT_SOURCE_PATH, "/Tools/Niflect"));
+    TestParseCpp(vecInclude, CONCAT_HARDCODED_STRINGS_2(DEVELOPMENT_ROOT_SOURCE_PATH, "/Tools/Niflect/NiflectGen/Test/Exp/Exp.cpp"));
     printf("");
 }
