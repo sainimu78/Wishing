@@ -5,7 +5,7 @@
 #define GENERATED_BODY(...) typedef void* __NiflectGen_GeneratedBody;
 
 #define NIFLECTGENTAG_TYPE typedef void* __NiflectGen_Type;
-#define NIFLECTGENTAG_FIELD typedef void* __NiflectGen_Field;
+#define NIFLECTGENTAG_FIELD typedef void* CONCAT_SYMBOLS_2(__NiflectGen_Field,__LINE__);
 #define NIFLECTGENTAG_METHOD typedef void* __NiflectGen_Method;
 #define NIFLECTGENTAG_CONSTANT __attribute__((annotate("__NiflectGen_EnumConstant")))
 #else
