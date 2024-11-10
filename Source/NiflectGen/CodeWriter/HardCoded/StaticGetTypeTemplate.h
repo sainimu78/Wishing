@@ -34,10 +34,7 @@ R"(#include "Niflect/NiflectMacro.h"
 
 )" MAKELABEL(LABEL_1) R"(
 
-namespace Niflect
-{
-	)" MAKELABEL(LABEL_2) R"(
-}
+)" MAKELABEL(LABEL_2) R"(
 
 )" MAKELABEL(LABEL_6) R"(
 
@@ -46,9 +43,6 @@ namespace Niflect
 		static const char* GenCpp =
 "" MAKELABEL(LABEL_0) R"(
 
-namespace Niflect
-{
-	)" MAKELABEL(LABEL_3) R"(
-})";
+)" MAKELABEL(LABEL_3);
 	}
 }

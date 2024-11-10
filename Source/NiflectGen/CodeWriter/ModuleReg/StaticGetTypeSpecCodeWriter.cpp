@@ -35,12 +35,13 @@ namespace NiflectGen
                 auto internalRelativeTypeRegFilePathNoExt = NiflectUtil::ConcatPath(context.m_moduleRegInfo.m_typeRegBasePath, ConvertToInternalFilePath(relativeTypeRegFilePathNoExt));
                 staticGetTypeSpecData.m_implSourceFilePath = internalRelativeTypeRegFilePathNoExt + NiflectGenDefinition::FileNamePostfix::Gen + context.m_moduleRegInfo.GetSourceFileExtForGenFileMode();
 
+                const bool requiredExportedStaticGetType = !context.m_moduleRegInfo.m_userProvided.m_moduleApiMacro.empty();
                 {
                     CCodeLines linesGenHInclude;
                     CHeaderFilePathDataArray vecHeaderData;
-                    ASSERT(!context.m_moduleRegInfo.m_userProvided.m_moduleApiMacroHeader.empty());
                     vecHeaderData.push_back(NiflectGenDefinition::NiflectFramework::FilePath::NiflectTypeHeader);
-                    vecHeaderData.push_back(context.m_moduleRegInfo.m_userProvided.m_moduleApiMacroHeader);
+                    if (requiredExportedStaticGetType)
+                        vecHeaderData.push_back(context.m_moduleRegInfo.m_userProvided.m_moduleApiMacroHeader);
                     CIncludesHelper::ConvertFromHeaderFilePaths(vecHeaderData, context.m_moduleRegInfo.m_writingHeaderSearchPaths, linesGenHInclude);
 
                     CCodeTemplate tpl1;
@@ -58,21 +59,28 @@ namespace NiflectGen
                         MapLabelToText(map, LABEL_13, headerFilePath);
                     }
                     CCodeLines linesTypeDecls;
+                    CCodeLines linesStaticGetTypeSpecDecl;
+                    if (requiredExportedStaticGetType)
                     {
-                        for (auto& it1 : it0.m_vecTypeRegDataRef)
                         {
-                            for (auto& it2 : it1->m_taggedTypeGeneratedBody.m_linesFullScopedTypeDecl)
-                                linesTypeDecls.push_back(it2);
+                            for (auto& it1 : it0.m_vecTypeRegDataRef)
+                            {
+                                for (auto& it2 : it1->m_taggedTypeGeneratedBody.m_linesFullScopedTypeDecl)
+                                    linesTypeDecls.push_back(it2);
+                            }
+                            MapLabelToLines(map, LABEL_1, linesTypeDecls);
+                        }
+                        {
+                            CCodeLines lines;
+                            for (auto& it1 : it0.m_vecTypeRegDataRef)
+                            {
+                                for (auto& it2 : it1->m_taggedTypeGeneratedBody.m_linesStaticGetTypeSpecDecl)
+                                    lines.push_back(it2);
+                            }
+                            ReplaceLabelToNamespaceScopeLines(NiflectGenDefinition::NiflectFramework::ScopeName::Niflect, lines, linesStaticGetTypeSpecDecl);
+                            MapLabelToLines(map, LABEL_2, linesStaticGetTypeSpecDecl);
                         }
                     }
-                    MapLabelToLines(map, LABEL_1, linesTypeDecls);
-                    CCodeLines linesStaticGetTypeSpecDecl;
-                    for (auto& it1 : it0.m_vecTypeRegDataRef)
-                    {
-                        for (auto& it2 : it1->m_taggedTypeGeneratedBody.m_linesStaticGetTypeSpecDecl)
-                            linesStaticGetTypeSpecDecl.push_back(it2);
-                    }
-                    MapLabelToLines(map, LABEL_2, linesStaticGetTypeSpecDecl);
                     Niflect::CString genHFileId = "FID_" + genHHeaderMacro;
                     MapLabelToText(map, LABEL_4, genHFileId);
 
@@ -131,7 +139,6 @@ namespace NiflectGen
                 {
                     CCodeLines linesGenCppInclude;
                     CHeaderFilePathDataArray vecHeaderData;
-                    ASSERT(!context.m_moduleRegInfo.m_userProvided.m_moduleApiMacroHeader.empty());
                     vecHeaderData.push_back(headerFilePath);
                     CIncludesHelper::ConvertFromHeaderFilePaths(vecHeaderData, context.m_moduleRegInfo.m_writingHeaderSearchPaths, linesGenCppInclude);
 
@@ -140,10 +147,15 @@ namespace NiflectGen
                     CLabelToCodeMapping map;
                     MapLabelToLines(map, LABEL_0, linesGenCppInclude);
                     CCodeLines linesImpl;
-                    for (auto& it1 : it0.m_vecTypeRegDataRef)
+                    if (requiredExportedStaticGetType)
                     {
-                        for (auto& it2 : it1->m_taggedTypeGeneratedBody.m_linesStaticGetTypeSpecImpl)
-                            linesImpl.push_back(it2);
+                        CCodeLines lines;
+                        for (auto& it1 : it0.m_vecTypeRegDataRef)
+                        {
+                            for (auto& it2 : it1->m_taggedTypeGeneratedBody.m_linesStaticGetTypeSpecImpl)
+                                lines.push_back(it2);
+                        }
+                        ReplaceLabelToNamespaceScopeLines(NiflectGenDefinition::NiflectFramework::ScopeName::Niflect, lines, linesImpl);
                     }
                     MapLabelToLines(map, LABEL_3, linesImpl);
                     Niflect::TSet<Niflect::CString> setReplacedLabel;

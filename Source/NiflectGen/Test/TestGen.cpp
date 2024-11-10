@@ -356,6 +356,7 @@ namespace TestGen
 			CModuleRegInfo info;
 			info.m_vecModuleHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestModuleHeaderCodeGen0.h"));
 			info.m_vecAccessorSettingHeader.push_back(CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/TestAccessorSettingCodeGen0.h"));
+			info.m_moduleApiMacro = "TEST_MY_API";
 			Test::InitArgs(info);
 			gen->InitModuleRegInfo(info);
 			CCodeGenData genData;

@@ -288,6 +288,21 @@ R"({
 		Niflect::TSet<Niflect::CString> setReplacedLabel;
 		tpl1.ReplaceLabels(map, vecLine, &setReplacedLabel);
 	}
+	static void ReplaceLabelToNamespaceScopeLines(const Niflect::CString& namespaceName, const CCodeLines& linesInScope, CCodeLines& vecLine)
+	{
+		const char* hct =
+R"(namespace ${Name}
+{
+	${Lines}
+})";
+		CCodeTemplate tpl1;
+		tpl1.ReadFromRawData(hct);
+		CLabelToCodeMapping map;
+		MapLabelToText(map, "Name", namespaceName);
+		MapLabelToLines(map, "Lines", linesInScope);
+		Niflect::TSet<Niflect::CString> setReplacedLabel;
+		tpl1.ReplaceLabels(map, vecLine, &setReplacedLabel);
+	}
 	static void MapAndReplaceLabelsToTexts1(CCodeTemplate& tpl1, CCodeLines& vecLine, const Niflect::CString& label0, const Niflect::CString& text0)
 	{
 		CLabelToCodeMapping map1;

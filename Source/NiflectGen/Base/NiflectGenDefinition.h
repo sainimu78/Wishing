@@ -126,6 +126,11 @@ namespace NiflectGenDefinition
 
 	namespace NiflectFramework
 	{
+		namespace ScopeName
+		{
+			constexpr const char* Niflect = "Niflect";
+		}
+
 		namespace AccessorTypeName
 		{
 			constexpr const char* Field = "CAccessor";
