@@ -86,6 +86,12 @@ namespace std
 	};
 })";
 	}
+	static void Write_stddef_h(Niflect::CString& code)
+	{
+		code =
+R"(#define NULL 0
+)";
+	}
 	static void Write_string(Niflect::CString& code)
 	{
 		code =
@@ -279,6 +285,7 @@ using enable_if_t = typename enable_if<_Test, _Ty>::type;
 			{"sstream", true},//Write_sstream
 			{"stack", false},
 			{"streambuf", false},
+			{"stddef.h", true},//Write_stddef_h
 			{"string", true},//Write_string
 			{"system_error", false},
 			{"tuple", false},
@@ -307,6 +314,7 @@ using enable_if_t = typename enable_if<_Test, _Ty>::type;
 		vecWriteFunc.push_back(&Write_map);
 		vecWriteFunc.push_back(&Write_set);
 		vecWriteFunc.push_back(&Write_sstream);
+		vecWriteFunc.push_back(&Write_stddef_h);
 		vecWriteFunc.push_back(&Write_string);
 		vecWriteFunc.push_back(&Write_type_traits);
 		vecWriteFunc.push_back(&Write_unordered_map);
