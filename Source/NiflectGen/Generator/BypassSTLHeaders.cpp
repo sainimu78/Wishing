@@ -33,21 +33,17 @@ R"(#pragma once
 
 #ifdef WIN32
 	#ifdef _WIN64
-		typedef unsigned __int64 size_t;
-		typedef __int64          ptrdiff_t;
 	#else
-		typedef unsigned int     size_t;
-		typedef int              ptrdiff_t;
 	#endif
 #else
 	#ifdef __x86_64__
-		typedef unsigned long long	size_t;
-		typedef long long int		ptrdiff_t;
 	#else 
-		typedef unsigned int		size_t;
-		typedef int					ptrdiff_t;
 	#endif
 #endif
+
+// With clang style
+typedef __SIZE_TYPE__ size_t;
+typedef __PTRDIFF_TYPE__  ptrdiff_t;
 
 namespace std
 {
