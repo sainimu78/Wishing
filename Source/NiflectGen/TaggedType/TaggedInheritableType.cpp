@@ -21,12 +21,32 @@ namespace NiflectGen
 	}
 	bool CTaggedInheritableType::CollectGeneratedBodyTag(const CXCursor& cursor, const CXCursorKind& kind)
 	{
-		if (FindTagByDisplayName(cursor, NiflectGenDefinition::CodeTag::GeneratedBody))
+		//Linux 通过 clang_getSpellingLocation 下获取到的 lineNumber 始终不变, 如为5, 因此通过另外的办法获取行号, 实际上对于此标记, WIN32 下也可使用
+		if (false)
+		{
+			if (FindTagByDisplayName(cursor, NiflectGenDefinition::CodeTag::GeneratedBody))
+			{
+				ASSERT(m_generatedBodyLineNumber == INDEX_NONE);
+				CXSourceLocation location = clang_getCursorLocation(cursor);
+				uint32 lineNumber;
+				clang_getSpellingLocation(location, NULL, &lineNumber, NULL, NULL);
+				m_generatedBodyLineNumber = lineNumber;
+				return true;
+			}
+		}
+
+		const auto dispName = CXStringToCString(clang_getCursorDisplayName(cursor));
+		const Niflect::CString tagName = NiflectGenDefinition::CodeTag::GeneratedBody;
+		auto pos = dispName.find(tagName);
+		if (pos != std::string::npos)
 		{
 			ASSERT(m_generatedBodyLineNumber == INDEX_NONE);
-			CXSourceLocation location = clang_getCursorLocation(cursor);
 			uint32 lineNumber;
-			clang_getSpellingLocation(location, NULL, &lineNumber, NULL, NULL);
+			auto tagLen = tagName.length();
+			auto numInStr = dispName.substr(tagLen, dispName.length() - tagLen);
+			ASSERT(numInStr.size() > 0);
+			lineNumber = std::atoi(numInStr.c_str());
+			ASSERT(lineNumber > 0);//有必要检测必须比所属类型的 LineNumber 大1 ?
 			m_generatedBodyLineNumber = lineNumber;
 			return true;
 		}
