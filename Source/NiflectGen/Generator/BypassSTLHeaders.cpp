@@ -39,7 +39,7 @@ R"(#pragma once
 	#endif
 #else
 	#ifdef __x86_64__
-		typedef __int64          ptrdiff_t;
+		typedef long long int		ptrdiff_t;
 	#else 
 		typedef int              ptrdiff_t;
 	#endif
