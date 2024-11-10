@@ -33,15 +33,19 @@ R"(#pragma once
 
 #ifdef WIN32
 	#ifdef _WIN64
+		typedef unsigned __int64 size_t;
 		typedef __int64          ptrdiff_t;
 	#else
+		typedef unsigned int     size_t;
 		typedef int              ptrdiff_t;
 	#endif
 #else
 	#ifdef __x86_64__
+		typedef long long unsigned	size_t;
 		typedef long long int		ptrdiff_t;
 	#else 
-		typedef int              ptrdiff_t;
+		typedef unsigned int		size_t;
+		typedef int					ptrdiff_t;
 	#endif
 #endif
 
