@@ -1,7 +1,5 @@
 #pragma once
 
-//todo: 支持类型反射的选项, 如默认反射所有成员变量以方便使用
-
 #ifdef NIFLECTGEN
 #define GENERATED_BODY(...) typedef void* __NiflectGen_GeneratedBody;
 
