@@ -26,6 +26,33 @@ template<class _Kty,
 	};
 })";
 	}
+	static void Write_cstddef(Niflect::CString& code)
+	{
+		code =
+R"(#pragma once
+
+#ifdef WIN32
+	#ifdef _WIN64
+		typedef __int64          ptrdiff_t;
+	#else
+		typedef int              ptrdiff_t;
+	#endif
+#else
+	#ifdef __x86_64__
+		typedef __int64          ptrdiff_t;
+	#else 
+		typedef int              ptrdiff_t;
+	#endif
+#endif
+
+namespace std
+{
+	using :: ptrdiff_t;
+	using :: size_t;
+	using max_align_t = double; // most aligned type
+	using nullptr_t   = decltype(nullptr);
+})";
+	}
 	static void Write_set(Niflect::CString& code)
 	{
 		code =
@@ -197,6 +224,25 @@ template<class _Ty>
 	};
 })";
 	}
+	static void Write_xtr1common(Niflect::CString& code)
+	{
+		code =
+R"(#pragma once
+
+namespace std
+{
+template <bool _Test, class _Ty = void>
+struct enable_if {}; // no member "type" when !_Test
+
+template <class _Ty>
+struct enable_if<true, _Ty> { // type is _Ty for _Test
+    using type = _Ty;
+};
+
+template <bool _Test, class _Ty = void>
+using enable_if_t = typename enable_if<_Test, _Ty>::type;
+})";
+	}
 	struct SHeaderData
 	{
 		const char* m_headerFileName;
@@ -208,6 +254,7 @@ template<class _Ty>
 			{"algorithm", false},
 			{"array", false},
 			{"cassert", false},
+			{"cstddef", true},//Write_cstddef
 			{"deque", false},
 			{"exception", false},
 			{"fstream", false},
@@ -249,12 +296,14 @@ template<class _Ty>
 			{"xlocbuf", false},
 			{"xmemory", true},//Write_xmemory
 			{"xstring", false},
+			{"xtr1common", true},//Write_xtr1common
 			{"xtree", false},
 			{"xutility", false},
 			{"xxatomic", false},
 		};
 
 		Niflect::TArrayNif<WriteHeaderFileFunc> vecWriteFunc;
+		vecWriteFunc.push_back(&Write_cstddef);
 		vecWriteFunc.push_back(&Write_map);
 		vecWriteFunc.push_back(&Write_set);
 		vecWriteFunc.push_back(&Write_sstream);
@@ -265,6 +314,7 @@ template<class _Ty>
 		vecWriteFunc.push_back(&Write_utility);
 		vecWriteFunc.push_back(&Write_vector);
 		vecWriteFunc.push_back(&Write_xmemory);
+		vecWriteFunc.push_back(&Write_xtr1common);
 
 		Niflect::CString defaultBypassHeaderCode;
 
