@@ -41,7 +41,7 @@ R"(#pragma once
 	#endif
 #else
 	#ifdef __x86_64__
-		typedef long long unsigned	size_t;
+		typedef unsigned long long	size_t;
 		typedef long long int		ptrdiff_t;
 	#else 
 		typedef unsigned int		size_t;
