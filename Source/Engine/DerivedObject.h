@@ -23,7 +23,7 @@ namespace Engine
 			m_derived_bool_1 = true;
 			m_derived_float_2 = 11.0f;
 			m_derived_std_string_3 = "derived std string 3";
-			m_test_class_3.InitForTest();
+			m_test_class_4.InitForTest();
 		}
 		bool operator==(const CDerivedObject& rhs) const
 		{
