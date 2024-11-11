@@ -762,19 +762,19 @@ namespace TestAccessor2
 			auto table = &tableHolder;
 			table->RegisterType2<Niflect::TArrayNif<float>, CClass>("Niflect::TArrayNif<float>", &CreateSSSSSSSSSSSS<Niflect::TArrayNif<float> >);
 			table->RegisterType2<float, CClass>("float", &CreateSSSSSSSSSSSS<float>);
+			table->InitTypesLayout();
 		}
 
 		auto type = StaticGetType<Niflect::TArrayNif<float> >();
-		auto accessor0 = type->CreateFieldLayout();
 
 		Niflect::TArrayNif<float> srcData;
 		srcData.resize(2);
 		srcData[0] = 1.2f;
 		srcData[1] = 2.3f;
 		CRwNode root;
-		accessor0->SaveToRwNode(&srcData, &root);
+		type->SaveInstanceToRwNode(&srcData, &root);
 		Niflect::TArrayNif<float> dstData;
-		accessor0->LoadFromRwNode(&dstData, &root);
+		type->LoadInstanceFromRwNode(&dstData, &root);
 		ASSERT(srcData == dstData);
 		for (auto& it : dstData)
 			printf("%f\n", it);
@@ -992,13 +992,13 @@ namespace TestAccessor2
 
 	void TestFieldLayout()
 	{
-		if (false)
+		if (true)//if (false)
 			TestAccessor0();
 		if (false)
 			TestAccessor1();
 		if (false)
 			TestAccessor2();
-		if (true)
+		if (false)//if (true)
 			TestProperty0();
 	}
 }

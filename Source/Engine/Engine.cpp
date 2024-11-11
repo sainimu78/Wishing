@@ -33,7 +33,7 @@ void TestEngineCreate()
 void TestEngineRun()
 {
 	{
-		using CTestType = Engine::CDerivedFromModule1;
+		using CTestType = Engine::CDerivedObject;
 		auto type = Niflect::StaticGetType<CTestType>();
 		RwTree::CRwNode rw;
 		CTestType srcData;
@@ -50,7 +50,7 @@ void TestEngineRun()
 		printf("%s", ss.str().c_str());
 	}
 	{
-		using CTestType = Engine::CDerivedObject;
+		using CTestType = Engine::CDerivedFromModule1;
 		auto type = Niflect::StaticGetType<CTestType>();
 		RwTree::CRwNode rw;
 		CTestType srcData;

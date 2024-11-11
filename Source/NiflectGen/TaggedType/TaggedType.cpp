@@ -129,6 +129,11 @@ namespace NiflectGen
 		resocursorName += CXStringToCString(clang_getCursorSpelling(cursor));
 		m_resocursorName = resocursorName;
 	}
+	void CTaggedType::InitForImportType()
+	{
+		ASSERT(!m_isImportType);
+		m_isImportType = true;
+	}
 
 	CTaggedInheritableTypeMember::CTaggedInheritableTypeMember()
 		: m_accessSpecifier(CX_CXXPrivate)

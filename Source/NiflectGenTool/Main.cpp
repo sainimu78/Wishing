@@ -216,24 +216,24 @@ int main(int argc, const char** argv)
 			{
 				CModuleRegInfo info;
 				
-				//const char* argvTest[] = {
-				//	"Placeholder",
-				//	"-n", "Engine",
-				//	"-h", "\"F:/Fts/Proj/Test/Interedit/Source/Engine/EngineObject.h\"",
-				//	"-h", "F:/Fts/Proj/Test/Interedit/Source/Engine/DerivedObject.h",
-				//	"-am", "ENGINE_API",
-				//	"-amh", "F:/Fts/Proj/Test/Interedit/Source/Engine/EngineCommon.h",
-				//	"-a", "F:/Fts/Proj/Test/Interedit/Source/Engine/EngineAccessorSetting.h",
-				//	"-I", "F:/Fts/Proj/Test/Interedit/Source",
-				//	"-p", "F:/Fts/Proj/Test/Interedit/Generated/NiflectGenerated",
-				//};
-				//argc = sizeof(argvTest) / sizeof(const char*);
-				//argv = argvTest;
+				const char* argvTest[] = {
+					"Placeholder",
+					"-n", "Engine",
+					"-h", "\"F:/Fts/Proj/Test/Interedit/Source/Engine/EngineObject.h\"",
+					"-h", "F:/Fts/Proj/Test/Interedit/Source/Engine/DerivedObject.h",
+					"-am", "ENGINE_API",
+					"-amh", "F:/Fts/Proj/Test/Interedit/Source/Engine/EngineCommon.h",
+					"-a", "F:/Fts/Proj/Test/Interedit/Source/Engine/EngineAccessorSetting.h",
+					"-I", "F:/Fts/Proj/Test/Interedit/Source",
+					"-p", "F:/Fts/Proj/Test/Interedit/Generated/NiflectGenerated",
+				};
+				argc = sizeof(argvTest) / sizeof(const char*);
+				argv = argvTest;
 
 				//const char* argvTest[] = {
 				//	"Placeholder",
 				//	"-n", "TestModule1",
-				//	"-h", "F:/Fts/Proj/Test/Interedit/Source/TestModule1/TestModule1.h",
+				//	"-h", "F:/Fts/Proj/Test/Interedit/Source/TestModule1/TestClass1.h",
 				//	"-am", "TESTMODULE1_API",
 				//	"-amh", "F:/Fts/Proj/Test/Interedit/Source/TestModule1/TestModule1Common.h",
 				//	"-a", "F:/Fts/Proj/Test/Interedit/Source/Niflect/CommonlyUsed/DefaultAccessorSetting.h",

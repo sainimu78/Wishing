@@ -39,11 +39,13 @@ namespace NiflectGen
 	{
 	public:
 		CTaggedType()
+			: m_isImportType(false)
 		{
 		}
 
 	public:
 		void ResolveForResocursorNode();
+		void InitForImportType();
 
 	public:
 		virtual void Deprecated_ResolveDependcies(const TCursorMap<CTaggedType*>& mapCursorDeclToTaggedType)
@@ -77,6 +79,7 @@ namespace NiflectGen
 		Niflect::CString m_resocursorName;
 		Niflect::TArrayNif<Niflect::CString> m_vecScopeName;
 		CResolvedCursorNode m_taggedResoRoot;
+		bool m_isImportType;
 	};
 
 	class CTaggedInheritableTypeMember : public CTaggedNode2
