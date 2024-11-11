@@ -8,26 +8,22 @@ namespace Niflect
 	public:
 		virtual bool SaveInstanceImpl(const AddrType base, CRwNode* rw) const override
 		{
-			auto count = this->GetChildrenCount();
-			for (uint32 idx = 0; idx < count; ++idx)
+			for (auto& it : this->GetFields())
 			{
-				auto childAccessor = this->GetChild(idx);
-				ASSERT(!childAccessor->GetName().empty());
-				auto rwChild = CreateRwNode();
-				if (childAccessor->SaveToRwNode(base, rwChild.Get()))
-					AddExistingRwNode(rw, childAccessor->GetName(), rwChild);
+				ASSERT(!it.GetName().empty());
+				auto rwField = CreateRwNode();
+				if (it.LayoutSaveToRwNode(base, rwField.Get()))
+					AddExistingRwNode(rw, it.GetName(), rwField);
 			}
 			return true;
 		}
 		virtual bool LoadInstanceImpl(AddrType base, const CRwNode* rw) const override
 		{
-			auto count = this->GetChildrenCount();
-			for (uint32 idx = 0; idx < count; ++idx)
+			for (auto& it : this->GetFields())
 			{
-				auto childAccessor = this->GetChild(idx);
-				ASSERT(!childAccessor->GetName().empty());
-				auto rwChild = FindRwNode(rw, childAccessor->GetName());
-				childAccessor->LoadFromRwNode(base, rwChild);
+				ASSERT(!it.GetName().empty());
+				auto rwChild = FindRwNode(rw, it.GetName());
+				it.LayoutLoadFromRwNode(base, rwChild);
 			}
 			return true;
 		}

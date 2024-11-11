@@ -26,12 +26,12 @@ namespace Niflect
 			auto& instance = *static_cast<const TArrayType*>(base);
 			ASSERT(!rw->IsArray());
 			auto rwArray = rw->ToArray();
-			auto elemAccessor = this->GetElementAccessor();
+			auto& elemLyaout = this->GetElementLayout();
 			for (auto idx = 0; idx < instance.size(); ++idx)
 			{
 				auto rwItem = CreateRwNode();
 				auto elemBase = &instance[idx];//如std::vector<bool>无法支持, 因此额外定义特化模板 GetElementBaseToX, 也可改用std::vector<uint8>, 或另定义Accessor
-				if (elemAccessor->SaveToRwNode(elemBase, rwItem.Get()))
+				if (elemLyaout.AccessorsSaveToRwNode(elemBase, rwItem.Get()))
 					rwArray->AddItem(rwItem);
 			}
 			return true;
@@ -41,13 +41,13 @@ namespace Niflect
 			auto& instance = *static_cast<TArrayType*>(base);
 			ASSERT(rw->IsArray());
 			auto rwArray = rw->GetArray();
-			auto elemAccessor = this->GetElementAccessor();
+			auto& elemLayout = this->GetElementLayout();
 			instance.resize(rwArray->GetItemsCount());
 			for (auto idx = 0; idx < instance.size(); ++idx)
 			{
 				auto rwItem = rwArray->GetItem(idx);
 				auto elemBase = &instance[idx];
-				elemAccessor->LoadFromRwNode(elemBase, rwItem);
+				elemLayout.AccessorsLoadFromRwNode(elemBase, rwItem);
 			}
 			return true;
 		}

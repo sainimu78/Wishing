@@ -47,7 +47,7 @@ void TestEngineRun()
 		ASSERT(srcData == dstData);
 		Niflect::CStringStream ss;
 		RwTree::CJsonFormat::Write(&rw, ss);
-		printf("%s", ss.str().c_str());
+		printf("%s\n", ss.str().c_str());
 	}
 	{
 		using CTestType = Engine::CDerivedFromModule1;
@@ -64,7 +64,7 @@ void TestEngineRun()
 		ASSERT(srcData == dstData);
 		Niflect::CStringStream ss;
 		RwTree::CJsonFormat::Write(&rw, ss);
-		printf("%s", ss.str().c_str());
+		printf("%s\n", ss.str().c_str());
 	}
 }
 void TestEngineDestroy()
