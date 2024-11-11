@@ -8,7 +8,6 @@
 -amh F:/Fts/Proj/Test/Interedit/Source/TestModule1/TestModule1Common.h ^
 -a F:/Fts/Proj/Test/Interedit/Source/Niflect/CommonlyUsed/DefaultAccessorSetting.h ^
 -I F:/Fts/Proj/Test/Interedit/Source ^
--p F:/Fts/Proj/Test/Interedit/Generated/NiflectGenerated ^
--fs
+-p F:/Fts/Proj/Test/Interedit/Generated/NiflectGenerated 
 
 @cd %old%
