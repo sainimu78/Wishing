@@ -22,6 +22,8 @@ namespace Engine
 			m_derived_string_0 = "derived nihao";
 			m_derived_bool_1 = true;
 			m_derived_float_2 = 11.0f;
+			m_derived_std_string_3 = "derived std string 3";
+			m_test_class_3.InitForTest();
 		}
 		bool operator==(const CDerivedObject& rhs) const
 		{
@@ -29,6 +31,8 @@ namespace Engine
 				&& m_derived_string_0 == rhs.m_derived_string_0
 				&& m_derived_bool_1 == rhs.m_derived_bool_1
 				&& m_derived_float_2 == rhs.m_derived_float_2
+				&& m_derived_std_string_3 == rhs.m_derived_std_string_3
+				&& m_test_class_4 == rhs.m_test_class_4
 				;
 		}
 	public:
@@ -38,6 +42,10 @@ namespace Engine
 		bool m_derived_bool_1;
 		NIF_F()
 		float m_derived_float_2;
+		NIF_F()
+		std::string m_derived_std_string_3;
+		NIF_F()
+		TestModule1::CTestClass1 m_test_class_4;
 	};
 
 	NIF_T()

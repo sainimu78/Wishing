@@ -163,7 +163,7 @@ namespace NiflectGenDefinition
 
 		namespace Setting
 		{
-			constexpr uint32 ThresholdLinesCountForModuleRegSplitting = 10;
+			constexpr uint32 ThresholdLinesCountForModuleRegSplitting = 1000;
 		}
 
 		namespace BypassSTL

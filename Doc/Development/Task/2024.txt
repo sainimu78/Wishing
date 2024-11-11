@@ -80,3 +80,13 @@
 46. Niflect, 确认 GENERATED_BODY 有无末尾分号对intellisense的影响
 47. NiflectGen, 发现 inheritableType 的 InitType 基类名获取错误是由于成员误用引起, 应梳理代码, 相应改名, 明确概念等, 避免误用
 	1. CInheritableTypeRegCodeWriter2::WriteInvokeInitType 中的 m_baseTaggedType->m_resocursorName 被误用为 m_baseTaggedType->m_taggedResoRoot.m_resocursorName
+48. Niflect, linux同signture问题
+	1. 分支用途备忘
+		1. 2种模式都能生成, 存在linux同signature问题, sainimu78_RegisteredTypeExp3, 4d36bfc497443164c3171b9a552d93ce81cbee41
+		2. 同signature问题可行实验, sainimu78_RegisteredTypeExp5_OK, 62eca930a898fc61cce3912f37d414b7243562ce
+	2. 结论是不可使用模板s_type, 不可使用StaticGetType模板, 否则即使在模块内部也会出现不合预期找错为其它模块函数的问题
+	3. 方案
+		1. 生成模块范围内的 s_type 模板, 以简化代码, 同时保持现框架
+		2. 在模块生成目录中增加 _Common.h, 其中定义模块范围内的 TRegisteredType 和 StaticGetType
+		3. 注册不能使用公共的函数, 因此只能通过参数传入公共函数或直接生成在代码中
+		4. 手工注册仍可沿用公共的 s_type 和 StaticGetType

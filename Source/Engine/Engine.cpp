@@ -32,21 +32,40 @@ void TestEngineCreate()
 }
 void TestEngineRun()
 {
-	using CTestType = Engine::CDerivedFromModule1;
-	auto type = Niflect::StaticGetType<CTestType>();
-	RwTree::CRwNode rw;
-	CTestType srcData;
 	{
-		srcData.InitForTest();
-		type->SaveInstanceToRwNode(&srcData, &rw);
+		using CTestType = Engine::CDerivedFromModule1;
+		auto type = Niflect::StaticGetType<CTestType>();
+		RwTree::CRwNode rw;
+		CTestType srcData;
+		{
+			srcData.InitForTest();
+			type->SaveInstanceToRwNode(&srcData, &rw);
+		}
+		auto instance = type->MakeSharedInstance<CTestType>();
+		CTestType& dstData = *instance;
+		type->LoadInstanceFromRwNode(&dstData, &rw);
+		ASSERT(srcData == dstData);
+		Niflect::CStringStream ss;
+		RwTree::CJsonFormat::Write(&rw, ss);
+		printf("%s", ss.str().c_str());
 	}
-	auto instance = type->MakeSharedInstance<CTestType>();
-	CTestType& dstData = *instance;
-	type->LoadInstanceFromRwNode(&dstData, &rw);
-	ASSERT(srcData == dstData);
-	Niflect::CStringStream ss;
-	RwTree::CJsonFormat::Write(&rw, ss);
-	printf("%s", ss.str().c_str());
+	{
+		using CTestType = Engine::CDerivedObject;
+		auto type = Niflect::StaticGetType<CTestType>();
+		RwTree::CRwNode rw;
+		CTestType srcData;
+		{
+			srcData.InitForTest();
+			type->SaveInstanceToRwNode(&srcData, &rw);
+		}
+		auto instance = type->MakeSharedInstance<CTestType>();
+		CTestType& dstData = *instance;
+		type->LoadInstanceFromRwNode(&dstData, &rw);
+		ASSERT(srcData == dstData);
+		Niflect::CStringStream ss;
+		RwTree::CJsonFormat::Write(&rw, ss);
+		printf("%s", ss.str().c_str());
+	}
 }
 void TestEngineDestroy()
 {
