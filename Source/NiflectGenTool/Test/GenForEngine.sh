@@ -11,7 +11,6 @@ cd ../../../Build/NiflectGenTool/Linux/Linux_NiflectGenTool_x64/Debug/NiflectGen
 -amh /home/sainimu78/Fts/Interedit/Source/Engine/EngineCommon.h \
 -a /home/sainimu78/Fts/Interedit/Source/Engine/EngineAccessorSetting.h \
 -I /home/sainimu78/Fts/Interedit/Source \
--p /home/sainimu78/Fts/Interedit/Generated/NiflectGenerated \
--fs
+-p /home/sainimu78/Fts/Interedit/Generated/NiflectGenerated 
 
 cd $old
