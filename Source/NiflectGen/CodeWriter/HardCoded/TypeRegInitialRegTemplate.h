@@ -34,21 +34,18 @@ CSharedAccessor )" MAKELABEL(LABEL_2) R"(()
 })";
 		constexpr const char* CreateAndInitTypeAccessor =
 "auto node0 = Niflect::MakeShared<" MAKELABEL(LABEL_4) R"(>();
-node0->InitType(Niflect::StaticGetType<)" MAKELABEL(LABEL_9)  R"(>());
+node0->InitType2(StaticGetType<)" MAKELABEL(LABEL_9)  R"(>());
 )" MAKELABEL(LABEL_5) R"(
 return node0;
 )";
 		constexpr const char* CreateAndInitNextsAccessor =
-"auto type1 = Niflect::StaticGetType<" MAKELABEL(LABEL_9) R"(>();
-auto node1 = type1->CreateAccessor();)";
+"auto type1 = Niflect::StaticGetType<" MAKELABEL(LABEL_9) R"(>();)";
 	constexpr const char* InitChildAccessor =
-R"(node1->InitForField(")" MAKELABEL(LABEL_0) R"(", )" MAKELABEL(LABEL_7) R"();
-node0->AddChild(node1);)";
+R"(type1->InitAddFieldToAccessor(node0.Get(),")" MAKELABEL(LABEL_0) R"(", )" MAKELABEL(LABEL_7) R"();)";
 	constexpr const char* GetFieldOffset =
 R"(Niflect::GetFieldOffset(&)" MAKELABEL(LABEL_0) "::" MAKELABEL(LABEL_8) R"())";
 	constexpr const char* InitElementAccessor =
-R"(node1->InitForElement();
-node0->InitElementAccessor(node1);)";
+R"(type1->InitAccessorElementLayout(node0.Get());)";
 	constexpr const char* StaticGetTypeFuncName =
 R"(StaticGetType<)" MAKELABEL(LABEL_9) ">";
 	constexpr const char* StaticGetTypeSpecDecl =
