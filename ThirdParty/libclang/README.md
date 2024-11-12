@@ -173,3 +173,13 @@ You can:
 1. Use lld (or gold) as a linker instead of the gnu linker (`-DLLVM_ENABLE_LLD=ON`)
 2. build without debug info: this is very memory intensive for the linker
 3. reduce the parallelism of the build. If you switch to `ninja` instead of `make` you can pass `-D LLVM_PARALLEL_LINK_JOBS=1` to limit only the number of linker jobs and not constraint the compile jobs.
+
+## Build static library on Windows
+
+```
+cmake -DLLVM_ENABLE_PROJECTS=clang -DCMAKE_BUILD_TYPE=Debug -G "Visual Studio 17 2022" ../llvm -DLLVM_BUILD_STATIC=ON
+
+cmake -G "Visual Studio 17 2022" ../llvm -DLLVM_ENABLE_PROJECTS=clang -DCMAKE_BUILD_TYPE=Debug -DLIBCLANG_BUILD_STATIC=ON -DLLVM_ENABLE_PIC=OFF
+
+```
+

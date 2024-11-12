@@ -31,8 +31,8 @@ if("${CMAKE_SIZEOF_VOID_P}" EQUAL "8")
 	
 	if(WIN32)
 		set(LibPath "${RootThirdPartyPath}/libclang/llvm-project/build/${OsType}/x64")
-		set(libclangLibDebug "${LibPath}/Debug/lib/libclang${SlPost}")
-		set(libclangLibRelease "${LibPath}/Release/lib/libclang${SlPost}")
+		set(libclangLibDebug "${LibPath}/Debug/bin/libclang${SlPost}")
+		set(libclangLibRelease "${LibPath}/Release/bin/libclang${SlPost}")
 		set_target_properties(libclang2 PROPERTIES
 			IMPORTED_IMPLIB_DEBUG "${libclangLibDebug}"
 			IMPORTED_IMPLIB_RELEASE "${libclangLibRelease}"
