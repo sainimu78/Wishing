@@ -90,8 +90,6 @@ namespace Niflect
 			for (auto& it : m_vecType)
 				it->InitTypeLayout();
 		}
-		
-	private:
 		uint32 AddType(const CSharedNiflectType& type)
 		{
 			uint32 idx = this->GetTypesCount();
@@ -100,6 +98,8 @@ namespace Niflect
 			m_vecType.push_back(type);
 			return idx;
 		}
+
+	public:
 		void DeleteType(const CNiflectType* type)//±¸ÓÃ
 		{
 			auto itFound = m_mapIdToIndex.find(&type->GetTypeName());

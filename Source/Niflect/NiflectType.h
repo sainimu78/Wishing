@@ -9,9 +9,6 @@ namespace Niflect
 {	
 	typedef uint32 CTypeIndex;
 
-	template <typename TType>
-	CSharedAccessor CreateTypeAccessor();
-
 	typedef CSharedAccessor (*CreateTypeAccessorFunc)();
 	using CreateFieldLayoutOfTypeFuncOld = CreateTypeAccessorFunc;
 

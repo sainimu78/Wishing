@@ -229,4 +229,7 @@ namespace Niflect
 		}
 		return true;
 	}
+
+	template <typename TType>
+	CSharedAccessor CreateTypeAccessor();
 }
