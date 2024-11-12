@@ -165,7 +165,7 @@ namespace Niflect
 				it1->InitOffset(offset);
 			owner->InitAddField(field);
 		}
-		void InitSetElementLayoutToAccessor(CAccessor* owner) const
+		void InitAccessorElementLayout(CAccessor* owner) const
 		{
 			CTypeLayout layout;
 			this->CreateTypeLayout(layout);
