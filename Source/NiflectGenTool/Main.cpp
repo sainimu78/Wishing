@@ -226,6 +226,7 @@ int main(int argc, const char** argv)
 				//	"-a", "F:/Fts/Proj/Test/Interedit/Source/Engine/EngineAccessorSetting.h",
 				//	"-I", "F:/Fts/Proj/Test/Interedit/Source",
 				//	"-p", "F:/Fts/Proj/Test/Interedit/Generated/NiflectGenerated",
+				//	"-fs"
 				//};
 				//argc = sizeof(argvTest) / sizeof(const char*);
 				//argv = argvTest;

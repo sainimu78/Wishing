@@ -19,6 +19,9 @@ namespace NiflectGen
 		m_typeRegBasePath = NiflectUtil::ConcatPath(info.m_moduleName, NiflectGenDefinition::DirName::TypeReg);
 		m_genHBasePath = NiflectUtil::ConcatPath(info.m_moduleName, NiflectGenDefinition::DirName::GenH);
 
+		m_moduleRegisteredTypeHeaderFilePath = NiflectUtil::ConcatPath(m_typeRegBasePath, NiflectGenDefinition::NiflectFramework::FileName::ModuleRegisteredTypeHeader);
+		m_moduleScopeSymbolPrefix = "_" + info.m_moduleName + "_";
+
 		for (auto& it : m_userProvided.m_vecModuleHeaderSearchPath)
 			m_writingHeaderSearchPaths.m_vecForRegularConversion.push_back(it);
 		

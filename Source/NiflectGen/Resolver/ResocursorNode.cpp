@@ -134,6 +134,25 @@ namespace NiflectGen
 		NiflectGenDefinition::CodeStyle::TryFormatNestedTemplate(name);
 		return name;
 	}
+	Niflect::CString CResolvedCursorNode::GetCreateTypeAccessorFuncName(const Niflect::CString& prefix) const
+	{
+		Niflect::CString funcName = "CreateTypeAccessor<" + this->GetResocursorNameForLastTemplateArg() + ">";
+		if (!this->IsTaggedType())
+			funcName = prefix + funcName;
+		return funcName;
+
+	}
+	Niflect::CString CResolvedCursorNode::GetStaticGetTypeFuncName(const Niflect::CString& prefix) const
+	{
+		Niflect::CString funcName = "StaticGetType<" + this->GetResocursorNameForLastTemplateArg() + ">";
+		if (!this->IsTaggedType())
+			funcName = prefix + funcName;
+		return funcName;
+	}
+	bool CResolvedCursorNode::IsTaggedType() const
+	{
+		return m_taggedTypeIndex != INDEX_NONE;
+	}
 
 	static void DebugGenSignature2222(const CResolvedCursorNode& indexedParent, uint32 lv, const char* pszLv, Niflect::TArrayNif<Niflect::CString>& vecSignature)
 	{

@@ -24,6 +24,9 @@ namespace Engine
 			m_derived_float_2 = 11.0f;
 			m_derived_std_string_3 = "derived std string 3";
 			m_test_class_4.InitForTest();
+			m_array_test_base_5.resize(2);
+			for (auto& it : m_array_test_base_5)
+				it.InitForTest();
 		}
 		bool operator==(const CDerivedObject& rhs) const
 		{
@@ -33,6 +36,7 @@ namespace Engine
 				&& m_derived_float_2 == rhs.m_derived_float_2
 				&& m_derived_std_string_3 == rhs.m_derived_std_string_3
 				&& m_test_class_4 == rhs.m_test_class_4
+				&& m_array_test_base_5 == rhs.m_array_test_base_5
 				;
 		}
 	public:
@@ -46,6 +50,8 @@ namespace Engine
 		std::string m_derived_std_string_3;
 		NIF_F()
 		TestModule1::CTestClass1 m_test_class_4;
+		NIF_F()
+		Niflect::TArrayNif<TestModule1::CTestBase1> m_array_test_base_5;
 	};
 
 	NIF_T()

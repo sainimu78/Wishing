@@ -13,7 +13,7 @@ namespace NiflectGen
 		CInheritableTypeRegCodeWriter2(const Niflect::TArrayNif<CResolvedCursorNode>& vecFieldResocursorNode, const Niflect::TArrayNif<CTaggedInheritableTypeMember*>& vecField, const CTaggedType* baseTaggedType, uint32 generatedBodyLineNumber);
 
 	protected:
-		virtual void WriteResocursorNodeBodyCode(CCodeLines& linesResoBodyCode) const override;
+		virtual void WriteResocursorNodeBodyCode(const SResocursorNodeBodyCodeWritingContext& context, CCodeLines& linesResoBodyCode) const override;
 		virtual void CollectDependencyHeaderFilePathAddrs(CDependencyHeaderFilePathAddrs& dependencyHeaderFilePathAddrs) const override;
 		virtual void CollectDataForGenH(SCollectingGeneratedBodyWritingData& data) const override;
 

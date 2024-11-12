@@ -299,13 +299,18 @@ namespace NiflectGen
                     }
                 }
             }
-            //NiflectUtil::WriteStringToFile(writer.m_code, "E:/NiflectGenTool_Test_SplittedModuleRegsCpp.cpp");
         }
         {
             CCppWriter writer;
             writer.WriteLines(genData.m_moduleRegGenData.m_privateH);
-            //NiflectUtil::WriteStringToFile(writer.m_code, "E:/NiflectGenTool_Test_ModuleRegPrivateH.cpp");
             auto filePath = NiflectUtil::ConcatPath(outputRootPath, genData.m_moduleRegGenData.m_privateHIncludePath);
+            NiflectUtil::MakeDirectories(filePath);
+            NiflectUtil::WriteStringToFile(writer.m_code, filePath);
+        }
+        {
+            CCppWriter writer;
+            writer.WriteLines(genData.m_moduleRegisteredTypeHeaderGenData.m_linesHeader);
+            auto filePath = NiflectUtil::ConcatPath(outputRootPath, m_moduleRegInfo.m_moduleRegisteredTypeHeaderFilePath);
             NiflectUtil::MakeDirectories(filePath);
             NiflectUtil::WriteStringToFile(writer.m_code, filePath);
         }

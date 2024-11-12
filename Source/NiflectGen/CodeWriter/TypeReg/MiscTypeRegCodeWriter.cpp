@@ -30,7 +30,7 @@ namespace NiflectGen
 				WriteDDDDDDDD(it, lv, pszLv, lines);
 		}
 	}
-	void CMiscTypeRegCodeWriter::WriteResocursorNodeBodyCode(CCodeLines& linesResoBodyCode) const
+	void CMiscTypeRegCodeWriter::WriteResocursorNodeBodyCode(const SResocursorNodeBodyCodeWritingContext& context, CCodeLines& linesResoBodyCode) const
 	{
 		//linesResoBodyCode.push_back(NiflectUtil::FormatString("My Name: %s", m_bindingTypeIndexedRoot->m_resocursorName.c_str()));
 		ASSERT(m_bindingTypeIndexedRoot->m_accessorBindingIndex != INDEX_NONE);
@@ -42,9 +42,8 @@ namespace NiflectGen
 				//auto d = NiflectUtil::FormatString("Element -> %s", elemResocursorNode->m_resocursorName.c_str());
 				//linesResoBodyCode.push_back(d);
 
-				auto fieldResocursorNameLastTemplateArg = elemResocursorNode->m_resocursorName;
-				NiflectGenDefinition::CodeStyle::TryFormatNestedTemplate(fieldResocursorNameLastTemplateArg);
-				WriteNextInitElementAccessor(fieldResocursorNameLastTemplateArg, linesResoBodyCode);
+				auto elemStaticGetTypeFuncName = elemResocursorNode->GetStaticGetTypeFuncName(context.m_moduleRegInfo.m_moduleScopeSymbolPrefix);
+				WriteNextInitElementAccessor2(elemStaticGetTypeFuncName, linesResoBodyCode);
 			}
 			else
 			{
@@ -67,10 +66,9 @@ namespace NiflectGen
 				for (uint32 idx = 0; idx < ut->DebugGetChildren().size(); ++idx)
 				{
 					auto it0 = ut->GetChild(idx);
-					auto fieldResocursorNameLastTemplateArg = m_bindingTypeIndexedRoot->m_vecChild[idx].m_resocursorName;
-					NiflectGenDefinition::CodeStyle::TryFormatNestedTemplate(fieldResocursorNameLastTemplateArg);
+					auto fieldStaticGetTypeFuncName = m_bindingTypeIndexedRoot->m_vecChild[idx].GetStaticGetTypeFuncName(context.m_moduleRegInfo.m_moduleScopeSymbolPrefix);
 					auto fieldName = CXStringToCString(clang_getCursorSpelling(it0->GetCursor()));
-					WriteNextInitChildAccessor(m_bindingTypeIndexedRoot->m_resocursorName, fieldResocursorNameLastTemplateArg, fieldName, linesResoBodyCode);
+					WriteNextInitChildAccessor2(m_bindingTypeIndexedRoot->m_resocursorName, fieldStaticGetTypeFuncName, fieldName, linesResoBodyCode);
 				}
 			}
 		}

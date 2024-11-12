@@ -9,7 +9,7 @@ namespace NiflectGen
 		typedef CTypeRegCodeWriter2 inherited;
 
 	protected:
-		virtual void WriteResocursorNodeBodyCode(CCodeLines& linesResoBodyCode) const override;
+		virtual void WriteResocursorNodeBodyCode(const SResocursorNodeBodyCodeWritingContext& context, CCodeLines& linesResoBodyCode) const override;
 		virtual void CollectDependencyHeaderFilePathAddrs(CDependencyHeaderFilePathAddrs& dependencyHeaderFilePathAddrs) const override;
 	};
 }

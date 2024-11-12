@@ -5,7 +5,7 @@ namespace NiflectGen
 {
 #define LABEL_0 "Type"
 #define LABEL_1 "Info"
-#define LABEL_2 "Func"
+#define LABEL_2 "FuncName"
 #define LABEL_3 "Body"
 #define LABEL_4 "Accessor"
 #define LABEL_5 "Nexts"
@@ -16,13 +16,14 @@ namespace NiflectGen
 #define LABEL_10 "API"
 #define LABEL_11 "Namespace"
 #define LABEL_12 "ScopedCode"
+#define LABEL_13 "CreateTypeAccessorFuncName"
 
 	namespace HardCodedTemplate
 	{
-		constexpr const char* CreateTypeAccessorFuncName =
-R"(CreateTypeAccessor<)" MAKELABEL(LABEL_9) ">";
-		constexpr const char* InvokeRegisterType =
-R"(table->RegisterType2<)" MAKELABEL(LABEL_0) ", " MAKELABEL(LABEL_1) R"(>(")" MAKELABEL(LABEL_0) R"(", &)" MAKELABEL(LABEL_2) R"();)";
+		constexpr const char* InvokeRegisterTypeByFrameworkTableMethod =
+"table->" MAKELABEL(LABEL_2) R"((")" MAKELABEL(LABEL_0) R"(", &)" MAKELABEL(LABEL_13) R"();)";
+		constexpr const char* InvokeRegisterTypeByGeneratedStaticFunc =
+"" MAKELABEL(LABEL_2) R"((table, ")" MAKELABEL(LABEL_0) R"(", &)" MAKELABEL(LABEL_13) R"();)";
 		constexpr const char* CreateTypeAccessorDecl =
 R"(template <>
 CSharedAccessor )" MAKELABEL(LABEL_2) "();";
@@ -34,12 +35,12 @@ CSharedAccessor )" MAKELABEL(LABEL_2) R"(()
 })";
 		constexpr const char* CreateAndInitTypeAccessor =
 "auto node0 = Niflect::MakeShared<" MAKELABEL(LABEL_4) R"(>();
-node0->InitType2(StaticGetType<)" MAKELABEL(LABEL_9)  R"(>());
+node0->InitType2()" MAKELABEL(LABEL_2) R"(());
 )" MAKELABEL(LABEL_5) R"(
 return node0;
 )";
 		constexpr const char* CreateAndInitNextsAccessor =
-"auto type1 = StaticGetType<" MAKELABEL(LABEL_9) R"(>();)";
+"auto type1 = " MAKELABEL(LABEL_2) "();";
 	constexpr const char* InitChildAccessor =
 R"(type1->InitAddFieldToAccessor(node0.Get(),")" MAKELABEL(LABEL_0) R"(", )" MAKELABEL(LABEL_7) R"();)";
 	constexpr const char* GetFieldOffset =

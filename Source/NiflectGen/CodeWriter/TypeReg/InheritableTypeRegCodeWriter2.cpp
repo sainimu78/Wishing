@@ -17,7 +17,7 @@ namespace NiflectGen
 	{
 
 	}
-	void CInheritableTypeRegCodeWriter2::WriteResocursorNodeBodyCode(CCodeLines& linesResoBodyCode) const
+	void CInheritableTypeRegCodeWriter2::WriteResocursorNodeBodyCode(const SResocursorNodeBodyCodeWritingContext& context, CCodeLines& linesResoBodyCode) const
 	{
 		ASSERT(m_bindingTypeIndexedRoot->m_accessorBindingIndex);
 
@@ -38,10 +38,9 @@ namespace NiflectGen
 		for (uint32 idx = 0; idx < m_vecFieldResocursorNode.size(); ++idx)
 		{
 			auto& itB = m_vecField[idx];
-			auto fieldResocursorNameLastTemplateArg = m_vecFieldResocursorNode[idx].m_resocursorName;
-			NiflectGenDefinition::CodeStyle::TryFormatNestedTemplate(fieldResocursorNameLastTemplateArg);
 			auto fieldName = CXStringToCString(clang_getCursorSpelling(itB->GetCursor()));
-			WriteNextInitChildAccessor(m_bindingTypeIndexedRoot->m_resocursorName, fieldResocursorNameLastTemplateArg, fieldName, linesResoBodyCode);
+			auto fieldStaticGetTypeFuncName = m_vecFieldResocursorNode[idx].GetStaticGetTypeFuncName(context.m_moduleRegInfo.m_moduleScopeSymbolPrefix);
+			WriteNextInitChildAccessor2(m_bindingTypeIndexedRoot->m_resocursorName, fieldStaticGetTypeFuncName, fieldName, linesResoBodyCode);
 		}
 	}
 	void CInheritableTypeRegCodeWriter2::CollectDependencyHeaderFilePathAddrs(CDependencyHeaderFilePathAddrs& dependencyHeaderFilePathAddrs) const

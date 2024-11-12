@@ -56,7 +56,10 @@ namespace NiflectGen
                     CCodeLines linesHInclude;
                     {
                         Niflect::TArrayNif<CHeaderFilePathData> vecHeaderData;
-                        vecHeaderData.push_back(NiflectGenDefinition::NiflectFramework::FilePath::NiflectTypeHeader);//含 CreateTypeAccessor 的函数模板声明
+                        if (it0.m_taggedTypeHeaderFilePathAddr != NULL)
+                            vecHeaderData.push_back({ NiflectGenDefinition::NiflectFramework::FilePath::NiflectTypeHeader, true });//含 CreateTypeAccessor 的函数模板声明
+                        else
+                            vecHeaderData.push_back({ context.m_moduleRegInfo.m_moduleRegisteredTypeHeaderFilePath, true });
                         for (auto& it1 : it0.m_vecTypeRegDataRef)
                         {
                             for (auto& it2 : it1->m_registerTypeAndfieldLayout.m_dependencyHeaderFilePathAddrs.m_vecDecl)
@@ -78,6 +81,8 @@ namespace NiflectGen
                     {
                         Niflect::TArrayNif<CHeaderFilePathData> vecHeaderData;
                         vecHeaderData.push_back({ typeRegData.m_declHeaderFilePath, true });
+                        if (it0.m_taggedTypeHeaderFilePathAddr != NULL)
+                            vecHeaderData.push_back({ context.m_moduleRegInfo.m_moduleRegisteredTypeHeaderFilePath, true });//仅当所有 field 都无 Misc 类型无须此 include, 因此略冗余, 但此情况罕见, 因此可接受此简化方式
                         for (auto& it1 : it0.m_vecTypeRegDataRef)
                         {
                             for (auto& it2 : it1->m_registerTypeAndfieldLayout.m_dependencyHeaderFilePathAddrs.m_vecImpl)

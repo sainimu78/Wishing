@@ -39,9 +39,9 @@ namespace NiflectGen
                 {
                     CCodeLines linesGenHInclude;
                     CHeaderFilePathDataArray vecHeaderData;
-                    vecHeaderData.push_back(NiflectGenDefinition::NiflectFramework::FilePath::NiflectTypeHeader);
                     if (requiredExportedStaticGetType)
-                        vecHeaderData.push_back(context.m_moduleRegInfo.m_userProvided.m_moduleApiMacroHeader);
+                        vecHeaderData.push_back({ context.m_moduleRegInfo.m_userProvided.m_moduleApiMacroHeader, true });
+                    vecHeaderData.push_back({ NiflectGenDefinition::NiflectFramework::FilePath::NiflectTypeHeader, true });
                     CIncludesHelper::ConvertFromHeaderFilePaths(vecHeaderData, context.m_moduleRegInfo.m_writingHeaderSearchPaths, linesGenHInclude);
 
                     CCodeTemplate tpl1;

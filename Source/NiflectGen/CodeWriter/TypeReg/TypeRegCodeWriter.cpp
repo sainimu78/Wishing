@@ -77,26 +77,33 @@ namespace NiflectGen
 	}
 	void CTypeRegCodeWriter2::WriteInvokeRegisterType(const STypeRegRegisterTypeContext& context, STypeRegInvokeRegisterTypeWritingData& data) const
 	{
+		if (m_bindingTypeIndexedRoot->m_taggedTypeIndex != INDEX_NONE)
 		{
-			auto& hct = HardCodedTemplate::CreateTypeAccessorFuncName;
-			auto resocursorName = m_bindingTypeIndexedRoot->m_resocursorName;
-			NiflectGenDefinition::CodeStyle::TryFormatNestedTemplate(resocursorName);
-			data.m_createFieldLayoutOfTypeFuncName = ReplaceLabelToText1(hct, LABEL_9, resocursorName);
+			ASSERT(data.m_taggedTypeHeaderFilePathAddr == NULL);
+			data.m_taggedTypeHeaderFilePathAddr = m_bindingTypeIndexedRoot->GetHeaderFilePathAddrForTaggedType();
 		}
 		{
-			auto& hct = HardCodedTemplate::InvokeRegisterType;
+			const char* hct = NULL;
+			auto infoTypeName = m_resolvedData->m_taggedMapping.GetInfoTypeName(m_bindingTypeIndexedRoot->m_taggedTypeIndex);
+			Niflect::CString funcName;
+			if (m_bindingTypeIndexedRoot->IsTaggedType())
+			{
+				funcName = "RegisterType2<" + m_bindingTypeIndexedRoot->m_resocursorName + ", " + infoTypeName + ">";
+				hct = HardCodedTemplate::InvokeRegisterTypeByFrameworkTableMethod;
+			}
+			else
+			{
+				funcName = "RegisterType<" + m_bindingTypeIndexedRoot->m_resocursorName + ", " + infoTypeName + ">";
+				funcName = context.m_moduleRegInfo.m_moduleScopeSymbolPrefix + funcName;
+				hct = HardCodedTemplate::InvokeRegisterTypeByGeneratedStaticFunc;
+			}
+
 			CCodeTemplate tpl0;
 			tpl0.ReadFromRawData(hct);
 			CLabelToCodeMapping map;
 			MapLabelToText(map, LABEL_0, m_bindingTypeIndexedRoot->m_resocursorName);
-			auto infoTypeName = m_resolvedData->m_taggedMapping.GetInfoTypeName(m_bindingTypeIndexedRoot->m_taggedTypeIndex);
-			if (m_bindingTypeIndexedRoot->m_taggedTypeIndex != INDEX_NONE)
-			{
-				ASSERT(data.m_taggedTypeHeaderFilePathAddr == NULL);
-				data.m_taggedTypeHeaderFilePathAddr = m_bindingTypeIndexedRoot->GetHeaderFilePathAddrForTaggedType();
-			}
-			MapLabelToText(map, LABEL_1, infoTypeName);
-			MapLabelToText(map, LABEL_2, data.m_createFieldLayoutOfTypeFuncName);
+			MapLabelToText(map, LABEL_2, funcName);
+			MapLabelToText(map, LABEL_13, m_bindingTypeIndexedRoot->GetCreateTypeAccessorFuncName(context.m_moduleRegInfo.m_moduleScopeSymbolPrefix));
 			Niflect::TSet<Niflect::CString> setReplacedLabel;
 			tpl0.ReplaceLabels(map, data.m_linesInvokeRegisterType, &setReplacedLabel);
 			ASSERT(setReplacedLabel.size() == map.size());
@@ -110,11 +117,12 @@ namespace NiflectGen
 	}
 	void CTypeRegCodeWriter2::WriteCreateTypeAccessor(const STypeRegCreateTypeAccessorWritingContext& context, CCodeLines& dataDecl, CCodeLines& dataImpl, STypeRegCreateTypeAccessorWritingData& data) const
 	{
+		auto createTypeAccessorFuncName = m_bindingTypeIndexedRoot->GetCreateTypeAccessorFuncName(context.m_moduleRegInfo.m_moduleScopeSymbolPrefix);
 		{
 			CCodeTemplate tpl0;
 			tpl0.ReadFromRawData(HardCodedTemplate::CreateTypeAccessorDecl);
 			CLabelToCodeMapping map;
-			MapLabelToText(map, LABEL_2, context.m_createTypeAccessorFuncName);
+			MapLabelToText(map, LABEL_2, createTypeAccessorFuncName);
 			Niflect::TSet<Niflect::CString> setReplacedLabel;
 			tpl0.ReplaceLabels(map, dataDecl, &setReplacedLabel);
 			ASSERT(setReplacedLabel.size() == map.size());
@@ -123,7 +131,7 @@ namespace NiflectGen
 			CCodeTemplate tpl0;
 			tpl0.ReadFromRawData(HardCodedTemplate::CreateTypeAccessorImpl);
 			CLabelToCodeMapping map;
-			MapLabelToText(map, LABEL_2, context.m_createTypeAccessorFuncName);
+			MapLabelToText(map, LABEL_2, createTypeAccessorFuncName);
 
 			CCodeLines linesBody;
 			Niflect::CString accessorResocursorName;
@@ -183,9 +191,10 @@ namespace NiflectGen
 				tpl0.ReadFromRawData(HardCodedTemplate::CreateAndInitTypeAccessor);
 				CLabelToCodeMapping map;
 				MapLabelToText(map, LABEL_4, accessorResocursorName);
-				MapLabelToText(map, LABEL_9, m_bindingTypeIndexedRoot->GetResocursorNameForLastTemplateArg());
+				MapLabelToText(map, LABEL_2, m_bindingTypeIndexedRoot->GetStaticGetTypeFuncName(context.m_moduleRegInfo.m_moduleScopeSymbolPrefix));
 				CCodeLines linesNexts;
-				this->WriteResocursorNodeBodyCode(linesNexts);
+				SResocursorNodeBodyCodeWritingContext bodyCodeCtx{ context.m_moduleRegInfo };
+				this->WriteResocursorNodeBodyCode(bodyCodeCtx, linesNexts);
 				MapLabelToLines(map, LABEL_5, linesNexts);
 				Niflect::TSet<Niflect::CString> setReplacedLabel;
 				tpl0.ReplaceLabels(map, linesBody, &setReplacedLabel);

@@ -11,6 +11,7 @@
 #include "NiflectGen/CodeWriter/TypeReg/MiscTypeRegCodeWriter.h"
 #include "NiflectGen/CodeWriter/ModuleReg/SplittedModuleRegCodeWriter2.h"
 #include "NiflectGen/CodeWriter/HardCoded/ModuleRegTemplate.h"
+#include "NiflectGen/CodeWriter/TypeReg/ModuleRegisteredTypeHeaderCodeWriter.h"
 
 #include "Niflect/Util/SystemUtil.h"//临时写文件测试用
 
@@ -142,14 +143,14 @@ namespace NiflectGen
             auto& data = vecTypeRegData[idx0];
             auto& it0 = m_vecWriter2[idx0];
 
-            STypeRegRegisterTypeContext invokeRegisterTypeCtx{ context.m_log };
+            STypeRegRegisterTypeContext invokeRegisterTypeCtx{ context.m_moduleRegInfo, context.m_log };
             STypeRegInvokeRegisterTypeWritingData invokeRegisterTypeData{
                 data.m_registerTypeAndfieldLayout.m_linesInvokeRegisterType, 
                 data.m_registerTypeAndfieldLayout.m_taggedTypeHeaderFilePathAddr
             };
             it0->WriteInvokeRegisterType(invokeRegisterTypeCtx, invokeRegisterTypeData);
 
-            STypeRegCreateTypeAccessorWritingContext createTypeAccessorCtx{ invokeRegisterTypeData.m_createFieldLayoutOfTypeFuncName, context.m_log };
+            STypeRegCreateTypeAccessorWritingContext createTypeAccessorCtx{ context.m_moduleRegInfo, context.m_log };
             STypeRegCreateTypeAccessorWritingData createTypeAccessorData{
                 data.m_registerTypeAndfieldLayout.m_linesCreateFieldLayoutOfTypeDecl,
                 data.m_registerTypeAndfieldLayout.m_linesCreateFieldLayoutOfTypeImpl,
@@ -319,33 +320,9 @@ namespace NiflectGen
         SModuleRegWritingData2 moduleRegData{ data.m_moduleRegGenData };
         this->WriteModuleReg(moduleRegCtx, moduleRegData);
 
-        //{
-        //    auto outputBaseDirPath = NiflectUtil::ConcatPath(m_moduleRegInfo.m_userProvided.m_genBasePath, m_moduleRegInfo.m_userProvided.m_genIncludeBasePath);
-        //    for (auto& it0 : data.m_vecTypeRegGenData)
-        //    {
-        //        CCppWriter writer;
-        //        writer.WriteLines(it0.m_privateH);
-        //        auto outputFilePath = NiflectUtil::ConcatPath(outputBaseDirPath, it0.m_privateHIncludePath);
-        //        NiflectUtil::MakeDirectories(outputFilePath);
-        //        NiflectUtil::WriteStringToFile(writer.m_code, outputFilePath);
-        //    }
-        //    for (auto& it0 : data.m_vecSplittedModuleRegGenData)
-        //    {
-        //        CCppWriter writer;
-        //        writer.WriteLines(it0.m_cpp);
-        //        auto cppFilePath = NiflectUtil::ReplaceFilePathExt(it0.m_includePath, NiflectGenDefinition::FileExt::H, NiflectGenDefinition::FileExt::Cpp);
-        //        auto outputFilePath = NiflectUtil::ConcatPath(outputBaseDirPath, cppFilePath);
-        //        NiflectUtil::MakeDirectories(outputFilePath);
-        //        NiflectUtil::WriteStringToFile(writer.m_code, outputFilePath);
-        //    }
-        //    {
-        //        CCppWriter writer;
-        //        writer.WriteLines(data.m_moduleRegGenData.m_privateH);
-        //        auto outputFilePath = NiflectUtil::ConcatPath(outputBaseDirPath, data.m_moduleRegGenData.m_privateHIncludePath);
-        //        NiflectUtil::MakeDirectories(outputFilePath);
-        //        NiflectUtil::WriteStringToFile(writer.m_code, outputFilePath);
-        //    }
-        //}
+        SModuleRegisteredTypeHeaderWritingContext moduleRegisteredTypeHeaderCtx{ m_moduleRegInfo, context.m_log };
+        WriteModuleRegisteredTypeHeaderCodeWriter(moduleRegisteredTypeHeaderCtx, data.m_moduleRegisteredTypeHeaderGenData);
+
 
         this->WriteVerificationCode();
     }

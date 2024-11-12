@@ -57,6 +57,12 @@ namespace NiflectGen
 		Niflect::CString m_privateHIncludePath;
 	};
 
+	class SModuleRegisteredTypeHeaderGenData
+	{
+	public:
+		CCodeLines m_linesHeader;
+	};
+
 	class CCodeGenData
 	{
 	public:
@@ -65,5 +71,6 @@ namespace NiflectGen
 		//Niflect::TArrayNif<CSplittedGenData> m_vecSplittedTypeRegGenData;
 		CTypeRegCreateTypeAccessorSpecData m_typeRegCreateTypeAccessorSpecGenData;
 		CTypeRegStaticGetTypeSpecData m_typeRegStaticGetTypeSpecGenData;
+		SModuleRegisteredTypeHeaderGenData m_moduleRegisteredTypeHeaderGenData;
 	};
 }

@@ -21,6 +21,6 @@ namespace NiflectGen
 //	};
 
 
-	void WriteNextInitChildAccessor(const Niflect::CString& fieldOwnerResocursorName, const Niflect::CString& fieldResocursorNameLastTemplateArg, const Niflect::CString& fieldName, CCodeLines& linesResoBodyCode);
-	void WriteNextInitElementAccessor(const Niflect::CString& fieldResocursorNameLastTemplateArg, CCodeLines& linesResoBodyCode);
+	void WriteNextInitChildAccessor2(const Niflect::CString& fieldOwnerResocursorName, const Niflect::CString& funcName, const Niflect::CString& fieldName, CCodeLines& linesResoBodyCode);
+	void WriteNextInitElementAccessor2(const Niflect::CString& funcName, CCodeLines& linesResoBodyCode);
 }

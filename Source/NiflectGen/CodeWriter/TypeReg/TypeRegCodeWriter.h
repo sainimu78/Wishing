@@ -5,6 +5,7 @@
 #include "NiflectGen/CodeWriter/CodeRequirement.h"
 #include "NiflectGen/Resolver/ResocursorNode.h"
 #include "NiflectGen/CodeWriter/MacroDefinitionWriter.h"
+#include "NiflectGen/CodeWriter/ModuleReg/ModuleRegCode.h"
 
 namespace NiflectGen
 {
@@ -158,7 +159,6 @@ namespace NiflectGen
 	{
 		CCodeLines& m_linesInvokeRegisterType;
 		const Niflect::CString*& m_taggedTypeHeaderFilePathAddr;
-		Niflect::CString m_createFieldLayoutOfTypeFuncName;
 	};
 
 	struct STypeRegClassGenHWritingContext
@@ -170,7 +170,7 @@ namespace NiflectGen
 
 	struct STypeRegCreateTypeAccessorWritingContext
 	{
-		const Niflect::CString& m_createTypeAccessorFuncName;
+		const CModuleRegInfoValidated& m_moduleRegInfo;
 		CGenLog* m_log;
 	};
 
@@ -183,6 +183,7 @@ namespace NiflectGen
 
 	struct STypeRegRegisterTypeContext
 	{
+		const CModuleRegInfoValidated& m_moduleRegInfo;
 		CGenLog* m_log;
 	};
 
@@ -190,6 +191,11 @@ namespace NiflectGen
 	{
 	public:
 		uint32& m_generatedBodyLineNumber;
+	};
+
+	struct SResocursorNodeBodyCodeWritingContext
+	{
+		const CModuleRegInfoValidated& m_moduleRegInfo;
 	};
 
 	class CTypeRegCodeWriter2
@@ -204,7 +210,7 @@ namespace NiflectGen
 		virtual void WriteGeneratedBody(const STypeRegClassGenHWritingContext& context, CTypeRegTaggedTypeGeneratedHeaderData& data) const;
 
 	protected:
-		virtual void WriteResocursorNodeBodyCode(CCodeLines& linesResoBodyCode) const {}
+		virtual void WriteResocursorNodeBodyCode(const SResocursorNodeBodyCodeWritingContext& context, CCodeLines& linesResoBodyCode) const {}
 		virtual void CollectDependencyHeaderFilePathAddrs(CDependencyHeaderFilePathAddrs& dependencyHeaderFilePathAddrs) const = 0;
 		virtual void CollectDataForGenH(SCollectingGeneratedBodyWritingData& data) const {}
 
