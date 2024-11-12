@@ -39,11 +39,11 @@ node0->InitType2(StaticGetType<)" MAKELABEL(LABEL_9)  R"(>());
 return node0;
 )";
 		constexpr const char* CreateAndInitNextsAccessor =
-"auto type1 = Niflect::StaticGetType<" MAKELABEL(LABEL_9) R"(>();)";
+"auto type1 = StaticGetType<" MAKELABEL(LABEL_9) R"(>();)";
 	constexpr const char* InitChildAccessor =
 R"(type1->InitAddFieldToAccessor(node0.Get(),")" MAKELABEL(LABEL_0) R"(", )" MAKELABEL(LABEL_7) R"();)";
 	constexpr const char* GetFieldOffset =
-R"(Niflect::GetFieldOffset(&)" MAKELABEL(LABEL_0) "::" MAKELABEL(LABEL_8) R"())";
+R"(GetFieldOffset(&)" MAKELABEL(LABEL_0) "::" MAKELABEL(LABEL_8) R"())";
 	constexpr const char* InitElementAccessor =
 R"(type1->InitAccessorElementLayout(node0.Get());)";
 	constexpr const char* StaticGetTypeFuncName =
