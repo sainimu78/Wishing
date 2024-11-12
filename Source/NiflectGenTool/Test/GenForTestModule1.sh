@@ -10,6 +10,7 @@ cd ../../../Build/NiflectGenTool/Linux/Linux_NiflectGenTool_x64/Debug/NiflectGen
 -amh /home/sainimu78/Fts/Interedit/Source/TestModule1/TestModule1Common.h \
 -a /home/sainimu78/Fts/Interedit/Source/Niflect/CommonlyUsed/DefaultAccessorSetting.h \
 -I /home/sainimu78/Fts/Interedit/Source \
--p /home/sainimu78/Fts/Interedit/Generated/NiflectGenerated 
+-p /home/sainimu78/Fts/Interedit/Generated/NiflectGenerated \
+-fs
 
 cd $old
