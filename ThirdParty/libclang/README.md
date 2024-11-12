@@ -99,7 +99,7 @@ sainimu78@sainimu78-VirtualBox:/media/sainimu78/b7d5a972-427d-49db-abe6-de129d4c
 
 ### cmake script
 
-Put this CMakeLists.txt in folder `build/lib`
+Place this CMakeLists.txt in folder `build/lib`
 
 ```
 cmake_minimum_required(VERSION 3.10)

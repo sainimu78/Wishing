@@ -1,1 +1,1 @@
-cmake --build ./vs2022_Interedit_x64 --target clean --config Debug
+cmake --build ./vs2022_x64 --target clean --config Debug

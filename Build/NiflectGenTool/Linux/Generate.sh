@@ -8,7 +8,7 @@ option_generator_toolset_Predefines=
 
 if [ -z "$1" ]; then
     option_visual_studio="Unix Makefiles"
-    option_output_dir="Linux"
+    option_output_dir="Make"
 	option_generator_toolset="DefaultGCC"
 	#指定工具链如下, 现用默认即可
     #option_generator_toolset_Predefines="-DCMAKE_C_COMPILER=D:/HenDuoDongXi/perl/c/bin/gcc.exe -DCMAKE_CXX_COMPILER=D:/HenDuoDongXi/perl/c/bin/g++.exe"
@@ -45,7 +45,7 @@ echo "option_visual_studio: $option_visual_studio"
 echo "option_md: $option_md"
 echo "option_platform: $option_platform"
 
-OutputDirName="${option_output_dir}_${AppName}_${option_platform}${option_md}"
+OutputDirName="${option_output_dir}_${option_platform}${option_md}"
 
 aaaaaaaaa=$(pwd)
 OutputDirNameDebug=$OutputDirName/Debug

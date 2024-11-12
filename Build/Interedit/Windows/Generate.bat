@@ -41,7 +41,7 @@ echo option_visual_studio:%option_visual_studio%
 echo option_md:%option_md%
 echo option_platform:%option_platform%
 
-set OutputDirName=%option_output_dir%_%AppName%_%option_platform%%option_md%
+set OutputDirName=%option_output_dir%_%option_platform%%option_md%
 mkdir %OutputDirName%
 cd %OutputDirName%
 

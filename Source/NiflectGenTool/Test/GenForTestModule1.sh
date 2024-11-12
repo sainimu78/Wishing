@@ -1,7 +1,7 @@
 #!/bin/bash
 
 old=$(pwd)
-cd ../../../Build/NiflectGenTool/Linux/Linux_NiflectGenTool_x64/Debug/NiflectGenTool
+cd ../../../Build/NiflectGenTool/Linux/Make_x64/Debug/NiflectGenTool
 
 ./NiflectGenTool \
 -n TestModule1 \

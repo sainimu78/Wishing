@@ -1,5 +1,5 @@
 @set old=%cd%
-@cd ../../../Build/NiflectGenTool/Windows/vs2022_NiflectGenTool_x64/Debug/NiflectGenTool
+@cd ../../../Build/NiflectGenTool/Windows/vs2022_x64/Debug/NiflectGenTool
 
 @NiflectGenTool ^
 -n TestModule1 ^

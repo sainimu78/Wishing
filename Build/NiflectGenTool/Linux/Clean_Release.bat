@@ -1,1 +1,1 @@
-cmake --build ./Linux_Interedit_x64/Release --target clean
+cmake --build ./Make_x64/Release --target clean
