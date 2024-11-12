@@ -39,10 +39,10 @@ if("${CMAKE_SIZEOF_VOID_P}" EQUAL "8")
 			IMPORTED_IMPLIB_RELWITHDEBINFO "${libclangLibDebug}"
 			IMPORTED_IMPLIB_MINSIZEREL "${libclangLibRelease}"
 		)
+		target_include_directories(${ModuleName} PRIVATE "${LibPath}/include")
 	endif()
 	
 	target_link_libraries(${ModuleName} PRIVATE libclang2)
-	target_include_directories(${ModuleName} PRIVATE "${LibPath}/include")
 else()
 	message(ERROR "asdf")
 endif()
