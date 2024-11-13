@@ -1,7 +1,11 @@
 
-add_library(libclang2 SHARED IMPORTED)
+#add_library(libclang2 STATIC IMPORTED)
 
 target_include_directories(${ModuleName} PRIVATE "${RootThirdPartyPath}/libclang/llvm-project/clang/include")
+
+target_compile_definitions(${ModuleName} PUBLIC CINDEX_NO_EXPORTS)
+
+include(libclangStaticDeps.cmake)
 
 if(UNIX)
 	message(STATUS "Target Is on UNIX")
@@ -17,32 +21,30 @@ elseif(WIN32)
 	set(DlPost .dll)
 	set(SlPost .lib)
 endif()
-
-if("${CMAKE_SIZEOF_VOID_P}" EQUAL "8")
-	set(libclangBinDebug "${CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG}/libclang${DlPost}")
-	set(libclangBinRelease "${CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG}/libclang${DlPost}")
-	
-	set_target_properties(libclang2 PROPERTIES
-		IMPORTED_LOCATION_DEBUG "${libclangBinDebug}"
-		IMPORTED_LOCATION_RELEASE "${libclangBinRelease}"
-		IMPORTED_LOCATION_RELWITHDEBINFO "${libclangBinDebug}"
-		IMPORTED_LOCATION_MINSIZEREL "${libclangBinRelease}"
-	)
-	
-	if(WIN32)
-		set(LibPath "${RootThirdPartyPath}/libclang/llvm-project/build/${OsType}/x64")
-		set(libclangLibDebug "${LibPath}/Debug/bin/libclang${SlPost}")
-		set(libclangLibRelease "${LibPath}/Release/bin/libclang${SlPost}")
-		set_target_properties(libclang2 PROPERTIES
-			IMPORTED_IMPLIB_DEBUG "${libclangLibDebug}"
-			IMPORTED_IMPLIB_RELEASE "${libclangLibRelease}"
-			IMPORTED_IMPLIB_RELWITHDEBINFO "${libclangLibDebug}"
-			IMPORTED_IMPLIB_MINSIZEREL "${libclangLibRelease}"
-		)
-	endif()
-	
-	target_link_libraries(${ModuleName} PRIVATE libclang2)
-	target_include_directories(${ModuleName} PRIVATE "${LibPath}/include")
+if("${CMAKE_SIZEOF_VOID_P}" EQUAL "8")	
+	set(MyArch x64)
 else()
 	message(ERROR "asdf")
 endif()
+
+set(LibPath "${RootThirdPartyPath}/libclang/llvm-project/build/${OsType}/${MyArch}")
+	
+set(DebugLibPathList)
+set(ReleaseLibPathList)
+foreach(libName ${MyLibNames})
+    list(APPEND DebugLibPathList "${LibPath}/Debug/lib/${libName}${SlPost}")
+endforeach()
+foreach(libName ${MyLibNames})
+    list(APPEND ReleaseLibPathList "${LibPath}/Release/lib/${libName}${SlPost}")
+endforeach()
+
+if(WIN32)
+	target_include_directories(${ModuleName} PRIVATE "${LibPath}/include")
+	list(APPEND DebugLibPathList Version${SlPost})
+	list(APPEND ReleaseLibPathList Version${SlPost})
+endif()
+
+target_link_libraries(${ModuleName} PRIVATE 
+	$<$<CONFIG:Debug>:${DebugLibPathList}>
+	$<$<CONFIG:Release>:${ReleaseLibPathList}>
+)

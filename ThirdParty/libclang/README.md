@@ -14,9 +14,91 @@ git clone git@github.com:llvm/llvm-project.git
 git checkout llvmorg-17.0.6
 ```
 
-### SHA-1
+## SHA-1
 
 6009708b4367171ccdbf4b5905cb6a803753fe18
+
+## Build static library on Windows
+
+```
+cmake -G "Visual Studio 17 2022" ../llvm -DLLVM_ENABLE_PROJECTS=clang -DCMAKE_BUILD_TYPE=Debug -DLIBCLANG_BUILD_STATIC=ON -DLLVM_ENABLE_PIC=OFF
+
+LLVM.sln -> clang Libraries -> libclang
+```
+
+## Build shared library on Windows
+
+```
+cmake -G "Visual Studio 17 2022" ../llvm -DLLVM_ENABLE_PROJECTS=clang -DCMAKE_BUILD_TYPE=Debug
+
+LLVM.sln -> clang Libraries -> libclang
+```
+
+## Build static library on Ubuntu
+
+```
+cmake -G "Unix Makefiles" ../llvm -DLLVM_ENABLE_PROJECTS=clang -DCMAKE_BUILD_TYPE=Debug -DLLVM_ENABLE_LLD=ON -DLIBCLANG_BUILD_STATIC=ON -DLLVM_ENABLE_PIC=OFF
+
+make libclang -j8
+```
+
+## Build shared library on Ubuntu
+
+```
+cmake -G "Unix Makefiles" ../llvm -DLLVM_ENABLE_PROJECTS=clang -DCMAKE_BUILD_TYPE=Debug -DLLVM_ENABLE_LLD=ON 
+
+make libclang -j8
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# (更早时的 Build 实验)
 
 ## Prebuild
 
@@ -173,13 +255,4 @@ You can:
 1. Use lld (or gold) as a linker instead of the gnu linker (`-DLLVM_ENABLE_LLD=ON`)
 2. build without debug info: this is very memory intensive for the linker
 3. reduce the parallelism of the build. If you switch to `ninja` instead of `make` you can pass `-D LLVM_PARALLEL_LINK_JOBS=1` to limit only the number of linker jobs and not constraint the compile jobs.
-
-## Build static library on Windows
-
-```
-cmake -DLLVM_ENABLE_PROJECTS=clang -DCMAKE_BUILD_TYPE=Debug -G "Visual Studio 17 2022" ../llvm -DLLVM_BUILD_STATIC=ON
-
-cmake -G "Visual Studio 17 2022" ../llvm -DLLVM_ENABLE_PROJECTS=clang -DCMAKE_BUILD_TYPE=Debug -DLIBCLANG_BUILD_STATIC=ON -DLLVM_ENABLE_PIC=OFF
-
-```
 
