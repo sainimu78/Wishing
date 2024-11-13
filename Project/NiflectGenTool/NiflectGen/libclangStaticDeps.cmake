@@ -22,7 +22,6 @@ list(APPEND MyLibNames
 	clangTooling
 	clangToolingCore
 	clangToolingInclusions
-	libclang
 	LLVMAArch64AsmParser
 	LLVMAArch64CodeGen
 	LLVMAArch64Desc

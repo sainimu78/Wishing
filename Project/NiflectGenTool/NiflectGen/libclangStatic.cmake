@@ -40,6 +40,9 @@ foreach(libName ${MyLibNames})
     list(APPEND ReleaseLibPathList "${LibPath}/Release/lib/${libPre}${libName}${SlPost}")
 endforeach()
 
+list(APPEND DebugLibPathList "${LibPath}/Debug/lib/libclang${SlPost}")
+list(APPEND ReleaseLibPathList "${LibPath}/Release/lib/libclang${SlPost}")
+
 if(WIN32)
 	target_include_directories(${ModuleName} PRIVATE "${LibPath}/include")
 	list(APPEND DebugLibPathList Version${SlPost})
