@@ -96,3 +96,4 @@
 52. NiflectGen, _gen.h 为最后一个 include 的提示
 53. NiflectGen, 将 NIFLECTGEN 中的内容移到解析时生成在内存中(CXUnsavedFile)的 NiflectMacro.h, 以简化定义, 用户不需要关系解析细节, 另发现 17 与 20 的解析过程是不同的, 因此移到 NiflectGen 代码中也更合理
 54. NiflectGen, 删除生成完成后不需要的 Bypass
+55. Niflect, 询问 GPT, C++ 反射现状, 更新标准如 26 的反射用法, 用实用性, 例如能以何方式绑定用户自定义 meta; 
