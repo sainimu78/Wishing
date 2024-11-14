@@ -5,12 +5,8 @@
 #define GENERATED_BODY(...) typedef void* CONCAT_SYMBOLS_2(__NiflectGen_GeneratedBody,__LINE__);
 
 #define NIFLECTGENTAG_TYPE typedef void* __NiflectGen_Type;
-
-//libclang 17 解析类 Scope 内重复 typedef 未报错, 而 libclang 20 则报错, 可通过行号宏避免报错, #define NIFLECTGENTAG_FIELD typedef void* CONCAT_SYMBOLS_2(__NiflectGen_Field,__LINE__);
-#define NIFLECTGENTAG_FIELD typedef void* __NiflectGen_Field;
-
+#define NIFLECTGENTAG_FIELD typedef void* CONCAT_SYMBOLS_2(__NiflectGen_Field,__LINE__);
 #define NIFLECTGENTAG_METHOD typedef void* __NiflectGen_Method;
-
 #define NIFLECTGENTAG_CONSTANT __attribute__((annotate("__NiflectGen_EnumConstant")))
 #else
 // Include a redundant semicolon at the end of the generated code block, so that intellisense parsers can start parsing
