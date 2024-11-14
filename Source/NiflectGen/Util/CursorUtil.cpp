@@ -349,4 +349,23 @@ namespace NiflectGen
 
 		fprintf(fp, "%s%s, (%s, %u, %u, %u%s)\n", strLevel.c_str(), displayName.c_str(), strKind.c_str(), lineNumber, column, offset, showFilePath ? filePath.c_str() : "");
 	}
+	Niflect::CString GetMacroExpansionArgsInString(const CXCursor& cursor)
+	{
+		Niflect::CString result;
+		CXSourceRange range = clang_getCursorExtent(cursor);
+		CXToken* tokens = nullptr;
+		unsigned int numTokens = 0;
+		CXTranslationUnit translationUnit = clang_Cursor_getTranslationUnit(cursor);
+		clang_tokenize(translationUnit, range, &tokens, &numTokens);
+
+		for (unsigned i = 0; i < numTokens; ++i)
+		{
+			CXString spelling = clang_getTokenSpelling(translationUnit, tokens[i]);
+			result += clang_getCString(spelling);
+			clang_disposeString(spelling);
+		}
+
+		clang_disposeTokens(translationUnit, tokens, numTokens);
+		return result;
+	}
 }

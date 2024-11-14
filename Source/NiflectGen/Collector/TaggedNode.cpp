@@ -9,26 +9,6 @@ namespace NiflectGen
 {
 	using namespace Niflect;
 
-	static CString GetMacroExpansionArgsInString(const CXCursor& cursor)
-	{
-		CString result;
-		CXSourceRange range = clang_getCursorExtent(cursor);
-		CXToken* tokens = nullptr;
-		unsigned int numTokens = 0;
-		CXTranslationUnit translationUnit = clang_Cursor_getTranslationUnit(cursor);
-		clang_tokenize(translationUnit, range, &tokens, &numTokens);
-
-		for (unsigned i = 0; i < numTokens; ++i)
-		{
-			CXString spelling = clang_getTokenSpelling(translationUnit, tokens[i]);
-			result += clang_getCString(spelling);
-			clang_disposeString(spelling);
-		}
-
-		clang_disposeTokens(translationUnit, tokens, numTokens);
-		return result;
-	}
-
 	bool CXSourceLocationComp::operator()(const CXSourceLocation& lhs, const CXSourceLocation& rhs) const
 	{
 		//// Use Clang API to compare source locations. Assume `isEqual` returns
@@ -83,6 +63,7 @@ namespace NiflectGen
 	{
 		auto it = m_stkMacroCursor.begin();
 		it += m_stkMacroCursor.size() - 1;
+		macroCursor = *it;
 		m_stkMacroCursor.erase(it);
 	}
 #else
