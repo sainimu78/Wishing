@@ -91,4 +91,4 @@ if [ $? -ne 0 ]; then
 fi
 
 cd ..
-read -p "Press Enter to continue..."
+#read -p "Press Enter to continue..."
