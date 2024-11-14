@@ -870,6 +870,24 @@ namespace NiflectGen
 				//	ASSERT(ret.second);
 				//}
 
+	#ifdef BINDING_TYPE_DUPLICATION_VERIFICATION
+				bool isUntagged = false;
+				switch (kind)
+				{
+				case CXCursor_TypeAliasTemplateDecl:
+				case CXCursor_TypeAliasDecl:
+				case CXCursor_ClassTemplate:
+
+					isUntagged = true;
+					break;
+				default: break;
+				};
+				if (isUntagged)
+				{
+					aliasChain->AddLinkDecl(cursor);
+					addedTaggedChild = m_untaggedTypeCollector.Collect(cursor, taggedParent, context.m_log);
+				}
+	#else
 				if (kind == CXCursor_TypeAliasTemplateDecl)
 				{
 					aliasChain->AddLinkDecl(cursor);
@@ -884,6 +902,7 @@ namespace NiflectGen
 					aliasChain->AddLinkDecl(cursor);
 					addedTaggedChild = m_templateCollector.Collect(cursor, taggedParent, context.m_log);
 				}
+	#endif
 			}
 			if (!addedTaggedChild)
 			{

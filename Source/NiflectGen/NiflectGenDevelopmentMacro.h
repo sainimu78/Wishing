@@ -36,4 +36,6 @@
 #define ACCESSOR_SETTING_ABCD
 
 //废弃 map 查找, 改用 stack, 改写的原因有 1. linux 下通过 loc 找不到; 2. 已确定宏标签用法, 一定出现在类型定义之前最近一行
-#define SIMPLIFIED_MACRO_CURSOR_FINDING
+//2024.11.15, 发现通过 loc 找不到, 不是由于 linux 下 libclang 的机制, 而是由于误使用了默认的 libclang 20, 应使用 libclang 17
+//	回退的重要原因是, 发现启用宏的实现方法, 无法获取正确的宏标签 token, 另未计划基于 20 摸索获取正确的宏标签 token 方法, 因此现使用未启用宏的回退实现
+//#define SIMPLIFIED_MACRO_CURSOR_FINDING
