@@ -92,3 +92,4 @@
 		4. 手工注册仍可沿用公共的 s_type 和 StaticGetType
 49. NiflectGen, Nata 生成, 1. 获取Nata需要的头文件; 2. Type, Field, EnumConst 须同时可行; 3. 生成到 TypeReg
 50. Niflect, 实例 Field, 即特殊指针 Save/Load, 如用于资源实例或实例引用的 Save/Load
+51. NiflectGen, 支持新建 .h 的选项, 生成的文件中含 _gen.h
