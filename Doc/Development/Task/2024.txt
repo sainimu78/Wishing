@@ -94,3 +94,4 @@
 50. Niflect, 实例 Field, 即特殊指针 Save/Load, 如用于资源实例或实例引用的 Save/Load
 51. NiflectGen, 支持新建 .h 的选项, 生成的文件中含 _gen.h
 52. NiflectGen, _gen.h 为最后一个 include 的提示
+53. NiflectGen, 将 NIFLECTGEN 中的内容移到解析时生成在内存中(CXUnsavedFile)的 NiflectMacro.h, 以简化定义, 用户不需要关系解析细节, 另发现 17 与 20 的解析过程是不同的, 因此移到 NiflectGen 代码中也更合理
