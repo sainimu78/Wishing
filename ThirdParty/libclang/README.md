@@ -18,31 +18,17 @@ git checkout llvmorg-17.0.6
 
 6009708b4367171ccdbf4b5905cb6a803753fe18
 
-## Build static library on Windows
+## Build shared library
 
-```
-cmake -G "Visual Studio 17 2022" ../llvm -DLLVM_ENABLE_PROJECTS=clang -DCMAKE_BUILD_TYPE=Debug -DLIBCLANG_BUILD_STATIC=ON -DLLVM_ENABLE_PIC=OFF
-
-LLVM.sln -> clang Libraries -> libclang
-```
-
-## Build shared library on Windows
+on Windows
 
 ```
 cmake -G "Visual Studio 17 2022" ../llvm -DLLVM_ENABLE_PROJECTS=clang -DCMAKE_BUILD_TYPE=Debug
 
-LLVM.sln -> clang Libraries -> libclang
+LLVM.sln -> clang Libraries -> c-index-test
 ```
 
-## Build static library on Ubuntu
-
-```
-cmake -G "Unix Makefiles" ../llvm -DLLVM_ENABLE_PROJECTS=clang -DCMAKE_BUILD_TYPE=Debug -DLLVM_ENABLE_LLD=ON -DLIBCLANG_BUILD_STATIC=ON -DLLVM_ENABLE_PIC=OFF
-
-make libclang -j8
-```
-
-## Build shared library on Ubuntu
+on Ubuntu
 
 ```
 cmake -G "Unix Makefiles" ../llvm -DLLVM_ENABLE_PROJECTS=clang -DCMAKE_BUILD_TYPE=Debug -DLLVM_ENABLE_LLD=ON 
@@ -50,11 +36,28 @@ cmake -G "Unix Makefiles" ../llvm -DLLVM_ENABLE_PROJECTS=clang -DCMAKE_BUILD_TYP
 make libclang -j8
 ```
 
+## Build static library
 
+on Windows
 
+```
+cmake -G "Visual Studio 17 2022" ../llvm -DLLVM_ENABLE_PROJECTS=clang -DCMAKE_BUILD_TYPE=Debug -DLIBCLANG_BUILD_STATIC=ON -DLLVM_ENABLE_PIC=OFF
 
+LLVM.sln -> clang Executables -> c-index-test
+```
 
+on Ubuntu (libNiflectGen.so Linking errors problem has not been solved yet)
 
+```
+cmake -G "Unix Makefiles" ../llvm -DLLVM_ENABLE_PROJECTS=clang -DCMAKE_BUILD_TYPE=Debug -DLLVM_ENABLE_LLD=ON -DLIBCLANG_BUILD_STATIC=ON -DLLVM_BUILD_STATIC=ON
+
+make c-index-test -j8
+make libclang_static -j8
+```
+
+`make libclang_static` will then generate the expected libclang.a
+
+Note that running 'make c-index-test' will generate some static libraries that may not essential for NiflectGenTool. This is done in order to prepare all possible static libraries that may be needed in future development, thereby avoiding a cumbersome build process
 
 
 
@@ -255,4 +258,54 @@ You can:
 1. Use lld (or gold) as a linker instead of the gnu linker (`-DLLVM_ENABLE_LLD=ON`)
 2. build without debug info: this is very memory intensive for the linker
 3. reduce the parallelism of the build. If you switch to `ninja` instead of `make` you can pass `-D LLVM_PARALLEL_LINK_JOBS=1` to limit only the number of linker jobs and not constraint the compile jobs.
+
+## Linking errors
+
+Got linking errors
+
+```
+/usr/bin/ld: libNiflectGen.so: undefined reference to `clang::index::generateUSRForObjCClass(llvm::StringRef, llvm::raw_ostream&, llvm::StringRef, llvm::StringRef)'
+```
+
+This symbol should be in libNiflectGen.so as libclang is staticly linked to it
+
+```
+nm -C libNiflectGen.so | grep generateUSRForObjCClass
+U clang::index::generateUSRForObjCClass(llvm::StringRef, llvm::raw_ostream&, llvm::StringRef, llvm::StringRef)
+```
+
+Result begins with U, it means Undifined
+
+Search in llvm-project source, found the symbol is defined in USRGeneration.cpp
+
+Check the symbol existance in libclangIndex.a
+
+```
+nm -C /home/sainimu78/Fts/Interedit/ThirdParty/libclang/llvm-project/build/Linux/x64/Debug/lib/libclangIndex.a | grep generateUSRForObjCClass
+00000000000088e4 T clang::index::generateUSRForObjCClass(llvm::StringRef, llvm::raw_ostream&, llvm::StringRef, llvm::StringRef)
+00000000000088e4 t clang::index::generateUSRForObjCClass(llvm::StringRef, llvm::raw_ostream&, llvm::StringRef, llvm::StringRef) [clone .localalias]
+```
+
+It is actually existed
+
+Reference the CMakeLists.txt of c-index-test, put libclang.a to the most front of dependencies list, then gen cmake and build.
+
+Still got linking errors
+
+```
+/usr/bin/ld: libNiflectGen.so: undefined reference to `clang::AnalysisDeclContext::getBody() const'
+```
+
+But it is different and less errors, it seems it may work.
+
+Adjust position of libs` order like c-index-test, it goes
+
+```
+	clangAST
+	clangBasic
+	clangCodeGen
+	clangFrontend
+	clangIndex
+	clangSerialization
+```
 
