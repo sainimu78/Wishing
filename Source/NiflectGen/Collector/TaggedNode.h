@@ -1,6 +1,7 @@
 #pragma once
 #include "Niflect/NiflectBase.h"
 #include "clang-c/Index.h"
+#include "NiflectGen/CodeWriter/CodeWriter.h"
 
 namespace NiflectGen
 {
@@ -42,15 +43,22 @@ namespace NiflectGen
 		CGenLog*& m_log;
 	};
 
+	struct SResolvingMacroNataContext
+	{
+		CGenLog* m_log;
+	};
+
 	class CTaggedNode2
 	{
 	public:
 		CTaggedNode2();
 		void Init(const CXCursor& cursor);
-		void SetMacroCursor(const CXCursor& macroCursor)
-		{
-			m_macroCursor = macroCursor;
-		}
+		//void SetMacroCursor(const CXCursor& macroCursor)
+		//{
+		//	m_macroCursor = macroCursor;
+		//}
+		void InitMacroExpansionCursor(const CXCursor& cursor);
+		void ResolveMacroNata(const SResolvingMacroNataContext& context);
 		void AddChildAndInitDefault(const CSharedTaggedNode& taggedNode, const CXCursor& cursor, const CXCursor& macroCursor);
 		uint32 GetChildrenCount() const
 		{
@@ -70,6 +78,7 @@ namespace NiflectGen
 		{
 			return false;
 		}
+		void WriteCopyNataCode(CCodeLines& linesCopy) const;
 
 	public:
 		const CXCursor& DebugGetMacroCursor() const
@@ -88,6 +97,7 @@ namespace NiflectGen
 	protected:
 		CXCursor m_macroCursor;
 		Niflect::TArrayNif<CSharedTaggedNode> m_vecChild;
+		Niflect::TArrayNif<Niflect::CString> m_linesRawNata;
 
 	private:
 		CXCursor m_cursor;

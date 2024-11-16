@@ -42,7 +42,7 @@ namespace Niflect
 	CSharedAccessor )" MAKELABEL(LABEL_1) R"(CreateTypeAccessor();
 
 	template <typename TType, typename TInfo = CNiflectType>
-	static void )" MAKELABEL(LABEL_1) R"(RegisterType(CNiflectTable* table, const Niflect::CString& id, const CreateTypeAccessorFunc& Func)
+	static void )" MAKELABEL(LABEL_1) R"(RegisterType(CNiflectTable* table, const Niflect::CString& id, const CreateTypeAccessorFunc& Func, const CSharedNata& nata)
 	{
 		CTypeInvokations typeFuncs;
 		typeFuncs.m_InvokeConstructorFunc = &GenericInstanceInvokeConstructor<TType>;
@@ -53,7 +53,7 @@ namespace Niflect
 		CNiflectType* type = shared.Get();
 		auto idx = table->AddType(shared);
 		ASSERT(!)" MAKELABEL(LABEL_1) R"(TRegisteredType<TType>::IsValid());
-		type->InitTypeMeta2(sizeof(TType), CNiflectType::GetTypeHash<TType>(), idx, typeFuncs, id, &)" MAKELABEL(LABEL_1) R"(TRegisteredType<TType>::s_type);
+		type->InitTypeMeta2(sizeof(TType), CNiflectType::GetTypeHash<TType>(), idx, typeFuncs, id, &)" MAKELABEL(LABEL_1) R"(TRegisteredType<TType>::s_type, nata);
 		ASSERT()" MAKELABEL(LABEL_1) R"(TRegisteredType<TType>::IsValid());
 	}
 })";

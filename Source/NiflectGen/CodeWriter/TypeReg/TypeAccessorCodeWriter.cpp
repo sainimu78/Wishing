@@ -14,10 +14,12 @@ namespace NiflectGen
 		tpl0.ReplaceLabels(map, linesCode, &setReplacedLabel);
 		ASSERT(setReplacedLabel.size() == map.size());
 	}
-	void WriteNextInitChildAccessor2(const Niflect::CString& fieldOwnerResocursorName, const Niflect::CString& funcName, const Niflect::CString& fieldName, CCodeLines& linesResoBodyCode)
+	void WriteNextInitChildAccessor2(const Niflect::CString& fieldOwnerResocursorName, const Niflect::CString& funcName, const Niflect::CString& fieldName, const CCodeLines& linesNata, CCodeLines& linesResoBodyCode)
 	{
 		CCodeLines linesCode;
 		WriteNextInitNextAccessor2(funcName, linesCode);
+		Niflect::CString nataNullOrVar;
+		HardCodedTemplate::WriteNataArgNullOrVar(linesNata, linesCode, nataNullOrVar);
 		{
 			CCodeTemplate tpl0;
 			tpl0.ReadFromRawData(HardCodedTemplate::InitChildAccessor);
@@ -25,6 +27,7 @@ namespace NiflectGen
 			MapLabelToText(map, LABEL_0, fieldName);
 			auto invokeGetFieldOffset = ReplaceLabelToText2(HardCodedTemplate::GetFieldOffset, LABEL_0, LABEL_8, fieldOwnerResocursorName, fieldName);
 			MapLabelToText(map, LABEL_7, invokeGetFieldOffset);
+			MapLabelToText(map, LABEL_14, nataNullOrVar);
 			Niflect::TSet<Niflect::CString> setReplacedLabel;
 			tpl0.ReplaceLabels(map, linesCode, &setReplacedLabel);
 			ASSERT(setReplacedLabel.size() == map.size());

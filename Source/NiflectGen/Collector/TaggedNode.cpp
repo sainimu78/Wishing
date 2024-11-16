@@ -110,11 +110,126 @@ namespace NiflectGen
 	{
 		m_cursor = cursor;
 	}
+	void CTaggedNode2::InitMacroExpansionCursor(const CXCursor& cursor)
+	{
+		m_macroCursor = cursor;
+	}
+
+	class CMacroExpansionNataData
+	{
+	public:
+		Niflect::CString m_nataCode;
+	};
+
+	bool ssssssssssss(const CXCursor& cursor, CMacroExpansionNataData& data)
+	{
+		CXSourceRange range = clang_getCursorExtent(cursor);
+		CXTranslationUnit translationUnit = clang_Cursor_getTranslationUnit(cursor);
+
+		bool containsIdentifier = true;
+		{
+			//获取无换行的所有字符
+			CXToken* tokens = nullptr;
+			unsigned int numTokens = 0;
+			clang_tokenize(translationUnit, range, &tokens, &numTokens);
+			uint32 identifierKindsIdx = 0;
+			for (unsigned idx = 0; idx < numTokens; ++idx)
+			{
+				auto& token = tokens[idx];
+				auto kind = clang_getTokenKind(token);
+				if (kind == CXToken_Identifier)
+				{
+					identifierKindsIdx++;
+					if (identifierKindsIdx == NiflectGenDefinition::NiflectFramework::MacroNata::IdentifierTokenFindingEndCount)
+					{
+						//不记录名称的原因: 
+						//1. 通过字符形式的名称再找出 Cursor 意味着需要记录所有 Cursor
+						//2. 设想中 Nata 的提供方式可为几乎任意形式, 不限于类名构造选项风格
+						auto nataIdentifier = CXStringToCString(clang_getTokenSpelling(translationUnit, token));
+						containsIdentifier = true;
+						break;
+					}
+				}
+			}
+			clang_disposeTokens(translationUnit, tokens, numTokens);
+		}
+
+		{
+			CXFile begin_file, end_file;
+			unsigned begin_line, begin_column, end_line, end_column, begin_offset, end_offset;
+			clang_getSpellingLocation(clang_getRangeStart(range),
+				&begin_file, &begin_line, &begin_column, &begin_offset);
+			clang_getSpellingLocation(clang_getRangeEnd(range),
+				&end_file, &end_line, &end_column, &end_offset);
+			if (begin_file && end_file)
+			{
+				ASSERT(begin_file == end_file);
+				ASSERT(end_offset > begin_offset);
+
+				size_t size = 0;
+				auto contents = clang_getFileContents(translationUnit, begin_file, &size);
+
+				{
+					for (uint32 idx = begin_offset; idx < size; ++idx)
+					{
+						if (contents[idx] == NiflectGenDefinition::NiflectFramework::MacroNata::TokensBrackets[0])
+						{
+							begin_offset = idx + 1;
+							break;
+						}
+					}
+					ASSERT(end_offset > begin_offset);
+					for (uint32 idx = end_offset; idx >= begin_offset; --idx)
+					{
+						if (contents[idx] == NiflectGenDefinition::NiflectFramework::MacroNata::TokensBrackets[1])
+						{
+							end_offset = idx;
+							break;
+						}
+					}
+				}
+
+				data.m_nataCode.resize(end_offset - begin_offset);
+				memcpy(&data.m_nataCode[0], contents + begin_offset, data.m_nataCode.size());
+			}
+		}
+
+		return containsIdentifier;
+	}
+	void CTaggedNode2::ResolveMacroNata(const SResolvingMacroNataContext& context)
+	{
+		CMacroExpansionNataData data;
+		if (ssssssssssss(m_macroCursor, data))
+		{
+			ASSERT(m_linesRawNata.size() == 0);
+			CStringStream ss;
+			ss << data.m_nataCode;
+			CString line;
+			while (std::getline(ss, line))
+				m_linesRawNata.push_back(line);
+		}
+		else
+		{
+			GenLogError(context.m_log, NiflectUtil::FormatString("%s, is an unsupported Nata specification. Nata can only be specifed through an invocation within the Macro Tag, such as using NIF_F(CMyNata().SetOption0(true))", data.m_nataCode.c_str()));
+		}
+	}
 	void CTaggedNode2::AddChildAndInitDefault(const CSharedTaggedNode& taggedNode, const CXCursor& cursor, const CXCursor& macroCursor)
 	{
 		taggedNode->Init(cursor);
-		taggedNode->SetMacroCursor(macroCursor);
+		taggedNode->InitMacroExpansionCursor(macroCursor);
 		m_vecChild.push_back(taggedNode);
+	}
+	void CTaggedNode2::WriteCopyNataCode(CCodeLines& linesCopy) const
+	{
+		if (m_linesRawNata.size() > 0)
+		{
+			Niflect::CString firstLine = "auto nata = MakeDerivedNata(";
+			uint32 idx = 0;
+			linesCopy.push_back(firstLine + m_linesRawNata[idx++]);
+			for (; idx < m_linesRawNata.size(); ++idx)
+				linesCopy.push_back(m_linesRawNata[idx]);
+			linesCopy.back() += ");";
+		}
 	}
 	void CTaggedNode2::DebugPrint(FILE* fp, uint32 level) const
 	{

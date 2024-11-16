@@ -5,7 +5,7 @@
 
 namespace Engine
 {
-	class CMyFieldMeta
+	class CMyFieldMeta : public Niflect::CNata
 	{
 		typedef CMyFieldMeta CThis;
 	public:
@@ -17,7 +17,25 @@ namespace Engine
 		Niflect::CString m_friendlyName;
 	};
 
-	NIF_T(0)
+	static CMyFieldMeta MyGetNata()
+	{
+		return CMyFieldMeta().SetFriendlyName("bucuo");
+	}
+
+	class CMyClassNata : public Niflect::CNata
+	{
+		typedef CMyClassNata CThis;
+	public:
+		CThis& SetCategory(const Niflect::CString& name)
+		{
+			m_categoryName = name;
+			return *this;
+		}
+		Niflect::CString m_categoryName;
+	};
+
+	NIF_T(CMyClassNata()
+		.SetCategory("Default Category"))
 	class CEngineObject
 	{
 		GENERATED_BODY()
@@ -82,21 +100,21 @@ namespace Engine
 		NIF_F(CMyFieldMeta()
 			.SetFriendlyName("Nihao"))
 		float m_float_0;
-		NIF_F(2)
+		NIF_F()
 		bool m_bool_1;
-		NIF_F(3)
+		NIF_F(MyGetNata())
 		Niflect::CString m_string_2;
-		NIF_F(4)
+		NIF_F()
 		std::string m_std_string_3;
-		NIF_F(5)
+		NIF_F()
 		Niflect::TArrayNif<float> m_array_float_4;
-		NIF_F(Nihaoma)
+		NIF_F()
 		std::vector<float> m_std_array_float_5;
-		NIF_F(7)
+		NIF_F()
 		Niflect::TArrayNif<Niflect::TArrayNif<float> > m_array_array_float_6;
-		NIF_F(8)
+		NIF_F()
 		Niflect::TArrayNif<bool> m_bits_7;
-		NIF_F(9)
+		NIF_F()
 		Niflect::TArrayNif<Niflect::TArrayNif<bool> > m_array_bits_8;
 	};
 

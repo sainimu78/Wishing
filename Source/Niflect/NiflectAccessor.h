@@ -3,6 +3,7 @@
 #include "Niflect/NiflectAddr.h"
 #include "Niflect/Util/TypeUtil.h"
 #include "Niflect/Serialization/RwTree.h"
+#include "Niflect/NiflectNata.h"
 
 namespace Niflect
 {
@@ -25,9 +26,10 @@ namespace Niflect
 	{
 		friend class CNiflectType;
 	public:
-		void Init(const Niflect::CString& name)
+		void Init(const Niflect::CString& name, const CSharedNata& nata)
 		{
 			m_name = name;
+			m_nata = nata;
 		}
 		void InitAddAccessor(const CSharedAccessor& accessor)
 		{
@@ -53,6 +55,7 @@ namespace Niflect
 	private:
 		Niflect::CString m_name;
 		CTypeLayout m_layout;
+		CSharedNata m_nata;
 	};
 
 	class CAccessor

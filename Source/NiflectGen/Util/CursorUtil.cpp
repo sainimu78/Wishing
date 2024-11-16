@@ -393,7 +393,7 @@ namespace NiflectGen
 				{
 					for (uint32 idx = begin_offset; idx < size; ++idx)
 					{
-						if (contents[idx] == NiflectGenDefinition::NiflectFramework::MacroTag::TokensBrackets[0])
+						if (contents[idx] == NiflectGenDefinition::NiflectFramework::MacroNata::TokensBrackets[0])
 						{
 							begin_offset = idx + 1;
 							break;
@@ -402,7 +402,7 @@ namespace NiflectGen
 					ASSERT(end_offset > begin_offset);
 					for (uint32 idx = end_offset; idx >= begin_offset; --idx)
 					{
-						if (contents[idx] == NiflectGenDefinition::NiflectFramework::MacroTag::TokensBrackets[1])
+						if (contents[idx] == NiflectGenDefinition::NiflectFramework::MacroNata::TokensBrackets[1])
 						{
 							end_offset = idx;
 							break;

@@ -68,6 +68,8 @@ namespace NiflectGen
 			ASSERT(false);
 			return NULL;
 		}
+		void WriteUsingNamespaceDirectiveForNata(CCodeLines& lines) const;
+		void WriteTaggedTypeCopyNata(CCodeLines& lines) const;
 
 	public:
 		static CTaggedType* CastChecked(CTaggedNode2* base)

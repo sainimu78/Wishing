@@ -26,7 +26,7 @@ namespace NiflectGen
 				auto tagLocation = clang_getCursorLocation(cursor);
 				context.m_tagCollection.TakeByTagLocation(tagLocation, macroCursor);
 #endif
-				this->SetMacroCursor(macroCursor);
+				this->InitMacroExpansionCursor(macroCursor);
 			}
 			return false;
 		}

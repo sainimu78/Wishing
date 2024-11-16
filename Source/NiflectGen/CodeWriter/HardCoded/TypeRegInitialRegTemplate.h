@@ -17,13 +17,25 @@ namespace NiflectGen
 #define LABEL_11 "Namespace"
 #define LABEL_12 "ScopedCode"
 #define LABEL_13 "CreateTypeAccessorFuncName"
+#define LABEL_14 "NataNullOrVar"
 
 	namespace HardCodedTemplate
 	{
+		static void WriteNataArgNullOrVar(const CCodeLines& linesNata, CCodeLines& linesCopy, Niflect::CString& nataNullOrVar)
+		{
+			nataNullOrVar = "NULL";
+			if (linesNata.size() > 0)
+			{
+				nataNullOrVar = "nata";
+				for (auto& it : linesNata)
+					linesCopy.push_back(it);
+			}
+		}
+
 		constexpr const char* InvokeRegisterTypeByFrameworkTableMethod =
-"table->" MAKELABEL(LABEL_2) R"((")" MAKELABEL(LABEL_0) R"(", &)" MAKELABEL(LABEL_13) R"();)";
+"table->" MAKELABEL(LABEL_2) R"((")" MAKELABEL(LABEL_0) R"(", &)" MAKELABEL(LABEL_13) ", " MAKELABEL(LABEL_14) ");";
 		constexpr const char* InvokeRegisterTypeByGeneratedStaticFunc =
-"" MAKELABEL(LABEL_2) R"((table, ")" MAKELABEL(LABEL_0) R"(", &)" MAKELABEL(LABEL_13) R"();)";
+"" MAKELABEL(LABEL_2) R"((table, ")" MAKELABEL(LABEL_0) R"(", &)" MAKELABEL(LABEL_13) ", " MAKELABEL(LABEL_14) ");";
 		constexpr const char* CreateTypeAccessorDecl =
 R"(template <>
 CSharedAccessor )" MAKELABEL(LABEL_2) "();";
@@ -42,7 +54,7 @@ return node0;
 		constexpr const char* CreateAndInitNextsAccessor =
 "auto type1 = " MAKELABEL(LABEL_2) "();";
 	constexpr const char* InitChildAccessor =
-R"(type1->InitAddFieldToAccessor(node0.Get(), ")" MAKELABEL(LABEL_0) R"(", )" MAKELABEL(LABEL_7) R"();)";
+R"(type1->InitAddFieldToAccessor(node0.Get(), ")" MAKELABEL(LABEL_0) R"(", )" MAKELABEL(LABEL_7) ", " MAKELABEL(LABEL_14) ");";
 	constexpr const char* GetFieldOffset =
 R"(GetFieldOffset(&)" MAKELABEL(LABEL_0) "::" MAKELABEL(LABEL_8) R"())";
 	constexpr const char* InitElementAccessor =

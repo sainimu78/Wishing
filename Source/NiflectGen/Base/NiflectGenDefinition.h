@@ -166,9 +166,10 @@ namespace NiflectGenDefinition
 			constexpr const char* HeadersDirName = "BypassSTL";
 			constexpr const char* DefaultHeaderFileName = "NiflectSTLDeclaration.h";
 		}
-		namespace MacroTag
+		namespace MacroNata
 		{
 			constexpr const char TokensBrackets[] = { '(', ')' };
+			constexpr const uint32 IdentifierTokenFindingEndCount = 2;
 		}
 	}
 }

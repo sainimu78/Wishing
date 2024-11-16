@@ -77,10 +77,16 @@ namespace NiflectGen
 	}
 	void CTypeRegCodeWriter2::WriteInvokeRegisterType(const STypeRegRegisterTypeContext& context, STypeRegInvokeRegisterTypeWritingData& data) const
 	{
+		CCodeLines linesReg;
+		CCodeLines linesNata;
 		if (m_bindingTypeIndexedRoot->m_taggedTypeIndex != INDEX_NONE)
 		{
 			ASSERT(data.m_taggedTypeHeaderFilePathAddr == NULL);
 			data.m_taggedTypeHeaderFilePathAddr = m_bindingTypeIndexedRoot->GetHeaderFilePathAddrForTaggedType();
+			{
+				auto& tt = m_resolvedData->m_taggedMapping.m_vecType[m_bindingTypeIndexedRoot->m_taggedTypeIndex];
+				tt->WriteTaggedTypeCopyNata(linesNata);
+			}
 		}
 		{
 			const char* hct = NULL;
@@ -88,7 +94,7 @@ namespace NiflectGen
 			Niflect::CString funcName;
 			if (m_bindingTypeIndexedRoot->IsTaggedType())
 			{
-				funcName = "RegisterType2<" + m_bindingTypeIndexedRoot->m_resocursorName + ", " + infoTypeName + ">";
+				funcName = "RegisterType3<" + m_bindingTypeIndexedRoot->m_resocursorName + ", " + infoTypeName + ">";
 				hct = HardCodedTemplate::InvokeRegisterTypeByFrameworkTableMethod;
 			}
 			else
@@ -104,10 +110,14 @@ namespace NiflectGen
 			MapLabelToText(map, LABEL_0, m_bindingTypeIndexedRoot->m_resocursorName);
 			MapLabelToText(map, LABEL_2, funcName);
 			MapLabelToText(map, LABEL_13, m_bindingTypeIndexedRoot->GetCreateTypeAccessorFuncName(context.m_moduleRegInfo.m_moduleScopeSymbolPrefix));
+			Niflect::CString nataNullOrVar;
+			HardCodedTemplate::WriteNataArgNullOrVar(linesNata, linesReg, nataNullOrVar);
+			MapLabelToText(map, LABEL_14, nataNullOrVar);
 			Niflect::TSet<Niflect::CString> setReplacedLabel;
-			tpl0.ReplaceLabels(map, data.m_linesInvokeRegisterType, &setReplacedLabel);
+			tpl0.ReplaceLabels(map, linesReg, &setReplacedLabel);
 			ASSERT(setReplacedLabel.size() == map.size());
 		}
+		ReplaceLabelToImplScopeLines(linesReg, data.m_linesInvokeRegisterType);
 	}
 	void CTypeRegCodeWriter2::WriteWriteCreateTypeAccessorFunc(const STypeRegCreateTypeAccessorWritingContext& context, STypeRegCreateTypeAccessorWritingData& data) const
 	{
@@ -182,6 +192,8 @@ namespace NiflectGen
 					{
 						ASSERT(false);
 					}
+
+					tt->WriteUsingNamespaceDirectiveForNata(linesBody);
 				}
 				NiflectGenDefinition::CodeStyle::TryFormatNestedTemplate(accessorResocursorName);
 			}

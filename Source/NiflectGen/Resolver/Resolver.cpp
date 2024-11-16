@@ -578,11 +578,11 @@ namespace NiflectGen
 	//	printf("");
 	//}
 
-	void CResolver::Resolve4(CTaggedNode2* taggedRoot, CResolvingContext& context, CResolvedData& data)
+	void CResolver::Resolve4(CTaggedNode2* taggedRoot, const CResolvingContext& context, CResolvedData& data)
 	{
 		data.m_accessorBindingMapping = m_collectionData.m_accessorBindingMapping;
 
-		this->ResolveRecurs4(taggedRoot, data, data.m_taggedMapping, data.m_untaggedTemplateMapping);
+		this->ResolveRecurs4(context, taggedRoot, data, data.m_taggedMapping, data.m_untaggedTemplateMapping);
 
 		data.m_taggedMapping.Resolve();
 		data.m_untaggedTemplateMapping.Init(*m_collectionData.m_aliasChain);
@@ -613,8 +613,11 @@ namespace NiflectGen
 			}
 		}
 	}
-	void CResolver::ResolveRecurs4(CTaggedNode2* taggedParent, CResolvedData& data, CTaggedTypesMapping& taggedTypesMapping, CUntaggedTemplatesMapping& untaggedTemplatesMapping)
+	void CResolver::ResolveRecurs4(const CResolvingContext& context, CTaggedNode2* taggedParent, CResolvedData& data, CTaggedTypesMapping& taggedTypesMapping, CUntaggedTemplatesMapping& untaggedTemplatesMapping)
 	{
+		SResolvingMacroNataContext macroNataCtx{ context.m_log };
+		taggedParent->ResolveMacroNata(macroNataCtx);
+
 		if (auto taggedType = CTaggedType::CastChecked(taggedParent))
 		{
 			auto& cursor = taggedType->GetCursor();
@@ -633,7 +636,7 @@ namespace NiflectGen
 
 		for (auto& it0 : taggedParent->DebugGetChildren())
 		{
-			this->ResolveRecurs4(it0.Get(), data, taggedTypesMapping, untaggedTemplatesMapping);
+			this->ResolveRecurs4(context, it0.Get(), data, taggedTypesMapping, untaggedTemplatesMapping);
 		}
 	}
 

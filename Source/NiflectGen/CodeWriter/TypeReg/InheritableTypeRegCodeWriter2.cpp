@@ -34,13 +34,14 @@ namespace NiflectGen
 		//	}
 		//}
 
-
 		for (uint32 idx = 0; idx < m_vecFieldResocursorNode.size(); ++idx)
 		{
 			auto& itB = m_vecField[idx];
 			auto fieldName = CXStringToCString(clang_getCursorSpelling(itB->GetCursor()));
 			auto fieldStaticGetTypeFuncName = m_vecFieldResocursorNode[idx].GetStaticGetTypeFuncName(context.m_moduleRegInfo.m_moduleScopeSymbolPrefix);
-			WriteNextInitChildAccessor2(m_bindingTypeIndexedRoot->m_resocursorName, fieldStaticGetTypeFuncName, fieldName, linesResoBodyCode);
+			CCodeLines linesNata;
+			itB->WriteCopyNataCode(linesNata);
+			WriteNextInitChildAccessor2(m_bindingTypeIndexedRoot->m_resocursorName, fieldStaticGetTypeFuncName, fieldName, linesNata, linesResoBodyCode);
 		}
 	}
 	void CInheritableTypeRegCodeWriter2::CollectDependencyHeaderFilePathAddrs(CDependencyHeaderFilePathAddrs& dependencyHeaderFilePathAddrs) const

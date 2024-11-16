@@ -26,14 +26,6 @@ namespace Niflect
 		CreateTypeAccessorFunc m_CreateTypeAccessorFunc;
 	};
 
-	//Native Meta
-	class CNata
-	{
-	private:
-		virtual void DebugFuncForDynamicCast() {}//仅为动态检查类型避免错误, 如已定义非调试用的virtual函数则可移除, 备注: error C2683: 'dynamic_cast': 'XXX' is not a polymorphic type 
-	};
-	using CSharedNata = TSharedPtr<CNata>;
-
 	class CNiflectType;
 	using CStaticNiflectTypeAddr = CNiflectType*;
 
@@ -63,7 +55,7 @@ namespace Niflect
 			m_cb = cb;
 			m_typeHash = typeHash;
 		}
-		void InitTypeMeta2(uint32 nativeTypeSize, size_t typeHash, CTypeIndex tableIdx, const CTypeInvokations& typeFuncs, const CString& id, CStaticNiflectTypeAddr* staticTypePtrAddr)
+		void InitTypeMeta2(uint32 nativeTypeSize, size_t typeHash, CTypeIndex tableIdx, const CTypeInvokations& typeFuncs, const CString& id, CStaticNiflectTypeAddr* staticTypePtrAddr, const CSharedNata& nata)
 		{
 			m_niflectTypeSize = nativeTypeSize;
 			m_typeHash = typeHash;
@@ -72,6 +64,7 @@ namespace Niflect
 			m_name = id;
 			m_staticTypePtrAddr = staticTypePtrAddr;
 			*m_staticTypePtrAddr = this;
+			m_nata = nata;
 		}
 		
 	public:
@@ -153,10 +146,10 @@ namespace Niflect
 			ASSERT(m_layout.m_vecAccessor.size() == 0);
 			this->CreateTypeLayout(m_layout);
 		}
-		void InitAddFieldToAccessor(CAccessor* owner, const Niflect::CString& name, const AddrOffsetType& offset) const
+		void InitAddFieldToAccessor(CAccessor* owner, const Niflect::CString& name, const AddrOffsetType& offset, const CSharedNata& nata) const
 		{
 			CField field;
-			field.Init(name);
+			field.Init(name, nata);
 			this->CreateTypeLayout(field.m_layout);
 			for (auto& it1 : field.m_layout.m_vecAccessor)
 				it1->InitOffset(offset);

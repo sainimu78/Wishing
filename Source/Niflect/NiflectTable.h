@@ -58,6 +58,22 @@ namespace Niflect
 		template <typename TType, typename TInfo = CNiflectType>
 		void RegisterType2(const Niflect::CString& id, const CreateTypeAccessorFunc& Func)
 		{
+			ASSERT(false);
+			//CTypeInvokations typeFuncs;
+			//typeFuncs.m_InvokeConstructorFunc = &GenericInstanceInvokeConstructor<TType>;
+			//typeFuncs.m_InvokeDestructorFunc = &GenericInstanceInvokeDestructor<TType>;
+			//typeFuncs.m_CreateTypeAccessorFunc = Func;
+
+			//auto shared = Niflect::MakeShared<TInfo>();
+			//CNiflectType* type = shared.Get();
+			//auto idx = this->AddType(shared);
+			//ASSERT(!TRegisteredType<TType>::IsValid());
+			//type->InitTypeMeta2(sizeof(TType), CNiflectType::GetTypeHash<TType>(), idx, typeFuncs, id, &TRegisteredType<TType>::s_type, NULL);
+			//ASSERT(TRegisteredType<TType>::IsValid());
+		}
+		template <typename TType, typename TInfo = CNiflectType>
+		void RegisterType3(const Niflect::CString& id, const CreateTypeAccessorFunc& Func, const CSharedNata& nata)
+		{
 			CTypeInvokations typeFuncs;
 			typeFuncs.m_InvokeConstructorFunc = &GenericInstanceInvokeConstructor<TType>;
 			typeFuncs.m_InvokeDestructorFunc = &GenericInstanceInvokeDestructor<TType>;
@@ -67,7 +83,7 @@ namespace Niflect
 			CNiflectType* type = shared.Get();
 			auto idx = this->AddType(shared);
 			ASSERT(!TRegisteredType<TType>::IsValid());
-			type->InitTypeMeta2(sizeof(TType), CNiflectType::GetTypeHash<TType>(), idx, typeFuncs, id, &TRegisteredType<TType>::s_type);
+			type->InitTypeMeta2(sizeof(TType), CNiflectType::GetTypeHash<TType>(), idx, typeFuncs, id, &TRegisteredType<TType>::s_type, nata);
 			ASSERT(TRegisteredType<TType>::IsValid());
 		}
 		uint32 GetTypesCount() const
@@ -153,12 +169,6 @@ namespace Niflect
 			type->SetNatimeta(MakeShared<TNatimeta>(natimeta));
 		}
 	};
-
-	template <typename TNata>
-	static const CSharedNata& DuplicateDerivedNata(const TNata& derived)
-	{
-		return Niflect::MakeShared<TNata>(derived);
-	}
 
 	template <typename TType, typename TInfo>
 	class TStaticTypeRegger
