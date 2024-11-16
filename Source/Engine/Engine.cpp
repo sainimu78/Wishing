@@ -66,6 +66,21 @@ void TestEngineRun()
 		RwTree::CJsonFormat::Write(&rw, ss);
 		printf("%s\n", ss.str().c_str());
 	}
+	{
+		auto type = Niflect::CEnum::Cast(Niflect::StaticGetType<TestModule1::ETestEnum0>());
+		auto& em = type->GetEnumMeta();
+		for (auto& it : em.m_vecEnumConstMeta)
+		{
+			Niflect::CString name = it.m_name;
+			if (auto nata = it.GetNata())
+			{
+				auto ecn = TestModule1::CMyEnumConstNata::Cast(nata);
+				name = ecn->m_friendlyName;
+			}
+			printf("%s\n", name.c_str());
+		}
+		printf("");
+	}
 }
 void TestEngineDestroy()
 {

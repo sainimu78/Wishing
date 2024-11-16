@@ -72,7 +72,7 @@ namespace NiflectGen
 	{
 		//指定在与 Field 所有者同 Scope, 可使 Nata 提供方式可编译, 此 using 后的代码可与所有者共享声明过的 Scope
 		if (m_vecScopeName.size() > 0)
-			lines.push_back("using namespace " + m_vecScopeName[0] + ";// This is not redundant");
+			lines.push_back("using namespace " + m_vecScopeName[0] + ";// This is for Nata");
 	}
 	void CTaggedType::WriteTaggedTypeCopyNata(CCodeLines& lines) const
 	{

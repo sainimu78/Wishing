@@ -46,6 +46,35 @@ namespace TestModule1
 		std::vector<std::map<std::string, float> > m_array_map_string_float_3;
 	};
 
+	class CMyEnumConstNata : public Niflect::CNata
+	{
+		typedef CMyEnumConstNata CThis;
+	public:
+		CThis& SetOptionName(const Niflect::CString& name)
+		{
+			m_friendlyName = name;
+			return *this;
+		}
+
+	public:
+		static CMyEnumConstNata* Cast(Niflect::CNata* base)
+		{
+			ASSERT(dynamic_cast<CMyEnumConstNata*>(base) != NULL);
+			return static_cast<CMyEnumConstNata*>(base);
+		}
+
+		Niflect::CString m_friendlyName;
+	};
+
+	NIF_T()
+	enum class ETestEnum0
+	{
+		MyDefault NIF_C(),
+		Option0 NIF_C(CMyEnumConstNata().SetOptionName("Nihao opt 0")),
+		Option1,
+		Option2 NIF_C(),
+	};
+
 	NIF_T()
 	class CTestClass1 : public CTestBase1
 	{

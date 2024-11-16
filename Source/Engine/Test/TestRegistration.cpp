@@ -108,6 +108,13 @@ namespace TestRegistration
 		}
 
 	public:
+		static CMyRegClassNata* Cast(Niflect::CNata* base)
+		{
+			ASSERT(dynamic_cast<CMyRegClassNata*>(base) != NULL);
+			return static_cast<CMyRegClassNata*>(base);
+		}
+
+	public:
 		float m_exampleValue;
 	};
 
@@ -207,7 +214,7 @@ namespace TestRegistration
 
 				auto type = Niflect::StaticGetType<CMyRegClass>();
 
-				auto nata = type->GetDerivedNata<CMyRegClassNata>();
+				auto nata = CMyRegClassNata::Cast(type->GetNata());
 				printf("Nata, exampleValue: %f\n", nata->m_exampleValue);
 
 				auto layout = type->CreateFieldLayout();

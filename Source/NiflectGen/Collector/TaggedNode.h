@@ -102,4 +102,6 @@ namespace NiflectGen
 	private:
 		CXCursor m_cursor;
 	};
+
+	void WriteNataArgNullOrVar(const CCodeLines& linesNata, CCodeLines& linesCopy, Niflect::CString& nataNullOrVar);
 }

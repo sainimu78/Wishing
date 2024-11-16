@@ -111,7 +111,7 @@ namespace NiflectGen
 			MapLabelToText(map, LABEL_2, funcName);
 			MapLabelToText(map, LABEL_13, m_bindingTypeIndexedRoot->GetCreateTypeAccessorFuncName(context.m_moduleRegInfo.m_moduleScopeSymbolPrefix));
 			Niflect::CString nataNullOrVar;
-			HardCodedTemplate::WriteNataArgNullOrVar(linesNata, linesReg, nataNullOrVar);
+			WriteNataArgNullOrVar(linesNata, linesReg, nataNullOrVar);
 			MapLabelToText(map, LABEL_14, nataNullOrVar);
 			Niflect::TSet<Niflect::CString> setReplacedLabel;
 			tpl0.ReplaceLabels(map, linesReg, &setReplacedLabel);

@@ -197,6 +197,16 @@ namespace NiflectGen
 
 		return containsIdentifier;
 	}
+	void WriteNataArgNullOrVar(const CCodeLines& linesNata, CCodeLines& linesCopy, Niflect::CString& nataNullOrVar)
+	{
+		nataNullOrVar = "NULL";
+		if (linesNata.size() > 0)
+		{
+			nataNullOrVar = "nata";
+			for (auto& it : linesNata)
+				linesCopy.push_back(it);
+		}
+	}
 	void CTaggedNode2::ResolveMacroNata(const SResolvingMacroNataContext& context)
 	{
 		CMacroExpansionNataData data;

@@ -1,6 +1,7 @@
 #include "NiflectGen/CodeWriter/TypeReg/TypeAccessorCodeWriter.h"
 #include "NiflectGen/CodeWriter/CodeTemplate.h"
 #include "NiflectGen/CodeWriter/HardCoded/TypeRegInitialRegTemplate.h"
+#include "NiflectGen/Collector/TaggedNode.h"//WriteNataArgNullOrVar
 
 namespace NiflectGen
 {
@@ -19,7 +20,7 @@ namespace NiflectGen
 		CCodeLines linesCode;
 		WriteNextInitNextAccessor2(funcName, linesCode);
 		Niflect::CString nataNullOrVar;
-		HardCodedTemplate::WriteNataArgNullOrVar(linesNata, linesCode, nataNullOrVar);
+		WriteNataArgNullOrVar(linesNata, linesCode, nataNullOrVar);
 		{
 			CCodeTemplate tpl0;
 			tpl0.ReadFromRawData(HardCodedTemplate::InitChildAccessor);

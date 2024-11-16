@@ -8,15 +8,15 @@ namespace NiflectGen
 #define LABEL_0 "Type"
 #define LABEL_1 "AddConsts"
 #define LABEL_2 "Const"
+#define LABEL_3 "NataNullOrVar"
 
 		constexpr const char* InitTypeCode =
-R"(CEnumMeta enumMeta;
-auto& vec = enumMeta.m_vecEnumConstant;
+R"(CEnumMeta em;
 )" MAKELABEL(LABEL_1) R"(
 auto et = CEnum::Cast(StaticGetType<)" MAKELABEL(LABEL_0) R"(>());
-et->InitEnumMeta(enumMeta);
+et->InitEnumMeta(em);
 )";
-		constexpr const char* AddEnumConsts =
-R"(vec.push_back(")" MAKELABEL(LABEL_2) R"(");)";
+		constexpr const char* AddEnumConst =
+R"(em.InitAddConst(")" MAKELABEL(LABEL_2) R"(", )" MAKELABEL(LABEL_3) ");";
 	}
 }

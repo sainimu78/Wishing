@@ -791,10 +791,10 @@ namespace TestAccessor2
 			table->RegisterType2<EMyOption, CEnum>("TestAccessor2::EMyOption", &CreateSSSSSSSSSSSS<EMyOption>);
 
 			Niflect::CEnumMeta enumMeta;
-			enumMeta.m_vecEnumConstant.push_back("None");
-			enumMeta.m_vecEnumConstant.push_back("Default");
-			enumMeta.m_vecEnumConstant.push_back("Mode 0");
-			enumMeta.m_vecEnumConstant.push_back("Mode 1");
+			enumMeta.InitAddConst("None", NULL);
+			enumMeta.InitAddConst("Default", NULL);
+			enumMeta.InitAddConst("Mode 0", NULL);
+			enumMeta.InitAddConst("Mode 1", NULL);
 			auto et = Niflect::CEnum::Cast(StaticGetType<EMyOption>());
 			et->InitEnumMeta(enumMeta);
 		}
@@ -875,10 +875,10 @@ namespace TestAccessor2
 			table->RegisterType2<EMyOption, CEnum>("TestAccessor2::EMyOption", &CreateSSSSSSSSSSSS<EMyOption>);
 
 			Niflect::CEnumMeta enumMeta;
-			enumMeta.m_vecEnumConstant.push_back("None");
-			enumMeta.m_vecEnumConstant.push_back("Default");
-			enumMeta.m_vecEnumConstant.push_back("Mode 0");
-			enumMeta.m_vecEnumConstant.push_back("Mode 1");
+			enumMeta.InitAddConst("None", NULL);
+			enumMeta.InitAddConst("Default", NULL);
+			enumMeta.InitAddConst("Mode 0", NULL);
+			enumMeta.InitAddConst("Mode 1", NULL);
 			auto et = Niflect::CEnum::Cast(StaticGetType<EMyOption>());
 			et->InitEnumMeta(enumMeta);
 		}

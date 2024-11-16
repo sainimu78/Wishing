@@ -21,17 +21,6 @@ namespace NiflectGen
 
 	namespace HardCodedTemplate
 	{
-		static void WriteNataArgNullOrVar(const CCodeLines& linesNata, CCodeLines& linesCopy, Niflect::CString& nataNullOrVar)
-		{
-			nataNullOrVar = "NULL";
-			if (linesNata.size() > 0)
-			{
-				nataNullOrVar = "nata";
-				for (auto& it : linesNata)
-					linesCopy.push_back(it);
-			}
-		}
-
 		constexpr const char* InvokeRegisterTypeByFrameworkTableMethod =
 "table->" MAKELABEL(LABEL_2) R"((")" MAKELABEL(LABEL_0) R"(", &)" MAKELABEL(LABEL_13) ", " MAKELABEL(LABEL_14) ");";
 		constexpr const char* InvokeRegisterTypeByGeneratedStaticFunc =

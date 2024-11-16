@@ -211,12 +211,6 @@ namespace Niflect
 		{
 			return m_nata.Get();
 		}
-		template <typename TDerived>
-		TDerived* GetDerivedNata() const
-		{
-			ASSERT(dynamic_cast<TDerived*>(m_nata.Get()) != NULL);
-			return static_cast<TDerived*>(m_nata.Get());
-		}
 
 	public:
 		template <typename T>
@@ -246,10 +240,36 @@ namespace Niflect
 	};
 	using CSharedNiflectType = TSharedPtr<CNiflectType>;
 	
+	class CEnumConstMeta
+	{
+	public:
+		CEnumConstMeta()
+		{
+
+		}
+		CEnumConstMeta(const Niflect::CString& name, const CSharedNata& nata)
+			: m_name(name)
+			, m_nata(nata)
+		{
+		}
+		CNata* GetNata() const
+		{
+			return m_nata.Get();
+		}
+		Niflect::CString m_name;
+
+	private:
+		CSharedNata m_nata;
+	};
+
 	class CEnumMeta
 	{
 	public:
-		TArrayNif<CString> m_vecEnumConstant;
+		void InitAddConst(const Niflect::CString& name, const CSharedNata& nata)
+		{
+			m_vecEnumConstMeta.push_back(CEnumConstMeta(name, nata));
+		}
+		Niflect::TArrayNif<CEnumConstMeta> m_vecEnumConstMeta;
 	};
 
 	class CEnum : public CNiflectType
@@ -266,13 +286,13 @@ namespace Niflect
 		}
 		const CString& GetEnumConstNameByIndex(uint32 idx) const
 		{
-			return m_enumMeta.m_vecEnumConstant[idx];
+			return m_enumMeta.m_vecEnumConstMeta[idx].m_name;
 		}
 		uint32 FindIndexByEnumConstName(const CString& name) const
 		{
-			for (uint32 idx = 0; idx < m_enumMeta.m_vecEnumConstant.size(); ++idx)
+			for (uint32 idx = 0; idx < m_enumMeta.m_vecEnumConstMeta.size(); ++idx)
 			{
-				if (m_enumMeta.m_vecEnumConstant[idx] == name)
+				if (m_enumMeta.m_vecEnumConstMeta[idx].m_name == name)
 					return idx;
 			}
 			return INDEX_NONE;
