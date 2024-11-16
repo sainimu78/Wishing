@@ -3,7 +3,6 @@
 
 namespace TestModule1
 {
-
 	NIF_T()
 	class CTestBase1
 	{
@@ -19,12 +18,20 @@ namespace TestModule1
 			m_base_string_0 = "base string 0";
 			m_base_bool_1 = true;
 			m_base_std_string_2 = "base std string 2";
+			m_array_map_string_float_3.resize(3);
+			m_array_map_string_float_3[0].insert({ "base nihao", 1.0f });
+			m_array_map_string_float_3[0].insert({ "base bucuo", 1.1f });
+			m_array_map_string_float_3[1].insert({ "base shima", 1.2f });
+			m_array_map_string_float_3[1].insert({ "base zhende", 1.3f });
+			m_array_map_string_float_3[2].insert({ "base buxin", 1.4f });
+			m_array_map_string_float_3[2].insert({ "base ladao", 1.5f });
 		}
 		bool operator==(const CTestBase1& rhs) const
 		{
 			return m_base_string_0 == rhs.m_base_string_0
 				&& m_base_bool_1 == rhs.m_base_bool_1
 				&& m_base_std_string_2 == rhs.m_base_std_string_2
+				&& m_array_map_string_float_3 == rhs.m_array_map_string_float_3
 				;
 		}
 
@@ -35,6 +42,8 @@ namespace TestModule1
 		bool m_base_bool_1;
 		NIF_F()
 		std::string m_base_std_string_2;
+		NIF_F()
+		std::vector<std::map<std::string, float> > m_array_map_string_float_3;
 	};
 
 	NIF_T()
@@ -47,6 +56,8 @@ namespace TestModule1
 			: m_bool_1(false)
 			, m_bool_2(false)
 			, m_bool_4(false)
+			, m_bool_6(false)
+			, m_float_7(0.0f)
 		{
 
 		}
@@ -61,6 +72,18 @@ namespace TestModule1
 			m_std_array_string_3[1] = "std array string[1] nihao + bucuo";
 			m_std_array_string_3[2] = "std array string[2] nihao + bucuo + shima";
 			m_bool_4 = true;
+			auto ret = m_std_map_string_array_float_5.insert({ "std nihao", std::vector<float>() });
+			ret.first->second.push_back(1.0f);
+			ret.first->second.push_back(1.1f);
+			ret.first->second.push_back(1.2f);
+			ret = m_std_map_string_array_float_5.insert({ "std bucuo", std::vector<float>() });
+			ret.first->second.push_back(2.0f);
+			ret.first->second.push_back(2.1f);
+			ret.first->second.push_back(2.2f);
+			ret.first->second.push_back(2.3f);
+			ret.first->second.push_back(2.4f);
+			m_bool_6 = false;
+			m_float_7 = 1.0f;
 		}
 		bool operator==(const CTestClass1& rhs) const
 		{
@@ -70,6 +93,9 @@ namespace TestModule1
 				&& m_bool_2 == rhs.m_bool_2
 				&& m_std_array_string_3 == rhs.m_std_array_string_3
 				&& m_bool_4 == rhs.m_bool_4
+				&& m_std_map_string_array_float_5 == rhs.m_std_map_string_array_float_5
+				&& m_bool_6 == rhs.m_bool_6
+				&& m_float_7 == rhs.m_float_7
 				;
 		}
 
@@ -84,5 +110,11 @@ namespace TestModule1
 		std::vector<std::string> m_std_array_string_3;
 		NIF_F()
 		bool m_bool_4;
+		NIF_F()
+		std::map<std::string, std::vector<float> > m_std_map_string_array_float_5;
+		NIF_F()
+		bool m_bool_6;
+		NIF_F()
+		float m_float_7;
 	};
 }

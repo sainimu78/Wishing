@@ -120,12 +120,12 @@ namespace Niflect
 			auto& instance = *static_cast<const TMapType*>(base);
 			ASSERT(!rw->IsArray());
 			auto rwArray = rw->ToArray();
-			auto elemAccessor = this->GetElementAccessor();
+			auto& elemLayout = this->GetElementLayout();
 			for (auto& it : instance)
 			{
 				auto rwItem = CreateRwNode();
 				auto elemBase = &it;
-				if (elemAccessor->SaveToRwNode(elemBase, rwItem.Get()))
+				if (elemLayout.AccessorsSaveToRwNode(elemBase, rwItem.Get()))
 					rwArray->AddItem(rwItem);
 			}
 			return true;
@@ -135,14 +135,14 @@ namespace Niflect
 			auto& instance = *static_cast<TMapType*>(base);
 			ASSERT(rw->IsArray());
 			auto rwArray = rw->GetArray();
-			auto elemAccessor = this->GetElementAccessor();
+			auto& elemLayout = this->GetElementLayout();
 			auto cnt = rwArray->GetItemsCount();
 			for (uint32 idx = 0; idx < cnt; ++idx)
 			{
 				auto rwItem = rwArray->GetItem(idx);
 				TElem item;
 				auto elemBase = &item;
-				if (elemAccessor->LoadFromRwNode(elemBase, rwItem))
+				if (elemLayout.AccessorsLoadFromRwNode(elemBase, rwItem))
 					instance.insert(item);
 			}
 			return true;
