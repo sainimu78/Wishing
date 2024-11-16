@@ -3,7 +3,7 @@
 #include "Niflect/NiflectBase.h"
 #include "Engine/EngineObject_gen.h"
 
-namespace Engine
+namespace OtherScope
 {
 	class CMyFieldMeta : public Niflect::CNata
 	{
@@ -16,6 +16,11 @@ namespace Engine
 		}
 		Niflect::CString m_friendlyName;
 	};
+}
+
+namespace Engine
+{
+	using namespace OtherScope;
 
 	static CMyFieldMeta MyGetNata()
 	{
