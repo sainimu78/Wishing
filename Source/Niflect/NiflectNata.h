@@ -1,4 +1,5 @@
 #pragma once
+#include <type_traits>
 
 namespace Niflect
 {
@@ -15,9 +16,10 @@ namespace Niflect
 	};
 
 	template <typename TNata>
-	static CSharedNata MakeDerivedNata(const TNata& derived)
+	CSharedNata MakeDerivedNata(const TNata& derived)
 	{
-		ASSERT(derived._DebugFuncForDynamicCast());//检查是否以 CNata 为基类
+		//ASSERT(derived._DebugFuncForDynamicCast());//检查是否以 CNata 为基类
+		static_assert(std::is_base_of<CNata, TNata>::value, "TNata must derive from CNata");
 		return Niflect::MakeShared<TNata>(derived);
 	}
 }
