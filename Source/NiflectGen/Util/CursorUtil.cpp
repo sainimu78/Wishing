@@ -1,8 +1,9 @@
 #include "NiflectGen/Util/CursorUtil.h"
-#include "Niflect/NiflectBase.h"
-#include "NiflectGen/Base/NiflectGenDefinition.h"
+#include <cstring>//for memcpy
 #include <iostream>
 #include <algorithm>//for std::replace
+#include "Niflect/NiflectBase.h"
+#include "NiflectGen/Base/NiflectGenDefinition.h"
 #include "NiflectGen/Collector/TypeDecl.h"
 
 namespace NiflectGen
