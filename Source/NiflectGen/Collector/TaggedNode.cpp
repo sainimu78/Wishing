@@ -1,4 +1,5 @@
 #include "NiflectGen/Collector/TaggedNode.h"
+#include <cstring>
 #include "Niflect/Util/StringUtil.h"
 #include "Niflect/Util/DebugUtil.h"
 #include "NiflectGen/Util/CursorUtil.h"
