@@ -349,23 +349,87 @@ namespace NiflectGen
 
 		fprintf(fp, "%s%s, (%s, %u, %u, %u%s)\n", strLevel.c_str(), displayName.c_str(), strKind.c_str(), lineNumber, column, offset, showFilePath ? filePath.c_str() : "");
 	}
-	Niflect::CString GetMacroExpansionArgsInString(const CXCursor& cursor)
+	//Niflect::CString GetMacroExpansionArgsInString(const CXCursor& cursor)
+	//{
+	//	Niflect::CString result;
+	//	CXSourceRange range = clang_getCursorExtent(cursor);
+	//	CXToken* tokens = nullptr;
+	//	unsigned int numTokens = 0;
+	//	CXTranslationUnit translationUnit = clang_Cursor_getTranslationUnit(cursor);
+	//	clang_tokenize(translationUnit, range, &tokens, &numTokens);
+
+	//	for (unsigned i = 0; i < numTokens; ++i)
+	//	{
+	//		CXString spelling = clang_getTokenSpelling(translationUnit, tokens[i]);
+	//		result += clang_getCString(spelling);
+	//		clang_disposeString(spelling);
+	//	}
+
+	//	clang_disposeTokens(translationUnit, tokens, numTokens);
+	//	return result;
+	//}
+
+	Niflect::CString GetMacroExpansionTokensInString(const CXCursor& cursor)
 	{
 		Niflect::CString result;
 		CXSourceRange range = clang_getCursorExtent(cursor);
-		CXToken* tokens = nullptr;
-		unsigned int numTokens = 0;
 		CXTranslationUnit translationUnit = clang_Cursor_getTranslationUnit(cursor);
-		clang_tokenize(translationUnit, range, &tokens, &numTokens);
 
-		for (unsigned i = 0; i < numTokens; ++i)
 		{
-			CXString spelling = clang_getTokenSpelling(translationUnit, tokens[i]);
-			result += clang_getCString(spelling);
-			clang_disposeString(spelling);
+			CXFile begin_file, end_file;
+			unsigned begin_line, begin_column, end_line, end_column, begin_offset, end_offset;
+			clang_getSpellingLocation(clang_getRangeStart(range),
+				&begin_file, &begin_line, &begin_column, &begin_offset);
+			clang_getSpellingLocation(clang_getRangeEnd(range),
+				&end_file, &end_line, &end_column, &end_offset);
+			if (begin_file && end_file)
+			{
+				ASSERT(begin_file == end_file);
+				ASSERT(end_offset > begin_offset);
+
+				size_t size = 0;
+				auto contents = clang_getFileContents(translationUnit, begin_file, &size);
+
+				{
+					for (uint32 idx = begin_offset; idx < size; ++idx)
+					{
+						if (contents[idx] == NiflectGenDefinition::NiflectFramework::MacroTag::TokensBrackets[0])
+						{
+							begin_offset = idx + 1;
+							break;
+						}
+					}
+					ASSERT(end_offset > begin_offset);
+					for (uint32 idx = end_offset; idx >= begin_offset; --idx)
+					{
+						if (contents[idx] == NiflectGenDefinition::NiflectFramework::MacroTag::TokensBrackets[1])
+						{
+							end_offset = idx;
+							break;
+						}
+					}
+				}
+
+				result.resize(end_offset - begin_offset);
+				memcpy(&result[0], contents + begin_offset, result.size());
+			}
 		}
 
-		clang_disposeTokens(translationUnit, tokens, numTokens);
+		if (false)
+		{
+			//获取无换行的所有字符
+			CXToken* tokens = nullptr;
+			unsigned int numTokens = 0;
+			clang_tokenize(translationUnit, range, &tokens, &numTokens);
+			for (unsigned i = 0; i < numTokens; ++i)
+			{
+				CXString spelling = clang_getTokenSpelling(translationUnit, tokens[i]);
+				result += clang_getCString(spelling);
+				clang_disposeString(spelling);
+			}
+			clang_disposeTokens(translationUnit, tokens, numTokens);
+		}
+
 		return result;
 	}
 }

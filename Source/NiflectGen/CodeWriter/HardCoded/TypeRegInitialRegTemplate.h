@@ -42,7 +42,7 @@ return node0;
 		constexpr const char* CreateAndInitNextsAccessor =
 "auto type1 = " MAKELABEL(LABEL_2) "();";
 	constexpr const char* InitChildAccessor =
-R"(type1->InitAddFieldToAccessor(node0.Get(),")" MAKELABEL(LABEL_0) R"(", )" MAKELABEL(LABEL_7) R"();)";
+R"(type1->InitAddFieldToAccessor(node0.Get(), ")" MAKELABEL(LABEL_0) R"(", )" MAKELABEL(LABEL_7) R"();)";
 	constexpr const char* GetFieldOffset =
 R"(GetFieldOffset(&)" MAKELABEL(LABEL_0) "::" MAKELABEL(LABEL_8) R"())";
 	constexpr const char* InitElementAccessor =

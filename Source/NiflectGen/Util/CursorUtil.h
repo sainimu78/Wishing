@@ -52,5 +52,5 @@ namespace NiflectGen
 	bool IsCursorAliasDecl(const CXCursor& cursor);
 	bool IsCAccessorClassDecl(const CXCursor& cursor);
 	Niflect::CString GetCursorFilePath(const CXCursor& cursor);
-	Niflect::CString GetMacroExpansionArgsInString(const CXCursor& cursor);
+	Niflect::CString GetMacroExpansionTokensInString(const CXCursor& cursor);
 }

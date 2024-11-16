@@ -130,14 +130,12 @@ namespace NiflectGenDefinition
 		{
 			constexpr const char* Niflect = "Niflect";
 		}
-
 		namespace AccessorTypeName
 		{
 			constexpr const char* Field = "CAccessor";
 			constexpr const char* ArrayField = "CArrayField";
 			constexpr const char* CompoundField = "CCompoundAccessor";
 		}
-
 		namespace InfoTypeName
 		{
 			constexpr const char* NiflectType = "CNiflectType";
@@ -145,13 +143,11 @@ namespace NiflectGenDefinition
 			constexpr const char* Class = "CClass";
 			constexpr const char* Enum = "CEnum";
 		}
-
 		namespace FileName
 		{
 			constexpr const char* BypassingHeader = "NiflectSTLDeclaration.h";
 			constexpr const char* ModuleRegisteredTypeHeader = "_RegisteredType.h";
 		}
-
 		namespace FilePath
 		{
 #ifdef USER_PROVIDED_CCOMPONENTFIELD_CLASS_DEFINITION
@@ -161,16 +157,18 @@ namespace NiflectGenDefinition
 			constexpr const char* NiflectTableHeader = "Niflect/NiflectTable.h";
 			constexpr const char* NiflectMacroHeader = "Niflect/NiflectMacro.h";
 		}
-
 		namespace Setting
 		{
 			constexpr uint32 ThresholdLinesCountForModuleRegSplitting = 1000;
 		}
-
 		namespace BypassSTL
 		{
 			constexpr const char* HeadersDirName = "BypassSTL";
 			constexpr const char* DefaultHeaderFileName = "NiflectSTLDeclaration.h";
+		}
+		namespace MacroTag
+		{
+			constexpr const char TokensBrackets[] = { '(', ')' };
 		}
 	}
 }

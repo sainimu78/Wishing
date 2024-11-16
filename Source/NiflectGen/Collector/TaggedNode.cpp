@@ -124,7 +124,7 @@ namespace NiflectGen
 		{
 			auto typeName = CXStringToCString(clang_getCursorSpelling(m_cursor));
 			auto macroName = CXStringToCString(clang_getCursorSpelling(m_macroCursor));
-			auto macroArgs = GetMacroExpansionArgsInString(m_macroCursor);
+			auto macroArgs = GetMacroExpansionTokensInString(m_macroCursor);
 
 			//if (!clang_Cursor_isNull(it.m_typeCursor))
 			{
