@@ -318,7 +318,6 @@ namespace NiflectUtil
 #endif
 
     static bool IsRelativePath(const Niflect::CString& path) {
-        // 检查路径是否以 /^ 或者 是当前目录 (./) 或者 ../ 开头。
         return !(path.empty() || path[0] == '/' || (path.length() > 1 && path[1] == ':'));
     }
 
@@ -343,9 +342,8 @@ namespace NiflectUtil
 #endif
 
     Niflect::CString ConvertToAbsolutePath(const Niflect::CString& relativePath) {
-        char absolutePath[PATH_MAX];  // POSIX 系统上使用 PATH_MAX。
 #ifdef _WIN32
-        // Windows 系统
+        char absolutePath[PATH_MAX];
         if (_fullpath(absolutePath, relativePath.c_str(), sizeof(absolutePath)) == nullptr) {
             throw std::runtime_error("Failed to convert to absolute path");
         }
@@ -353,7 +351,10 @@ namespace NiflectUtil
         std::replace(result.begin(), result.end(), '\\', '/');
         return result;
 #else
-        // POSIX 系统
+        if (!IsRelativePath(relativePath))
+            return relativePath;
+
+        char absolutePath[PATH_MAX];
         if (realpath(relativePath.c_str(), absolutePath) == nullptr) {
             throw std::runtime_error("Failed to convert to absolute path");
         }
