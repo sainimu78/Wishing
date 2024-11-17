@@ -9,6 +9,7 @@
 #include "NiflectGen/Generator/GenData.h"
 #include "NiflectGen/CodeWriter/CppWriter.h"
 #include "Niflect/Util/SystemUtil.h"
+#include <cstring>//strcmp
 
 //代码中的用语
 //1. StaticRegStage, 在静态初始化阶段的注册过程
