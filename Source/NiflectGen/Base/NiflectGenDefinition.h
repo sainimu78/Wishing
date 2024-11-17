@@ -35,6 +35,7 @@ namespace NiflectGenDefinition
 		constexpr const char* ModuleReg = "ModuleReg";
 		constexpr const char* TypeReg = "TypeReg";
 		constexpr const char* GenH = "GenH";
+		constexpr const char* GenTime = "GenTime";
 	}
 
 	namespace CodeTag
@@ -153,6 +154,7 @@ namespace NiflectGenDefinition
 		{
 			constexpr const char* BypassingHeader = "NiflectSTLDeclaration.h";
 			constexpr const char* ModuleRegisteredTypeHeader = "_RegisteredType.h";
+			constexpr const char* BypassSTLDefaultHeaderFileName = "NiflectSTLDeclaration.h";
 		}
 		namespace FilePath
 		{
@@ -166,11 +168,6 @@ namespace NiflectGenDefinition
 		namespace Setting
 		{
 			constexpr uint32 ThresholdLinesCountForModuleRegSplitting = 1000;
-		}
-		namespace BypassSTL
-		{
-			constexpr const char* HeadersDirName = "BypassSTL";
-			constexpr const char* DefaultHeaderFileName = "NiflectSTLDeclaration.h";
 		}
 		namespace MacroNata
 		{

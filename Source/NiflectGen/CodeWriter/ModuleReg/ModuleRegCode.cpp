@@ -26,14 +26,14 @@ namespace NiflectGen
 		for (auto& it : m_userProvided.m_vecModuleHeaderSearchPath)
 			m_writingHeaderSearchPaths.m_vecForRegularConversion.push_back(it);
 		
-		auto bypassSTL = NiflectUtil::ConcatPath(moduleGenDirPath, NiflectGenDefinition::NiflectFramework::BypassSTL::HeadersDirName);
-		GenerateBypassSTLHeaders(bypassSTL);
-		SGenTimeNiflectMacroHeaderWritingContext ctx{ m_userProvided.m_vecModuleHeaderSearchPath, bypassSTL };
+		auto genTimeIncludeSearchDirPath = NiflectUtil::ConcatPath(moduleGenDirPath, NiflectGenDefinition::DirName::GenTime);
+		GenerateBypassSTLHeaders(genTimeIncludeSearchDirPath);
+		SGenTimeNiflectMacroHeaderWritingContext ctx{ m_userProvided.m_vecModuleHeaderSearchPath, genTimeIncludeSearchDirPath };
 		WriteGenTimeNiflectMacroHeader(ctx);
 
-		m_writingHeaderSearchPaths.m_vecForBypassConversion.push_back(bypassSTL);
+		m_writingHeaderSearchPaths.m_vecForGenTimeConversion.push_back(genTimeIncludeSearchDirPath);
 
-		for (auto& it : m_writingHeaderSearchPaths.m_vecForBypassConversion)
+		for (auto& it : m_writingHeaderSearchPaths.m_vecForGenTimeConversion)
 			m_vecParsingHeaderSearchPath.push_back(it);
 		for (auto& it : m_writingHeaderSearchPaths.m_vecForRegularConversion)
 			m_vecParsingHeaderSearchPath.push_back(it);

@@ -116,7 +116,7 @@ namespace NiflectGen
 			{
 				auto& path = it.m_path;
 				auto incPath = path;
-				bool isBypassFilePath = InternalConvertToIncludePath(path, paths.m_vecForBypassConversion, incPath);
+				bool isBypassFilePath = InternalConvertToIncludePath(path, paths.m_vecForGenTimeConversion, incPath);
 				if (!isBypassFilePath)
 					InternalConvertToIncludePath(path, paths.m_vecForRegularConversion, incPath);
 				if (collector.Cache(incPath))

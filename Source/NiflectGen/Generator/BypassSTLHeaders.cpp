@@ -329,7 +329,7 @@ using enable_if_t = typename enable_if<_Test, _Ty>::type;
 		Niflect::TArrayNif<CMemSource> vecMemSrc;
 		CMemSource memSrcDefaultHeader;
 		{
-			memSrcDefaultHeader.m_filePath = NiflectUtil::ConcatPath(headersDirPath, NiflectGenDefinition::NiflectFramework::BypassSTL::DefaultHeaderFileName);
+			memSrcDefaultHeader.m_filePath = NiflectUtil::ConcatPath(headersDirPath, NiflectGenDefinition::DirName::GenTime);
 
 			CSimpleCppWriter writer(defaultBypassHeaderCode);
 			writer.AddHeaderFirstLine();
