@@ -317,7 +317,7 @@ namespace NiflectUtil
 #include <limits.h>
 #endif
 
-    static bool isRelativePath(const Niflect::CString& path) {
+    static bool IsRelativePath(const Niflect::CString& path) {
         // 检查路径是否以 /^ 或者 是当前目录 (./) 或者 ../ 开头。
         return !(path.empty() || path[0] == '/' || (path.length() > 1 && path[1] == ':'));
     }
