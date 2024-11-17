@@ -153,7 +153,7 @@ namespace NiflectGen
 	static Niflect::CString GetNextArgPath(const char** argv, int& idx)
 	{
 		auto path = GetNextArgValue(argv, idx);
-		return NiflectUtil::ConvertToAbsolutePath(path);
+		return NiflectUtil::ResolvePath(path);
 	}
 	static Niflect::CString GetNextArgIncludeSearchPath(const char** argv, int& idx)
 	{

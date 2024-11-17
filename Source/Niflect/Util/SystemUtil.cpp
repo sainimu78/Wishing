@@ -1,4 +1,7 @@
 #include "Niflect/Util/SystemUtil.h"
+#ifdef TEST_TestResolvePath
+#include "Niflect/Util/StringUtil.h"//TestResolvePath
+#endif
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -246,67 +249,99 @@ namespace NiflectUtil
         return Niflect::CString(buffer);
 #endif
     }
-    //bool ResolvePath(const Niflect::CString& relativePath, Niflect::CString& absolutePath) {
-    //    auto currentPath = GetCurrentWorkingDirPath();
-    //    Niflect::TArrayNif<Niflect::CString> parts;
 
-    //    // 将当前路径分割成部分
-    //    size_t start = 0;
-    //    size_t end = currentPath.find('/');
+    static bool IsRelativePath(const Niflect::CString& path) {
+        return !(path.empty() || path[0] == '/' || (path.length() > 1 && path[1] == ':'));
+    }
+    Niflect::CString ResolvePath(const Niflect::CString& relativePath) {
+        if (!IsRelativePath(relativePath))
+            return relativePath;
+        Niflect::CString absolutePath;
+        auto currentPath = GetCurrentWorkingDirPath();
+        Niflect::TArrayNif<Niflect::CString> parts;
 
-    //    while (end != std::string::npos) {
-    //        parts.push_back(currentPath.substr(start, end - start));
-    //        start = end + 1;
-    //        end = currentPath.find('/', start);
-    //    }
+        // 将当前路径分割成部分
+        size_t start = 0;
+        size_t end = currentPath.find('/');
 
-    //    // 处理最后的部分
-    //    parts.push_back(currentPath.substr(start));
+        while (end != std::string::npos) {
+            parts.push_back(currentPath.substr(start, end - start));
+            start = end + 1;
+            end = currentPath.find('/', start);
+        }
 
-    //    // 解析相对路径
-    //    start = 0;
-    //    end = relativePath.find('/');
+        // 处理最后的部分
+        parts.push_back(currentPath.substr(start));
 
-    //    while (end != std::string::npos) {
-    //        auto  token = relativePath.substr(start, end - start);
-    //        if (token == "..") {
-    //            // 上层目录，移除当前目录的最后部分
-    //            if (!parts.empty()) {
-    //                parts.pop_back();
-    //            }
-    //        }
-    //        else if (token != "." && !token.empty()) {
-    //            // 当前目录或非空部分，添加到路径
-    //            parts.push_back(token);
-    //        }
-    //        start = end + 1;
-    //        end = relativePath.find('/', start);
-    //    }
+        // 解析相对路径
+        start = 0;
+        end = relativePath.find('/');
 
-    //    // 处理最后的部分
-    //    Niflect::CString token = relativePath.substr(start);
-    //    if (token == "..") {
-    //        if (!parts.empty()) {
-    //            parts.pop_back();
-    //        }
-    //    }
-    //    else if (token != "." && !token.empty()) {
-    //        parts.push_back(token);
-    //    }
+        while (end != std::string::npos) {
+            auto  token = relativePath.substr(start, end - start);
+            if (token == "..") {
+                // 上层目录，移除当前目录的最后部分
+                if (!parts.empty()) {
+                    parts.pop_back();
+                }
+            }
+            else if (token != "." && !token.empty()) {
+                // 当前目录或非空部分，添加到路径
+                parts.push_back(token);
+            }
+            start = end + 1;
+            end = relativePath.find('/', start);
+        }
 
-    //    // 组合成绝对路径
-    //    for (const auto& part : parts) {
-    //        absolutePath += part + '/';
-    //    }
+        // 处理最后的部分
+        Niflect::CString token = relativePath.substr(start);
+        if (token == "..") {
+            if (!parts.empty()) {
+                parts.pop_back();
+            }
+        }
+        else if (token != "." && !token.empty()) {
+            parts.push_back(token);
+        }
 
-    //    // 去掉最后的斜杠
-    //    if (!absolutePath.empty()) {
-    //        absolutePath.pop_back();
-    //    }
+        // 组合成绝对路径
+        for (const auto& part : parts) {
+            absolutePath += part + '/';
+        }
 
-    //    ASSERT(false);//该函数预留仅处理含 ../ 的路径, 现未使用, 实际使用时应充分测试, 并相应改写
-    //    return true;
-    //}
+        // 去掉最后的斜杠
+        if (!absolutePath.empty()) {
+            absolutePath.pop_back();
+        }
+        return absolutePath;
+    }
+#ifdef TEST_TestResolvePath
+    static void TestResolvePath()
+    {
+        //不支持路径中间部分含 ../
+
+        auto cw = NiflectUtil::GetCurrentWorkingDirPath();//F:/Fts/Proj/Test/aaaaaaaaa/Build
+        auto cwUpper = NiflectUtil::GetParentDirPath(cw);//F:/Fts/Proj/Test/aaaaaaaaa
+        Niflect::CString expected0(NiflectUtil::ConcatPath(cw, "MyClass.h"));//F:/Fts/Proj/Test/aaaaaaaaa/Build/MyClass.h
+        Niflect::CString expected1(NiflectUtil::ConcatPath(cwUpper, "MyClass.h"));//F:/Fts/Proj/Test/aaaaaaaaa/MyClass.h
+        Niflect::CString expected2(NiflectUtil::ConcatPath(cwUpper, "MyFolder"));//F:/Fts/Proj/Test/aaaaaaaaa/MyFolder
+        auto a = NiflectUtil::ResolvePath("../MyClass.h");
+        ASSERT(a == expected1);
+        printf("%s\n", a.c_str());
+        auto b = NiflectUtil::ResolvePath(expected0);
+        ASSERT(b == expected0);
+        printf("%s\n", b.c_str());
+        auto c = NiflectUtil::ResolvePath("MyClass.h");
+        ASSERT(c == expected0);
+        printf("%s\n", c.c_str());
+        auto d = NiflectUtil::ResolvePath("./MyClass.h");
+        ASSERT(d == expected0);
+        printf("%s\n", d.c_str());
+        auto e = NiflectUtil::ResolvePath("../MyFolder");
+        ASSERT(e == expected2);
+        printf("%s\n", e.c_str());
+    }
+#endif
 
 
 #ifdef _WIN32
@@ -316,10 +351,6 @@ namespace NiflectUtil
 #include <unistd.h>
 #include <limits.h>
 #endif
-
-    static bool IsRelativePath(const Niflect::CString& path) {
-        return !(path.empty() || path[0] == '/' || (path.length() > 1 && path[1] == ':'));
-    }
 
 #ifdef TEST_ConvertToAbsolutePath
     static void TestConvertToAbsolutePath()
@@ -341,7 +372,8 @@ namespace NiflectUtil
     }
 #endif
 
-    Niflect::CString ConvertToAbsolutePath(const Niflect::CString& relativePath) {
+    Niflect::CString ResolvePath2(const Niflect::CString& relativePath) {
+        //不能处理不存在的路径, 如首次生成时无 NiflectGenerated 的文件夹, 在命令行参数解析时使用此方法转换是错误的
 #ifdef _WIN32
         char absolutePath[PATH_MAX];
         if (_fullpath(absolutePath, relativePath.c_str(), sizeof(absolutePath)) == nullptr) {
