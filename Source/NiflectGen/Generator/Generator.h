@@ -40,6 +40,5 @@ namespace NiflectGen
 	NIFLECTGEN_API Niflect::TSharedPtr<CGenerator> CreateGenerator();
 
 	//S3ENGINE_API2 Niflect::TSharedPtr<CTypeBindingTable> CreateTypeBindingTable();
-	NIFLECTGEN_API void InitTypeBindingTable();
 	NIFLECTGEN_API void TestMustache();
 }

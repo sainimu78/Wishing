@@ -94,6 +94,8 @@
 50. Niflect, 实例 Field, 即特殊指针 Save/Load, 如用于资源实例或实例引用的 Save/Load
 51. NiflectGen, 支持新建 .h 的选项, 生成的文件中含 _gen.h, 可参考 CTaggedNode2::ResolveMacroNata, 但可能要注意目前发现该函数中的方法执行多次会导致获取失败, 即可能用此方式查找include 会导致其它使用此方法的位置出错, 也可考虑用常用的文件解析方法
 52. NiflectGen, _gen.h 为最后一个 include 的提示
+	1. #include found after .generated.h file - the .generated.h file should always be the last #include in a header	MyProject2	F:\Fts\Proj\Test\UnrealEngine_Proj\UE5\Temp\MyProject2\Source\MyProject2\MyActorComponent.h	1		
+	2. error : Expected an include at the top of the header the follows all other includes: '#include "MyActorComponent.generated.h"'
 53. Done, NiflectGen, 将 NIFLECTGEN 中的内容移到解析时生成在内存中(CXUnsavedFile)的 NiflectMacro.h, 以简化定义, 用户不需要关系解析细节, 另发现 17 与 20 的解析过程是不同的, 因此移到 NiflectGen 代码中也更合理
 54. Done, NiflectGen, 删除生成完成后不需要的 Bypass, 或将生成的路径统一为以任意头文件搜索路径之一的相对路径
 	1. 已改为include路径为相对路径, 输出目录为GenTime, GenTime可在生成完成后删除, 但考虑到可能可用于某种缓存, 因此仍保留

@@ -2,7 +2,6 @@
 #include "Niflect/Util/StringUtil.h"
 #include "Niflect/Util/ConcatHardCodedStrings.h"
 
-#define DEVELOPMENT_ROOT_SOURCE_PATH "E:/S3/S3ResourceEditor_another/engine_ref"
 #define ROOT_TEST_PATH "F:/Fts/Proj/Test/Interedit/Source/NiflectGen/Test"
 
 namespace NiflectGenDefinition
@@ -114,21 +113,6 @@ namespace NiflectGenDefinition
 			TryFormatNestedTemplate(str);
 			str += '>';
 		}
-	}
-
-	namespace Path
-	{
-		constexpr const char* CLangParserArgs_I2[] = {
-			CONCAT_HARDCODED_STRINGS_2(DEVELOPMENT_ROOT_SOURCE_PATH, "/S3Engine"),
-			//todo: 现代码未合并到引擎, 因此暂使用SampleTest的路径, 合并后可移除
-			CONCAT_HARDCODED_STRINGS_2(DEVELOPMENT_ROOT_SOURCE_PATH, "/SampleTest/SampleGamePrototyping/Cos/Client/ReflectionSystemDemo"),
-			//deprecated: 解析头文件要求依赖生成.gen.h, 如果无法避免依赖.h, 则需要生成该.h
-			CONCAT_HARDCODED_STRINGS_2(DEVELOPMENT_ROOT_SOURCE_PATH, "/Generated"),
-		};
-
-		//用于旁路clang_parseTranslationUnit过程中STL头文件解析, 可大幅减少耗时
-		//todo: 旁路代码极简单, 可只在内存中生成
-		//constexpr const char* BypassingSTL = CONCAT_CONST_CHAR_2(DEVELOPMENT_ROOT_SOURCE_PATH, "/SampleTest/SampleGamePrototyping/Cos/Client/ReflectionSystemDemo/Niflect/Base/BypassCode/NiflectSTL");
 	}
 
 	namespace NiflectFramework
