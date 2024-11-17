@@ -2,12 +2,7 @@
 #include "Niflect/Util/ConcatSymbols.h"
 
 #ifdef NIFLECTGEN
-#define GENERATED_BODY(...) typedef void* CONCAT_SYMBOLS_2(__NiflectGen_GeneratedBody,__LINE__);
-
-#define NIFLECTGENTAG_TYPE typedef void* __NiflectGen_Type;
-#define NIFLECTGENTAG_FIELD typedef void* CONCAT_SYMBOLS_2(__NiflectGen_Field,__LINE__);
-#define NIFLECTGENTAG_METHOD typedef void* __NiflectGen_Method;
-#define NIFLECTGENTAG_CONSTANT __attribute__((annotate("__NiflectGen_EnumConstant")))
+${GenTimeReplacement}
 #else
 // Include a redundant semicolon at the end of the generated code block, so that intellisense parsers can start parsing
 // a new declaration if the line number/generated code is out of date.
@@ -16,7 +11,7 @@
 #define NIFLECTGENTAG_TYPE 
 #define NIFLECTGENTAG_FIELD 
 #define NIFLECTGENTAG_METHOD 
-#define NIFLECTGENTAG_CONSTANT
+#define NIFLECTGENTAG_ENUMCONST
 #endif
 
 #define NIF_T(...) NIFLECTGENTAG_TYPE
@@ -25,4 +20,4 @@
 
 #define NIF_M(...) NIFLECTGENTAG_METHOD
 
-#define NIF_C(...) NIFLECTGENTAG_CONSTANT
+#define NIF_C(...) NIFLECTGENTAG_ENUMCONST

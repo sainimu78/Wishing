@@ -70,6 +70,33 @@ namespace NiflectGen
 			while (std::getline(istm, line))
 				this->ParseLine(line, ++lineNumber);
 		}
+		void sssssssssssssssssssss(const SCodeTemplateLabelCode& code, const Niflect::CString& labelName, const CSectionLine& sectionLine, CCodeLines& vecLine, Niflect::TSet<Niflect::CString>* pSetReplacedLabel = NULL) const
+		{
+			if (code.m_pVecLine == NULL)
+			{
+				ASSERT(!code.m_textCopy.empty());
+				Niflect::CString line;
+				for (uint32 idx1 = 0; idx1 < sectionLine.m_tabsCount; ++idx1)
+					line += m_tabChar;
+				line += code.m_textCopy;
+				vecLine.emplace_back(line);
+			}
+			else
+			{
+				ASSERT(code.m_textCopy.empty());
+				for (auto& it1 : *code.m_pVecLine)
+				{
+					Niflect::CString line;
+					for (uint32 idx1 = 0; idx1 < sectionLine.m_tabsCount; ++idx1)
+						line += m_tabChar;
+					line += it1;
+					vecLine.emplace_back(line);
+				}
+			}
+
+			if (pSetReplacedLabel != NULL)
+				pSetReplacedLabel->insert(labelName);
+		}
 		void ReplaceLabels(const CLabelToCodeMapping& mapLabelToCode, CCodeLines& vecLine, Niflect::TSet<Niflect::CString>* pSetReplacedLabel = NULL) const
 		{
 			using namespace Niflect;
@@ -79,34 +106,41 @@ namespace NiflectGen
 				if (sectionLine.m_vecSection.size() == 1 && sectionLine.m_vecSection.back().m_isLabel)
 				{
 					const auto& labelName = sectionLine.m_vecSection.back().m_data;
+					//auto itFound = mapLabelToCode.find(labelName);
+					//if (itFound != mapLabelToCode.end())
+					//{
+					//	auto& code = itFound->second;
+					//	if (code.m_pVecLine == NULL)
+					//	{
+					//		ASSERT(!code.m_textCopy.empty());
+					//		CString line;
+					//		for (uint32 idx1 = 0; idx1 < sectionLine.m_tabsCount; ++idx1)
+					//			line += m_tabChar;
+					//		line += code.m_textCopy;
+					//		vecLine.emplace_back(line);
+					//	}
+					//	else
+					//	{
+					//		ASSERT(code.m_textCopy.empty());
+					//		for (auto& it1 : *code.m_pVecLine)
+					//		{
+					//			CString line;
+					//			for (uint32 idx1 = 0; idx1 < sectionLine.m_tabsCount; ++idx1)
+					//				line += m_tabChar;
+					//			line += it1;
+					//			vecLine.emplace_back(line);
+					//		}
+					//	}
+
+					//	if (pSetReplacedLabel != NULL)
+					//		pSetReplacedLabel->insert(labelName);
+					//}
+
 					auto itFound = mapLabelToCode.find(labelName);
 					if (itFound != mapLabelToCode.end())
 					{
 						auto& code = itFound->second;
-						if (code.m_pVecLine == NULL)
-						{
-							ASSERT(!code.m_textCopy.empty());
-							CString line;
-							for (uint32 idx1 = 0; idx1 < sectionLine.m_tabsCount; ++idx1)
-								line += m_tabChar;
-							line += code.m_textCopy;
-							vecLine.emplace_back(line);
-						}
-						else
-						{
-							ASSERT(code.m_textCopy.empty());
-							for (auto& it1 : *code.m_pVecLine)
-							{
-								CString line;
-								for (uint32 idx1 = 0; idx1 < sectionLine.m_tabsCount; ++idx1)
-									line += m_tabChar;
-								line += it1;
-								vecLine.emplace_back(line);
-							}
-						}
-
-						if (pSetReplacedLabel != NULL)
-							pSetReplacedLabel->insert(labelName);
+						sssssssssssssssssssss(code, labelName, sectionLine, vecLine, pSetReplacedLabel);
 					}
 				}
 				else
@@ -119,15 +153,33 @@ namespace NiflectGen
 						if (it1.m_isLabel)
 						{
 							const auto& labelName = it1.m_data;
+							//auto itFound = mapLabelToCode.find(labelName);
+							//if (itFound != mapLabelToCode.end())
+							//{
+							//	auto& code = itFound->second;
+							//	ASSERT(code.m_pVecLine == NULL);
+							//	line += code.m_textCopy;
+
+							//	if (pSetReplacedLabel != NULL)
+							//		pSetReplacedLabel->insert(labelName);
+							//}
+
 							auto itFound = mapLabelToCode.find(labelName);
 							if (itFound != mapLabelToCode.end())
 							{
 								auto& code = itFound->second;
-								ASSERT(code.m_pVecLine == NULL);
-								line += code.m_textCopy;
+								if (code.m_textCopy.empty())
+								{
+									sssssssssssssssssssss(code, labelName, sectionLine, vecLine, pSetReplacedLabel);
+								}
+								else
+								{
+									ASSERT(code.m_pVecLine == NULL);
+									line += code.m_textCopy;
 
-								if (pSetReplacedLabel != NULL)
-									pSetReplacedLabel->insert(labelName);
+									if (pSetReplacedLabel != NULL)
+										pSetReplacedLabel->insert(labelName);
+								}
 							}
 						}
 						else

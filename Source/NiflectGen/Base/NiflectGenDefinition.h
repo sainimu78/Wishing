@@ -39,16 +39,22 @@ namespace NiflectGenDefinition
 
 	namespace CodeTag
 	{
+#define MACROTAG_GENERATED_BODY "__NiflectGen_GeneratedBody"
+#define MACROTAG_TYPE "__NiflectGen_Type"
+#define MACROTAG_FIELD "__NiflectGen_Field"
+#define MACROTAG_METHOD "__NiflectGen_Method"
+#define MACROTAG_ENUMCONST "__NiflectGen_EnumConst"
+
 #ifdef ACCESSOR_SETTING_ABCD
 #else
 		constexpr const char* BindingSetting = "__NiflectGen_BindingSetting";
 #endif
-		constexpr const char* GeneratedBody = "__NiflectGen_GeneratedBody";
+		constexpr const char* GeneratedBody = MACROTAG_GENERATED_BODY;
 
-		constexpr const char* Type = "__NiflectGen_Type";
-		constexpr const char* Field = "__NiflectGen_Field";
-		constexpr const char* Method = "__NiflectGen_Method";
-		constexpr const char* EnumConstant = "__NiflectGen_EnumConstant";
+		constexpr const char* Type = MACROTAG_TYPE;
+		constexpr const char* Field = MACROTAG_FIELD;
+		constexpr const char* Method = MACROTAG_METHOD;
+		constexpr const char* EnumConstant = MACROTAG_ENUMCONST;
 
 #ifdef ACCESSOR_SETTING_ABCD
 		//static bool IsAccessorSettingA(const Niflect::CString& text)

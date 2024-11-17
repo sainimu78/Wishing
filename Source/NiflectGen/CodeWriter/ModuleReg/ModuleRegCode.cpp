@@ -2,6 +2,7 @@
 #include "NiflectGen/Base/NiflectGenDefinition.h"
 #include "Niflect/Util/SystemUtil.h"
 #include "NiflectGen/Generator/BypassSTLHeaders.h"
+#include "NiflectGen/CodeWriter/GenTimeNiflectMacro.h"
 
 namespace NiflectGen
 {
@@ -27,12 +28,14 @@ namespace NiflectGen
 		
 		auto bypassSTL = NiflectUtil::ConcatPath(moduleGenDirPath, NiflectGenDefinition::NiflectFramework::BypassSTL::HeadersDirName);
 		GenerateBypassSTLHeaders(bypassSTL);
+		SGenTimeNiflectMacroHeaderWritingContext ctx{ m_userProvided.m_vecModuleHeaderSearchPath, bypassSTL };
+		WriteGenTimeNiflectMacroHeader(ctx);
 
 		m_writingHeaderSearchPaths.m_vecForBypassConversion.push_back(bypassSTL);
 
-		for (auto& it : m_writingHeaderSearchPaths.m_vecForRegularConversion)
-			m_vecParsingHeaderSearchPath.push_back(it);
 		for (auto& it : m_writingHeaderSearchPaths.m_vecForBypassConversion)
+			m_vecParsingHeaderSearchPath.push_back(it);
+		for (auto& it : m_writingHeaderSearchPaths.m_vecForRegularConversion)
 			m_vecParsingHeaderSearchPath.push_back(it);
 
 		//if (m_userProvided.m_specifiedModuleApiMacro.empty())
