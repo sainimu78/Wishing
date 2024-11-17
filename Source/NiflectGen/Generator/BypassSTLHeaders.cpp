@@ -329,11 +329,12 @@ using enable_if_t = typename enable_if<_Test, _Ty>::type;
 		Niflect::TArrayNif<CMemSource> vecMemSrc;
 		CMemSource memSrcDefaultHeader;
 		{
-			memSrcDefaultHeader.m_filePath = NiflectUtil::ConcatPath(headersDirPath, NiflectGenDefinition::DirName::GenTime);
+			Niflect::CString fileName = NiflectGenDefinition::NiflectFramework::FileName::BypassSTLDefaultHeaderFileName;
+			memSrcDefaultHeader.m_filePath = NiflectUtil::ConcatPath(headersDirPath, fileName);
 
 			CSimpleCppWriter writer(defaultBypassHeaderCode);
 			writer.AddHeaderFirstLine();
-			writer.AddInclude(memSrcDefaultHeader.m_filePath);
+			writer.AddInclude(fileName);
 		}
 
 		uint32 cnt = sizeof(arrAllNeeded) / sizeof(SHeaderData);
