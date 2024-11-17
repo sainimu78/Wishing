@@ -147,6 +147,12 @@ namespace NiflectGen
 			for (auto& it : vecIncludePath)
 				lines.push_back(NiflectUtil::FormatString("using namespace %s;", it.c_str()));
 		}
+		static Niflect::CString MakeIncludeSearchPath(const Niflect::CString& path)
+		{
+			if (path.back() != '/')
+				return path + '/';
+			return path;
+		}
 
 	private:
 		static bool InternalConvertToIncludePath(const Niflect::CString& filePath, const Niflect::TArrayNif<Niflect::CString>& vecSearchPath, Niflect::CString& incPath)
@@ -155,11 +161,12 @@ namespace NiflectGen
 			for (auto& it : vecSearchPath)
 			{
 				ASSERT(!it.empty());
+				ASSERT(it.back() == '/');
 				auto pos = filePath.find(it);
 				if (pos != std::string::npos)
 				{
 					auto prefixLength = pos + it.length();
-					incPath = filePath.substr(prefixLength + 1, filePath.length() - prefixLength);
+					incPath = filePath.substr(prefixLength, filePath.length() - prefixLength);
 					converted = true;
 					break;
 				}

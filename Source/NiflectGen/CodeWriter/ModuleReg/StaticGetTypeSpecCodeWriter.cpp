@@ -39,7 +39,7 @@ namespace NiflectGen
                 {
                     CCodeLines linesGenHInclude;
                     CHeaderFilePathDataArray vecHeaderData;
-                    if (requiredExportedStaticGetType)
+                    if (requiredExportedStaticGetType && (!context.m_moduleRegInfo.m_userProvided.m_moduleApiMacroHeader.empty()))
                         vecHeaderData.push_back({ context.m_moduleRegInfo.m_userProvided.m_moduleApiMacroHeader, true });
                     vecHeaderData.push_back({ NiflectGenDefinition::NiflectFramework::FilePath::NiflectTypeHeader, true });
                     CIncludesHelper::ConvertFromHeaderFilePaths(vecHeaderData, context.m_moduleRegInfo.m_writingHeaderSearchPaths, linesGenHInclude);
@@ -60,7 +60,7 @@ namespace NiflectGen
                     }
                     CCodeLines linesTypeDecls;
                     CCodeLines linesStaticGetTypeSpecDecl;
-                    if (requiredExportedStaticGetType)
+                    //if (requiredExportedStaticGetType)
                     {
                         {
                             for (auto& it1 : it0.m_vecTypeRegDataRef)
@@ -147,7 +147,7 @@ namespace NiflectGen
                     CLabelToCodeMapping map;
                     MapLabelToLines(map, LABEL_0, linesGenCppInclude);
                     CCodeLines linesImpl;
-                    if (requiredExportedStaticGetType)
+                    //if (requiredExportedStaticGetType)
                     {
                         CCodeLines lines;
                         for (auto& it1 : it0.m_vecTypeRegDataRef)

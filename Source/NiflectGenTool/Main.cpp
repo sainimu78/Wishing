@@ -7,7 +7,8 @@
 #include "Niflect/Memory/Default/DefaultMemory.h"
 #include "NiflectGen/Test/TestGen.h"
 #include "NiflectGen/Generator/GenData.h"
-#include <cstring>
+#include "NiflectGen/CodeWriter/CppWriter.h"
+#include "Niflect/Util/SystemUtil.h"
 
 //代码中的用语
 //1. StaticRegStage, 在静态初始化阶段的注册过程
@@ -148,6 +149,16 @@ namespace NiflectGen
 		}
 		return str;
 	}
+	static Niflect::CString GetNextArgPath(const char** argv, int& idx)
+	{
+		auto path = GetNextArgValue(argv, idx);
+		return NiflectUtil::ConvertToAbsolutePath(path);
+	}
+	static Niflect::CString GetNextArgIncludeSearchPath(const char** argv, int& idx)
+	{
+		auto path = GetNextArgPath(argv, idx);
+		return CIncludesHelper::MakeIncludeSearchPath(path);
+	}
 
 	static void ParseOptions(int argc, const char** argv, CModuleRegInfo& info)
 	{
@@ -161,7 +172,7 @@ namespace NiflectGen
 			}
 			else if (strcmp(pszV, "-h") == 0)
 			{
-				info.m_vecModuleHeader.push_back(GetNextArgValue(argv, idx));
+				info.m_vecModuleHeader.push_back(GetNextArgPath(argv, idx));
 			}
 			else if (strcmp(pszV, "-am") == 0)
 			{
@@ -169,19 +180,19 @@ namespace NiflectGen
 			}
 			else if (strcmp(pszV, "-amh") == 0)
 			{
-				info.m_moduleApiMacroHeader = GetNextArgValue(argv, idx);
+				info.m_moduleApiMacroHeader = GetNextArgPath(argv, idx);
 			}
 			else if (strcmp(pszV, "-a") == 0)
 			{
-				info.m_vecAccessorSettingHeader.push_back(GetNextArgValue(argv, idx));
+				info.m_vecAccessorSettingHeader.push_back(GetNextArgPath(argv, idx));
 			}
 			else if (strcmp(pszV, "-I") == 0)
 			{
-				info.m_vecModuleHeaderSearchPath.push_back(GetNextArgValue(argv, idx));
+				info.m_vecModuleHeaderSearchPath.push_back(GetNextArgIncludeSearchPath(argv, idx));
 			}
 			else if (strcmp(pszV, "-p") == 0)
 			{
-				info.m_outputRootPath_genIncludeSearchPath = GetNextArgValue(argv, idx);
+				info.m_outputRootPath_genIncludeSearchPath = GetNextArgIncludeSearchPath(argv, idx);
 			}
 			else if (strcmp(pszV, "-fs") == 0)
 			{
@@ -243,7 +254,19 @@ int main(int argc, const char** argv)
 				//};
 				//argc = sizeof(argvTest) / sizeof(const char*);
 				//argv = argvTest;
-				
+
+				//const char* argvTest[] = {
+				//	"Placeholder",
+				//	"-n", "MyApp",
+				//	"-h", "../MyClass.h",
+				//	"-a", "../ThirdParty/Niflect/include/Niflect/CommonlyUsed/DefaultAccessorSetting.h",
+				//	"-I", "../ThirdParty/Niflect/include",
+				//	"-I", "../",
+				//	"-p", "NiflectGenerated",
+				//};
+				//argc = sizeof(argvTest) / sizeof(const char*);
+				//argv = argvTest;
+
 				ParseOptions(argc, argv, info);
 
 				if (gen->InitModuleRegInfo(info))

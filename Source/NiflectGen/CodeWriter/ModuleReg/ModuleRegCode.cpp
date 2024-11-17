@@ -3,6 +3,7 @@
 #include "Niflect/Util/SystemUtil.h"
 #include "NiflectGen/Generator/BypassSTLHeaders.h"
 #include "NiflectGen/CodeWriter/GenTimeNiflectMacro.h"
+#include "NiflectGen/CodeWriter/CppWriter.h"
 
 namespace NiflectGen
 {
@@ -27,6 +28,7 @@ namespace NiflectGen
 			m_writingHeaderSearchPaths.m_vecForRegularConversion.push_back(it);
 		
 		auto genTimeIncludeSearchDirPath = NiflectUtil::ConcatPath(moduleGenDirPath, NiflectGenDefinition::DirName::GenTime);
+		genTimeIncludeSearchDirPath = CIncludesHelper::MakeIncludeSearchPath(genTimeIncludeSearchDirPath);
 		GenerateBypassSTLHeaders(genTimeIncludeSearchDirPath);
 		SGenTimeNiflectMacroHeaderWritingContext ctx{ m_userProvided.m_vecModuleHeaderSearchPath, genTimeIncludeSearchDirPath };
 		WriteGenTimeNiflectMacroHeader(ctx);

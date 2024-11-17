@@ -137,7 +137,7 @@ namespace NiflectGen
                 if (false)
                 {
                     Niflect::CString absFilePath;
-                    NiflectUtil::ResolvePath("../../../../../../../Generated/NiflectGenerated/b.txt", absFilePath);
+                    ASSERT(false);//NiflectUtil::ResolvePath("../../../../../../../Generated/NiflectGenerated/b.txt", absFilePath);
                     NiflectUtil::MakeDirectories(absFilePath);
                     fp = fopen(absFilePath.c_str(), "w");
                 }
