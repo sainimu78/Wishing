@@ -68,9 +68,9 @@
 35. Done, NiflectGen, 可能须定义 CTypeLayout, 其中有 Accessor 数组;
 36. Done, (实验结论为现无法通过cmake实现SourceAndHeader模式生成代码后不执行cmake, 因此实际只能用HeaderOnly) NiflectGen, 生成代码后不应重新生成工程
 	1. 提问"我制作了代码生成工具, 如何用cmake实现生成的代码加到对应模块的源码进行编译, 同时模块的工程不需要因为增加或减少了生成的代码而重新生成"
-37. NiflectGen, 模块间Type依赖验证
+37. Done, NiflectGen, 模块间Type依赖验证
 38. NiflectGen, 废弃 TypeReg 概念, 另定义对应概念;
-39. NiflectGen, 检查moduleHeader是否include _gen.h
+39. Deprecated, (合并到 52) NiflectGen, 检查moduleHeader是否include _gen.h
 40. Done, NiflectGen, 生成 friend CreateTypeAccessor 行号宏
 41. Done, (仍须生成文件, 但可避免指定bypass的include路径) NiflectGen, bypass code 改为内存中生成, HardcodedTemplate 风格, 相应地, m_vecForBypassConversion 可考虑移除
 42. Done, Niflect, 子类 Accessor 全部归到 Accessor 目录, 作为常用的Accessor, 也作 Accessor 的实现示例. 另提供默认的 DefaultAccessorSetting.h
@@ -95,6 +95,7 @@
 49. Done, NiflectGen, Nata 生成, 1. 获取Nata需要的头文件; 2. Type, Field, EnumConst 须同时可行; 3. 生成到 TypeReg
 50. Niflect, 实例 Field, 即特殊指针 Save/Load, 如用于资源实例或实例引用的 Save/Load
 	1. NiflectGen, 收集指针, 须注意能否通过现方法区分不同指针
+	2. 已简单实验可行, 现未提交修改, 计划在实例化实验时再修改
 51. NiflectGen, 支持新建 .h 的选项, 生成的文件中含 _gen.h, 可参考 CTaggedNode2::ResolveMacroNata, 但可能要注意目前发现该函数中的方法执行多次会导致获取失败, 即可能用此方式查找include 会导致其它使用此方法的位置出错, 也可考虑用常用的文件解析方法
 52. NiflectGen, _gen.h 为最后一个 include 的提示
 	1. #include found after .generated.h file - the .generated.h file should always be the last #include in a header	MyProject2	F:\Fts\Proj\Test\UnrealEngine_Proj\UE5\Temp\MyProject2\Source\MyProject2\MyActorComponent.h	1		
@@ -111,7 +112,7 @@
 		4. 使用反射代码生成工具, 能找到的几款此类工具, 都编码规范都有较多的限制, 如可使用的类型限制, 容器使用限制, 不能用别名等. 且所有实现都无法支持方便地扩展以实现自定义类型的序列化
 	3. 结论, 编译器生成, 手工编写, 最终都需要另外的反射生成工具以实现方便的绑定自定义metadata
 56. Done, NiflectGen, 测试无 namespace 的类型定义
-57. NiflectGen, 合并 _gen.h 中同 namespace 的声明到
+57. NiflectGen, 合并 _gen.h 中同 namespace 的类型声明
 58. Deprecated, NiflectGen, 验证不指定 -I, 传相对路径
 59. NiflectGen, 无输入头文件时应提示, 当前工作目录应提示
 60. Done, NiflectGen, 命令行参数中的路径统一为相对工作路径的相对路径, 因此须修复 InternalConvertToIncludePath 未正确处理如 ../MyClass.h 的问题
@@ -120,5 +121,6 @@
 63. Done, NiflectGen, 应支持将不存在的相对路径转为绝对路径, 测试时将 "-p", "F:/Fts/Proj/Test/Interedit/Generated/NiflectGenerated", 改为相对路径即可, 现如为相对则不能输出文件
 64. NiflectGen, 增加扫描指定目录获取被解析的头文件列表选项, 可递归或不递归, 合并单个指定的头文件路径, 剔除重复
 65. NiflectGen, 生成时对TypeReg排序, 主要为使Misc在无增加或减少时可保持输出不变, 以便实现生成的内容无变化则不写文件
-66. Niflect, default allocator 支持
+66. Deprecated, (已简单实验可行性, 但认为还须将创建实例改写为静态函数) Niflect, default allocator 支持
 67. NiflectGen, 调整指针代码生成的文本, 移除星号空格
+68. Niflect, 创建实例改写为静态函数, 方便接入不同的创建方法, 如默认堆, Niflect 的堆
