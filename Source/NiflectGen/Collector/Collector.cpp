@@ -1536,16 +1536,19 @@ namespace NiflectGen
 			}
 		}
 
-		for (uint32 idx0 = 0; idx0 < accessorSettings.m_vecAccessorBindingSetting.size(); ++idx0)
+		if (false)
 		{
-			auto& it0 = accessorSettings.m_vecAccessorBindingSetting[idx0];
-			for (uint32 idx1 = 0; idx1 < it0.GetBindingTypeDeclsCount(); ++idx1)
+			for (uint32 idx0 = 0; idx0 < accessorSettings.m_vecAccessorBindingSetting.size(); ++idx0)
 			{
-				auto& bindingTypeDecl = it0.GetBindingTypeDecl(idx1);
-				if (bindingTypeDecl.m_CXType.kind == CXType_Pointer)
+				auto& it0 = accessorSettings.m_vecAccessorBindingSetting[idx0];
+				for (uint32 idx1 = 0; idx1 < it0.GetBindingTypeDeclsCount(); ++idx1)
 				{
-					GenLogError(context.m_log, "Pointer is not supported");//todo: 支持任意指针类型无实际用途, 应支持特定类型的指针, 需要获取的信息如几维指针与原始类型, 计划加到如m_mapUserTypePointer1D中, 即将指针解释为专门的类型, 这种专门的指针需要Runtime内存管理
-					break;
+					auto& bindingTypeDecl = it0.GetBindingTypeDecl(idx1);
+					if (bindingTypeDecl.m_CXType.kind == CXType_Pointer)
+					{
+						GenLogError(context.m_log, "Pointer is not supported");//todo: 支持任意指针类型无实际用途, 应支持特定类型的指针, 需要获取的信息如几维指针与原始类型, 计划加到如m_mapUserTypePointer1D中, 即将指针解释为专门的类型, 这种专门的指针需要Runtime内存管理
+						break;
+					}
 				}
 			}
 		}

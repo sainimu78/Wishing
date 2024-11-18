@@ -191,7 +191,7 @@ namespace NiflectGen
 			{
 				info.m_vecModuleHeaderSearchPath.push_back(GetNextArgIncludeSearchPath(argv, idx));
 			}
-			else if (strcmp(pszV, "-p") == 0)
+			else if (strcmp(pszV, "-g") == 0)
 			{
 				info.m_outputRootPath_genIncludeSearchPath = GetNextArgIncludeSearchPath(argv, idx);
 			}
