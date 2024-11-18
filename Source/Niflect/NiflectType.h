@@ -12,10 +12,10 @@ namespace Niflect
 	typedef CSharedAccessor (*CreateTypeAccessorFunc)();
 	using CreateFieldLayoutOfTypeFuncOld = CreateTypeAccessorFunc;
 
-	class CTypeInvokations
+	class CTypeLifecycleFunctions
 	{
 	public:
-		CTypeInvokations()
+		CTypeLifecycleFunctions()
 			: m_InvokeConstructorFunc(NULL)
 			, m_InvokeDestructorFunc(NULL)
 			, m_CreateTypeAccessorFunc(NULL)
@@ -46,7 +46,7 @@ namespace Niflect
 		}
 
 	public:
-		void InitTypeMeta(uint32 niflectTypeSize, size_t typeHash, const CString& name, CTypeIndex index, const CTypeInvokations& cb)
+		void InitTypeMeta(uint32 niflectTypeSize, size_t typeHash, const CString& name, CTypeIndex index, const CTypeLifecycleFunctions& cb)
 		{
 			ASSERT(false);
 			m_name = name;
@@ -55,7 +55,7 @@ namespace Niflect
 			m_cb = cb;
 			m_typeHash = typeHash;
 		}
-		void InitTypeMeta2(uint32 nativeTypeSize, size_t typeHash, CTypeIndex tableIdx, const CTypeInvokations& typeFuncs, const CString& id, CStaticNiflectTypeAddr* staticTypePtrAddr, const CSharedNata& nata)
+		void InitTypeMeta2(uint32 nativeTypeSize, size_t typeHash, CTypeIndex tableIdx, const CTypeLifecycleFunctions& typeFuncs, const CString& id, CStaticNiflectTypeAddr* staticTypePtrAddr, const CSharedNata& nata)
 		{
 			m_niflectTypeSize = nativeTypeSize;
 			m_typeHash = typeHash;
@@ -222,7 +222,7 @@ namespace Niflect
 	//	virtual void DebugFuncForDynamicCast() {}//仅为动态检查类型避免错误, 如已定义非调试用的virtual函数则可移除, 备注: error C2683: 'dynamic_cast': 'XXX' is not a polymorphic type 
 
 	protected:
-		CTypeInvokations m_cb;//todo: 计划改名为 m_typeFuncs
+		CTypeLifecycleFunctions m_cb;//todo: 计划改名为 m_typeFuncs
 
 	private:
 		//todo: 计划改名为 m_id, 通常为 natiev type name

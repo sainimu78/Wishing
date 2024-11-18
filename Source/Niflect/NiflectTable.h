@@ -41,7 +41,7 @@ namespace Niflect
 		template <typename TInfo, typename TType>
 		void RegisterType(const CString& typeName, const CreateFieldLayoutOfTypeFuncOld& Func)
 		{
-			CTypeInvokations typeFuncs;
+			CTypeLifecycleFunctions typeFuncs;
 			typeFuncs.m_InvokeConstructorFunc = &GenericInstanceInvokeConstructor<TType>;
 			typeFuncs.m_InvokeDestructorFunc = &GenericInstanceInvokeDestructor<TType>;
 			typeFuncs.m_CreateTypeAccessorFunc = Func;
@@ -74,7 +74,7 @@ namespace Niflect
 		template <typename TType, typename TInfo = CNiflectType>
 		void RegisterType3(const Niflect::CString& id, const CreateTypeAccessorFunc& Func, const CSharedNata& nata)
 		{
-			CTypeInvokations typeFuncs;
+			CTypeLifecycleFunctions typeFuncs;
 			typeFuncs.m_InvokeConstructorFunc = &GenericInstanceInvokeConstructor<TType>;
 			typeFuncs.m_InvokeDestructorFunc = &GenericInstanceInvokeDestructor<TType>;
 			typeFuncs.m_CreateTypeAccessorFunc = Func;
