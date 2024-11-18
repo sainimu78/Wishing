@@ -173,7 +173,6 @@ namespace Niflect
 		template <typename TBase>
 		TSharedPtr<TBase> MakeSharedInstance() const
 		{
-			//return GenericMakeShared<TBase, CMemory>(m_niflectTypeSize, m_cb.m_InvokeDestructorFunc, m_cb.m_InvokeConstructorFunc);
 			return GenericPlacementMakeShared<TBase, CMemory>(m_niflectTypeSize, m_cb.m_InvokeDestructorFunc, m_cb.m_InvokeConstructorFunc);
 		}
 		//template <typename TBase>

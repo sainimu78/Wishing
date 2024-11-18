@@ -13,6 +13,10 @@ namespace TestModule1
 		{
 
 		}
+		~CTestBase1()
+		{
+
+		}
 		void InitForTest()
 		{
 			m_base_string_0 = "base string 0";
@@ -87,6 +91,10 @@ namespace TestModule1
 			, m_bool_4(false)
 			, m_bool_6(false)
 			, m_float_7(0.0f)
+		{
+
+		}
+		~CTestClass1()//不用virtual, 用于验证是否正确使用本类型的析构
 		{
 
 		}
