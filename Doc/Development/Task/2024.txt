@@ -94,6 +94,7 @@
 		4. 手工注册仍可沿用公共的 s_type 和 StaticGetType
 49. Done, NiflectGen, Nata 生成, 1. 获取Nata需要的头文件; 2. Type, Field, EnumConst 须同时可行; 3. 生成到 TypeReg
 50. Niflect, 实例 Field, 即特殊指针 Save/Load, 如用于资源实例或实例引用的 Save/Load
+	1. NiflectGen, 收集指针, 须注意能否通过现方法区分不同指针
 51. NiflectGen, 支持新建 .h 的选项, 生成的文件中含 _gen.h, 可参考 CTaggedNode2::ResolveMacroNata, 但可能要注意目前发现该函数中的方法执行多次会导致获取失败, 即可能用此方式查找include 会导致其它使用此方法的位置出错, 也可考虑用常用的文件解析方法
 52. NiflectGen, _gen.h 为最后一个 include 的提示
 	1. #include found after .generated.h file - the .generated.h file should always be the last #include in a header	MyProject2	F:\Fts\Proj\Test\UnrealEngine_Proj\UE5\Temp\MyProject2\Source\MyProject2\MyActorComponent.h	1		
