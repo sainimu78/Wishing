@@ -237,7 +237,7 @@ int main(int argc, const char** argv)
 				//	"-amh", "F:/Fts/Proj/Test/Interedit/Source/Engine/EngineCommon.h",
 				//	"-a", "F:/Fts/Proj/Test/Interedit/Source/Engine/EngineAccessorSetting.h",
 				//	"-I", "F:/Fts/Proj/Test/Interedit/Source",
-				//	"-p", "F:/Fts/Proj/Test/Interedit/Generated/NiflectGenerated",
+				//	"-g", "F:/Fts/Proj/Test/Interedit/Generated/NiflectGenerated",
 				//	//"-fs",
 				//};
 				//argc = sizeof(argvTest) / sizeof(const char*);
@@ -251,7 +251,7 @@ int main(int argc, const char** argv)
 				//	"-amh", "F:/Fts/Proj/Test/Interedit/Source/TestModule1/TestModule1Common.h",
 				//	"-a", "F:/Fts/Proj/Test/Interedit/Source/Niflect/CommonlyUsed/DefaultAccessorSetting.h",
 				//	"-I", "F:/Fts/Proj/Test/Interedit/Source",
-				//	"-p", "F:/Fts/Proj/Test/Interedit/Generated/NiflectGenerated",
+				//	"-g", "F:/Fts/Proj/Test/Interedit/Generated/NiflectGenerated",
 				//};
 				//argc = sizeof(argvTest) / sizeof(const char*);
 				//argv = argvTest;
@@ -263,7 +263,7 @@ int main(int argc, const char** argv)
 				//	"-a", "../ThirdParty/Niflect/include/Niflect/CommonlyUsed/DefaultAccessorSetting.h",
 				//	"-I", "../ThirdParty/Niflect/include",
 				//	"-I", "../",
-				//	"-p", "NiflectGenerated",
+				//	"-g", "NiflectGenerated",
 				//};
 				//argc = sizeof(argvTest) / sizeof(const char*);
 				//argv = argvTest;
