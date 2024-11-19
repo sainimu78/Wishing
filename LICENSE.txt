@@ -210,4 +210,10 @@ The Interedit Project contains third party software which is under different lic
 terms. It is your responsibility to comply with the applicable licenses. 
 Information on third party materials, and the applicable license terms, are 
 referenced in or included with the materials, such as in separate LICENSE.txt 
-files accompanying the materials.
+or LICENSE.md files accompanying the materials.
+
+In addition to the above, please note that all third party softwares utilized in 
+the Interedit Project are specifically referenced in the form of Licensed_xxx.cmake 
+scripts. These scripts include the names and details of the respective softwares. 
+Furthermore, all third party softwares used across the project are organized 
+and stored in the ThirdParty directory.
