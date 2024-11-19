@@ -5,7 +5,7 @@ target_include_directories(${ModuleName} PRIVATE "${RootThirdPartyPath}/libclang
 
 target_compile_definitions(${ModuleName} PUBLIC CINDEX_NO_EXPORTS)
 
-include(libclangStaticDeps.cmake)
+include(Licensed_libclang/StaticDeps.cmake)
 
 if(UNIX)
 	message(STATUS "Target Is on UNIX")

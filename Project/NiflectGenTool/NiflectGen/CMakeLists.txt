@@ -28,4 +28,5 @@ target_compile_definitions(${ModuleName}
 
 target_link_libraries(${ModuleName} PRIVATE Niflect)
 
-include(libclangShared.cmake)
+include(Licensed_libclang/Shared.cmake)
+#include(Licensed_libclang/Static.cmake)
