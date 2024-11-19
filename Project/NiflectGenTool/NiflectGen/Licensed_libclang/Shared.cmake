@@ -22,13 +22,6 @@ if("${CMAKE_SIZEOF_VOID_P}" EQUAL "8")
 	set(libclangBinDebug "${CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG}/libclang${DlPost}")
 	set(libclangBinRelease "${CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG}/libclang${DlPost}")
 	
-	set_target_properties(libclang2 PROPERTIES
-		IMPORTED_LOCATION_DEBUG "${libclangBinDebug}"
-		IMPORTED_LOCATION_RELEASE "${libclangBinRelease}"
-		IMPORTED_LOCATION_RELWITHDEBINFO "${libclangBinDebug}"
-		IMPORTED_LOCATION_MINSIZEREL "${libclangBinRelease}"
-	)
-	
 	if(WIN32)
 		set(LibPath "${RootThirdPartyPath}/libclang/llvm-project/build/${OsType}/x64")
 		set(libclangLibDebug "${LibPath}/Debug/bin/libclang${SlPost}")
@@ -40,6 +33,13 @@ if("${CMAKE_SIZEOF_VOID_P}" EQUAL "8")
 			IMPORTED_IMPLIB_MINSIZEREL "${libclangLibRelease}"
 		)
 		target_include_directories(${ModuleName} PRIVATE "${LibPath}/include")
+	else()
+		set_target_properties(libclang2 PROPERTIES
+			IMPORTED_LOCATION_DEBUG "${libclangBinDebug}"
+			IMPORTED_LOCATION_RELEASE "${libclangBinRelease}"
+			IMPORTED_LOCATION_RELWITHDEBINFO "${libclangBinDebug}"
+			IMPORTED_LOCATION_MINSIZEREL "${libclangBinRelease}"
+		)
 	endif()
 	
 	target_link_libraries(${ModuleName} PRIVATE libclang2)
