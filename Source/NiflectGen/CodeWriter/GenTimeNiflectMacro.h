@@ -7,7 +7,8 @@ namespace NiflectGen
 	struct SGenTimeNiflectMacroHeaderWritingContext
 	{
 		const Niflect::TArrayNif<Niflect::CString>& m_vecModuleHeaderSearchPath;
-		const Niflect::CString& m_moduleGenIncludeSearchDirPath;
+		const Niflect::CString& m_genTimeBasePath;
+		CGenLog* m_log;
 	};
 	void WriteGenTimeNiflectMacroHeader(const SGenTimeNiflectMacroHeaderWritingContext& context);
 }

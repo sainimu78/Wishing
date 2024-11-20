@@ -323,7 +323,6 @@ namespace NiflectGen
         SModuleRegisteredTypeHeaderWritingContext moduleRegisteredTypeHeaderCtx{ m_moduleRegInfo, context.m_log };
         WriteModuleRegisteredTypeHeaderCodeWriter(moduleRegisteredTypeHeaderCtx, data.m_moduleRegisteredTypeHeaderGenData);
 
-
         this->WriteVerificationCode();
     }
     void CTemplateBasedCppWriter::WriteModuleReg(const SModuleRegWritingContext2& context, SModuleRegWritingData2& data) const

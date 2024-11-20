@@ -25,7 +25,7 @@ namespace NiflectGen
 		}
 		if (!ifs.is_open())
 		{
-			//GenLogError(context.m_log, NiflectUtil::FormatString("Failed to open %s", relativeFilePath.c_str()));
+			GenLogError(context.m_log, NiflectUtil::FormatString("Failed to open %s", relativeFilePath.c_str()));
 			return;
 		}
 
@@ -39,7 +39,7 @@ namespace NiflectGen
 
 		CCppWriter writer;
 		writer.WriteLines(linesHeader);
-		auto outputFilePath = NiflectUtil::ConcatPath(context.m_moduleGenIncludeSearchDirPath, relativeFilePath);
+		auto outputFilePath = NiflectUtil::ConcatPath(context.m_genTimeBasePath, relativeFilePath);
 		NiflectUtil::MakeDirectories(outputFilePath);
 		NiflectUtil::WriteStringToFile(writer.m_code, outputFilePath);
 	}

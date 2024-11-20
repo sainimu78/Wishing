@@ -130,28 +130,6 @@ namespace Niflect
 		CString m_name;
 	};
 	using CSharedTable = TSharedPtr<CNiflectTable>;
-
-	//template <typename TType, typename TInfo>
-	//static void RegisterTypeAndStaticAddr(CNiflectTable* table, const Niflect::CString& id, const CreateTypeAccessorFunc& Func, CStaticNiflectTypeAddr* staticTypePtrAddr)
-	//{
-	//	CTypeInvokations typeFuncs;
-	//	typeFuncs.m_InvokeConstructorFunc = &GenericInstanceInvokeConstructor<TType>;
-	//	typeFuncs.m_InvokeDestructorFunc = &GenericInstanceInvokeDestructor<TType>;
-	//	typeFuncs.m_CreateTypeAccessorFunc = Func;
-
-	//	auto shared = Niflect::MakeShared<TInfo>();
-	//	CNiflectType* type = shared.Get();
-	//	auto idx = table->AddType(shared);
-	//	type->InitTypeMeta2(sizeof(TType), CNiflectType::GetTypeHash<TType>(), idx, typeFuncs, id, staticTypePtrAddr);
-	//}
-
-	//template <typename TType, typename TInfo = CNiflectType>
-	//static void RegisterType(CNiflectTable* table, const Niflect::CString& id, const CreateTypeAccessorFunc& Func)
-	//{
-	//	ASSERT(!TRegisteredType<TType>::IsValid());
-	//	RegisterTypeAndStaticAddr<TType, TInfo>(table, id, &TRegisteredType<TType>::s_type);
-	//	ASSERT(TRegisteredType<TType>::IsValid());
-	//}
 	
 	template <typename TInfo, typename TType>
 	class TStaticTableTypeReg
