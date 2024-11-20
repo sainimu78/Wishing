@@ -228,14 +228,15 @@ namespace NiflectUtil
         return (stat(path.c_str(), &buffer) == 0);
 #endif
     }
-
+}
 #ifdef _WIN32
 #include <windows.h>
 #else
 #include <unistd.h>
 #include <limits.h>
 #endif
-
+namespace NiflectUtil
+{
     Niflect::CString GetCurrentWorkingDirPath() {
 #ifdef _WIN32
         char buffer[MAX_PATH];
@@ -249,7 +250,9 @@ namespace NiflectUtil
         return Niflect::CString(buffer);
 #endif
     }
-
+}
+namespace NiflectUtil
+{
     static bool IsRelativePath(const Niflect::CString& path) {
         return !(path.empty() || path[0] == '/' || (path.length() > 1 && path[1] == ':'));
     }
@@ -342,55 +345,133 @@ namespace NiflectUtil
         printf("%s\n", e.c_str());
     }
 #endif
+}
 
+
+#include <iostream>
+#include <string>
+#include <vector>
+#include <cstring>
 
 #ifdef _WIN32
 #include <windows.h>
-#define PATH_MAX MAX_PATH
 #else
-#include <unistd.h>
-#include <limits.h>
+#include <dirent.h>
+#include <sys/stat.h>
 #endif
 
-#ifdef TEST_ConvertToAbsolutePath
-    static void TestConvertToAbsolutePath()
-    {
-        auto cw = NiflectUtil::GetCurrentWorkingDirPath();//F:/Fts/Proj/Test/aaaaaaaaa/Build
-        auto cwUpper = NiflectUtil::GetParentDirPath(cw);//F:/Fts/Proj/Test/aaaaaaaaa
-        Niflect::CString expected0(NiflectUtil::ConcatPath(cwUpper, "MyClass.h"));//F:/Fts/Proj/Test/aaaaaaaaa/MyClass.h
-        Niflect::CString expected1(NiflectUtil::ConcatPath(cwUpper, "Build/MyClass.h"));//F:/Fts/Proj/Test/aaaaaaaaa/Build/MyClass.h
-        auto a = NiflectUtil::ConvertToAbsolutePath("../MyClass.h");
-        ASSERT(a == expected0);
-        auto b = NiflectUtil::ConvertToAbsolutePath(expected0);
-        ASSERT(b == expected0);
-        auto c = NiflectUtil::ConvertToAbsolutePath("MyClass.h");
-        ASSERT(c == expected1);
-        auto d = NiflectUtil::ConvertToAbsolutePath("./MyClass.h");
-        ASSERT(d == expected1);
-        auto e = NiflectUtil::ConvertToAbsolutePath("F:/Fts/Proj/Test/aaaaaaaaa/../../Test/aaaaaaaaa/MyClass.h");
-        ASSERT(e == expected0);
+namespace NiflectUtil
+{
+    // 检查文件名是否匹配模式
+    static bool match(const Niflect::CString& filename, const Niflect::CString& pattern) {
+        // 如果模式为空，则直接返回
+        if (pattern.empty()) {
+            return filename.empty();
+    }
+
+        // dp数组，用于动态规划
+        Niflect::TArrayNif<Niflect::TArrayNif<bool> > dp(filename.size() + 1, Niflect::TArrayNif<bool>(pattern.size() + 1, false));
+        dp[0][0] = true;
+
+        for (size_t j = 1; j <= pattern.size(); ++j) {
+            if (pattern[j - 1] == '*') {
+                dp[0][j] = dp[0][j - 1];
+            }
+        }
+
+        for (size_t i = 1; i <= filename.size(); ++i) {
+            for (size_t j = 1; j <= pattern.size(); ++j) {
+                if (pattern[j - 1] == filename[i - 1] || pattern[j - 1] == '?') {
+                    dp[i][j] = dp[i - 1][j - 1];
+                }
+                else if (pattern[j - 1] == '*') {
+                    dp[i][j] = dp[i - 1][j] || dp[i][j - 1];
+                }
+            }
+        }
+
+        return dp[filename.size()][pattern.size()];
+}
+
+#ifdef _WIN32
+    // 在 Windows 下递归遍历目录
+    static void search_directory_windows(const Niflect::CString& directory, const Niflect::CString& pattern) {
+        Niflect::CString search_path = directory + "\\*";
+        WIN32_FIND_DATA find_data;
+        HANDLE handle = FindFirstFile(search_path.c_str(), &find_data);
+
+        if (handle == INVALID_HANDLE_VALUE) {
+            std::cerr << "无法打开目录: " << directory << std::endl;
+            return;
+        }
+
+        do {
+            Niflect::CString filename = find_data.cFileName;
+            if (filename == "." || filename == "..") {
+                continue; // 跳过 "." 和 ".." 项
+            }
+
+            Niflect::CString full_path = directory + "\\" + filename;
+
+            if (find_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
+                search_directory_windows(full_path, pattern); // 递归搜索子目录
+            }
+            else {
+                if (match(filename, pattern)) {
+                    std::cout << full_path << std::endl; // 打印匹配的文件路径
+                }
+            }
+
+        } while (FindNextFile(handle, &find_data) != 0);
+
+        FindClose(handle);
+    }
+#else
+    // 在 Linux 下递归遍历目录
+    static void search_directory_linux(const Niflect::CString& directory, const Niflect::CString& pattern) {
+        DIR* dir = opendir(directory.c_str());
+        if (!dir) {
+            std::cerr << "无法打开目录: " << directory << std::endl;
+            return;
+        }
+
+        struct dirent* entry;
+        while ((entry = readdir(dir))) {
+            if (entry->d_name[0] == '.') {
+                continue; // 跳过 "." 和 ".." 项
+            }
+
+            Niflect::CString full_path = directory + "/" + entry->d_name;
+
+            if (entry->d_type == DT_DIR) {
+                search_directory_linux(full_path, pattern); // 递归搜索子目录
+            }
+            else {
+                if (match(entry->d_name, pattern)) {
+                    std::cout << full_path << std::endl; // 打印匹配的文件路径
+                }
+            }
+        }
+
+        closedir(dir);
     }
 #endif
 
-    Niflect::CString ResolvePath2(const Niflect::CString& relativePath) {
-        //不能处理不存在的路径, 如首次生成时无 NiflectGenerated 的文件夹, 在命令行参数解析时使用此方法转换是错误的
-#ifdef _WIN32
-        char absolutePath[PATH_MAX];
-        if (_fullpath(absolutePath, relativePath.c_str(), sizeof(absolutePath)) == nullptr) {
-            throw std::runtime_error("Failed to convert to absolute path");
-        }
-        Niflect::CString result(absolutePath);
-        std::replace(result.begin(), result.end(), '\\', '/');
-        return result;
-#else
-        if (!IsRelativePath(relativePath))
-            return relativePath;
+    void SearchFiles(const Niflect::CString& dirPath, const Niflect::CString& pattern)
+    {
+        //测试参数:
+        //F:/Fts/Proj/Test/Interedit/Source/ "*or?.cpp"
+        //结果:
+        //F:/Fts/Proj/Test/Interedit/Source/\Engine\Test\TestAccessor2.cpp
+        //F:/Fts/Proj/Test/Interedit/Source/\Niflect\Memory\Default\DefaultMemory.cpp
+        //F:/Fts/Proj/Test/Interedit/Source/\Niflect\Memory\Generic\GenericMemory.cpp
+        //F:/Fts/Proj/Test/Interedit/Source/\Niflect\Util\StlCompliant\StlCompliantVector2.cpp
+        //F:/Fts/Proj/Test/Interedit/Source/\NiflectGen\Generator\SourceInMemory.cpp
 
-        char absolutePath[PATH_MAX];
-        if (realpath(relativePath.c_str(), absolutePath) == nullptr) {
-            throw std::runtime_error("Failed to convert to absolute path");
-        }
-        return Niflect::CString(absolutePath);
+#ifdef _WIN32
+        search_directory_windows(dirPath, pattern);
+#else
+        search_directory_linux(dirPath, pattern);
 #endif
     }
 }
