@@ -31,10 +31,11 @@ namespace NiflectGenDefinition
 
 	namespace DirName
 	{
-		constexpr const char* ModuleReg = "ModuleReg";
-		constexpr const char* TypeReg = "TypeReg";
-		constexpr const char* GenH = "GenH";
-		constexpr const char* GenTime = "GenTime";
+		constexpr const char* ModuleReg = "_ModuleReg";
+		constexpr const char* TypeReg = "_TypeReg";
+		constexpr const char* GenInclude = "_GenInclude";
+		constexpr const char* GenTime = "_GenTime";
+		constexpr const char* Splitted = "_Splitted";
 	}
 
 	namespace CodeTag

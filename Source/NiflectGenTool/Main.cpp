@@ -252,6 +252,7 @@ int main(int argc, const char** argv)
 				//	"-a", "F:/Fts/Proj/Test/Interedit/Source/Niflect/CommonlyUsed/DefaultAccessorSetting.h",
 				//	"-I", "F:/Fts/Proj/Test/Interedit/Source",
 				//	"-g", "F:/Fts/Proj/Test/Interedit/Generated/NiflectGenerated",
+				//	//"-fs",
 				//};
 				//argc = sizeof(argvTest) / sizeof(const char*);
 				//argv = argvTest;

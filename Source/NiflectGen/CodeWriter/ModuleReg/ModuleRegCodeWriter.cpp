@@ -362,7 +362,7 @@ namespace NiflectGen
             tpl1.ReplaceLabels(map, data.m_moduleRegGenData.m_privateH, &setReplacedLabel);
         }
         auto moduleFileName = NiflectUtil::FormatString("%s%s", m_moduleRegInfo.m_userProvided.m_moduleName.c_str(), NiflectGenDefinition::FileExt::PrivateH);
-        data.m_moduleRegGenData.m_privateHIncludePath = NiflectUtil::ConcatPath(m_moduleRegInfo.m_moduleRegBasePath, moduleFileName);
+        data.m_moduleRegGenData.m_privateHIncludePath = moduleFileName;
     }
     void CTemplateBasedCppWriter::WriteVerificationCode()
     {

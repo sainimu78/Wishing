@@ -17,9 +17,9 @@ namespace NiflectGen
 		auto moduleGenDirPath = NiflectUtil::ConcatPath(info.m_outputRootPath_genIncludeSearchPath, info.m_moduleName);
 		NiflectUtil::DeleteDirectory(moduleGenDirPath);
 
-		m_moduleRegBasePath = NiflectUtil::ConcatPath(info.m_moduleName, NiflectGenDefinition::DirName::ModuleReg);
-		m_typeRegBasePath = NiflectUtil::ConcatPath(info.m_moduleName, NiflectGenDefinition::DirName::TypeReg);
-		m_genHBasePath = NiflectUtil::ConcatPath(info.m_moduleName, NiflectGenDefinition::DirName::GenH);
+		m_moduleRegBasePath = NiflectGenDefinition::DirName::ModuleReg;
+		m_typeRegBasePath = NiflectGenDefinition::DirName::TypeReg;
+		m_genIncludeBasePath = NiflectGenDefinition::DirName::GenInclude;
 
 		m_moduleRegisteredTypeHeaderFilePath = NiflectUtil::ConcatPath(m_typeRegBasePath, NiflectGenDefinition::NiflectFramework::FileName::ModuleRegisteredTypeHeader);
 		m_moduleScopeSymbolPrefix = "_" + info.m_moduleName + "_";

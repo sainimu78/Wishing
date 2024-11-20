@@ -28,6 +28,9 @@ namespace NiflectGen
 		const CModuleRegInfoValidated& GetModuleRegInfo() const { return m_moduleRegInfo; }
 
 	private:
+		void SaveCodeToFile(const CCodeLines& linesCode, const Niflect::CString& relativeFilePath) const;
+
+	private:
 		Niflect::TArrayNif<Niflect::CString> m_vecTypeBindingSettingFilePath;
 		Niflect::TArrayNif<Niflect::CString> m_vecFileForSearchingCpp;
 		Niflect::TArrayNif<Niflect::CString> m_vecFileForSearchingH;

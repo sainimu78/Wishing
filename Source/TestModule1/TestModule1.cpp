@@ -1,5 +1,5 @@
 #include "TestModule1/TestModule1.h"
-#include "TestModule1/ModuleReg/TestModule1_private.h"
+#include "TestModule1_private.h"
 #include "Niflect/NiflectTable.h"
 
 using namespace Niflect;

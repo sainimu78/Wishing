@@ -13,7 +13,7 @@ void TestAPI_C()
 }
 
 #ifdef ENABLED_TEST_MODULEREG_GEN_BY_NGT
-#include "Engine/ModuleReg/Engine_private.h"
+#include "Engine_private.h"
 #include "Niflect/NiflectTable.h"
 #include "Engine/DerivedObject.h"
 #include "Niflect/Serialization/JsonFormat.h"

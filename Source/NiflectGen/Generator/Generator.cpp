@@ -238,82 +238,37 @@ namespace NiflectGen
     //    }
     //    printf("");
     //}
-    void CGenerator::Save2(const CCodeGenData& genData) const
+    void CGenerator::SaveCodeToFile(const CCodeLines& linesCode, const Niflect::CString& relativeFilePath) const
     {
         const auto& outputRootPath = m_moduleRegInfo.m_userProvided.m_outputRootPath_genIncludeSearchPath;
+        auto filePath = NiflectUtil::ConcatPath(m_moduleRegInfo.m_userProvided.m_moduleName, relativeFilePath);
+        filePath = NiflectUtil::ConcatPath(outputRootPath, filePath);
+        CCppWriter writer;
+        writer.WriteLines(linesCode);
+        NiflectUtil::MakeDirectories(filePath);
+        NiflectUtil::WriteStringToFile(writer.m_code, filePath);
+    }
+    void CGenerator::Save2(const CCodeGenData& genData) const
+    {
         for (auto& it0 : genData.m_typeRegCreateTypeAccessorSpecGenData.m_vecCreateTypeAccessorSpecData)
         {
-            {
-                CCppWriter writer;
-                writer.WriteLines(it0.m_decl);
-                auto filePath = NiflectUtil::ConcatPath(outputRootPath, it0.m_declHeaderFilePath);
-                NiflectUtil::MakeDirectories(filePath);
-                NiflectUtil::WriteStringToFile(writer.m_code, filePath);
-            }
-            {
-                CCppWriter writer;
-                writer.WriteLines(it0.m_impl);
-                auto filePath = NiflectUtil::ConcatPath(outputRootPath, it0.m_implSourceFilePath);
-                NiflectUtil::MakeDirectories(filePath);
-                NiflectUtil::WriteStringToFile(writer.m_code, filePath);
-            }
+            this->SaveCodeToFile(it0.m_decl, it0.m_declHeaderFilePath);
+            this->SaveCodeToFile(it0.m_impl, it0.m_implSourceFilePath);
         }
         for (auto& it0 : genData.m_typeRegStaticGetTypeSpecGenData.m_vecStaticGetTypeSpecData)
         {
-            {
-                if (it0.m_genH.size() > 0)
-                {
-                    CCppWriter writer;
-                    writer.WriteLines(it0.m_genH);
-                    auto filePath = NiflectUtil::ConcatPath(outputRootPath, it0.m_genHHeaderFilePath);
-                    NiflectUtil::MakeDirectories(filePath);
-                    NiflectUtil::WriteStringToFile(writer.m_code, filePath);
-                }
-                if (it0.m_impl.size() > 0)
-                {
-                    CCppWriter writer;
-                    writer.WriteLines(it0.m_impl);
-                    auto filePath = NiflectUtil::ConcatPath(outputRootPath, it0.m_implSourceFilePath);
-                    NiflectUtil::MakeDirectories(filePath);
-                    NiflectUtil::WriteStringToFile(writer.m_code, filePath);
-                }
-            }
+            if (it0.m_genH.size() > 0)
+                this->SaveCodeToFile(it0.m_genH, it0.m_genHHeaderFilePath);
+            if (it0.m_impl.size() > 0)
+                this->SaveCodeToFile(it0.m_impl, it0.m_implSourceFilePath);
         }
+        for (auto& it0 : genData.m_vecSplittedModuleRegGenData)
         {
-            {
-                for (auto& it0 : genData.m_vecSplittedModuleRegGenData)
-                {
-                    {
-                        auto filePath = NiflectUtil::ConcatPath(outputRootPath, it0.m_headerFilePath);
-                        CCppWriter writer;
-                        writer.WriteLines(it0.m_h);
-                        NiflectUtil::MakeDirectories(filePath);
-                        NiflectUtil::WriteStringToFile(writer.m_code, filePath);
-                    }
-                    {
-                        auto filePath = NiflectUtil::ConcatPath(outputRootPath, it0.m_sourceFilePath);
-                        CCppWriter writer;
-                        writer.WriteLines(it0.m_cpp);
-                        NiflectUtil::MakeDirectories(filePath);
-                        NiflectUtil::WriteStringToFile(writer.m_code, filePath);
-                    }
-                }
-            }
+            this->SaveCodeToFile(it0.m_h, it0.m_headerFilePath);
+            this->SaveCodeToFile(it0.m_cpp, it0.m_sourceFilePath);
         }
-        {
-            CCppWriter writer;
-            writer.WriteLines(genData.m_moduleRegGenData.m_privateH);
-            auto filePath = NiflectUtil::ConcatPath(outputRootPath, genData.m_moduleRegGenData.m_privateHIncludePath);
-            NiflectUtil::MakeDirectories(filePath);
-            NiflectUtil::WriteStringToFile(writer.m_code, filePath);
-        }
-        {
-            CCppWriter writer;
-            writer.WriteLines(genData.m_moduleRegisteredTypeHeaderGenData.m_linesHeader);
-            auto filePath = NiflectUtil::ConcatPath(outputRootPath, m_moduleRegInfo.m_moduleRegisteredTypeHeaderFilePath);
-            NiflectUtil::MakeDirectories(filePath);
-            NiflectUtil::WriteStringToFile(writer.m_code, filePath);
-        }
+        this->SaveCodeToFile(genData.m_moduleRegGenData.m_privateH, genData.m_moduleRegGenData.m_privateHIncludePath);
+        this->SaveCodeToFile(genData.m_moduleRegisteredTypeHeaderGenData.m_linesHeader, m_moduleRegInfo.m_moduleRegisteredTypeHeaderFilePath);
     }
 
     CXChildVisitResult visitAST(CXCursor cursor, CXCursor parent, CXClientData data)

@@ -37,7 +37,7 @@ namespace NiflectGen
 		Niflect::CString GetSourceFileExtForGenFileMode() const;
 
 		Niflect::CString m_typeRegBasePath;
-		Niflect::CString m_genHBasePath;
+		Niflect::CString m_genIncludeBasePath;
 		Niflect::CString m_moduleRegBasePath;
 		Niflect::CString m_moduleRegisteredTypeHeaderFilePath;
 		Niflect::CString m_moduleScopeSymbolPrefix;

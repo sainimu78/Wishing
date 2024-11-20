@@ -15,7 +15,7 @@ namespace NiflectGen
     }
     void WriteSplittedModuleRegs3(const SSplittedModuleRegWritingContext2& context, SSplittedModuleRegWritingData2& data)
     {
-        auto splittedModuleRegDirPath = NiflectUtil::ConcatPath(context.m_moduleRegInfo.m_moduleRegBasePath, "Splitted");
+        auto splittedModuleRegDirPath = NiflectUtil::ConcatPath(context.m_moduleRegInfo.m_moduleRegBasePath, NiflectGenDefinition::DirName::Splitted);
         auto splitsCount = context.m_vecItem.size();
         data.m_vecSplittedModuleRegGenData.resize(splitsCount);
         data.m_vecSplittedModuleRegFuncsName.resize(splitsCount);
