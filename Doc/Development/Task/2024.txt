@@ -116,10 +116,11 @@
 58. Deprecated, NiflectGen, 验证不指定 -I, 传相对路径
 59. NiflectGen, 无输入头文件时应提示, 当前工作目录应提示
 60. Done, NiflectGen, 命令行参数中的路径统一为相对工作路径的相对路径, 因此须修复 InternalConvertToIncludePath 未正确处理如 ../MyClass.h 的问题
-61. NiflectGen, 考虑简化接入 cmake 要求, ModuleReg 的 _private.h 是否可合并到 GenH 中, private_ 作为前缀是否合适
+61. Done, NiflectGen, 考虑简化接入 cmake 要求, ModuleReg 的 _private.h 是否可合并到 GenH 中, private_ 作为前缀是否合适
 62. Niflect, .h .cpp 整理, 须被引用的归到 include 目录中, 相应地整理 cmake. 以三方接入 Niflect 的测试项目名称为 NiflectBasedProject
 63. Done, NiflectGen, 应支持将不存在的相对路径转为绝对路径, 测试时将 "-p", "F:/Fts/Proj/Test/Interedit/Generated/NiflectGenerated", 改为相对路径即可, 现如为相对则不能输出文件
 64. NiflectGen, 增加扫描指定目录获取被解析的头文件列表选项, 可递归或不递归, 合并单个指定的头文件路径, 剔除重复
+	1. 备用文件匹配搜索 NiflectUtil::SearchFiles
 65. NiflectGen, 生成时对TypeReg排序, 主要为使Misc在无增加或减少时可保持输出不变, 以便实现生成的内容无变化则不写文件
 66. Deprecated, (已简单实验可行性, 但认为还须将创建实例改写为静态函数) Niflect, default allocator 支持
 67. NiflectGen, 调整指针代码生成的文本, 移除星号空格
