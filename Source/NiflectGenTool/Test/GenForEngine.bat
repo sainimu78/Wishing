@@ -9,6 +9,7 @@
 -amh F:/Fts/Proj/Test/Interedit/Source/Engine/EngineCommon.h ^
 -a F:/Fts/Proj/Test/Interedit/Source/Engine/EngineAccessorSetting.h ^
 -I F:/Fts/Proj/Test/Interedit/Source ^
+-I F:/Fts/Proj/Test/Interedit/Source/Niflect/include ^
 -g F:/Fts/Proj/Test/Interedit/Generated/NiflectGenerated 
 
 @cd %old%

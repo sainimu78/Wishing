@@ -1,7 +1,6 @@
 #include "NiflectGen/TaggedType/TaggedInheritableType.h"
 #include "NiflectGen/Util/CursorUtil.h"
 #include "NiflectGen/CodeWriter/TypeReg/InheritableTypeRegCodeWriter.h"
-#include "Niflect/Util/TypeUtil.h"
 #include "Niflect/Util/DebugUtil.h"
 #include "NiflectGen/CodeWriter/TypeReg/InheritableTypeRegCodeWriter2.h"
 #include "NiflectGen/Base/NiflectGenDefinition.h"

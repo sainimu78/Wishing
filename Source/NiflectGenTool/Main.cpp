@@ -237,6 +237,7 @@ int main(int argc, const char** argv)
 				//	"-amh", "F:/Fts/Proj/Test/Interedit/Source/Engine/EngineCommon.h",
 				//	"-a", "F:/Fts/Proj/Test/Interedit/Source/Engine/EngineAccessorSetting.h",
 				//	"-I", "F:/Fts/Proj/Test/Interedit/Source",
+				//	"-I", "F:/Fts/Proj/Test/Interedit/Source/Niflect/include",
 				//	"-g", "F:/Fts/Proj/Test/Interedit/Generated/NiflectGenerated",
 				//	//"-fs",
 				//};
@@ -251,6 +252,7 @@ int main(int argc, const char** argv)
 				//	"-amh", "F:/Fts/Proj/Test/Interedit/Source/TestModule1/TestModule1Common.h",
 				//	"-a", "F:/Fts/Proj/Test/Interedit/Source/Niflect/CommonlyUsed/DefaultAccessorSetting.h",
 				//	"-I", "F:/Fts/Proj/Test/Interedit/Source",
+				//	"-I", "F:/Fts/Proj/Test/Interedit/Source/Niflect/include",
 				//	"-g", "F:/Fts/Proj/Test/Interedit/Generated/NiflectGenerated",
 				//	//"-fs",
 				//};

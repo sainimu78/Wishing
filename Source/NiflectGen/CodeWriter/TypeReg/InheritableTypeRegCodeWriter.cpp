@@ -4,7 +4,6 @@
 #include "NiflectGen/CodeWriter/CodeTemplate.h"
 #include "NiflectGen/CodeWriter/CppWriter.h"
 #include "NiflectGen/Base/NiflectGenDefinition.h"
-#include "Niflect/Util/TypeUtil.h"
 
 namespace NiflectGen
 {

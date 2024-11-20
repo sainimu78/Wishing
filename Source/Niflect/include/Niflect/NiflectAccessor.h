@@ -1,7 +1,6 @@
 #pragma once
 #include "Niflect/NiflectBase.h"
 #include "Niflect/NiflectAddr.h"
-#include "Niflect/Util/TypeUtil.h"
 #include "Niflect/Serialization/RwTree.h"
 #include "Niflect/NiflectNata.h"
 

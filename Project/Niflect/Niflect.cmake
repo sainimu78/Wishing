@@ -1,10 +1,14 @@
 set(ModuleName Niflect)
 
-set(SourcePath ${RootSourcePath}/Niflect)
-
-file(GLOB_RECURSE SrcAll ${SourcePath}/*.cpp ${SourcePath}/*.h)
-
-create_source_group(${RootSourcePath} ${SrcAll})
+set(SourcePath ${RootSourcePath}/Niflect/src)
+file(GLOB_RECURSE Sources ${SourcePath}/*.cpp)
+create_source_group(${SourcePath} ${Sources})
+set(IncludePath ${RootSourcePath}/Niflect/include)
+file(GLOB_RECURSE Headers ${IncludePath}/*.h)
+create_source_group(${IncludePath} ${Headers})
+set(SrcAll "")
+list(APPEND SrcAll ${Sources})
+list(APPEND SrcAll ${Headers})
 
 add_library(${ModuleName} SHARED ${SrcAll})
 set_target_properties(${ModuleName} PROPERTIES 
@@ -13,7 +17,7 @@ set_target_properties(${ModuleName} PROPERTIES
 )
 
 target_include_directories(${ModuleName}
-	PUBLIC ${RootSourcePath}
+	PUBLIC ${IncludePath}
 )
 
 if(CMAKE_CXX_COMPILER MATCHES "c\\+\\+$")

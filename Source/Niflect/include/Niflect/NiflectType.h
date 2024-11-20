@@ -3,7 +3,6 @@
 #include "Niflect/NiflectRegisteredType.h"
 #include "Niflect/NiflectMethod.h"
 #include "Niflect/NiflectAccessor.h"
-#include "Niflect/Util/TypeUtil.h"
 
 namespace Niflect
 {

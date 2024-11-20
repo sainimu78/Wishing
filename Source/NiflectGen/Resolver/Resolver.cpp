@@ -1,7 +1,6 @@
 #include "NiflectGen/Resolver/Resolver.h"
 #include "Niflect/Util/DebugUtil.h"
 #include <algorithm>
-#include "Niflect/Util/TypeUtil.h"
 #include "NiflectGen/CodeWriter/ModuleReg/ModuleRegCodeWriter.h"
 #include "NiflectGen/Base/NiflectGenDefinition.h"
 #include "NiflectGen/CodeWriter/CppWriter.h"
