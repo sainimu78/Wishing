@@ -41,19 +41,20 @@ namespace Niflect
 		template <typename TInfo, typename TType>
 		void RegisterType(const CString& typeName, const CreateFieldLayoutOfTypeFuncOld& Func)
 		{
-			CTypeLifecycleFunctions typeFuncs;
-			typeFuncs.m_InvokeConstructorFunc = &GenericInstanceInvokeConstructor<TType>;
-			typeFuncs.m_InvokeDestructorFunc = &GenericInstanceInvokeDestructor<TType>;
-			typeFuncs.m_CreateTypeAccessorFunc = Func;
+			ASSERT(false);
+			//STypeLifecycleFunctions typeFuncs;
+			//typeFuncs.m_InvokeConstructorFunc = &GenericInstanceInvokeConstructor<TType>;
+			//typeFuncs.m_InvokeDestructorFunc = &GenericInstanceInvokeDestructor<TType>;
+			//typeFuncs.m_CreateTypeAccessorFunc = Func;
 
-			auto shared = MakeShared<TInfo>();
-			auto type = shared.Get();
-			auto idx = this->AddType(shared);
-			ASSERT(!TRegisteredType<TType>::IsValid());
-			TRegisteredType<TType>::s_type = type;
-			//type->InitStaticType<TType>();
-			type->InitTypeMeta(sizeof(TType), CNiflectType::GetTypeHash<TType>(), typeName, idx, typeFuncs);
-			ASSERT(TRegisteredType<TType>::IsValid());
+			//auto shared = MakeShared<TInfo>();
+			//auto type = shared.Get();
+			//auto idx = this->AddType(shared);
+			//ASSERT(!TRegisteredType<TType>::IsValid());
+			//TRegisteredType<TType>::s_type = type;
+			////type->InitStaticType<TType>();
+			//type->InitTypeMeta(sizeof(TType), CNiflectType::GetTypeHash<TType>(), typeName, idx, typeFuncs);
+			//ASSERT(TRegisteredType<TType>::IsValid());
 		}
 		template <typename TType, typename TInfo = CNiflectType>
 		void RegisterType2(const Niflect::CString& id, const CreateTypeAccessorFunc& Func)
@@ -72,18 +73,18 @@ namespace Niflect
 			//ASSERT(TRegisteredType<TType>::IsValid());
 		}
 		template <typename TType, typename TInfo = CNiflectType>
-		void RegisterType3(const Niflect::CString& id, const CreateTypeAccessorFunc& Func, const CSharedNata& nata)
+		void RegisterType3(const Niflect::CString& id, const CreateTypeAccessorFunc& inCreateTypeAccessorFunc, const CSharedNata& nata)
 		{
-			CTypeLifecycleFunctions typeFuncs;
-			typeFuncs.m_InvokeConstructorFunc = &GenericInstanceInvokeConstructor<TType>;
-			typeFuncs.m_InvokeDestructorFunc = &GenericInstanceInvokeDestructor<TType>;
-			typeFuncs.m_CreateTypeAccessorFunc = Func;
+			STypeLifecycleMeta lifecycleMeta;
+			lifecycleMeta.m_typeSize = sizeof(TType);
+			lifecycleMeta.m_InvokeConstructorFunc = &GenericInstanceInvokeConstructor<TType>;
+			lifecycleMeta.m_InvokeDestructorFunc = &GenericInstanceInvokeDestructor<TType>;
 
 			auto shared = Niflect::MakeShared<TInfo>();
 			CNiflectType* type = shared.Get();
 			auto idx = this->AddType(shared);
 			ASSERT(!TRegisteredType<TType>::IsValid());
-			type->InitTypeMeta2(sizeof(TType), CNiflectType::GetTypeHash<TType>(), idx, typeFuncs, id, &TRegisteredType<TType>::s_type, nata);
+			type->InitTypeMeta2(lifecycleMeta, inCreateTypeAccessorFunc, CNiflectType::GetTypeHash<TType>(), idx, id, &TRegisteredType<TType>::s_type, nata);
 			ASSERT(TRegisteredType<TType>::IsValid());
 		}
 		uint32 GetTypesCount() const

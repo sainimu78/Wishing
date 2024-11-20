@@ -6,24 +6,16 @@
 #include "Niflect/Util/TypeUtil.h"
 
 namespace Niflect
-{	
-	typedef uint32 CTypeIndex;
+{
 
 	typedef CSharedAccessor (*CreateTypeAccessorFunc)();
 	using CreateFieldLayoutOfTypeFuncOld = CreateTypeAccessorFunc;
 
-	class CTypeLifecycleFunctions
+	struct STypeLifecycleMeta
 	{
-	public:
-		CTypeLifecycleFunctions()
-			: m_InvokeConstructorFunc(NULL)
-			, m_InvokeDestructorFunc(NULL)
-			, m_CreateTypeAccessorFunc(NULL)
-		{
-		}
+		uint32 m_typeSize;
 		InvokeConstructorFunc m_InvokeConstructorFunc;//一些其它框架中称作 Ctor 与 Dtor
 		InvokeDestructorFunc m_InvokeDestructorFunc;
-		CreateTypeAccessorFunc m_CreateTypeAccessorFunc;
 	};
 
 	class CNiflectType;
@@ -33,10 +25,11 @@ namespace Niflect
 	{
 	public:
 		CNiflectType()
-			: m_index(INDEX_NONE)
-			, m_niflectTypeSize(0)
-			, m_typeHash(0)
+			: m_tableIdx(INDEX_NONE)
+			, m_lifecycleMeta{}
+			, m_CreateTypeAccessorFunc(NULL)
 			, m_staticTypePtrAddr(NULL)
+			, m_typeHash(0)
 		{
 		}
 		~CNiflectType()
@@ -46,25 +39,25 @@ namespace Niflect
 		}
 
 	public:
-		void InitTypeMeta(uint32 niflectTypeSize, size_t typeHash, const CString& name, CTypeIndex index, const CTypeLifecycleFunctions& cb)
+		void InitTypeMeta(uint32 niflectTypeSize, size_t typeHash, const CString& name, uint32 index, const STypeLifecycleMeta& cb)
 		{
 			ASSERT(false);
-			m_name = name;
-			m_index = index;
-			m_niflectTypeSize = niflectTypeSize;
-			m_cb = cb;
-			m_typeHash = typeHash;
+			//m_name = name;
+			//m_index = index;
+			//m_niflectTypeSize = niflectTypeSize;
+			//m_cb = cb;
+			//m_typeHash = typeHash;
 		}
-		void InitTypeMeta2(uint32 nativeTypeSize, size_t typeHash, CTypeIndex tableIdx, const CTypeLifecycleFunctions& typeFuncs, const CString& id, CStaticNiflectTypeAddr* staticTypePtrAddr, const CSharedNata& nata)
+		void InitTypeMeta2(const STypeLifecycleMeta& lifecycleMeta, const CreateTypeAccessorFunc& inCreateTypeAccessorFunc, size_t typeHash, uint32 tableIdx, const CString& id, CStaticNiflectTypeAddr* staticTypePtrAddr, const CSharedNata& nata)
 		{
-			m_niflectTypeSize = nativeTypeSize;
-			m_typeHash = typeHash;
-			m_index = tableIdx;
-			m_cb = typeFuncs;
 			m_name = id;
+			m_tableIdx = tableIdx;
+			m_nata = nata;
+			m_lifecycleMeta = lifecycleMeta;
+			m_CreateTypeAccessorFunc = inCreateTypeAccessorFunc;
 			m_staticTypePtrAddr = staticTypePtrAddr;
 			*m_staticTypePtrAddr = this;
-			m_nata = nata;
+			m_typeHash = typeHash;
 		}
 		
 	public:
@@ -76,9 +69,9 @@ namespace Niflect
 		//{
 		//	return m_accessorRoot;
 		//}
-		const CTypeIndex& GetTypeIndex() const//todo: 计划改名为 GetTableIndex
+		const uint32& GetTableIndex() const//todo: 计划改名为 GetTableIndex
 		{
-			return m_index;
+			return m_tableIdx;
 		}
 		const CString& GetTypeName() const//todo: 计划改名为 GetNativeTypeName
 		{
@@ -86,7 +79,15 @@ namespace Niflect
 		}
 		const uint32& GetTypeSize() const//todo: 计划改名为 GetNativeTypeSize
 		{
-			return m_niflectTypeSize;//对于C++ Built in类型, 返回类型为const ref是为了方便赋值类型用auto
+			return m_lifecycleMeta.m_typeSize;//对于C++ Built in类型, 返回类型为const ref是为了方便赋值类型用auto
+		}
+		const CreateTypeAccessorFunc& GetCreateTypeAccessorFunc() const
+		{
+			return m_CreateTypeAccessorFunc;
+		}
+		const STypeLifecycleMeta& GetLifecycleMeta() const
+		{
+			return m_lifecycleMeta;
 		}
 
 	public:
@@ -123,15 +124,15 @@ namespace Niflect
 		CSharedAccessor CreateFieldLayout() const//todo:计划删除
 		{
 			ASSERT(false);
-			if (m_cb.m_CreateTypeAccessorFunc != NULL)
-				return m_cb.m_CreateTypeAccessorFunc();
+			if (m_CreateTypeAccessorFunc != NULL)
+				return m_CreateTypeAccessorFunc();
 			return NULL;
 		}
 		CSharedAccessor CreateAccessor() const
 		{
 			ASSERT(false);
-			if (m_cb.m_CreateTypeAccessorFunc != NULL)
-				return m_cb.m_CreateTypeAccessorFunc();
+			if (m_CreateTypeAccessorFunc != NULL)
+				return m_CreateTypeAccessorFunc();
 			return NULL;
 		}
 		void InitFieldLayout()
@@ -165,15 +166,15 @@ namespace Niflect
 	protected:
 		virtual void CreateTypeLayout(CTypeLayout& layout) const
 		{
-			if (m_cb.m_CreateTypeAccessorFunc != NULL)
-				layout.m_vecAccessor.push_back(m_cb.m_CreateTypeAccessorFunc());
+			if (m_CreateTypeAccessorFunc != NULL)
+				layout.m_vecAccessor.push_back(m_CreateTypeAccessorFunc());
 		}
 
 	public:
 		template <typename TBase>
 		TSharedPtr<TBase> MakeSharedInstance() const
 		{
-			return GenericPlacementMakeShared<TBase, CMemory>(m_niflectTypeSize, m_cb.m_InvokeDestructorFunc, m_cb.m_InvokeConstructorFunc);
+			return GenericPlacementMakeShared<TBase, CMemory>(m_lifecycleMeta.m_typeSize, m_lifecycleMeta.m_InvokeDestructorFunc, m_lifecycleMeta.m_InvokeConstructorFunc);
 		}
 		//template <typename TBase>
 		//inline TSharedPtr<TBase> MakeSharableInstance(TBase* obj) const
@@ -221,21 +222,18 @@ namespace Niflect
 	//private:
 	//	virtual void DebugFuncForDynamicCast() {}//仅为动态检查类型避免错误, 如已定义非调试用的virtual函数则可移除, 备注: error C2683: 'dynamic_cast': 'XXX' is not a polymorphic type 
 
-	protected:
-		CTypeLifecycleFunctions m_cb;//todo: 计划改名为 m_typeFuncs
-
 	private:
 		//todo: 计划改名为 m_id, 通常为 natiev type name
 		//NiflectGen 所生成的 id 为带 namespace 的 type name, 而反射宏 NIFLECT_TYPE_REGISTER 所注册的 id 无 namespace, 如有需要可另作封装.
 		//但需要明确一点, id 的意义在于避免重复与序列化使用, 实际是否带 namespace 通常无关紧要, 一般情况下通过定义的类名区分即可
 		CString m_name;
-
-		CTypeIndex m_index;//todo: 计划改名为 m_tableIdx;
-		uint32 m_niflectTypeSize;//todo: 计划改名为 m_nativeTypeSize;
-		size_t m_typeHash;
 		CSharedNata m_nata;
-		CStaticNiflectTypeAddr* m_staticTypePtrAddr;
+		uint32 m_tableIdx;//todo: 计划改名为 m_tableIdx;
 		CTypeLayout m_layout;
+		STypeLifecycleMeta m_lifecycleMeta;//todo: 计划改名为 m_typeFuncs
+		CreateTypeAccessorFunc m_CreateTypeAccessorFunc;
+		CStaticNiflectTypeAddr* m_staticTypePtrAddr;
+		size_t m_typeHash;
 	};
 	using CSharedNiflectType = TSharedPtr<CNiflectType>;
 	
@@ -351,8 +349,9 @@ namespace Niflect
 				auto par = m_parent;
 				while (par != NULL)
 				{
-					ASSERT(par->m_cb.m_CreateTypeAccessorFunc != NULL);
-					layout.m_vecAccessor.insert(layout.m_vecAccessor.begin(), par->m_cb.m_CreateTypeAccessorFunc());
+					auto& Func = par->GetCreateTypeAccessorFunc();
+					ASSERT(Func != NULL);
+					layout.m_vecAccessor.insert(layout.m_vecAccessor.begin(), Func());
 					par = par->m_parent;
 				}
 			}
