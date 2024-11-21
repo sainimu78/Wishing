@@ -126,7 +126,7 @@ int main()
 		
 		// Copy the loaded dummy instance to 'dstData'
 		CMyClass dstData = *reinterpret_cast<CMyClass*>(dummy.Get());
-		// Assert that the serialization and deserialization were successful
+		// Assert that the saving and laoding were successful
 		ASSERT(srcData == dstData);
 	}
 
