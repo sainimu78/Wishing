@@ -229,7 +229,7 @@ Being native is all that matters.
 - C++ native-style type/field metadata specification
   - Users can write metadata code in a native C++ style
 - libclang-based parser, meaning that adapting to a coding standard is not required
-  - Support for C++ type aliases using `typedef` or `using`
+  - Support for C++ type aliases defined by `typedef` or `using`
 
 - Truly non-intrusive reflection implementation
   - No base type requirement for types being reflected.
