@@ -1,6 +1,6 @@
 # Niflect
 
-The native-style C++ type reflection.
+The C++ native-style type reflection.
 
 ## Example 1, The reflection code gen tool
 
