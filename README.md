@@ -191,7 +191,7 @@ namespace MyScope
 
 This example demonstrates features as follows
 
-### Feature #1, Nata
+### Nata
 
 The Nata, such as `CMyClassNata`, refers to native-style type/field metadata. It can be interpreted by code completion tools, allowing users to efficiently write metadata code without the need to remember which properties are supported by the framework.
 
