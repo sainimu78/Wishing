@@ -233,6 +233,6 @@ Being native is all that matters.
 
 - Truly non-intrusive reflection implementation
   - No base type requirement for types being reflected.
-  - Macro tags like `NIF_T` or `GENERATED_BODY` consist solely of `friend` declarations, without any definitions for fields or methods. (Macro tags can be easily renamed using `#define` as needed)
+  - Macro tags like `NIF_T` are empty macros, while `GENERATED_BODY` consists solely of `friend` declarations, without any definitions for fields or methods. (These macro tags can be easily renamed using `#define` as needed.)
 - Most extensible C++ native serialization method utilizing `RwTree`
   - Data is saved into the unified tree-like structure of `CRwNode`, allowing serialization into any other desired format.
