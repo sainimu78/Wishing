@@ -139,6 +139,10 @@ int main()
 }
 ```
 
+and the result
+
+![1732212533978](Doc/Introduction/1732212533978.png)
+
 ## Example 2, Being native
 
 ```
