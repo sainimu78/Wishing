@@ -59,7 +59,7 @@ Execute NiflectGenTool to generate reflection code, here is a batch script examp
 
 Then the reflection code will be generated
 
-![1732206465218](Doc/Introduction/1732206465218.png)
+![Doc/Introduction/1732206465218.png](https://github.com/sainimu78/Interedit/blob/main/Doc/Introduction/1732206465218.png)
 
 #### About the DefaultAccessorSetting.h appears in the commandline args
 
@@ -141,7 +141,7 @@ int main()
 
 and the result
 
-![1732212533978](Doc/Introduction/1732212533978.png)
+![Doc/Introduction/1732212533978.png](https://github.com/sainimu78/Interedit/blob/main/Doc/Introduction/1732212533978.png)
 
 ## Example 2, Being native
 
