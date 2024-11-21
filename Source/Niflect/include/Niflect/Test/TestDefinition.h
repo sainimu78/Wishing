@@ -5,7 +5,7 @@ namespace TestDefinition
 #define CONCAT_CONST_CHAR_2(a, b) a"" b
 #define CONCAT_CONST_CHAR_3(a, b, c) CONCAT_CONST_CHAR_2(a, b)"" c
 #define CONCAT_CONST_CHAR_4(a, b, c, d) CONCAT_CONST_CHAR_3(a, b, c)"" d
-#define ROOT_TEST_PATH "../../../../../../Source/Niflect/Test"
+#define ROOT_TEST_PATH "../../../../../../Source/Niflect/src/Niflect/Test"
 	namespace FilePath
 	{
 		constexpr const char* InputJson_JsonFormat = CONCAT_CONST_CHAR_2(ROOT_TEST_PATH, "/RwTree/Input/JsonFormat.json");

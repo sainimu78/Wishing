@@ -37,7 +37,7 @@ namespace TestSerializationRwTree
 		using namespace Niflect;
 		CDefaultMemoryStatsScope memTestScope;
 		auto stats = GetDefaultMemoryStats();
-		if (false)
+		if (true)
 		{
 			CRwNode root;
 			auto rw = &root;
@@ -68,7 +68,7 @@ namespace TestSerializationRwTree
 			ASSERT(GetRwValueAs<Niflect::CString>(FindRwValue(rw, "l")) == "11 in string");
 			printf("");
 		}
-		if (false)//写测试用的 JSON 格式文件
+		if (true)//写测试用的 JSON 格式文件
 		{
 			const auto oldData = NiflectUtil::ReadStringFromFile(TestDefinition::FilePath::InputJson_JsonFormat);
 			{
@@ -93,9 +93,11 @@ namespace TestSerializationRwTree
 				NiflectUtil::COutputFileStream ofs(TestDefinition::FilePath::OutputJson_JsonFormat);
 				CJsonFormat::Write(&root, ofs);
 			}
-			ASSERT(NiflectUtil::ReadStringFromFile(TestDefinition::FilePath::InputJson_JsonFormat) == NiflectUtil::ReadStringFromFile(TestDefinition::FilePath::OutputJson_JsonFormat));
+			auto a = NiflectUtil::ReadStringFromFile(TestDefinition::FilePath::InputJson_JsonFormat);
+			auto b = NiflectUtil::ReadStringFromFile(TestDefinition::FilePath::OutputJson_JsonFormat);
+			ASSERT(a == b);
 		}
-		if (false)//JSON 格式读 rapidjson 所写数据
+		if (true)//JSON 格式读 rapidjson 所写数据
 		{
 			{
 				CRwNode root;
@@ -137,7 +139,15 @@ namespace TestSerializationRwTree
 				Niflect::TArrayNif<Niflect::CString> vecLineB;
 				ss << NiflectUtil::ReadStringFromFile(TestDefinition::FilePath::InputJson_AnimGraphEditorData);
 				while (std::getline(ss, line))
+				{
+					//begin
+					//2024.11.21, 测试发现数据中换行有 \r, 因此多一步处理
+					if (!line.empty() && line.back() == '\r') {
+						line.erase(line.size() - 1);
+					}
+					//end
 					vecLineB.push_back(line);
+				}
 				ASSERT(vecLineA.size() == vecLineB.size());
 				bool same = vecLineA.size() > 0;
 				ASSERT(same);
@@ -176,7 +186,7 @@ namespace TestSerializationRwTree
 				ASSERT(same);
 			}
 		}
-		if (false)//JSON & 自定义 Binary 格式相互转换
+		if (true)//JSON & 自定义 Binary 格式相互转换
 		{
 			{
 				CRwNode root;
@@ -205,14 +215,14 @@ namespace TestSerializationRwTree
 
 			ASSERT(NiflectUtil::ReadStringFromFile(TestDefinition::FilePath::OutputJson_0) == NiflectUtil::ReadStringFromFile(TestDefinition::FilePath::OutputJson_1));
 		}
-		if (false)
+		if (true)
 		{
 			//TestDiffLCS::SimpleNumberArrays();
 			//TestDiffLCS::TestDiff();
 			TestDiffLCS::TestLargeData();
 			printf("");
 		}
-		if (false)
+		if (true)
 		{
 			TestDiffEditGraph::TestLargeData();
 			printf("");
