@@ -6,11 +6,11 @@
 
 The C++ native-style type reflection framework.
 
-This is a concept currently in the experimental stage.
+(This is a concept currently in the experimental stage.)
 
 ## [Experiment 1] The reflection code gen tool
 
-The reflection code gen tool in Niflect, is called NiflectGenTool. Its usage steps are as follows:
+The reflection code gen tool in Niflect, is called NiflectGenTool. Its usage steps are as follows :
 
 ### Step 1
 
@@ -71,7 +71,7 @@ Then the reflection code will be generated
 
 #### About the DefaultAccessorSetting.h appears in the commandline args
 
-This is one of the Niflect's feature, it's a header, called accessor setting header, for specifying type bindings in a way of C++ native style.
+This is one of the Niflect's feature, it's a header, called Accessor Setting Header, for specifying type bindings in a way of C++ native style.
 
 Here is a simplified version of the header
 
@@ -151,7 +151,7 @@ and the result
 
 ![1732212533978](Doc/Introduction/1732212533978.png)
 
-## [Experiment 2] Being native
+## [Experiment 2] Being C++ native
 
 C++ programmers may need to :
 
@@ -231,25 +231,26 @@ template <typename TInstance, typename T0, typename T1>
 NIF_AS_A() TSetting<TSTLMapAccessor<TInstance>, std::map<T0, T1>, std::pair<T0, T1> >;
 ```
 
-Again, the accessor setting headers allows users to bind their `Accessor` for their own custom serialization without needing to modify code of reflection code gen tool like NiflectGenTool.
+Again, the Accessor Setting Headers allows users to bind their `Accessor` for their own custom serialization without needing to modify code of reflection code gen tool like NiflectGenTool.
 
-More importantly, this type binding method is entirely in a native C++ style
+More importantly, this type binding method is entirely in a C++ native style.
 
 ## Summary
 
-Being native is all that matters.
+Being C++ native is all that matters.
 
 ### Features
 
-- C++ native-style type binding through accessor setting headers
-  - Extremely easy to implement custom field serialization without modifying the code generation tool
+- C++ native-style type binding through Accessor Setting Headers
+  - Extremely easy to implement custom type/field serialization without modifying the code generation tool
 - C++ native-style type/field metadata specification
   - Users can write metadata code in a native C++ style
 - libclang-based parser, meaning that adapting to a coding standard is not required
-  - Support for C++ type aliases defined by `typedef` or `using`
+  - Eg. support for C++ type aliases defined by `typedef` or `using`
 
 - Truly non-intrusive reflection implementation
   - No base type requirement for types being reflected.
   - Macro tags like `NIF_T` are empty macros, while `GENERATED_BODY` consists solely of `friend` declarations, without any definitions for fields or methods. (These macro tags can be easily renamed using `#define` as needed.)
 - Extensible C++ native serialization method utilizing `RwTree`
   - Data is saved into the unified tree-like structure of `CRwNode`, allowing serialization into any other desired format.
+
