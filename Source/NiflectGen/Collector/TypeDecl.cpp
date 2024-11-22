@@ -77,7 +77,9 @@ namespace NiflectGen
 			if (frontIndex < vecAAAAAAA.size())
 			{
 				bool takingDetail = false;
-				if ((clang_getCursorKind(parentSubcursor.m_cursorDecl) != CXCursor_NoDeclFound) || (parentType.kind == CXType_Unexposed))
+				if ((clang_getCursorKind(parentSubcursor.m_cursorDecl) != CXCursor_NoDeclFound) 
+					|| (parentType.kind == CXType_Unexposed 
+						|| parentType.kind == CXType_Pointer))
 				{
 					takingDetail = true;
 				}

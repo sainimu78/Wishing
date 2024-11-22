@@ -207,6 +207,18 @@ namespace NiflectGen
 		None,
 		Stop,
 	};
+
+	Niflect::CString AttachStarsForPointerType(const CXType& pointerType)
+	{
+		Niflect::CString stars;
+		auto originalType = pointerType;
+		while (originalType.kind == CXType_Pointer)
+		{
+			stars += "*";
+			originalType = clang_getPointeeType(originalType);
+		}
+		return stars;
+	}
 	static void GenerateResocursorNameRecurs(const CSubcursor& parentSubcursor, EGenerateAccessorBindingCursorNameVisitingState& visitingState, Niflect::CString& text)
 	{
 		//该函数与旧实验 GenerateTemplateInstanceCode 流程类似, 主要区别为
@@ -268,6 +280,7 @@ namespace NiflectGen
 			//m_vecChild为模板参数所引用的decl, 如TypedefAliasDecl, m_vecAaaaaaaaaa.back()中为模板参数的Spelling类型, 非模板为TypeRef, 模板为TemplateRef, 因此TypeRef不应继续递归
 			if (clang_getCursorKind(parentSubcursor.m_vecAaaaaaaaaa.back()) == CXCursor_TypeRef)
 			{
+				text += AttachStarsForPointerType(parentSubcursor.m_CXType);
 				canRecurs = false;
 			}
 		}
@@ -312,8 +325,9 @@ namespace NiflectGen
 	}
 	void CAccessorBindingMapping2::InitPatterns()
 	{
-		for (auto& it : m_settings.m_vecAccessorBindingSetting)
+		for (uint32 idx = 0; idx < m_settings.m_vecAccessorBindingSetting.size(); ++idx)
 		{
+			auto& it = m_settings.m_vecAccessorBindingSetting[idx];
 			//auto& aSubcursor = it.GetAccessorTypeDecl();
 			//it.m_accessorTypePattern = GenerateNamespacesAndScopesCode(aSubcursor.m_cursorDecl);
 			//it.m_accessorTypePattern += CXStringToCString(clang_getCursorSpelling(aSubcursor.m_cursorDecl));

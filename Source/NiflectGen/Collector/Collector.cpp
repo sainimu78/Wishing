@@ -798,7 +798,8 @@ namespace NiflectGen
 			}
 			else
 			{
-				GenLogError(log, "The type must be either a class, a struct, or an enum");
+				auto spelling = CXStringToCString(clang_getCursorSpelling(cursor));
+				GenLogError(log, NiflectUtil::FormatString("The type of %s must be either a class, a struct, or an enum", spelling.c_str()));
 			}
 		}
 		return addedTaggedChidl;
