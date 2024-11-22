@@ -118,6 +118,14 @@ template<class _Elem,
 	class _Alloc>
 	class basic_string
 	{
+	public:
+		basic_string()
+		{
+		}
+		template <typename _TAny>
+		basic_string(_TAny&& bypassForAny)
+		{
+		}
 	};
 
 template<class _Elem>
