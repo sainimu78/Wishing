@@ -4,11 +4,13 @@
 
 # Niflect
 
-The C++ native-style type reflection.
+The C++ native-style type reflection framework.
+
+This is a concept currently in the experimental stage.
 
 ## [Experiment 1] The reflection code gen tool
 
-NiflectGenTool is a reflection code generation tool. Its usage steps are as follows:
+The reflection code gen tool in Niflect, is called NiflectGenTool. Its usage steps are as follows:
 
 ### Step 1
 
