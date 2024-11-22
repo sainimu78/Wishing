@@ -1,10 +1,14 @@
 # Niflect
 
+[中文介绍](Doc/Introduction/中文/README.md)
+
 The C++ native-style type reflection.
 
-## Example 1, The reflection code gen tool
+## [Experiment 1] The reflection code gen tool
 
-### Step #1
+NiflectGenTool is a reflection code generation tool. Its usage steps are as follows:
+
+### Step 1
 
 An example header
 
@@ -43,7 +47,7 @@ private:
 
 The macro tags like `NIF_T` are tags for reflection code gen.
 
-### Step #2
+### Step 2
 
 Execute NiflectGenTool to generate reflection code, here is a batch script example, like
 
@@ -82,7 +86,7 @@ This header can be interpreted by code completion tools.
 
 Of course, users can implement settings like this to bind any `Accessor` for custom field serialization.
 
-### Step #3
+### Step 3
 
 To save and load the example instance of `CMyClass ` with reflection info.
 
@@ -143,7 +147,18 @@ and the result
 
 ![1732212533978](Doc/Introduction/1732212533978.png)
 
-## Example 2, Being native
+## [Experiment 2] Being native
+
+C++ programmers may need to :
+
+- Modify a code generation tool for C++ type bindings or for types in other languages, such as C#.
+- Parse various string formats to retrieve metadata about types and fields.
+
+This may be necessary because the C++ reflection framework is not fully native.
+
+Due to this, being native is an essential requirement for C++ programmers.
+
+Here is an example that illustrates what it means to be C++ native using Niflect :
 
 ```
 namespace MyScope
@@ -188,8 +203,6 @@ namespace MyScope
 	};
 }
 ```
-
-This example demonstrates features as follows
 
 ### Nata
 
