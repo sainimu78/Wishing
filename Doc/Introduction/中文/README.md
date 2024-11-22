@@ -242,7 +242,8 @@ C++ 原生风格即是重点
 - C++ 原生风格的 type/field metadata 指定方式
   - 开发者可通过 C++ 原生风格的方式编写 metadata
 - 基于 libclang 的解析实现, 这意味着开发者可保持自己的编码规范
-  - 如支持使用通过 `typedef` or `using` 定义的 C++ 类型别名
+  - 如支持使用通过 `typedef` or `using` 定义的类型别名
+  - 如支持使用 `namespace` 或嵌套的 `namespace`
 - 真正意义的非入侵式反射实现
   - 可被反射的类型不要求从某个基类继承
   - 如宏标签 `NIF_T` 是空定义的宏, 而 `GENERATED_BODY` 仅定义`friend` 声明, 这些宏标签均无另外串入另外的 field 或 method 的定义. (如需对宏标签另外命名, 仅需要通过 `#define` 定义即可.)
