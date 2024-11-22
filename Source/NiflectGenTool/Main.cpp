@@ -201,6 +201,7 @@ namespace NiflectGen
 			}
 			else
 			{
+				printf("Unknown option: %s\n", pszV);
 				ASSERT(false);
 			}
 		}
