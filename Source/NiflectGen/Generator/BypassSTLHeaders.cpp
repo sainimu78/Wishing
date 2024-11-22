@@ -8,24 +8,6 @@ namespace NiflectGen
 {
 	using WriteHeaderFileFunc = std::function<void(Niflect::CString& code)>;
 
-	static void Write_map(Niflect::CString& code)
-	{
-		code =
-R"(#pragma once
-#include <xmemory>
-#include <type_traits>
-
-namespace std
-{
-template<class _Kty,
-	class _Ty,
-	class _Pr = less<_Kty>,
-	class _Alloc = allocator<pair<const _Kty, _Ty> > >
-	class map
-	{
-	};
-})";
-	}
 	static void Write_cstddef(Niflect::CString& code)
 	{
 		code =
@@ -51,6 +33,37 @@ namespace std
 	using :: size_t;
 	using max_align_t = double; // most aligned type
 	using nullptr_t   = decltype(nullptr);
+})";
+	}
+	static void Write_map(Niflect::CString& code)
+	{
+		code =
+R"(#pragma once
+#include <xmemory>
+#include <type_traits>
+
+namespace std
+{
+template<class _Kty,
+	class _Ty,
+	class _Pr = less<_Kty>,
+	class _Alloc = allocator<pair<const _Kty, _Ty> > >
+	class map
+	{
+	};
+})";
+	}
+	static void Write_memory(Niflect::CString& code)
+	{
+		code =
+R"(#pragma once
+
+namespace std
+{
+	template <class _Ty>
+	class shared_ptr
+	{
+	};
 })";
 	}
 	static void Write_set(Niflect::CString& code)
@@ -256,6 +269,11 @@ using enable_if_t = typename enable_if<_Test, _Ty>::type;
 	};
 	void GenerateBypassSTLHeaders(const Niflect::CString& headersDirPath)
 	{
+		//字母序排列仅为方便补充 BypassSTL, 补充步骤
+		//1. 实现写相应的系统头文件的 Write_xxx, 如 Write_map
+		//2. 相应地标记 m_withBypassDefinition 为 true, 如 {"map", true},//Write_map
+		//3. 将补充的写函数加到 vecWriteFunc 中, 如 vecWriteFunc.push_back(&Write_map);
+		//仅须注意按字母序编写即可
 		SHeaderData arrAllNeeded[] = {
 			{"algorithm", false},
 			{"array", false},
@@ -276,6 +294,7 @@ using enable_if_t = typename enable_if<_Test, _Ty>::type;
 			{"list", false},
 			{"locale", false},
 			{"map", true},//Write_map
+			{"memory", true},//Write_memory
 			{"new", false},
 			{"numeric", false},
 			{"ostream", false},
@@ -312,6 +331,7 @@ using enable_if_t = typename enable_if<_Test, _Ty>::type;
 		Niflect::TArrayNif<WriteHeaderFileFunc> vecWriteFunc;
 		vecWriteFunc.push_back(&Write_cstddef);
 		vecWriteFunc.push_back(&Write_map);
+		vecWriteFunc.push_back(&Write_memory);
 		vecWriteFunc.push_back(&Write_set);
 		vecWriteFunc.push_back(&Write_sstream);
 		vecWriteFunc.push_back(&Write_stddef_h);
