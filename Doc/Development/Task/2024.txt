@@ -126,3 +126,4 @@
 67. NiflectGen, 调整指针代码生成的文本, 移除星号空格
 68. Done, (仅预留获取lifecycleMeta, 未实现默认堆创建释放) Niflect, 创建实例改写为静态函数, 方便接入不同的创建方法, 如默认堆, Niflect 的堆
 69. Niflect, CString为何无法在field处初始化, 而std::string可
+70. NiflectGen, 指针模板, 用于如 std::shared_ptr, 因为无法与1维容器模板区分, 可考虑整理复用 m_recursCollectiingData.m_settings.m_vecAccessorBindingSetting 的流程
