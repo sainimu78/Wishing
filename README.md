@@ -6,7 +6,19 @@
 
 The C++ native-style type reflection framework.
 
-(This is a concept currently in the experimental stage.)
+**This is a concept currently in the experimental stage.**
+
+Before you begin reading, I would like to take a moment to ensure that you have the necessary experience to make the most of this article and that we don't waste your time. Specifically, you should
+
+- **Understand the Necessity of C++ Reflection**: It is essential that you grasp why it is important to study C++ reflection.
+
+Additionally, you should possess at least one of the following qualifications:
+
+- **5+ years of C++ Experience**: Ideally, you have extensive experience in using C++.
+- **Experience in Large Software Architecture**: Relevant experience in designing or working with large software systems.
+- **Extensive Coding Background**: Have written over 300,000 lines of code.
+
+If you meet the requirements above, feel free to continue reading to explore the Niflect framework and its potential applications.
 
 ## [Experiment 1] The reflection code gen tool
 
@@ -234,6 +246,110 @@ NIF_AS_A() TSetting<TSTLMapAccessor<TInstance>, std::map<T0, T1>, std::pair<T0, 
 Again, the Accessor Setting Headers allows users to bind their `Accessor` for their own custom serialization without needing to modify code of reflection code gen tool like NiflectGenTool.
 
 More importantly, this type binding method is entirely in a C++ native style.
+
+## [Experiment 3] Serialization for a pointer type
+
+C++ reflection frameworks we have explored typically face limitations when it comes to serializing pointers. They
+
+- Cannot serialize pointers at all
+- Or only support specific types of pointers.
+
+This limitation is understandable, as general-purpose frameworks must not have enough information to create or manage custom pointer types effectively.
+
+However, with Niflect, users have the capability to serialize any pointer type by implementing a custom accessor setting. For example :
+
+```
+namespace SampleAccessorSetting
+{
+	NIF_AS_A() TSetting<CMyResourceAccessor, CMyResource*>;
+}
+```
+
+In this snippet :
+
+- `CMyResourceAccessor` serves as the accessor for serializing pointers of type `CMyResource`.
+- `CMyResource` is the type of the pointer being managed.
+
+The implementation of the `CMyResourceAccessor`:
+
+```
+class CMyResourceAccessor : public Niflect::CAccessor
+{
+	using MyPtr = CMyResource*;
+protected:
+	virtual bool SaveInstanceImpl(const AddrType base, CRwNode* rw) const
+	{
+		const auto& instance = *static_cast<const MyPtr*>(base);
+		AddRwString(rw, "Path", instance->m_path.c_str());
+		return true;
+	}
+	virtual bool LoadInstanceImpl(AddrType base, const CRwNode* rw) const
+	{
+		auto& instance = *static_cast<MyPtr*>(base);
+		auto path = FindRwString(rw, "Path");
+		instance = g_factory.FindOrAddResource(path.c_str());
+		return true;
+	}
+};
+```
+
+In this setup, the example class type with a pointer field :
+
+```
+class CMyResource
+{
+public:
+	CMyResource(const std::string& path)
+		: m_path(path)
+	{
+	}
+	std::string m_path;
+};
+
+class CMyFactory
+{
+public:
+	CMyResource* FindOrAddResource(const std::string& path)
+	{
+		auto ret = m_mapPathToResource.insert({ path, NULL });
+		if (ret.second)
+			ret.first->second = std::make_shared<CMyResource>(path);
+		return ret.first->second.get();
+	}
+
+	std::map<std::string, std::shared_ptr<CMyResource> > m_mapPathToResource;
+};
+
+extern CMyFactory g_factory;
+
+NIF_T()
+class CMyClass
+{
+	GENERATED_BODY()
+public:
+	CMyClass()
+		: m_resource_0(NULL)
+	{
+	}
+	void InitForTest()
+	{
+		m_resource_0 = g_factory.FindOrAddResource("/Dir/Image.bmp");
+	}
+	bool operator==(const CMyClass& rhs) const
+	{
+		return m_resource_0 == rhs.m_resource_0
+			;
+	}
+
+public:
+	NIF_F()
+	CMyResource* m_resource_0;
+};
+```
+
+Finally, do save and load `CMyClass` instance like the Step 3 of Experiment 1
+
+![1732372828784](Doc/Introduction/1732372828784.png)
 
 ## Summary
 
