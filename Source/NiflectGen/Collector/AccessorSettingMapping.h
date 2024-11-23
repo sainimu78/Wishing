@@ -18,6 +18,17 @@ namespace NiflectGen
 		Niflect::CString m_requiredHeaderFilePath;
 	};
 
+	class CAccessorSettingResolvedInfo
+	{
+	public:
+		CAccessorSettingResolvedInfo()
+			: m_isPointerTemplate(false)
+		{
+		}
+		CAccessorResocursorNodeInfo m_resoInfo;
+		bool m_isPointerTemplate;
+	};
+
 	class CBindingSettingData
 	{
 		enum ESetting
@@ -83,7 +94,7 @@ namespace NiflectGen
 		CSubcursor m_subcursorRoot;
 		CAccessorData m_accessorData;//todo: 应废弃, 改为通过AccessorBindingMapping查找并获取对应信息
 		Niflect::CString m_bindingResocursorName;
-		CAccessorResocursorNodeInfo m_accessorResocursorNodeInfo;
+		CAccessorSettingResolvedInfo m_accessorSettingResolvedInfo;
 	};
 
 	class CAccessorBindingFindingContext

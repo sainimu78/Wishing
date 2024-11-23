@@ -12,14 +12,15 @@ namespace NiflectGen
 		B,
 		C,
 		D,
+		E,
 		Count,
 	};
-	//constexpr const char* AccessorSetting = CODETAG_PREFIX_ACCESSOR_SETTING;
-	constexpr const char* AccessorSetingTagNames[] = {
+	constexpr const char* AccessorSetingTagNames[static_cast<uint32>(EAccessorSettingTagType::Count)] = {
 		CONCAT_HARDCODED_STRINGS_2(CODETAG_PREFIX_ACCESSOR_SETTING, "_A"),
 		CONCAT_HARDCODED_STRINGS_2(CODETAG_PREFIX_ACCESSOR_SETTING, "_B"),
 		CONCAT_HARDCODED_STRINGS_2(CODETAG_PREFIX_ACCESSOR_SETTING, "_C"),
-		CONCAT_HARDCODED_STRINGS_2(CODETAG_PREFIX_ACCESSOR_SETTING, "_D")
+		CONCAT_HARDCODED_STRINGS_2(CODETAG_PREFIX_ACCESSOR_SETTING, "_D"),
+		CONCAT_HARDCODED_STRINGS_2(CODETAG_PREFIX_ACCESSOR_SETTING, "_E"),
 	};
 	static uint32 GetAccessorSettingTypesCount()
 	{

@@ -73,6 +73,7 @@ namespace NiflectGen
 		}
 		if (auto elem = childrenOwner.m_elem.Get())
 		{
+			//Resolve element resonode decl header file path, 获取 element 声明所在头文件路径
 			for (auto& it : elem->m_vecRequiredHeaderFilePath)
 				m_vecRequiredHeaderFilePath.push_back(it);
 		}

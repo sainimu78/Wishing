@@ -556,6 +556,10 @@ namespace NiflectGen
 					s = data;
 					break;
 				}
+				case EAccessorSettingTagType::E:
+					data.m_accessorSettingResolvedInfo.m_isPointerTemplate = true;
+					m_recursCollectiingData.m_settings.m_vecAccessorBindingSetting.push_back(data);
+					break;
 				default:
 					ASSERT(false);
 					break;

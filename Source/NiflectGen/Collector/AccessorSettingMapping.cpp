@@ -60,18 +60,43 @@ namespace NiflectGen
 		}
 		return isTemplateFormat;
 	}
+	static const CXCursor* FindRefCursorInDetailCursors(const CAccessorBindingFindingContext& ctx)
+	{
+		const CXCursor* refCursor = NULL;
+		while (ctx.m_outDetailIteratingIdx < ctx.m_vecDetailCursor.size())
+		{
+			auto& it = ctx.m_vecDetailCursor[ctx.m_outDetailIteratingIdx];
+			ctx.m_outDetailIteratingIdx++;
+			auto kind = clang_getCursorKind(it);
+			//查找首个可处理的类型的Ref
+			if (kind == CXCursor_TemplateRef || kind == CXCursor_TypeRef)
+			{
+				refCursor = &it;
+				break;
+			}
+		}
+		return refCursor;
+	}
 	bool CAccessorBindingMapping2::InitResocursorNodeIfFound(CAccessorBindingFindingContext& ctx, CResolvedCursorNode& resocursorNode) const
 	{
 		uint32 foundAccessorBindingIdx = INDEX_NONE;
 		uint32 foundUntaggedTemplateIndex = INDEX_NONE;
-		auto& outDetailIteratingIdx = ctx.m_outDetailIteratingIdx;
 		auto& continuing = ctx.m_continuing;
 
 		Niflect::CString header;
 		{
 			auto itFound = m_mapCXTypeToIndex.find(ctx.m_fieldOrArgCXType);
 			if (itFound != m_mapCXTypeToIndex.end())
+			{
 				foundAccessorBindingIdx = itFound->second;
+				if (const CXCursor* refCursor = FindRefCursorInDetailCursors(ctx))
+				{
+					//It's a non-builtin pointer type
+					auto cursor = clang_getCursorReferenced(*refCursor);
+					header = GetCursorFilePath(cursor);
+					ASSERT(!header.empty());
+				}
+			}
 		}
 		if (foundAccessorBindingIdx == INDEX_NONE)
 		{
@@ -87,20 +112,7 @@ namespace NiflectGen
 		}
 		if (foundAccessorBindingIdx == INDEX_NONE)
 		{
-			const CXCursor* refCursor = NULL;
-			while (ctx.m_outDetailIteratingIdx < ctx.m_vecDetailCursor.size())
-			{
-				auto& it = ctx.m_vecDetailCursor[outDetailIteratingIdx];
-				outDetailIteratingIdx++;
-				auto kind = clang_getCursorKind(it);
-				//查找首个可处理的类型的Ref
-				if (kind == CXCursor_TemplateRef || kind == CXCursor_TypeRef)
-				{
-					refCursor = &it;
-					break;
-				}
-			}
-			if (refCursor != NULL)
+			if (const CXCursor* refCursor = FindRefCursorInDetailCursors(ctx))
 			{
 				auto cursor = clang_getCursorReferenced(*refCursor);
 				auto itFound = m_mapCursorToIndex.find(cursor);
@@ -328,21 +340,14 @@ namespace NiflectGen
 		for (uint32 idx = 0; idx < m_settings.m_vecAccessorBindingSetting.size(); ++idx)
 		{
 			auto& it = m_settings.m_vecAccessorBindingSetting[idx];
-			//auto& aSubcursor = it.GetAccessorTypeDecl();
-			//it.m_accessorTypePattern = GenerateNamespacesAndScopesCode(aSubcursor.m_cursorDecl);
-			//it.m_accessorTypePattern += CXStringToCString(clang_getCursorSpelling(aSubcursor.m_cursorDecl));
-
-			//auto& bSubcursor = it.GetBindingTypeDecl();
-			//it.m_bindingTypePattern = GenerateBindingTypeCursorName(bSubcursor.m_cursorDecl, bSubcursor.m_CXType);
-
-			GenerateAccessorResocursorNodeInfo(it.GetAccessorTypeDecl(), it.m_accessorResocursorNodeInfo);
+			GenerateAccessorResocursorNodeInfo(it.GetAccessorTypeDecl(), it.m_accessorSettingResolvedInfo.m_resoInfo);
 			GenerateResocursorName(it.GetBindingTypeDecl(), it.m_bindingResocursorName);
 		}
 		if (m_settings.m_settingCompound.IsValid())
-			GenerateAccessorResocursorNodeInfo(m_settings.m_settingCompound.GetAccessorTypeDecl(), m_settings.m_settingCompound.m_accessorResocursorNodeInfo);
+			GenerateAccessorResocursorNodeInfo(m_settings.m_settingCompound.GetAccessorTypeDecl(), m_settings.m_settingCompound.m_accessorSettingResolvedInfo.m_resoInfo);
 		if (m_settings.m_settingEnumClass.IsValid())
-			GenerateAccessorResocursorNodeInfo(m_settings.m_settingEnumClass.GetAccessorTypeDecl(), m_settings.m_settingEnumClass.m_accessorResocursorNodeInfo);
+			GenerateAccessorResocursorNodeInfo(m_settings.m_settingEnumClass.GetAccessorTypeDecl(), m_settings.m_settingEnumClass.m_accessorSettingResolvedInfo.m_resoInfo);
 		if (m_settings.m_settingEnumBitMask.IsValid())
-			GenerateAccessorResocursorNodeInfo(m_settings.m_settingEnumBitMask.GetAccessorTypeDecl(), m_settings.m_settingEnumBitMask.m_accessorResocursorNodeInfo);
+			GenerateAccessorResocursorNodeInfo(m_settings.m_settingEnumBitMask.GetAccessorTypeDecl(), m_settings.m_settingEnumBitMask.m_accessorSettingResolvedInfo.m_resoInfo);
 	}
 }

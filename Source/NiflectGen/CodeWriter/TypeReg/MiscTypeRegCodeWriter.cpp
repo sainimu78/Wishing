@@ -42,8 +42,12 @@ namespace NiflectGen
 				//auto d = NiflectUtil::FormatString("Element -> %s", elemResocursorNode->m_resocursorName.c_str());
 				//linesResoBodyCode.push_back(d);
 
-				auto elemStaticGetTypeFuncName = elemResocursorNode->GetStaticGetTypeFuncName(context.m_moduleRegInfo.m_moduleScopeSymbolPrefix);
-				WriteNextInitElementAccessor2(elemStaticGetTypeFuncName, linesResoBodyCode);
+				auto& as = m_resolvedData->m_accessorBindingMapping->m_settings.m_vecAccessorBindingSetting[m_bindingTypeIndexedRoot->m_accessorBindingIndex];
+				if (!as.m_accessorSettingResolvedInfo.m_isPointerTemplate)
+				{
+					auto elemStaticGetTypeFuncName = elemResocursorNode->GetStaticGetTypeFuncName(context.m_moduleRegInfo.m_moduleScopeSymbolPrefix);
+					WriteNextInitElementAccessor2(elemStaticGetTypeFuncName, linesResoBodyCode);
+				}
 			}
 			else
 			{

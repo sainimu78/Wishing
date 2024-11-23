@@ -234,7 +234,7 @@ namespace TestGen
 							if (it0.m_resoRoot.m_accessorBindingIndex != INDEX_NONE)
 							{
 								auto& setting = resolvedData.m_accessorBindingMapping->m_settings.m_vecAccessorBindingSetting[it0.m_resoRoot.m_accessorBindingIndex];
-								accessorResocursorName = setting.m_accessorResocursorNodeInfo.m_resocursorName;
+								accessorResocursorName = setting.m_accessorSettingResolvedInfo.m_resoInfo.m_resocursorName;
 							}
 							else
 							{
@@ -290,7 +290,7 @@ namespace TestGen
 					auto& vecCollected = collectionData.m_accessorBindingMapping->m_settings.m_vecAccessorBindingSetting;
 					for (auto& it : vecCollected)
 					{
-						ASSERT(it.m_accessorResocursorNodeInfo.m_resocursorName == vecExpectedA[idxA++]);
+						ASSERT(it.m_accessorSettingResolvedInfo.m_resoInfo.m_resocursorName == vecExpectedA[idxA++]);
 						ASSERT(it.m_bindingResocursorName == vecExpectedB[idxB++]);
 					}
 					ASSERT(idxA == vecCollected.size());

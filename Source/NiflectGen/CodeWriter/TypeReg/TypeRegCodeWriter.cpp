@@ -129,6 +129,14 @@ namespace NiflectGen
 	{
 		auto createTypeAccessorFuncName = m_bindingTypeIndexedRoot->GetCreateTypeAccessorFuncName(context.m_moduleRegInfo.m_moduleScopeSymbolPrefix);
 		{
+			//有可能实现对于指针类的 BindingType 只声明, 而不 include 所在头文件, 但可能较困难, 须考虑
+			//1. 指针模板, 如 std::shared_ptr, 指针头文件复用1维容器模板的获取方式见注释标记 Resolve element resonode decl header file path, 另见生成 CreateTypeAccessor 时的相关变量 CAccessorSettingResonodeInfo::m_isPointerTemplate
+			//2. Raw 指针, 如 CTestBase1*, 指针头文件获取位置见注释标记 It's a non-builtin pointer type
+			//以上情况如何生成声明代码
+			//此外还须考虑指针被定义为别名后的声明代码如何生成
+			//关于声明代码, 在生成 GenH 中的全 Scope 类型声明 GenerateFullScopedTypeDeclCodeRecurs
+			//生成方法是最简单的, 只需要能够生成 TaggedType 的类型声明即可, TaggedType 无别名的复杂情况
+
 			CCodeTemplate tpl0;
 			tpl0.ReadFromRawData(HardCodedTemplate::CreateTypeAccessorDecl);
 			CLabelToCodeMapping map;
@@ -149,8 +157,8 @@ namespace NiflectGen
 				if (m_bindingTypeIndexedRoot->m_accessorBindingIndex != INDEX_NONE)
 				{
 					auto& setting = m_resolvedData->m_accessorBindingMapping->m_settings.m_vecAccessorBindingSetting[m_bindingTypeIndexedRoot->m_accessorBindingIndex];
-					accessorResocursorName = setting.m_accessorResocursorNodeInfo.m_resocursorName;
-					data.m_dependencyHeaderFilePathAddrs.m_vecImpl.push_back(&setting.m_accessorResocursorNodeInfo.m_requiredHeaderFilePath);
+					accessorResocursorName = setting.m_accessorSettingResolvedInfo.m_resoInfo.m_resocursorName;
+					data.m_dependencyHeaderFilePathAddrs.m_vecImpl.push_back(&setting.m_accessorSettingResolvedInfo.m_resoInfo.m_requiredHeaderFilePath);
 
 					if (IsCursorTemplateDecl(setting.GetAccessorTypeDecl().m_cursorDecl))//注, 特化的 Kind 为 ClassDecl
 					{
@@ -185,8 +193,8 @@ namespace NiflectGen
 					if (p != NULL)
 					{
 						ASSERT(p->IsValid());//todo: 报错
-						accessorResocursorName = p->m_accessorResocursorNodeInfo.m_resocursorName;
-						data.m_dependencyHeaderFilePathAddrs.m_vecImpl.push_back(&p->m_accessorResocursorNodeInfo.m_requiredHeaderFilePath);
+						accessorResocursorName = p->m_accessorSettingResolvedInfo.m_resoInfo.m_resocursorName;
+						data.m_dependencyHeaderFilePathAddrs.m_vecImpl.push_back(&p->m_accessorSettingResolvedInfo.m_resoInfo.m_requiredHeaderFilePath);
 					}
 					else
 					{
