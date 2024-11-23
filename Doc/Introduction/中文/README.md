@@ -24,7 +24,7 @@ Niflect 中的反射代码生成工具称作 NiflectGenTool, 用法步骤如下 
 
 示例头文件
 
-```
+```C++
 #pragma once
 #include "MyClass_gen.h"
 
@@ -63,7 +63,7 @@ private:
 
 执行 NiflectGenTool 以生成反射代码, 下为 batch 脚本示例 :
 
-```
+```bash
 @..\ThirdParty\NiflectGenTool\bin\NiflectGenTool.exe ^
 -n MyApp ^
 -h ../MyClass.h ^
@@ -83,7 +83,7 @@ private:
 
 此头文件的简化版本如下
 
-```
+```C++
 namespace DefaultAccessorSetting
 {
 	using namespace NiflectAccessorSetting;
@@ -102,7 +102,7 @@ namespace DefaultAccessorSetting
 
 使用反射信息保存与载入示例类 `CMyClass` 的实例
 
-```
+```C++
 #include "MyClass.h"
 #include "MyApp/ModuleReg/MyApp_private.h"
 #include "Niflect/NiflectTable.h"
@@ -172,7 +172,7 @@ C++ 开发者可能经历过 :
 
 以下演示, 使用 Nfilect 能够实现何程度的原生性 :
 
-```
+```C++
 namespace MyScope
 {
 	static CMyFieldMeta MyGetNata()
@@ -226,7 +226,7 @@ Nata 是指原生风格 type/field 绑定的 metadata, 如 `CMyClassNata`. Nata 
 
 嵌套模板如 `std::vector<float>`, 与特化模板如 `std::vector<bool>`, 可通过 Accessor Setting Header 绑定类型, 如下
 
-```
+```C++
 using namespace NiflectAccessorSetting;
 
 template <typename TInstance>
@@ -254,7 +254,7 @@ NIF_AS_A() TSetting<TSTLMapAccessor<TInstance>, std::map<T0, T1>, std::pair<T0, 
 
 Niflect 使用者可通过编写 Accessor Setting 实现任意指针类型的序列化, 如 :
 
-```
+```C++
 namespace SampleAccessorSetting
 {
 	NIF_AS_A() TSetting<CMyResourceAccessor, CMyResource*>;
@@ -268,7 +268,7 @@ namespace SampleAccessorSetting
 
 `CMyResourceAccessor`的实现 :
 
-```
+```C++
 class CMyResourceAccessor : public Niflect::CAccessor
 {
 	using MyPtr = CMyResource*;
@@ -291,7 +291,7 @@ protected:
 
 在此基础上, 带指针 Field 的示例类定义 :
 
-```
+```C++
 class CMyResource
 {
 public:

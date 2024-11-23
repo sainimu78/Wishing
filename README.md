@@ -28,7 +28,7 @@ The reflection code gen tool in Niflect, is called NiflectGenTool. Its usage ste
 
 An example header
 
-```
+```C++
 #pragma once
 #include "MyClass_gen.h"
 
@@ -67,7 +67,7 @@ The macro tags like `NIF_T` are tags for reflection code gen.
 
 Execute NiflectGenTool to generate reflection code, here is a batch script example, like
 
-```
+```bash
 @..\ThirdParty\NiflectGenTool\bin\NiflectGenTool.exe ^
 -n MyApp ^
 -h ../MyClass.h ^
@@ -87,7 +87,7 @@ This is one of the Niflect's feature, it's a header, called Accessor Setting Hea
 
 Here is a simplified version of the header
 
-```
+```C++
 namespace DefaultAccessorSetting
 {
 	using namespace NiflectAccessorSetting;
@@ -106,7 +106,7 @@ Of course, users can implement settings like this to bind any `Accessor` for cus
 
 To save and load the example instance of `CMyClass ` with reflection info.
 
-```
+```C++
 #include "MyClass.h"
 #include "MyApp/ModuleReg/MyApp_private.h"
 #include "Niflect/NiflectTable.h"
@@ -176,7 +176,7 @@ Due to this, being native is an essential requirement for C++ programmers.
 
 Here is an example that illustrates what it means to be C++ native using Niflect :
 
-```
+```C++
 namespace MyScope
 {
 	static CMyFieldMeta MyGetNata()
@@ -230,7 +230,7 @@ It's remarkable that users can wrap the Nata specification into other methods, s
 
 The nested templates, such as `std::vector<float>`, and the specialized templates, like `std::vector<bool>`, can be bound by specifying the settings in an accessor settings header, as shown below
 
-```
+```C++
 using namespace NiflectAccessorSetting;
 
 template <typename TInstance>
@@ -258,7 +258,7 @@ This limitation is understandable, as general-purpose frameworks must not have e
 
 However, with Niflect, users have the capability to serialize any pointer type by implementing a custom accessor setting. For example :
 
-```
+```C++
 namespace SampleAccessorSetting
 {
 	NIF_AS_A() TSetting<CMyResourceAccessor, CMyResource*>;
@@ -272,7 +272,7 @@ In this snippet :
 
 The implementation of the `CMyResourceAccessor`:
 
-```
+```C++
 class CMyResourceAccessor : public Niflect::CAccessor
 {
 	using MyPtr = CMyResource*;
@@ -295,7 +295,7 @@ protected:
 
 In this setup, the example class type with a pointer field :
 
-```
+```C++
 class CMyResource
 {
 public:
