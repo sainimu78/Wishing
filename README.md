@@ -226,7 +226,7 @@ The Nata, such as `CMyClassNata`, refers to native-style type/field metadata. It
 
 It's remarkable that users can wrap the Nata specification into other methods, such as `MyGetNata()`.
 
-### Nested Templates & Specialized Templates
+### Nested templates & specialized templates
 
 The nested templates, such as `std::vector<float>`, and the specialized templates, like `std::vector<bool>`, can be bound by specifying the settings in an accessor settings header, as shown below
 
