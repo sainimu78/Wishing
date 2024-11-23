@@ -232,14 +232,14 @@ int main(int argc, const char** argv)
 				//const char* argvTest[] = {
 				//	"Placeholder",
 				//	"-n", "Engine",
-				//	"-h", "\"F:/Fts/Proj/Test/Interedit/Source/Engine/EngineObject.h\"",
-				//	"-h", "F:/Fts/Proj/Test/Interedit/Source/Engine/DerivedObject.h",
+				//	"-h", "\"../../../../../../Source/Engine/EngineObject.h\"",
+				//	"-h", "../../../../../../Source/Engine/DerivedObject.h",
 				//	"-am", "ENGINE_API",
-				//	"-amh", "F:/Fts/Proj/Test/Interedit/Source/Engine/EngineCommon.h",
-				//	"-a", "F:/Fts/Proj/Test/Interedit/Source/Engine/EngineAccessorSetting.h",
-				//	"-I", "F:/Fts/Proj/Test/Interedit/Source",
-				//	"-I", "F:/Fts/Proj/Test/Interedit/Source/Niflect/include",
-				//	"-g", "F:/Fts/Proj/Test/Interedit/Generated/NiflectGenerated",
+				//	"-amh", "../../../../../../Source/Engine/EngineCommon.h",
+				//	"-a", "../../../../../../Source/Engine/EngineAccessorSetting.h",
+				//	"-I", "../../../../../../Source",
+				//	"-I", "../../../../../../Source/Niflect/include",
+				//	"-g", "../../../../../../Generated/NiflectGenerated",
 				//	//"-fs",
 				//};
 				//argc = sizeof(argvTest) / sizeof(const char*);
@@ -248,13 +248,13 @@ int main(int argc, const char** argv)
 				//const char* argvTest[] = {
 				//	"Placeholder",
 				//	"-n", "TestModule1",
-				//	"-h", "F:/Fts/Proj/Test/Interedit/Source/TestModule1/TestClass1.h",
+				//	"-h", "../../../../../../Source/TestModule1/TestClass1.h",
 				//	"-am", "TESTMODULE1_API",
-				//	"-amh", "F:/Fts/Proj/Test/Interedit/Source/TestModule1/TestModule1Common.h",
-				//	"-a", "F:/Fts/Proj/Test/Interedit/Source/Niflect/CommonlyUsed/DefaultAccessorSetting.h",
-				//	"-I", "F:/Fts/Proj/Test/Interedit/Source",
-				//	"-I", "F:/Fts/Proj/Test/Interedit/Source/Niflect/include",
-				//	"-g", "F:/Fts/Proj/Test/Interedit/Generated/NiflectGenerated",
+				//	"-amh", "../../../../../../Source/TestModule1/TestModule1Common.h",
+				//	"-a", "../../../../../../Source/Niflect/CommonlyUsed/DefaultAccessorSetting.h",
+				//	"-I", "../../../../../../Source",
+				//	"-I", "../../../../../../Source/Niflect/include",
+				//	"-g", "../../../../../../Generated/NiflectGenerated",
 				//	//"-fs",
 				//};
 				//argc = sizeof(argvTest) / sizeof(const char*);

@@ -5,13 +5,13 @@ cd ../../../Build/NiflectGenTool/Linux/Make_x64/Debug/NiflectGenTool
 
 ./NiflectGenTool \
 -n Engine \
--h /home/sainimu78/Fts/Interedit/Source/Engine/EngineObject.h \
--h /home/sainimu78/Fts/Interedit/Source/Engine/DerivedObject.h \
+-h ../../../../../../Source/Engine/EngineObject.h \
+-h ../../../../../../Source/Engine/DerivedObject.h \
 -am ENGINE_API \
--amh /home/sainimu78/Fts/Interedit/Source/Engine/EngineCommon.h \
--a /home/sainimu78/Fts/Interedit/Source/Engine/EngineAccessorSetting.h \
--I /home/sainimu78/Fts/Interedit/Source \
--I /home/sainimu78/Fts/Interedit/Source/Niflect/include \
--g /home/sainimu78/Fts/Interedit/Generated/NiflectGenerated 
+-amh ../../../../../../Source/Engine/EngineCommon.h \
+-a ../../../../../../Source/Engine/EngineAccessorSetting.h \
+-I ../../../../../../Source \
+-I ../../../../../../Source/Niflect/include \
+-g ../../../../../../Generated/NiflectGenerated 
 
 cd $old

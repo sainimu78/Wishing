@@ -3,13 +3,13 @@
 
 @NiflectGenTool ^
 -n Engine ^
--h F:/Fts/Proj/Test/Interedit/Source/Engine/EngineObject.h ^
--h F:/Fts/Proj/Test/Interedit/Source/Engine/DerivedObject.h ^
+-h ../../../../../../Source/Engine/EngineObject.h ^
+-h ../../../../../../Source/Engine/DerivedObject.h ^
 -am ENGINE_API ^
--amh F:/Fts/Proj/Test/Interedit/Source/Engine/EngineCommon.h ^
--a F:/Fts/Proj/Test/Interedit/Source/Engine/EngineAccessorSetting.h ^
--I F:/Fts/Proj/Test/Interedit/Source ^
--I F:/Fts/Proj/Test/Interedit/Source/Niflect/include ^
--g F:/Fts/Proj/Test/Interedit/Generated/NiflectGenerated 
+-amh ../../../../../../Source/Engine/EngineCommon.h ^
+-a ../../../../../../Source/Engine/EngineAccessorSetting.h ^
+-I ../../../../../../Source ^
+-I ../../../../../../Source/Niflect/include ^
+-g ../../../../../../Generated/NiflectGenerated 
 
 @cd %old%
