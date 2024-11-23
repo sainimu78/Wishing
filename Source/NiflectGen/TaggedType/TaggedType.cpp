@@ -37,7 +37,7 @@ namespace NiflectGen
 			}
 			else
 			{
-				ASSERT(false);
+				ASSERT(!indexedParent.m_resocursorName.empty());
 			}
 			signatureMapping.m_vecItem.push_back(CResolvedCursorRoots(Niflect::CString(), indexedParent));
 		}

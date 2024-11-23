@@ -126,7 +126,7 @@ namespace NiflectGen
             }
             else
             {
-                ASSERT(false);
+                ASSERT(!it0.m_resoRoot.m_resocursorName.empty());
             }
             if (writer != NULL)
             {
