@@ -268,7 +268,7 @@ namespace SampleAccessorSetting
 In this snippet :
 
 - `CMyResourceAccessor` serves as the accessor for serializing pointers of type `CMyResource`.
-- `CMyResource` is the type of the pointer being managed.
+- `CMyResource` is the pointer type used to demonstrate pointer serialization.
 
 The implementation of the `CMyResourceAccessor`:
 

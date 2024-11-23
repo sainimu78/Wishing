@@ -2,7 +2,19 @@
 
 C++ 原生反射框架
 
-(此概念现处于实验阶段)
+**此概念现处于实验阶段**
+
+为不浪费您的时间, 我希望在您开始阅读前, 确认自己具备足够的经验
+
+- 能够理解为何有必要研究C++反射
+
+以及这些要求之一
+
+- 5年以上的C++使用经验
+- 大型软件架构经验
+- 编写代码量30万以上
+
+如您符合以上要求, 请继续, 在此先感谢您所提任何建议.
 
 ## [实验1] 反射代码生成工具
 
@@ -63,7 +75,7 @@ private:
 
 生成反射代码如下图
 
-![1732206465218](../../../Doc/Introduction/1732206465218.png)
+![1732206465218](../1732206465218.png)
 
 #### 关于命令行参数中的 DefaultAccessorSetting.h
 
@@ -145,7 +157,7 @@ int main()
 
 运行结果
 
-![1732212533978](../../../Doc/Introduction/1732212533978.png)
+![1732212533978](../1732212533978.png)
 
 ## [实验 2] C++ 原生风格
 
@@ -230,6 +242,110 @@ NIF_AS_A() TSetting<TSTLMapAccessor<TInstance>, std::map<T0, T1>, std::pair<T0, 
 同样地, Accessor Setting Header 能使开发者绑定自定义的 `Accessor` 以实现自定义的序列化, 同时不需要修改如 NiflectGenTool 这样的反射代码生成工具.
 
 更重要的是, 这种类型绑定的方式为真正的 C++ 原生风格.
+
+## [实验 3] 序列化指针类型
+
+现有 C++ 反射框架在处理指针时通常有限制, 如
+
+- 完全不支持序列化指针
+- 或仅支持特定类型的指针
+
+这种限制是有理由的, 作为具通用性的框架, 一定无法获取足够的信息以创建或管理自定义类型的指针.
+
+Niflect 使用者可通过编写 Accessor Setting 实现任意指针类型的序列化, 如 :
+
+```
+namespace SampleAccessorSetting
+{
+	NIF_AS_A() TSetting<CMyResourceAccessor, CMyResource*>;
+}
+```
+
+此片段中 :
+
+- `CMyResourceAccessor` 用于序列化类型为 `CMyResource` 的指针.
+- `CMyResource` 为演示指针序列化的指针类型.
+
+`CMyResourceAccessor`的实现 :
+
+```
+class CMyResourceAccessor : public Niflect::CAccessor
+{
+	using MyPtr = CMyResource*;
+protected:
+	virtual bool SaveInstanceImpl(const AddrType base, CRwNode* rw) const
+	{
+		const auto& instance = *static_cast<const MyPtr*>(base);
+		AddRwString(rw, "Path", instance->m_path.c_str());
+		return true;
+	}
+	virtual bool LoadInstanceImpl(AddrType base, const CRwNode* rw) const
+	{
+		auto& instance = *static_cast<MyPtr*>(base);
+		auto path = FindRwString(rw, "Path");
+		instance = g_factory.FindOrAddResource(path.c_str());
+		return true;
+	}
+};
+```
+
+在此基础上, 带指针 Field 的示例类定义 :
+
+```
+class CMyResource
+{
+public:
+	CMyResource(const std::string& path)
+		: m_path(path)
+	{
+	}
+	std::string m_path;
+};
+
+class CMyFactory
+{
+public:
+	CMyResource* FindOrAddResource(const std::string& path)
+	{
+		auto ret = m_mapPathToResource.insert({ path, NULL });
+		if (ret.second)
+			ret.first->second = std::make_shared<CMyResource>(path);
+		return ret.first->second.get();
+	}
+
+	std::map<std::string, std::shared_ptr<CMyResource> > m_mapPathToResource;
+};
+
+extern CMyFactory g_factory;
+
+NIF_T()
+class CMyClass
+{
+	GENERATED_BODY()
+public:
+	CMyClass()
+		: m_resource_0(NULL)
+	{
+	}
+	void InitForTest()
+	{
+		m_resource_0 = g_factory.FindOrAddResource("/Dir/Image.bmp");
+	}
+	bool operator==(const CMyClass& rhs) const
+	{
+		return m_resource_0 == rhs.m_resource_0
+			;
+	}
+
+public:
+	NIF_F()
+	CMyResource* m_resource_0;
+};
+```
+
+最后, Save 与 Load 类型 `CMyClass` 的实例, 方法同实验 1 中的步骤 3
+
+![1732372828784](../1732372828784.png)
 
 ## 总结
 
