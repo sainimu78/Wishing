@@ -459,6 +459,8 @@ namespace NiflectUtil
 
     void SearchFiles(const Niflect::CString& dirPath, const Niflect::CString& pattern, Niflect::TArrayNif<Niflect::CString>& vecFound)
     {
+        ASSERT(dirPath.back() == '/');
+
         //测试参数:
         //F:/Fts/Proj/Test/Interedit/Source/ "*or?.cpp"
         //结果:
