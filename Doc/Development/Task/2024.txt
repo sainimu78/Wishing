@@ -112,7 +112,7 @@
 		4. 使用反射代码生成工具, 能找到的几款此类工具, 都编码规范都有较多的限制, 如可使用的类型限制, 容器使用限制, 不能用别名等. 且所有实现都无法支持方便地扩展以实现自定义类型的序列化
 	3. 结论, 编译器生成, 手工编写, 最终都需要另外的反射生成工具以实现方便的绑定自定义metadata
 56. Done, NiflectGen, 测试无 namespace 的类型定义
-57. NiflectGen, 合并 _gen.h 中同 namespace 的类型声明, 见 GenerateFullScopedTypeDeclCodeRecurs
+57. Done, NiflectGen, 合并 _gen.h 中同 namespace 的类型声明, 见 GenerateFullScopedTypeDeclCodeRecurs
 58. Deprecated, NiflectGen, 验证不指定 -I, 传相对路径
 59. NiflectGen, 无输入头文件时应提示, 当前工作目录应提示
 60. Done, NiflectGen, 命令行参数中的路径统一为相对工作路径的相对路径, 因此须修复 InternalConvertToIncludePath 未正确处理如 ../MyClass.h 的问题

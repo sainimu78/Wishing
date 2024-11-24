@@ -395,8 +395,8 @@ namespace NiflectUtil
 
 #ifdef _WIN32
     // 在 Windows 下递归遍历目录
-    static void search_directory_windows(const Niflect::CString& directory, const Niflect::CString& pattern) {
-        Niflect::CString search_path = directory + "\\*";
+    static void search_directory_windows(const Niflect::CString& directory, const Niflect::CString& pattern, Niflect::TArrayNif<Niflect::CString>& vecFound) {
+        Niflect::CString search_path = directory + "/*";
         WIN32_FIND_DATA find_data;
         HANDLE handle = FindFirstFile(search_path.c_str(), &find_data);
 
@@ -411,14 +411,14 @@ namespace NiflectUtil
                 continue; // 跳过 "." 和 ".." 项
             }
 
-            Niflect::CString full_path = directory + "\\" + filename;
+            Niflect::CString full_path = directory + "/" + filename;
 
             if (find_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
-                search_directory_windows(full_path, pattern); // 递归搜索子目录
+                search_directory_windows(full_path, pattern, vecFound); // 递归搜索子目录
             }
             else {
                 if (match(filename, pattern)) {
-                    std::cout << full_path << std::endl; // 打印匹配的文件路径
+                    vecFound.push_back(full_path);
                 }
             }
 
@@ -444,11 +444,11 @@ namespace NiflectUtil
             Niflect::CString full_path = directory + "/" + entry->d_name;
 
             if (entry->d_type == DT_DIR) {
-                search_directory_linux(full_path, pattern); // 递归搜索子目录
+                search_directory_linux(full_path, pattern, vecFound); // 递归搜索子目录
             }
             else {
                 if (match(entry->d_name, pattern)) {
-                    std::cout << full_path << std::endl; // 打印匹配的文件路径
+                    vecFound.push_back(full_path);
                 }
             }
         }
@@ -457,7 +457,7 @@ namespace NiflectUtil
     }
 #endif
 
-    void SearchFiles(const Niflect::CString& dirPath, const Niflect::CString& pattern)
+    void SearchFiles(const Niflect::CString& dirPath, const Niflect::CString& pattern, Niflect::TArrayNif<Niflect::CString>& vecFound)
     {
         //测试参数:
         //F:/Fts/Proj/Test/Interedit/Source/ "*or?.cpp"
@@ -469,9 +469,9 @@ namespace NiflectUtil
         //F:/Fts/Proj/Test/Interedit/Source/\NiflectGen\Generator\SourceInMemory.cpp
 
 #ifdef _WIN32
-        search_directory_windows(dirPath, pattern);
+        search_directory_windows(dirPath, pattern, vecFound);
 #else
-        search_directory_linux(dirPath, pattern);
+        search_directory_linux(dirPath, pattern, vecFound);
 #endif
     }
 }
