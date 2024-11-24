@@ -21,6 +21,7 @@ namespace NiflectGen
 	bool CTaggedInheritableType::CollectGeneratedBodyTag(const CXCursor& cursor, const CXCursorKind& kind)
 	{
 		//Linux 通过 clang_getSpellingLocation 下获取到的 lineNumber 始终不变, 如为5, 因此通过另外的办法获取行号, 实际上对于此标记, WIN32 下也可使用
+		//2024.11.24, 已确认此现象为在 Unbutu 下误用 libclang 20.0.0, 应用 libclang 17.0.6, 这表明方法欠通用性, 但目前无更好办法, 同时能获取正确的 Nata
 		if (false)
 		{
 			if (FindTagByDisplayName(cursor, NiflectGenDefinition::CodeTag::GeneratedBody))
