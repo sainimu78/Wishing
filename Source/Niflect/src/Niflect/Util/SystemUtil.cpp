@@ -477,3 +477,80 @@ namespace NiflectUtil
 #endif
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//获取文件时间戳备用代码
+// 
+//#include <iostream>
+//#include <fstream>
+//#include <string>
+//
+//#ifdef _WIN32
+//#include <windows.h>
+//#include <sys/time.h>
+//#else
+//#include <sys/stat.h>
+//#include <unistd.h>
+//#endif
+//
+//std::string get_file_modification_time(const std::string& filepath) {
+//    std::string mod_time_str;
+//
+//#ifdef _WIN32
+//    HANDLE hFile = CreateFile(filepath.c_str(), GENERIC_READ, FILE_SHARE_READ,
+//        NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+//    if (hFile == INVALID_HANDLE_VALUE) {
+//        std::cerr << "Error opening file: " << filepath << std::endl;
+//        return "";
+//    }
+//
+//    FILETIME ftLastWriteTime;
+//    if (GetFileTime(hFile, NULL, NULL, &ftLastWriteTime)) {
+//        SYSTEMTIME st;
+//        FileTimeToSystemTime(&ftLastWriteTime, &st);
+//        mod_time_str = std::to_string(st.wYear) + "-" +
+//            std::to_string(st.wMonth) + "-" +
+//            std::to_string(st.wDay) + " " +
+//            std::to_string(st.wHour) + ":" +
+//            std::to_string(st.wMinute) + ":" +
+//            std::to_string(st.wSecond);
+//    }
+//    else {
+//        std::cerr << "Error getting file time." << std::endl;
+//    }
+//
+//    CloseHandle(hFile);
+//#else
+//    struct stat file_stat;
+//    if (stat(filepath.c_str(), &file_stat) == 0) {
+//        mod_time_str = std::to_string(file_stat.st_mtime);
+//    }
+//    else {
+//        std::cerr << "Error getting file time." << std::endl;
+//        return "";
+//    }
+//#endif
+//
+//    return mod_time_str;
+//}
+//
+//int main() {
+//    std::string filepath = "example.txt"; // 这里输入您的文件名
+//    std::string mod_time = get_file_modification_time(filepath);
+//    if (!mod_time.empty()) {
+//        std::cout << "Modification time of " << filepath << ": " << mod_time << std::endl;
+//    }
+//    return 0;
+//}
