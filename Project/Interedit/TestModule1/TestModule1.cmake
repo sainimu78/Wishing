@@ -4,9 +4,12 @@ set(ModuleName TestModule1)
 
 set(SourcePath ${RootSourcePath}/${ModuleName})
 
-file(GLOB_RECURSE ModuleSrc ${SourcePath}/*.cpp ${SourcePath}/*.h)
+file(GLOB_RECURSE ModuleSources ${SourcePath}/*.cpp)
+file(GLOB_RECURSE ModuleHeaders ${SourcePath}/*.h)
+
 set(SrcAll "")
-list(APPEND SrcAll ${ModuleSrc})
+list(APPEND SrcAll ${ModuleSources})
+list(APPEND SrcAll ${ModuleHeaders})
 create_source_group(${RootSourcePath} ${SrcAll})
 
 get_filename_component(NiflectGeneratedRootPath "${RootSourcePath}/../Generated/NiflectGenerated" ABSOLUTE)
@@ -39,3 +42,27 @@ target_compile_definitions(${ModuleName}
 )
 
 target_link_libraries(${ModuleName} PRIVATE Niflect)
+
+set(ArgsModuleHeaders "")
+foreach(It IN LISTS ModuleHeaders)
+    list(APPEND ArgsModuleHeaders "-h" "${It}")
+endforeach()
+
+set(NiflectGeneratedModulePrivateH ${NiflectGeneratedRootPath}/${ModuleName}/${ModuleName}_private.h)
+add_custom_command(
+    OUTPUT "${NiflectGeneratedModulePrivateH}"
+    COMMAND "${RootSourcePath}/../Build/NiflectGenTool/Windows/vs2022_x64/Debug/NiflectGenTool/NiflectGenTool.exe" 
+            -n ${ModuleName} 
+            ${ArgsModuleHeaders}
+            -am TESTMODULE1_API 
+            -amh "${SourcePath}/TestModule1Common.h" 
+            -a "${RootSourcePath}/Niflect/include/Niflect/CommonlyUsed/DefaultAccessorSetting.h" 
+            -I "${RootSourcePath}" 
+            -I "${RootSourcePath}/Niflect/include" 
+            -g "${NiflectGeneratedRootPath}"
+    DEPENDS ${ModuleHeaders}
+    COMMENT "NiflectGenTool generating ..."
+)
+
+add_custom_target(NiflectGenTool ALL DEPENDS "${NiflectGeneratedModulePrivateH}")
+add_dependencies(${ModuleName} NiflectGenTool)
