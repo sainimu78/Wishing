@@ -162,7 +162,7 @@ namespace NiflectGenDefinition
 		namespace LineNumberMacro
 		{
 			constexpr const char* GENERATED_BODY = "GENERATED_BODY";
-			constexpr const char* FID = "FID_";
+			constexpr const char* FID = "FID";
 		}
 	}
 }
