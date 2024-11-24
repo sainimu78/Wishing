@@ -127,3 +127,4 @@
 68. Done, (仅预留获取lifecycleMeta, 未实现默认堆创建释放) Niflect, 创建实例改写为静态函数, 方便接入不同的创建方法, 如默认堆, Niflect 的堆
 69. Done, (属误解, std::string 也不可, 仅因Bypass无定义所需形式的构造函数) Niflect, CString为何无法在field处初始化, 而std::string可
 70. Done, NiflectGen, 指针模板, 用于如 std::shared_ptr, 因为无法与1维容器模板区分, 可考虑整理复用 m_recursCollectiingData.m_settings.m_vecAccessorBindingSetting 的流程
+71. NiflectGen, 集成cmake
