@@ -159,9 +159,10 @@ namespace NiflectGenDefinition
 			constexpr const char TokensBrackets[] = { '(', ')' };
 			constexpr const uint32 IdentifierTokenFindingEndCount = 2;
 		}
-		namespace LineNumberMacroPostfix
+		namespace LineNumberMacro
 		{
 			constexpr const char* GENERATED_BODY = "GENERATED_BODY";
+			constexpr const char* FID = "FID_";
 		}
 	}
 }

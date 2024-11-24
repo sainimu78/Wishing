@@ -81,7 +81,7 @@ namespace NiflectGen
                             MapLabelToLines(map, LABEL_2, linesStaticGetTypeSpecDecl);
                         }
                     }
-                    Niflect::CString genHFileId = "FID_" + genHHeaderMacro;
+                    Niflect::CString genHFileId = NiflectGenDefinition::NiflectFramework::LineNumberMacro::FID + genHHeaderMacro;
                     MapLabelToText(map, LABEL_4, genHFileId);
 
                     CCodeLines linesMacros;
@@ -113,7 +113,7 @@ namespace NiflectGen
                             }
                             CCodeLines linesRootDefinition;
                             {
-                                auto macroName = GenerateLineNumberMacroName(genHFileId, lineNumber, NiflectGenDefinition::NiflectFramework::LineNumberMacroPostfix::GENERATED_BODY);
+                                auto macroName = GenerateLineNumberMacroName(genHFileId, lineNumber, NiflectGenDefinition::NiflectFramework::LineNumberMacro::GENERATED_BODY);
                                 WriteLineNumberMacroDefinition(macroName, linesRootBody, linesRootDefinition);
                                 if (idx1 != cnt1 - 1)
                                     linesRootDefinition.push_back(EscapeChar::EmptyLine);
