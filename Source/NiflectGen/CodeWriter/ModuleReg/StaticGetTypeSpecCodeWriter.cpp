@@ -113,7 +113,7 @@ namespace NiflectGen
                             }
                             CCodeLines linesRootDefinition;
                             {
-                                auto macroName = GenerateLineNumberMacroName(genHFileId, lineNumber, "GENERATED_BODY");
+                                auto macroName = GenerateLineNumberMacroName(genHFileId, lineNumber, NiflectGenDefinition::NiflectFramework::LineNumberMacroPostfix::GENERATED_BODY);
                                 WriteLineNumberMacroDefinition(macroName, linesRootBody, linesRootDefinition);
                                 if (idx1 != cnt1 - 1)
                                     linesRootDefinition.push_back(EscapeChar::EmptyLine);
