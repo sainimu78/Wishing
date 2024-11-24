@@ -134,7 +134,12 @@ namespace NiflectGen
 	class CTypeRegTaggedTypeGeneratedHeaderData
 	{
 	public:
-		CCodeLines m_linesFullScopedTypeDecl;
+		CTypeRegTaggedTypeGeneratedHeaderData()
+			: m_vecScopeNameAddr(NULL)
+		{
+		}
+		Niflect::CString m_specTemplateRequiredTypeDecl;
+		const Niflect::TArrayNif<Niflect::CString>* m_vecScopeNameAddr;
 		CCodeLines m_linesStaticGetTypeSpecDecl;
 		CCodeLines m_linesStaticGetTypeSpecImpl;
 		CTypeLineNumberMacroData m_lineNumberMacroData;

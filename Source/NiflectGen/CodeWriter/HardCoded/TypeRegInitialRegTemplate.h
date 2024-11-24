@@ -14,8 +14,6 @@ namespace NiflectGen
 #define LABEL_8 "FieldName"
 #define LABEL_9 "TypeForLastTemplateArg"
 #define LABEL_10 "API"
-#define LABEL_11 "Namespace"
-#define LABEL_12 "ScopedCode"
 #define LABEL_13 "CreateTypeAccessorFuncName"
 #define LABEL_14 "NataNullOrVar"
 
@@ -59,12 +57,6 @@ CNiflectType* )" MAKELABEL(LABEL_2) R"(()
 {
 	return TRegisteredType<)" MAKELABEL(LABEL_9) R"(>::s_type;
 })";
-	constexpr const char* NamespaceScopeCode =
-"namespace " MAKELABEL(LABEL_11) R"(
-{
-	)" MAKELABEL(LABEL_12) R"(
-}
-)";
 	static const char* MacroBodyExposeToAccessor =
 R"(friend Niflect::CSharedAccessor Niflect::CreateTypeAccessor<)" MAKELABEL(LABEL_9) R"(>();)";
 	static const char* MacroBodyAnotherExample0 =

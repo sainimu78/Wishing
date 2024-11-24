@@ -238,26 +238,6 @@ namespace NiflectGen
 		ASSERT(!b.m_bindingTypeIndexedRoot->m_resocursorName.empty());
 		return NiflectUtil::CompareLessHumanReadable(a.m_bindingTypeIndexedRoot->m_resocursorName, b.m_bindingTypeIndexedRoot->m_resocursorName);
 	}
-	static void GenerateFullScopedTypeDeclCodeRecurs(const Niflect::TArrayNif<Niflect::CString>& vecScopeName, const Niflect::CString& typeDeclCode, CCodeLines& linesParent, uint32 frontIdx = 0)
-	{
-		if (vecScopeName.size() == frontIdx)
-		{
-			linesParent.push_back(typeDeclCode);
-			return;
-		}
-		auto& scopeName = vecScopeName[frontIdx];
-
-		CCodeTemplate tpl0;
-		tpl0.ReadFromRawData(HardCodedTemplate::NamespaceScopeCode);
-		CLabelToCodeMapping map;
-		MapLabelToText(map, LABEL_11, scopeName);
-		CCodeLines linesNext;
-		GenerateFullScopedTypeDeclCodeRecurs(vecScopeName, typeDeclCode, linesNext, frontIdx + 1);
-		MapLabelToLines(map, LABEL_12, linesNext);
-		Niflect::TSet<Niflect::CString> setReplacedLabel;
-		tpl0.ReplaceLabels(map, linesParent, &setReplacedLabel);
-		ASSERT(setReplacedLabel.size() == map.size());
-	}
 	void CTypeRegCodeWriter2::WriteGeneratedBody(const STypeRegClassGenHWritingContext& context, CTypeRegTaggedTypeGeneratedHeaderData& data) const
 	{
 		auto& ttIdx = m_bindingTypeIndexedRoot->m_taggedTypeIndex;
@@ -293,7 +273,8 @@ namespace NiflectGen
 					break;
 				}
 				auto declCode = NiflectUtil::FormatString("%s %s;", cppTypeKeyword.c_str(), CXStringToCString(clang_getCursorSpelling(cursor)).c_str());
-				GenerateFullScopedTypeDeclCodeRecurs(tt->m_vecScopeName, declCode, data.m_linesFullScopedTypeDecl);
+				data.m_specTemplateRequiredTypeDecl = declCode;
+				data.m_vecScopeNameAddr = &tt->m_vecScopeName;
 			}
 			{
 				{

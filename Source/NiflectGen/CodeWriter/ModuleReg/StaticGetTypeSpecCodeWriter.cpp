@@ -18,6 +18,56 @@ namespace NiflectGen
         }
         return result;
     }
+    class CScopedDeclNode
+    {
+    public:
+        Niflect::CString m_scopeName;
+        CCodeLines m_lines;
+        Niflect::TArrayNif<Niflect::TSharedPtr<CScopedDeclNode> > m_vecSub;
+    };
+    static void BuildScopedDeclTreeRecurs(CScopedDeclNode& parent, const Niflect::TArrayNif<Niflect::CString>& vecScopeName, const Niflect::CString& typeDeclCode, uint32 frontIdx = 0)
+    {
+        if (vecScopeName.size() == frontIdx)
+        {
+            parent.m_lines.push_back(typeDeclCode);
+            return;
+        }
+        auto& scopeName = vecScopeName[frontIdx];
+        CScopedDeclNode* next = NULL;
+        for (int32 idx = static_cast<int32>(parent.m_vecSub.size()) - 1; idx >= 0; --idx)
+        {
+            auto& it = parent.m_vecSub[idx];
+            if (it->m_scopeName == scopeName)
+            {
+                next = it.Get();
+                break;
+            }
+        }
+        if (next == NULL)
+        {
+            auto shared = Niflect::MakeShared<CScopedDeclNode>();
+            parent.m_vecSub.push_back(shared);
+            next = shared.Get();
+            next->m_scopeName = scopeName;
+        }
+        BuildScopedDeclTreeRecurs(*next, vecScopeName, typeDeclCode, frontIdx + 1);
+    }
+    static void WriteFullScopedTypeDeclCodeRecurs(const CScopedDeclNode& parent, CCodeLines& linesDecls)
+    {
+        CCodeLines linesNext;
+        for (auto& it : parent.m_vecSub)
+            WriteFullScopedTypeDeclCodeRecurs(*it, linesNext);
+        for (auto& it : parent.m_lines)
+            linesNext.push_back(it);
+        WriteLinesIntoNamespaceScope(parent.m_scopeName, linesNext, linesDecls);
+    }
+    static void WriteFullScopedTypeDeclCode(const CScopedDeclNode& parent, CCodeLines& linesDecls)
+    {
+        for (auto& it : parent.m_vecSub)
+            WriteFullScopedTypeDeclCodeRecurs(*it, linesDecls);
+        for (auto& it : parent.m_lines)
+            linesDecls.push_back(it);
+    }
     void WriteSplittedStaticGetTypeSpec(const SSplittedCreateTypeAccessorSpecWritingContext& context, CTypeRegStaticGetTypeSpecData& data)
     {
         auto splitsCount = context.m_vecItem.size();
@@ -63,11 +113,10 @@ namespace NiflectGen
                     //if (requiredExportedStaticGetType)
                     {
                         {
+                            CScopedDeclNode root;
                             for (auto& it1 : it0.m_vecTypeRegDataRef)
-                            {
-                                for (auto& it2 : it1->m_taggedTypeGeneratedBody.m_linesFullScopedTypeDecl)
-                                    linesTypeDecls.push_back(it2);
-                            }
+                                BuildScopedDeclTreeRecurs(root, *it1->m_taggedTypeGeneratedBody.m_vecScopeNameAddr, it1->m_taggedTypeGeneratedBody.m_specTemplateRequiredTypeDecl);
+                            WriteFullScopedTypeDeclCode(root, linesTypeDecls);
                             MapLabelToLines(map, LABEL_1, linesTypeDecls);
                         }
                         {
@@ -77,7 +126,7 @@ namespace NiflectGen
                                 for (auto& it2 : it1->m_taggedTypeGeneratedBody.m_linesStaticGetTypeSpecDecl)
                                     lines.push_back(it2);
                             }
-                            ReplaceLabelToNamespaceScopeLines(NiflectGenDefinition::NiflectFramework::ScopeName::Niflect, lines, linesStaticGetTypeSpecDecl);
+                            WriteLinesIntoNamespaceScope(NiflectGenDefinition::NiflectFramework::ScopeName::Niflect, lines, linesStaticGetTypeSpecDecl);
                             MapLabelToLines(map, LABEL_2, linesStaticGetTypeSpecDecl);
                         }
                     }
@@ -155,7 +204,7 @@ namespace NiflectGen
                             for (auto& it2 : it1->m_taggedTypeGeneratedBody.m_linesStaticGetTypeSpecImpl)
                                 lines.push_back(it2);
                         }
-                        ReplaceLabelToNamespaceScopeLines(NiflectGenDefinition::NiflectFramework::ScopeName::Niflect, lines, linesImpl);
+                        WriteLinesIntoNamespaceScope(NiflectGenDefinition::NiflectFramework::ScopeName::Niflect, lines, linesImpl);
                     }
                     MapLabelToLines(map, LABEL_3, linesImpl);
                     Niflect::TSet<Niflect::CString> setReplacedLabel;
