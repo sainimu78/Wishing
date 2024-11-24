@@ -128,3 +128,4 @@
 69. Done, (属误解, std::string 也不可, 仅因Bypass无定义所需形式的构造函数) Niflect, CString为何无法在field处初始化, 而std::string可
 70. Done, NiflectGen, 指针模板, 用于如 std::shared_ptr, 因为无法与1维容器模板区分, 可考虑整理复用 m_recursCollectiingData.m_settings.m_vecAccessorBindingSetting 的流程
 71. NiflectGen, 集成cmake
+72. NiflectGen, 考虑增加一些参数用于指定使用一定规范下的默认参数, 简化命令行参数, 可输出一些注释用于可能编译错误的提示; 
