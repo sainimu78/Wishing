@@ -65,4 +65,4 @@ add_custom_command(
 )
 
 add_custom_target(NiflectGenTool ALL DEPENDS "${NiflectGeneratedModulePrivateH}")
-add_dependencies(${ModuleName} NiflectGenTool)
+add_dependencies(${ModuleName} NiflectGenTool) #使在 vs 中按 F5 也能触发生成
