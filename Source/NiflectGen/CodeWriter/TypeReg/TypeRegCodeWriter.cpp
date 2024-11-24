@@ -232,6 +232,12 @@ namespace NiflectGen
 		DebugPrintCodeLines(dataImpl);
 #endif
 	}
+	bool CTypeRegCodeWriter2::CompareLess(const CTypeRegCodeWriter2& a, const CTypeRegCodeWriter2& b)
+	{
+		ASSERT(!a.m_bindingTypeIndexedRoot->m_resocursorName.empty());
+		ASSERT(!b.m_bindingTypeIndexedRoot->m_resocursorName.empty());
+		return NiflectUtil::CompareLessHumanReadable(a.m_bindingTypeIndexedRoot->m_resocursorName, b.m_bindingTypeIndexedRoot->m_resocursorName);
+	}
 	static void GenerateFullScopedTypeDeclCodeRecurs(const Niflect::TArrayNif<Niflect::CString>& vecScopeName, const Niflect::CString& typeDeclCode, CCodeLines& linesParent, uint32 frontIdx = 0)
 	{
 		if (vecScopeName.size() == frontIdx)

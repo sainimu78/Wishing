@@ -134,6 +134,10 @@ namespace NiflectGen
                 m_vecWriter2.push_back(writer);
             }
         }
+        std::sort(m_vecWriter2.begin(), m_vecWriter2.end(), [](const CSharedTypeRegCodeWriter2& a, const CSharedTypeRegCodeWriter2& b)
+            {
+                return CTypeRegCodeWriter2::CompareLess(*a, *b);
+            });
     }
     void CTemplateBasedCppWriter::WriteTypeRegs3(const SSLKDJFSLKJFContext& context, Niflect::TArrayNif<CTypeRegWritingData2>& vecTypeRegData)
     {
@@ -223,7 +227,7 @@ namespace NiflectGen
                 auto& it0 = context.m_vecTypeRegData[idx0];
                 smr.m_vecTypeRegDataRef.push_back(&it0);
                 splitLinesCounter += static_cast<uint32>(it0.m_registerTypeAndfieldLayout.m_linesCreateFieldLayoutOfTypeImpl.size());
-                if (splitLinesCounter > NiflectGenDefinition::NiflectFramework::Setting::ThresholdLinesCountForModuleRegSplitting)
+                if (splitLinesCounter > NiflectGenDefinition::NiflectFramework::Setting::ThresholdLinesCountForRegCodeSplitting)
                 {
                     vecSplittedModuleRegInfo.push_back(smr);
                     smr.m_vecTypeRegDataRef.clear();

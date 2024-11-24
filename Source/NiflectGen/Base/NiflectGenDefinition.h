@@ -152,7 +152,7 @@ namespace NiflectGenDefinition
 		}
 		namespace Setting
 		{
-			constexpr uint32 ThresholdLinesCountForModuleRegSplitting = 1000;
+			constexpr uint32 ThresholdLinesCountForRegCodeSplitting = 30;
 		}
 		namespace MacroNata
 		{

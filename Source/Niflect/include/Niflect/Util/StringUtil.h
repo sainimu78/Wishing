@@ -178,4 +178,12 @@ namespace NiflectUtil
 		std::transform(str.begin(), str.end(), str.begin(), [](unsigned char c) { return std::toupper(c); });
 		return str;
 	}
+	static bool CompareLessHumanReadable(const Niflect::CString& a, const Niflect::CString& b)
+	{
+		Niflect::CString lowerA = a;
+		Niflect::CString lowerB = b;
+		std::transform(lowerA.begin(), lowerA.end(), lowerA.begin(), ::tolower);
+		std::transform(lowerB.begin(), lowerB.end(), lowerB.begin(), ::tolower);
+		return lowerA < lowerB;
+	}
 }

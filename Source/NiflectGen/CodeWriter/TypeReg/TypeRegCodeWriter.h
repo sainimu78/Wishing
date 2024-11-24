@@ -217,6 +217,9 @@ namespace NiflectGen
 	private:
 		void WriteCreateTypeAccessor(const STypeRegCreateTypeAccessorWritingContext& context, CCodeLines& dataDecl, CCodeLines& dataImpl, STypeRegCreateTypeAccessorWritingData& data) const;
 
+	public:
+		static bool CompareLess(const CTypeRegCodeWriter2& a, const CTypeRegCodeWriter2& b);
+
 	protected:
 		const CResolvedCursorNode* m_bindingTypeIndexedRoot;
 		const CResolvedData* m_resolvedData;
