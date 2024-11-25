@@ -6,7 +6,7 @@ The C++ native-style type reflection framework.
 
 **This is a concept currently in the experimental stage.**
 
-Before you begin reading, I would like to take a moment to ensure that you have the necessary experience to make the most of this article and that we don't waste your time. Specifically, you should
+Before you begin reading, it’s important to ensure that you have the necessary experience to fully benefit from this article and to avoid wasting your time. Specifically, you should :
 
 - **Understand the Necessity of C++ Reflection**: It is essential that you grasp why it is important to study C++ reflection.
 
