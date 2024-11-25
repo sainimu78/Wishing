@@ -369,3 +369,13 @@ C++ 原生风格即是重点
   - 如宏标签 `NIF_T` 是空定义的宏, 而 `GENERATED_BODY` 仅定义`friend` 声明, 这些宏标签均无另外串入另外的 field 或 method 的定义. (如需对宏标签另外命名, 仅需要通过 `#define` 定义即可.)
 - 使用称作 `RwTree` 的一种可扩展的 C++ 原生序列化方式
   - 将数据保存到统一的属性结构 `CRwNode`, 再序列化为其它任意的数据格式.
+
+### 关于名称 "Niflect"
+
+由以下元素 :
+
+- C++ `N`at`i`ve
+- `N`on-`i`ntrusive 
+- C++ Re`flect`ion
+
+构成名称 "Niflect"

@@ -373,3 +373,12 @@ Being C++ native is all that matters.
 - Extensible C++ native serialization method utilizing `RwTree`
   - Data is saved into the unified tree-like structure of `CRwNode`, allowing serialization into any other desired format.
 
+### About the Name "Niflect"
+
+By combining these elements :
+
+- C++ `N`at`i`ve
+- `N`on-`i`ntrusive 
+- C++ Re`flect`ion
+
+the name "Niflect" is formed.
