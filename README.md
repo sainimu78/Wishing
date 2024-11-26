@@ -6,7 +6,7 @@ The C++ native-style type reflection framework.
 
 **This is a concept currently in the experimental stage.**
 
-Before you begin reading, I would like to take a moment to ensure that you have the necessary experience to make the most of this article and that we don't waste your time. Specifically, you should
+Before you begin reading, it’s important to ensure that you have the necessary experience to fully benefit from this article and to avoid wasting your time. Specifically, you should :
 
 - **Understand the Necessity of C++ Reflection**: It is essential that you grasp why it is important to study C++ reflection.
 
@@ -18,7 +18,7 @@ Additionally, you should possess at least one of the following qualifications:
 
 If you meet the requirements above, feel free to continue reading to explore the Niflect framework and its potential applications.
 
-## [Experiment 1] The reflection code gen tool
+## [Experiment 1] The Reflection Code Gen Tool
 
 The reflection code gen tool in Niflect, is called NiflectGenTool. Its usage steps are as follows :
 
@@ -79,7 +79,7 @@ Then the reflection code will be generated
 
 ![1732206465218](Doc/Introduction/1732206465218.png)
 
-#### About the DefaultAccessorSetting.h appears in the commandline args
+About the **DefaultAccessorSetting.h** appears in the commandline args
 
 This is one of the Niflect's feature, it's a header, called Accessor Setting Header, for specifying type bindings in a way of C++ native style.
 
@@ -161,7 +161,7 @@ and the result
 
 ![1732212533978](Doc/Introduction/1732212533978.png)
 
-## [Experiment 2] Being C++ native
+## [Experiment 2] Being C++ Native
 
 C++ programmers may need to :
 
@@ -224,7 +224,7 @@ The Nata, such as `CMyClassNata`, refers to native-style type/field metadata. It
 
 It's remarkable that users can wrap the Nata specification into other methods, such as `MyGetNata()`.
 
-### Nested templates & specialized templates
+### Nested Templates & Specialized Templates
 
 The nested templates, such as `std::vector<float>`, and the specialized templates, like `std::vector<bool>`, can be bound by specifying the settings in an accessor settings header, as shown below
 
@@ -245,7 +245,7 @@ Again, the Accessor Setting Headers allows users to bind their `Accessor` for th
 
 More importantly, this type binding method is entirely in a C++ native style.
 
-## [Experiment 3] Serialization for a pointer type
+## [Experiment 3] Serialization for A Pointer Type
 
 C++ reflection frameworks we have explored typically face limitations when it comes to serializing pointers. They
 
@@ -349,7 +349,7 @@ Finally, do save and load `CMyClass` instance like the Step 3 of Experiment 1
 
 ![1732372828784](Doc/Introduction/1732372828784.png)
 
-## The repo of the experiments above
+## The Repo of The Experiments Above
 
 https://github.com/sainimu78/NiflectSample
 
@@ -373,3 +373,12 @@ Being C++ native is all that matters.
 - Extensible C++ native serialization method utilizing `RwTree`
   - Data is saved into the unified tree-like structure of `CRwNode`, allowing serialization into any other desired format.
 
+### About the Name "Niflect"
+
+By combining these elements :
+
+- C++ `N`at`i`ve
+- `N`on-`i`ntrusive 
+- C++ Re`flect`ion
+
+the name "Niflect" is formed.
