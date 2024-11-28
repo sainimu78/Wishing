@@ -332,7 +332,7 @@ namespace NiflectGen
     void CTemplateBasedCppWriter::WriteModuleReg(const SModuleRegWritingContext2& context, SModuleRegWritingData2& data) const
     {
         auto splitsCount = context.m_vecItem.size();
-        {;
+        {
             CCodeTemplate tpl1;
             tpl1.ReadFromRawData(HardCodedTemplate::ModuleRegImpl);
             CLabelToCodeMapping map;
