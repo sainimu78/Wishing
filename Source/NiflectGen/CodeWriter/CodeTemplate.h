@@ -82,6 +82,9 @@ namespace NiflectGen
 						line += m_tabChar;
 					line += code.m_textCopy;
 					vecLine.emplace_back(line);
+
+					if (pSetReplacedLabel != NULL)
+						pSetReplacedLabel->insert(labelName);
 				}
 			}
 			else
@@ -95,10 +98,10 @@ namespace NiflectGen
 					line += it1;
 					vecLine.emplace_back(line);
 				}
-			}
 
-			if (pSetReplacedLabel != NULL)
-				pSetReplacedLabel->insert(labelName);
+				if (pSetReplacedLabel != NULL)
+					pSetReplacedLabel->insert(labelName);
+			}
 		}
 		void ReplaceLabels(const CLabelToCodeMapping& mapLabelToCode, CCodeLines& vecLine, Niflect::TSet<Niflect::CString>* pSetReplacedLabel = NULL) const
 		{
