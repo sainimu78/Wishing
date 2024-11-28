@@ -75,11 +75,14 @@ namespace NiflectGen
 			if (code.m_pVecLine == NULL)
 			{
 				//ASSERT(!code.m_textCopy.empty());//有些标签值为空, 因此允许
-				Niflect::CString line;
-				for (uint32 idx1 = 0; idx1 < sectionLine.m_tabsCount; ++idx1)
-					line += m_tabChar;
-				line += code.m_textCopy;
-				vecLine.emplace_back(line);
+				if (!code.m_textCopy.empty())
+				{
+					Niflect::CString line;
+					for (uint32 idx1 = 0; idx1 < sectionLine.m_tabsCount; ++idx1)
+						line += m_tabChar;
+					line += code.m_textCopy;
+					vecLine.emplace_back(line);
+				}
 			}
 			else
 			{
