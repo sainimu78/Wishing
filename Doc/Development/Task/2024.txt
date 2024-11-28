@@ -129,4 +129,5 @@
 70. Done, NiflectGen, 指针模板, 用于如 std::shared_ptr, 因为无法与1维容器模板区分, 可考虑整理复用 m_recursCollectiingData.m_settings.m_vecAccessorBindingSetting 的流程
 71. NiflectGen, 集成cmake
 72. NiflectGen, 考虑增加一些参数用于指定使用一定规范下的默认参数, 简化命令行参数, 可输出一些注释用于可能编译错误的提示; 
-73. NiflectGen, 将 ModuleHeader 移到 _GenTime 中的相应路径下, 并指定相应的 -I, 屏蔽其它头文件, 设想中可避免 include 不希望被解析的复杂头文件导致解析慢
+73. Deprecated, (由于仍须指定依赖的头文件搜索路径, 当依赖的头文件的包含头文件涉及量大时, 此办法无作用) NiflectGen, 将 ModuleHeader 移到 _GenTime 中的相应路径下, 并指定相应的 -I, 屏蔽其它头文件, 设想中可避免 include 不希望被解析的复杂头文件导致解析慢
+74. NiflectGen, 可能可利用 TranslationUnit 的保存载入实现对模块的解析缓存, 每次解析完都保存对应模块的 TU, 并通过选项指定依赖的模块, 以获取模块的 TU; 另外这种缓存方式可能须涉法获取模块间的依赖关系, 以使遍历依赖模块 TU 时可按依赖顺序进行.
