@@ -58,7 +58,7 @@ add_custom_command(
             -am TESTMODULE1_API 
             -amh "${IncludePath}/TestModule1Common.h" 
             -a "${RootSourcePath}/Niflect/include/Niflect/CommonlyUsed/DefaultAccessorSetting.h" 
-            -I "${RootSourcePath}/Niflect/include" 
+            -t "${RootSourcePath}/Niflect/include" 
             -I "${IncludePath}" 
             -g "${NiflectGeneratedRootPath}"
     DEPENDS ${ModuleInclude}

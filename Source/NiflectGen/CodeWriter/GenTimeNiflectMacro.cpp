@@ -17,7 +17,7 @@ namespace NiflectGen
 
 		Niflect::CString relativeFilePath = NiflectGenDefinition::NiflectFramework::FilePath::NiflectMacroHeader;
 		std::ifstream ifs;
-		for (auto& it : context.m_vecModuleHeaderSearchPath)
+		for (auto& it : context.m_vecToolHeaderSearchPath)
 		{
 			auto filePath = NiflectUtil::ConcatPath(it, relativeFilePath);
 			if (NiflectUtil::OpenFileStream(ifs, filePath))

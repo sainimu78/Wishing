@@ -173,7 +173,7 @@ namespace NiflectGen
 			}
 			else if (strcmp(pszV, "-h") == 0)
 			{
-				info.m_vecModuleHeader.push_back(GetNextArgPath(argv, idx));
+				info.m_vecModuleHeader2.push_back(GetNextArgPath(argv, idx));
 			}
 			else if (strcmp(pszV, "-am") == 0)
 			{
@@ -189,7 +189,15 @@ namespace NiflectGen
 			}
 			else if (strcmp(pszV, "-I") == 0)
 			{
-				info.m_vecModuleHeaderSearchPath.push_back(GetNextArgIncludeSearchPath(argv, idx));
+				info.m_vecModuleHeaderSearchPath2.push_back(GetNextArgIncludeSearchPath(argv, idx));
+			}
+			else if (strcmp(pszV, "-c") == 0)
+			{
+				info.m_vecResolverCustomizationHeader.push_back(GetNextArgPath(argv, idx));
+			}
+			else if (strcmp(pszV, "-t") == 0)
+			{
+				info.m_toolHeaderSearchPath = GetNextArgIncludeSearchPath(argv, idx);
 			}
 			else if (strcmp(pszV, "-g") == 0)
 			{
@@ -238,8 +246,9 @@ int main(int argc, const char** argv)
 				//	"-amh", "../../../../../../Source/Engine/include/Engine/EngineCommon.h",
 				//	"-a", "../../../../../../Source/Engine/include/EngineAccessorSetting.h",
 				//	"-I", "../../../../../../Source/Engine/include",
-				//	"-I", "../../../../../../Source",
-				//	"-I", "../../../../../../Source/Niflect/include",
+				//	"-I", "../../../../../../Source/TestModule1/include",
+				//	//"-I", "../../../../../../Source/Engine/ResolverCustom",
+				//	"-t", "../../../../../../Source/Niflect/include",
 				//	"-g", "../../../../../../Generated/NiflectGenerated",
 				//	//"-fs",
 				//};

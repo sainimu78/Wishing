@@ -22,11 +22,13 @@ namespace NiflectGen
 		}
 		Niflect::CString m_moduleName;
 		Niflect::CString m_outputRootPath_genIncludeSearchPath;
-		Niflect::TArrayNif<Niflect::CString> m_vecModuleHeader;
+		Niflect::TArrayNif<Niflect::CString> m_vecModuleHeader2;
 		Niflect::TArrayNif<Niflect::CString> m_vecAccessorSettingHeader;
-		Niflect::TArrayNif<Niflect::CString> m_vecModuleHeaderSearchPath;//header search paths for libclang parsing
+		Niflect::TArrayNif<Niflect::CString> m_vecModuleHeaderSearchPath2;//header search paths for libclang parsing
+		Niflect::TArrayNif<Niflect::CString> m_vecResolverCustomizationHeader;
 		Niflect::CString m_moduleApiMacro;
 		Niflect::CString m_moduleApiMacroHeader;
+		Niflect::CString m_toolHeaderSearchPath;
 		EGeneratingHeaderAndSourceFileMode m_genFileMode;
 	};
 
@@ -52,7 +54,7 @@ namespace NiflectGen
 		{
 			info.m_moduleName = "Engine";
 			info.m_outputRootPath_genIncludeSearchPath = "F:/Fts/Proj/Test/Interedit/Generated/NiflectGenerated";
-			info.m_vecModuleHeaderSearchPath.push_back("F:/Fts/Proj/Test/Interedit/Source");
+			info.m_vecModuleHeaderSearchPath2.push_back("F:/Fts/Proj/Test/Interedit/Source/Engine/include");
 		}
 	}
 

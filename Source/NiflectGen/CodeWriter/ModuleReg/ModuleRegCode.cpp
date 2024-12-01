@@ -24,14 +24,18 @@ namespace NiflectGen
 		m_moduleRegisteredTypeHeaderFilePath = NiflectUtil::ConcatPath(m_typeRegBasePath, NiflectGenDefinition::NiflectFramework::FileName::ModuleRegisteredTypeHeader);
 		m_moduleScopeSymbolPrefix = "_" + info.m_moduleName + "_";
 
-		for (auto& it : m_userProvided.m_vecModuleHeaderSearchPath)
+		for (auto& it : m_userProvided.m_vecModuleHeaderSearchPath2)
 			m_writingHeaderSearchPaths.m_vecForRegularConversion.push_back(it);
+		//须添加在最后, NiflectMacro.h 应使用 _GenTime 中生成的, 而 NiflectMacro.h 仍须使用 m_toolHeaderSearchPath 中的其它头文件, 如 ConcatSymbols.h
+		m_writingHeaderSearchPaths.m_vecForRegularConversion.push_back(m_userProvided.m_toolHeaderSearchPath);
 		
 		auto genTimeBasePath = NiflectUtil::ConcatPath(moduleGenDirPath, NiflectGenDefinition::DirName::GenTime);
 		GenerateBypassSTLHeaders(genTimeBasePath);
 		{
 			CGenLog log;
-			SGenTimeNiflectMacroHeaderWritingContext ctx{ m_userProvided.m_vecModuleHeaderSearchPath, genTimeBasePath, &log };
+			Niflect::TArrayNif<Niflect::CString> vecToolHeaderSearchPath;
+			vecToolHeaderSearchPath.push_back(m_userProvided.m_toolHeaderSearchPath);
+			SGenTimeNiflectMacroHeaderWritingContext ctx{ vecToolHeaderSearchPath, genTimeBasePath, &log };
 			WriteGenTimeNiflectMacroHeader(ctx);
 		}
 

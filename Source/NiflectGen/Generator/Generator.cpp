@@ -82,11 +82,13 @@ namespace NiflectGen
             CSimpleCppWriter writer(memSrc.m_data);
             writer.AddHeaderFirstLine();
             writer.AddInclude(NiflectGenDefinition::NiflectFramework::FilePath::NiflectMacroHeader);//_gen.h未生成时, 可解析标记
+            for (auto& it : userProvided.m_vecResolverCustomizationHeader)
+                writer.AddInclude(it);
             if (!userProvided.m_moduleApiMacroHeader.empty())
                 writer.AddInclude(userProvided.m_moduleApiMacroHeader);
             for (auto& it1 : userProvided.m_vecAccessorSettingHeader)
                 writer.AddInclude(it1);
-            for (auto& it1 : userProvided.m_vecModuleHeader)
+            for (auto& it1 : userProvided.m_vecModuleHeader2)
                 writer.AddInclude(it1);
             memSrcCache.AddMemSourceRef(memSrc);
         }

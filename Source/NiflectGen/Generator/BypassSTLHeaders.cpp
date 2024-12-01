@@ -287,6 +287,7 @@ using enable_if_t = typename enable_if<_Test, _Ty>::type;
 			{"array", false},
 			{"cassert", false},
 			{"cstddef", true},//Write_cstddef
+			{"cstring", false},
 			{"deque", false},
 			{"exception", false},
 			{"fstream", false},

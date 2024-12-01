@@ -10,7 +10,7 @@
 -a ../../../../../../Source/Engine/include/EngineAccessorSetting.h ^
 -I ../../../../../../Source/Engine/include ^
 -I ../../../../../../Source/TestModule1/include ^
--I ../../../../../../Source/Niflect/include ^
+-t ../../../../../../Source/Niflect/include ^
 -g ../../../../../../Generated/NiflectGenerated 
 
 @cd %old%

@@ -200,7 +200,7 @@ namespace TestGen
 		{
 			auto gen = CreateGenerator();
 			CModuleRegInfo info;
-			info.m_vecModuleHeader.push_back(CONCAT_HARDCODED_STRINGS_2(ROOT_TEST_PATH, "/TestModuleHeaderAccessorFinding.h"));
+			info.m_vecModuleHeader2.push_back(CONCAT_HARDCODED_STRINGS_2(ROOT_TEST_PATH, "/TestModuleHeaderAccessorFinding.h"));
 			info.m_vecAccessorSettingHeader.push_back(CONCAT_HARDCODED_STRINGS_2(ROOT_TEST_PATH, "/TestAccessorSettingAccessorFinding.h"));
 			Test::InitArgs(info);
 			gen->InitModuleRegInfo(info);
@@ -305,7 +305,7 @@ namespace TestGen
 			auto gen = CreateGenerator();
 			CModuleRegInfo info;
 			auto moduleHeader = CONCAT_HARDCODED_STRINGS_2(ROOT_TEST_PATH, "/TestModuleHeaderRequiredHeader.h");
-			info.m_vecModuleHeader.push_back(moduleHeader);
+			info.m_vecModuleHeader2.push_back(moduleHeader);
 			info.m_vecAccessorSettingHeader.push_back(CONCAT_HARDCODED_STRINGS_2(ROOT_TEST_PATH, "/TestAccessorSettingRequiredHeader.h"));
 			Test::InitArgs(info);
 			gen->InitModuleRegInfo(info);
@@ -354,7 +354,7 @@ namespace TestGen
 		{
 			auto gen = CreateGenerator();
 			CModuleRegInfo info;
-			info.m_vecModuleHeader.push_back(CONCAT_HARDCODED_STRINGS_2(ROOT_TEST_PATH, "/TestModuleHeaderCodeGen0.h"));
+			info.m_vecModuleHeader2.push_back(CONCAT_HARDCODED_STRINGS_2(ROOT_TEST_PATH, "/TestModuleHeaderCodeGen0.h"));
 			info.m_vecAccessorSettingHeader.push_back(CONCAT_HARDCODED_STRINGS_2(ROOT_TEST_PATH, "/TestAccessorSettingCodeGen0.h"));
 			info.m_moduleApiMacro = "TEST_MY_API";
 			Test::InitArgs(info);
