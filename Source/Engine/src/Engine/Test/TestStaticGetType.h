@@ -1,5 +1,5 @@
 #pragma once
-#include "TestRegistration.h"
+#include "Engine/Test/TestRegistration.h"
 #include "Niflect/NiflectType.h"
 
 namespace TestRegistration

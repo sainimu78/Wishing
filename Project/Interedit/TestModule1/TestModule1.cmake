@@ -2,14 +2,14 @@ cmake_minimum_required(VERSION 3.20.0)
 
 set(ModuleName TestModule1)
 
-set(SourcePath ${RootSourcePath}/${ModuleName})
+set(SourcePath ${RootSourcePath}/${ModuleName}/src)
+set(IncludePath ${RootSourcePath}/${ModuleName}/include)
 
-file(GLOB_RECURSE ModuleSources ${SourcePath}/*.cpp)
-file(GLOB_RECURSE ModuleHeaders ${SourcePath}/*.h)
-
+file(GLOB_RECURSE ModuleSrc ${SourcePath}/*.cpp ${SourcePath}/*.h)
+file(GLOB_RECURSE ModuleInclude ${IncludePath}/*.h)
 set(SrcAll "")
-list(APPEND SrcAll ${ModuleSources})
-list(APPEND SrcAll ${ModuleHeaders})
+list(APPEND SrcAll ${ModuleSrc})
+list(APPEND SrcAll ${ModuleInclude})
 create_source_group(${RootSourcePath} ${SrcAll})
 
 get_filename_component(NiflectGeneratedRootPath "${RootSourcePath}/../Generated/NiflectGenerated" ABSOLUTE)
@@ -29,7 +29,8 @@ set_target_properties(${ModuleName} PROPERTIES
 )
 
 target_include_directories(${ModuleName}
-	PUBLIC ${RootSourcePath}
+	PRIVATE ${SourcePath}
+	PUBLIC ${IncludePath}
 )
 
 target_include_directories(${ModuleName}
@@ -43,9 +44,9 @@ target_compile_definitions(${ModuleName}
 
 target_link_libraries(${ModuleName} PRIVATE Niflect)
 
-set(ArgsModuleHeaders "")
-foreach(It IN LISTS ModuleHeaders)
-    list(APPEND ArgsModuleHeaders "-h" "${It}")
+set(ArgsModuleInclude "")
+foreach(It IN LISTS ModuleInclude)
+    list(APPEND ArgsModuleInclude "-h" "${It}")
 endforeach()
 
 set(NiflectGeneratedModulePrivateH ${NiflectGeneratedRootPath}/${ModuleName}/${ModuleName}_private.h)
@@ -53,14 +54,14 @@ add_custom_command(
     OUTPUT "${NiflectGeneratedModulePrivateH}"
     COMMAND "${RootSourcePath}/../Build/NiflectGenTool/Windows/vs2022_x64/Debug/NiflectGenTool/NiflectGenTool.exe" 
             -n ${ModuleName} 
-            ${ArgsModuleHeaders}
+            ${ArgsModuleInclude}
             -am TESTMODULE1_API 
-            -amh "${SourcePath}/TestModule1Common.h" 
+            -amh "${IncludePath}/TestModule1Common.h" 
             -a "${RootSourcePath}/Niflect/include/Niflect/CommonlyUsed/DefaultAccessorSetting.h" 
-            -I "${RootSourcePath}" 
             -I "${RootSourcePath}/Niflect/include" 
+            -I "${IncludePath}" 
             -g "${NiflectGeneratedRootPath}"
-    DEPENDS ${ModuleHeaders}
+    DEPENDS ${ModuleInclude}
     COMMENT "NiflectGenTool generating ..."
 )
 

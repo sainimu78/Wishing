@@ -3,12 +3,13 @@
 
 @NiflectGenTool ^
 -n Engine ^
--h ../../../../../../Source/Engine/EngineObject.h ^
--h ../../../../../../Source/Engine/DerivedObject.h ^
+-h ../../../../../../Source/Engine/include/Engine/EngineObject.h ^
+-h ../../../../../../Source/Engine/include/Engine/DerivedObject.h ^
 -am ENGINE_API ^
--amh ../../../../../../Source/Engine/EngineCommon.h ^
--a ../../../../../../Source/Engine/EngineAccessorSetting.h ^
--I ../../../../../../Source ^
+-amh ../../../../../../Source/Engine/include/Engine/EngineCommon.h ^
+-a ../../../../../../Source/Engine/include/EngineAccessorSetting.h ^
+-I ../../../../../../Source/Engine/include ^
+-I ../../../../../../Source/TestModule1/include ^
 -I ../../../../../../Source/Niflect/include ^
 -g ../../../../../../Generated/NiflectGenerated 
 

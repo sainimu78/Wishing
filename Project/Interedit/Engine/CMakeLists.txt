@@ -2,11 +2,14 @@ cmake_minimum_required(VERSION 3.20.0)
 
 set(ModuleName Engine)
 
-set(SourcePath ${RootSourcePath}/${ModuleName})
+set(SourcePath ${RootSourcePath}/${ModuleName}/src)
+set(IncludePath ${RootSourcePath}/${ModuleName}/include)
 
 file(GLOB_RECURSE ModuleSrc ${SourcePath}/*.cpp ${SourcePath}/*.h)
+file(GLOB_RECURSE ModuleInclude ${IncludePath}/*.h)
 set(SrcAll "")
 list(APPEND SrcAll ${ModuleSrc})
+list(APPEND SrcAll ${ModuleInclude})
 create_source_group(${RootSourcePath} ${SrcAll})
 
 get_filename_component(NiflectGeneratedRootPath "${RootSourcePath}/../Generated/NiflectGenerated" ABSOLUTE)
@@ -28,7 +31,8 @@ set_target_properties(${ModuleName} PROPERTIES
 )
 
 target_include_directories(${ModuleName}
-	PUBLIC ${RootSourcePath}
+	PRIVATE ${SourcePath}
+	PUBLIC ${IncludePath}
 )
 
 target_include_directories(${ModuleName}
