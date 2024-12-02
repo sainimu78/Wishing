@@ -79,7 +79,10 @@ namespace TestSerializationRwTree
 				CJsonFormat::Write(&root, ofs);
 			}
 			if (!oldData.empty())
-				ASSERT(NiflectUtil::ReadStringFromFile(TestDefinition::FilePath::InputJson_JsonFormat) == oldData);
+			{
+				auto newData = NiflectUtil::ReadStringFromFile(TestDefinition::FilePath::InputJson_JsonFormat);
+				ASSERT(newData == oldData);
+			}
 		}
 		if (true)//JSON ∏Ò Ω∂¡
 		{
