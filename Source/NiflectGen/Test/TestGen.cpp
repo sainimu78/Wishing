@@ -221,9 +221,9 @@ namespace TestGen
 					resolver.Resolve4(&taggedRoot, resolvingContext, resolvedData);
 					ASSERT(log.m_vecText.size() == 0);
 					Niflect::TArrayNif<Niflect::CString> vecExpected;
-					vecExpected.push_back("CCompoundAccessor");//第0个本应为枚举的Accessor, 现未实现对应的AccessorBinding, 实现后再增加相应的测试
-					vecExpected.push_back("MyAccessor::CMyClassAccessor");
-					vecExpected.push_back("CCompoundAccessor");
+					vecExpected.push_back("CCompoundAccessor");//TestMyFinding::EMyOption, 第0个本应为枚举的Accessor, 现未实现对应的AccessorBinding, 实现后再增加相应的测试
+					vecExpected.push_back("MyAccessor::CMyClassAccessor");//TestMyFinding::CMyClass_0
+					vecExpected.push_back("CCompoundAccessor");//TestMyFinding::CMyClass_1
 					uint32 idx0 = 0;
 					//仅对 TaggedType 进行测试
 					for (auto& it0 : resolvedData.m_signatureMapping.m_vecItem)
@@ -328,7 +328,7 @@ namespace TestGen
 					Niflect::TArrayNif<Niflect::CString> vecExpected;
 					vecExpected.push_back("Niflect/NiflectBase.h");
 					vecExpected.push_back("Engine/Test/TestMyTransform.h");
-					vecExpected.push_back("BypassSTL/string");
+					vecExpected.push_back("_GenTime/string");
 					vecExpected.push_back(moduleHeader);//类本身ResocursorNode所在头文件
 					vecExpected.push_back("NiflectGen/Test/TestSomeTypes.h");
 					vecExpected.push_back(moduleHeader);//自定义TMyArray所在头文件

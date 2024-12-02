@@ -50,12 +50,6 @@ namespace NiflectGen
 
 	namespace Test
 	{
-		static void InitArgs(CModuleRegInfo& info)
-		{
-			info.m_moduleName = "Engine";
-			info.m_outputRootPath_genIncludeSearchPath = "F:/Fts/Proj/Test/Interedit/Generated/NiflectGenerated";
-			info.m_vecModuleHeaderSearchPath2.push_back("F:/Fts/Proj/Test/Interedit/Source/Engine/include");
-		}
+		void InitArgs(CModuleRegInfo& info);
 	}
-
 }

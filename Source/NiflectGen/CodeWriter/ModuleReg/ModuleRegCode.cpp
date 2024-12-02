@@ -57,4 +57,15 @@ namespace NiflectGen
 			return NiflectGenDefinition::FileExt::PrivateH;
 		return NiflectGenDefinition::FileExt::Cpp;
 	}
+	namespace Test
+	{
+		void InitArgs(CModuleRegInfo& info)
+		{
+			info.m_moduleName = "Engine";
+			info.m_outputRootPath_genIncludeSearchPath = CONCAT_SYMBOLS_2(ROOT_TEST_PROJECT_PATH, "/Generated/NiflectGenerated");
+			info.m_vecModuleHeaderSearchPath2.push_back(CONCAT_SYMBOLS_2(ROOT_TEST_INCLUDE_PATH, "/Engine/include"));
+			info.m_toolHeaderSearchPath = CONCAT_SYMBOLS_2(ROOT_TEST_INCLUDE_PATH, "/Niflect/include");
+			info.m_vecModuleHeaderSearchPath2.push_back(ROOT_TEST_INCLUDE_PATH);
+		}
+	}
 }
