@@ -428,7 +428,7 @@ namespace NiflectUtil
     }
 #else
     // 在 Linux 下递归遍历目录
-    static void search_directory_linux(const Niflect::CString& directory, const Niflect::CString& pattern) {
+    static void search_directory_linux(const Niflect::CString& directory, const Niflect::CString& pattern, Niflect::TArrayNif<Niflect::CString>& vecFound) {
         DIR* dir = opendir(directory.c_str());
         if (!dir) {
             std::cerr << "无法打开目录: " << directory << std::endl;
