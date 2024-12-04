@@ -250,27 +250,32 @@ namespace NiflectGen
         NiflectUtil::MakeDirectories(filePath);
         NiflectUtil::WriteStringToFile(writer.m_code, filePath);
     }
+    void CGenerator::SaveFileToGenSource(const CCodeLines& linesCode, const Niflect::CString& relativeFilePath) const
+    {
+        auto relativeToGenSource = NiflectUtil::ConcatPath(m_moduleRegInfo.m_moduleRegGenSource, relativeFilePath);
+        this->SaveCodeToFile(linesCode, relativeToGenSource);
+    }
     void CGenerator::Save2(const CCodeGenData& genData) const
     {
         for (auto& it0 : genData.m_typeRegCreateTypeAccessorSpecGenData.m_vecCreateTypeAccessorSpecData)
         {
-            this->SaveCodeToFile(it0.m_decl, it0.m_declHeaderFilePath);
-            this->SaveCodeToFile(it0.m_impl, it0.m_implSourceFilePath);
+            this->SaveFileToGenSource(it0.m_decl, it0.m_declHeaderFilePath);
+            this->SaveFileToGenSource(it0.m_impl, it0.m_implSourceFilePath);
         }
         for (auto& it0 : genData.m_typeRegStaticGetTypeSpecGenData.m_vecStaticGetTypeSpecData)
         {
             if (it0.m_genH.size() > 0)
-                this->SaveCodeToFile(it0.m_genH, it0.m_genHHeaderFilePath);
+                this->SaveFileToGenSource(it0.m_genH, it0.m_genHHeaderFilePath);
             if (it0.m_impl.size() > 0)
-                this->SaveCodeToFile(it0.m_impl, it0.m_implSourceFilePath);
+                this->SaveFileToGenSource(it0.m_impl, it0.m_implSourceFilePath);
         }
         for (auto& it0 : genData.m_vecSplittedModuleRegGenData)
         {
-            this->SaveCodeToFile(it0.m_h, it0.m_headerFilePath);
-            this->SaveCodeToFile(it0.m_cpp, it0.m_sourceFilePath);
+            this->SaveFileToGenSource(it0.m_h, it0.m_headerFilePath);
+            this->SaveFileToGenSource(it0.m_cpp, it0.m_sourceFilePath);
         }
-        this->SaveCodeToFile(genData.m_moduleRegGenData.m_privateH, genData.m_moduleRegGenData.m_privateHIncludePath);
-        this->SaveCodeToFile(genData.m_moduleRegisteredTypeHeaderGenData.m_linesHeader, m_moduleRegInfo.m_moduleRegisteredTypeHeaderFilePath);
+        this->SaveFileToGenSource(genData.m_moduleRegGenData.m_privateH, genData.m_moduleRegGenData.m_privateHIncludePath);
+        this->SaveFileToGenSource(genData.m_moduleRegisteredTypeHeaderGenData.m_linesHeader, m_moduleRegInfo.m_moduleRegisteredTypeHeaderFilePath);
     }
 
     CXChildVisitResult visitAST(CXCursor cursor, CXCursor parent, CXClientData data)

@@ -13,8 +13,8 @@ list(APPEND SrcAll ${ModuleInclude})
 create_source_group(${RootSourcePath} ${SrcAll})
 
 get_filename_component(NiflectGeneratedRootPath "${RootSourcePath}/../Generated/NiflectGenerated" ABSOLUTE)
-set(ModuleGenPath ${NiflectGeneratedRootPath}/${ModuleName})
-set(GenIncludePath ${ModuleGenPath}/_GenInclude)
+set(ModuleGenPath ${NiflectGeneratedRootPath}/${ModuleName}/_GenSource)
+set(GenIncludePath ${ModuleGenPath}/include)
 #beign, 用于模式 EGeneratingHeaderAndSourceFileMode::ESourceAndHeader, 将生成文件加到模块
 #file(GLOB_RECURSE GeneratedSrc ${ModuleGenPath}/*.cpp ${ModuleGenPath}/*.h)
 #create_source_group(${NiflectGeneratedRootPath} ${GeneratedSrc})

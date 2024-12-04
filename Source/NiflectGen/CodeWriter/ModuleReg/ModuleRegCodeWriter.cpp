@@ -331,6 +331,7 @@ namespace NiflectGen
     }
     void CTemplateBasedCppWriter::WriteModuleReg(const SModuleRegWritingContext2& context, SModuleRegWritingData2& data) const
     {
+        auto moduleFilePath = NiflectUtil::FormatString("%s%s", m_moduleRegInfo.m_userProvided.m_moduleName.c_str(), NiflectGenDefinition::FileExt::PrivateH);
         auto splitsCount = context.m_vecItem.size();
         {
             CCodeTemplate tpl1;
@@ -364,8 +365,7 @@ namespace NiflectGen
             Niflect::TSet<Niflect::CString> setReplacedLabel;
             tpl1.ReplaceLabels(map, data.m_moduleRegGenData.m_privateH, &setReplacedLabel);
         }
-        auto moduleFileName = NiflectUtil::FormatString("%s%s", m_moduleRegInfo.m_userProvided.m_moduleName.c_str(), NiflectGenDefinition::FileExt::PrivateH);
-        data.m_moduleRegGenData.m_privateHIncludePath = moduleFileName;
+        data.m_moduleRegGenData.m_privateHIncludePath = moduleFilePath;
     }
     void CTemplateBasedCppWriter::WriteVerificationCode()
     {

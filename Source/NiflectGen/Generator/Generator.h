@@ -29,6 +29,7 @@ namespace NiflectGen
 
 	private:
 		void SaveCodeToFile(const CCodeLines& linesCode, const Niflect::CString& relativeFilePath) const;
+		void SaveFileToGenSource(const CCodeLines& linesCode, const Niflect::CString& relativeFilePath) const;
 
 	private:
 		Niflect::TArrayNif<Niflect::CString> m_vecTypeBindingSettingFilePath;

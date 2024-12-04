@@ -17,6 +17,7 @@ namespace NiflectGen
 		auto moduleGenDirPath = NiflectUtil::ConcatPath(info.m_outputRootPath_genIncludeSearchPath, info.m_moduleName);
 		NiflectUtil::DeleteDirectory(moduleGenDirPath);
 
+		m_moduleRegGenSource = NiflectGenDefinition::DirName::GenSource;
 		m_moduleRegBasePath = NiflectGenDefinition::DirName::ModuleReg;
 		m_typeRegBasePath = NiflectGenDefinition::DirName::TypeReg;
 		m_genIncludeBasePath = NiflectGenDefinition::DirName::GenInclude;
