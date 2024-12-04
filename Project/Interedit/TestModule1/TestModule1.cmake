@@ -59,7 +59,7 @@ endif()
 set(NiflectGeneratedModulePrivateH ${NiflectGeneratedRootPath}/${ModuleName}/${ModuleName}_private.h)
 add_custom_command(
     OUTPUT "${NiflectGeneratedModulePrivateH}"
-    COMMAND "${RootSourcePath}/../Build/NiflectGenTool/Windows/vs2022_x64/Debug/NiflectGenTool/NiflectGenTool${ExeExt}" 
+    COMMAND "${RootSourcePath}/../Build/NiflectGenTool/${ToolRelPathForTest}/Debug/NiflectGenTool/NiflectGenTool${ExeExt}" 
             -n ${ModuleName} 
             ${ArgsModuleInclude}
             -am TESTMODULE1_API 
