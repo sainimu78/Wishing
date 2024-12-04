@@ -201,7 +201,11 @@ namespace NiflectGen
 			}
 			else if (strcmp(pszV, "-g") == 0)
 			{
-				info.m_outputRootPath_genIncludeSearchPath = GetNextArgIncludeSearchPath(argv, idx);
+				info.m_genOutputDirPath = GetNextArgPath(argv, idx);
+			}
+			else if (strcmp(pszV, "-gs") == 0)
+			{
+				info.m_genSourceOutputDirPath = GetNextArgPath(argv, idx);
 			}
 			else if (strcmp(pszV, "-fs") == 0)
 			{

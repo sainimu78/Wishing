@@ -242,9 +242,11 @@ namespace NiflectGen
     //}
     void CGenerator::SaveCodeToFile(const CCodeLines& linesCode, const Niflect::CString& relativeFilePath) const
     {
-        const auto& outputRootPath = m_moduleRegInfo.m_userProvided.m_outputRootPath_genIncludeSearchPath;
+        const auto* outputDirPath = &m_moduleRegInfo.m_userProvided.m_genOutputDirPath;
+        if (!m_moduleRegInfo.m_userProvided.m_genSourceOutputDirPath.empty())
+            outputDirPath = &m_moduleRegInfo.m_userProvided.m_genSourceOutputDirPath;
         auto filePath = NiflectUtil::ConcatPath(m_moduleRegInfo.m_userProvided.m_moduleName, relativeFilePath);
-        filePath = NiflectUtil::ConcatPath(outputRootPath, filePath);
+        filePath = NiflectUtil::ConcatPath(*outputDirPath, filePath);
         CCppWriter writer;
         writer.WriteLines(linesCode);
         NiflectUtil::MakeDirectories(filePath);

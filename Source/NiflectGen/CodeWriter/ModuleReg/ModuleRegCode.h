@@ -21,7 +21,8 @@ namespace NiflectGen
 		{
 		}
 		Niflect::CString m_moduleName;
-		Niflect::CString m_outputRootPath_genIncludeSearchPath;
+		Niflect::CString m_genOutputDirPath;
+		Niflect::CString m_genSourceOutputDirPath;
 		Niflect::TArrayNif<Niflect::CString> m_vecModuleHeader2;
 		Niflect::TArrayNif<Niflect::CString> m_vecAccessorSettingHeader;
 		Niflect::TArrayNif<Niflect::CString> m_vecModuleHeaderSearchPath2;//header search paths for libclang parsing

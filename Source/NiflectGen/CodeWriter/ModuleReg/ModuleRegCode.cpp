@@ -14,8 +14,13 @@ namespace NiflectGen
 
 		m_userProvided = info;
 
-		auto moduleGenDirPath = NiflectUtil::ConcatPath(info.m_outputRootPath_genIncludeSearchPath, info.m_moduleName);
+		auto moduleGenDirPath = NiflectUtil::ConcatPath(info.m_genOutputDirPath, info.m_moduleName);
 		NiflectUtil::DeleteDirectory(moduleGenDirPath);
+		if (!info.m_genSourceOutputDirPath.empty())
+		{
+			auto genSourceOutputDirPath = NiflectUtil::ConcatPath(info.m_genSourceOutputDirPath, info.m_moduleName);
+			NiflectUtil::DeleteDirectory(genSourceOutputDirPath);
+		}
 
 		m_moduleRegGenSource = NiflectGenDefinition::DirName::GenSource;
 		m_moduleRegBasePath = NiflectGenDefinition::DirName::ModuleReg;
@@ -63,7 +68,7 @@ namespace NiflectGen
 		void InitArgs(CModuleRegInfo& info)
 		{
 			info.m_moduleName = "Engine";
-			info.m_outputRootPath_genIncludeSearchPath = CONCAT_SYMBOLS_2(ROOT_TEST_PROJECT_PATH, "/Generated/NiflectGenerated");
+			info.m_genOutputDirPath = CONCAT_SYMBOLS_2(ROOT_TEST_PROJECT_PATH, "/Generated/NiflectGenerated");
 			info.m_vecModuleHeaderSearchPath2.push_back(CONCAT_SYMBOLS_2(ROOT_TEST_INCLUDE_PATH, "/Engine/include"));
 			info.m_toolHeaderSearchPath = CONCAT_SYMBOLS_2(ROOT_TEST_INCLUDE_PATH, "/Niflect/include");
 			info.m_vecModuleHeaderSearchPath2.push_back(ROOT_TEST_INCLUDE_PATH);
