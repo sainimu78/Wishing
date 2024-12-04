@@ -10,8 +10,9 @@ cd ../../../Build/NiflectGenTool/Linux/Make_x64/Debug/NiflectGenTool
 -am ENGINE_API \
 -amh ../../../../../../Source/Engine/EngineCommon.h \
 -a ../../../../../../Source/Engine/EngineAccessorSetting.h \
--I ../../../../../../Source \
--I ../../../../../../Source/Niflect/include \
+-I ../../../../../../Source/Engine/include \
+-I ../../../../../../Source/TestModule1/include \
+-t ../../../../../../Source/Niflect/include \
 -g ../../../../../../Generated/NiflectGenerated 
 
 cd $old
