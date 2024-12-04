@@ -1,11 +1,10 @@
 #pragma once
 #include "Niflect/Util/StringUtil.h"
 #include "Niflect/Util/ConcatHardCodedStrings.h"
-#include "Niflect/Util/ConcatSymbols.h"
 
 #define ROOT_TEST_PROJECT_PATH "../../../../../.."
-#define ROOT_TEST_INCLUDE_PATH CONCAT_SYMBOLS_2(ROOT_TEST_PROJECT_PATH, "/Source")
-#define ROOT_TEST_PATH CONCAT_SYMBOLS_2(ROOT_TEST_INCLUDE_PATH, "/NiflectGen/Test")
+#define ROOT_TEST_INCLUDE_PATH CONCAT_HARDCODED_STRINGS_2(ROOT_TEST_PROJECT_PATH, "/Source")
+#define ROOT_TEST_PATH CONCAT_HARDCODED_STRINGS_2(ROOT_TEST_INCLUDE_PATH, "/NiflectGen/Test")
 
 namespace NiflectGenDefinition
 {
