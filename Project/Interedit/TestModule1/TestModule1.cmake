@@ -49,10 +49,16 @@ foreach(It IN LISTS ModuleInclude)
     list(APPEND ArgsModuleInclude "-h" "${It}")
 endforeach()
 
+set(ExeExt )
+if (WIN32)
+	set(ExeExt .exe)
+endif()
+
+
 set(NiflectGeneratedModulePrivateH ${NiflectGeneratedRootPath}/${ModuleName}/${ModuleName}_private.h)
 add_custom_command(
     OUTPUT "${NiflectGeneratedModulePrivateH}"
-    COMMAND "${RootSourcePath}/../Build/NiflectGenTool/Windows/vs2022_x64/Debug/NiflectGenTool/NiflectGenTool.exe" 
+    COMMAND "${RootSourcePath}/../Build/NiflectGenTool/Windows/vs2022_x64/Debug/NiflectGenTool/NiflectGenTool${ExeExt}" 
             -n ${ModuleName} 
             ${ArgsModuleInclude}
             -am TESTMODULE1_API 
