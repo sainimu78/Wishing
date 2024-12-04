@@ -49,11 +49,12 @@ foreach(It IN LISTS ModuleInclude)
     list(APPEND ArgsModuleInclude "-h" "${It}")
 endforeach()
 
+set(ToolRelPathForTest Linux/Make_x64)
 set(ExeExt )
 if (WIN32)
 	set(ExeExt .exe)
+	set(ToolRelPathForTest Windows/v2022_x64)
 endif()
-
 
 set(NiflectGeneratedModulePrivateH ${NiflectGeneratedRootPath}/${ModuleName}/${ModuleName}_private.h)
 add_custom_command(
