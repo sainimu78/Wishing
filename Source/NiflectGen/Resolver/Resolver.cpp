@@ -618,17 +618,12 @@ namespace NiflectGen
 			CXSourceRange range = clang_getCursorExtent(cursor);
 			CXTranslationUnit translationUnit = clang_Cursor_getTranslationUnit(cursor);
 			{
-				CXFile begin_file, end_file;
-				unsigned begin_line, begin_column, end_line, end_column, begin_offset, end_offset;
+				CXFile begin_file;
+				unsigned begin_line, begin_column, begin_offset;
 				clang_getSpellingLocation(clang_getRangeStart(range),
 					&begin_file, &begin_line, &begin_column, &begin_offset);
-				clang_getSpellingLocation(clang_getRangeEnd(range),
-					&end_file, &end_line, &end_column, &end_offset);
-				if (begin_file && end_file)
+				if (begin_file != NULL)
 				{
-					ASSERT(begin_file == end_file);
-					ASSERT(end_offset > begin_offset);
-
 					size_t size = 0;
 					auto contents = clang_getFileContents(translationUnit, begin_file, &size);
 
