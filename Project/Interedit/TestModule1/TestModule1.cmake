@@ -53,7 +53,7 @@ set(ToolRelPathForTest Linux/Make_x64)
 set(ExeExt )
 if (WIN32)
 	set(ExeExt .exe)
-	set(ToolRelPathForTest Windows/v2022_x64)
+	set(ToolRelPathForTest Windows/vs2022_x64)
 endif()
 
 set(NiflectGeneratedModulePrivateH ${NiflectGeneratedRootPath}/${ModuleName}/${ModuleName}_private.h)
@@ -73,4 +73,4 @@ add_custom_command(
 )
 
 add_custom_target(NiflectGenTool ALL DEPENDS "${NiflectGeneratedModulePrivateH}")
-add_dependencies(${ModuleName} NiflectGenTool) #使在 vs 中按 F5 也能触发生成
+#add_dependencies(${ModuleName} NiflectGenTool) #使在 vs 中按 F5 也能触发生成, 但无修改也会触发执行, 因此现不启用, 须在实现无变化不写入后再确认是否由于冗余写入而"无修改"也触发执行

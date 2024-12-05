@@ -254,6 +254,7 @@ namespace NiflectGen
 				auto& cursor = tt->GetCursor();
 				auto kind = clang_getCursorKind(cursor);
 				Niflect::CString cppTypeKeyword;
+				Niflect::CString enumUnderlyingType;
 				switch (kind)
 				{
 				case CXCursor_ClassDecl:
@@ -267,12 +268,15 @@ namespace NiflectGen
 						cppTypeKeyword = "enum class";
 					else
 						cppTypeKeyword = "enum";
+					CXType cxUnderlyingType = clang_getEnumDeclIntegerType(cursor);
+					if (cxUnderlyingType.kind != CXType_Int)
+						enumUnderlyingType = NiflectUtil::FormatString(" : %s", CXStringToCString(clang_getTypeSpelling(cxUnderlyingType)).c_str());
 					break;
 				default:
 					ASSERT(false);
 					break;
 				}
-				auto declCode = NiflectUtil::FormatString("%s %s;", cppTypeKeyword.c_str(), CXStringToCString(clang_getCursorSpelling(cursor)).c_str());
+				auto declCode = NiflectUtil::FormatString("%s %s%s;", cppTypeKeyword.c_str(), CXStringToCString(clang_getCursorSpelling(cursor)).c_str(), enumUnderlyingType.c_str());
 				data.m_specTemplateRequiredTypeDecl = declCode;
 				data.m_vecScopeNameAddr = &tt->m_vecScopeName;
 			}

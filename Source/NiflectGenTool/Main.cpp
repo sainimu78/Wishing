@@ -262,12 +262,12 @@ int main(int argc, const char** argv)
 				//const char* argvTest[] = {
 				//	"Placeholder",
 				//	"-n", "TestModule1",
-				//	"-h", "../../../../../../Source/TestModule1/TestClass1.h",
+				//	"-h", "../../../../../../Source/TestModule1/include/TestModule1/TestClass1.h",
 				//	"-am", "TESTMODULE1_API",
-				//	"-amh", "../../../../../../Source/TestModule1/TestModule1Common.h",
+				//	"-amh", "../../../../../../Source/TestModule1/include/TestModule1Common.h",
 				//	"-a", "../../../../../../Source/Niflect/include/Niflect/CommonlyUsed/DefaultAccessorSetting.h",
-				//	"-I", "../../../../../../Source",
-				//	"-I", "../../../../../../Source/Niflect/include",
+				//	"-I", "../../../../../../Source/TestModule1/include",
+				//	"-t", "../../../../../../Source/Niflect/include",
 				//	"-g", "../../../../../../Generated/NiflectGenerated",
 				//	//"-fs",
 				//};
