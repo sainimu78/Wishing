@@ -579,6 +579,7 @@ namespace NiflectGen
 		Niflect::TArrayNif<STaggedTypeIndexAndBelongingFilePath> vecFilePathAndTaggedTypeIdx;
 		Niflect::TSet<Niflect::CString> setNoDup;
 		//未实现按CursorDeclaration依赖顺序遍历, 因此在最后ResolveDependcies
+		std::vector<CTaggedType*> vecValidToResolveDependencies;
 		for (uint32 idx0 = 0; idx0 < data.m_taggedMapping.m_vecType.size(); ++idx0)
 		{
 			auto& it0 = data.m_taggedMapping.m_vecType[idx0];
@@ -598,12 +599,17 @@ namespace NiflectGen
 			}
 			if (found)
 			{
-				it0->ResolveDependcies(resolvingDepCtx, resolvingDepData);
+				it0->ResolveBasic(resolvingDepCtx, resolvingDepData);
+				vecValidToResolveDependencies.push_back(it0);
 			}
 			else
 			{
 				it0->InitForImportType();
 			}
+		}
+		for (auto& it0 : vecValidToResolveDependencies)
+		{
+			it0->ResolveDependcies(resolvingDepCtx, resolvingDepData);
 		}
 
 		for (auto& it0 : vecFilePathAndTaggedTypeIdx)

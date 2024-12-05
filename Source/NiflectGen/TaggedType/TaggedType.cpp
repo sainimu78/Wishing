@@ -53,7 +53,7 @@ namespace NiflectGen
 		return ResolveSignatureRecurs(indexedParent, indexedParent, ctx, signatureMapping);
 	}
 
-	void CTaggedType::ResolveDependcies(const CResolvingDependenciesContext& context, SResolvingDependenciesData& data)
+	void CTaggedType::ResolveBasic(const CResolvingDependenciesContext& context, SResolvingDependenciesData& data)
 	{
 		auto& taggedMapping = context.m_mappings.m_tagged;
 		auto& cursor = this->GetCursor();

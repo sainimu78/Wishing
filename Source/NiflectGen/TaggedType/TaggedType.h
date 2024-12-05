@@ -52,7 +52,8 @@ namespace NiflectGen
 		{
 
 		}
-		virtual void ResolveDependcies(const CResolvingDependenciesContext& context, SResolvingDependenciesData& data);
+		virtual void ResolveDependcies(const CResolvingDependenciesContext& context, SResolvingDependenciesData& data) {}
+		void ResolveBasic(const CResolvingDependenciesContext& context, SResolvingDependenciesData& data);
 		virtual CSharedTypeRegCodeWriter Deprecated_CreateCodeWriter(const STypeRegClassWritingSetting& setting) const
 		{
 			ASSERT(false);
