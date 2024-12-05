@@ -638,19 +638,19 @@ namespace NiflectGen
 					while (std::getline(ss, line))
 					{
 						bool found = false;
-						auto pos0 = line.find('#');
-						if (pos0 != std::string::npos)
+						auto posSingleLineComment = line.find("//");
+						if (posSingleLineComment == std::string::npos)
 						{
-							auto pos1 = line.find(keywordInclude, pos0 + 1);
-							if (pos1 != std::string::npos)
+							auto pos0 = line.find('#');
+							if (pos0 != std::string::npos)
 							{
-								auto pos2 = line.find_last_of('"');
-								if (pos2 == std::string::npos)
-									pos2 = line.find_last_of('>');
-								if (pos2 != std::string::npos)
+								auto pos1 = line.find(keywordInclude, pos0 + 1);
+								if (pos1 != std::string::npos)
 								{
-									auto posSingleLineComment = line.find("//");
-									if (posSingleLineComment == std::string::npos)
+									auto pos2 = line.find_last_of('"');
+									if (pos2 == std::string::npos)
+										pos2 = line.find_last_of('>');
+									if (pos2 != std::string::npos)
 									{
 										auto posQuotL = pos1 + keywordInclude.length() + 2;
 										vecIncludeDirective.push_back(line.substr(posQuotL, pos2 - posQuotL));
