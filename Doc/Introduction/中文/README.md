@@ -374,7 +374,7 @@ C++ 原生风格即是重点
 
 由以下元素 :
 
-- C++ `N`at`i`ve
+- C++ `N`ative
 - `N`on-`i`ntrusive 
 - C++ Re`flect`ion
 

@@ -377,7 +377,7 @@ Being C++ native is all that matters.
 
 By combining these elements :
 
-- C++ `N`at`i`ve
+- C++ `N`ative
 - `N`on-`i`ntrusive 
 - C++ Re`flect`ion
 
