@@ -559,24 +559,11 @@ namespace NiflectGen
 			this->ResolveRecurs2(it0.Get(), context, data);
 		}
 	}
-	//void CResolver::DebugFinish(const CResolvedData& data) const
-	//{
-	//	for (auto& it : data.m_accessorTypeTable.m_mapBuiltinTypeKind)
-	//	{
-	//		auto a = CXStringToCString(clang_getTypeKindSpelling(it.first));
-	//		auto b = CXStringToCString(clang_getCursorSpelling(it.second->GetCursor()));
-	//		printf("%s <-> %s\n", a.c_str(), b.c_str());
-	//	}
-	//	printf("");
-	//	for (auto& it : data.m_accessorTypeTable.m_mapUserType)
-	//	{
-	//		auto a = CXStringToCString(clang_getCursorSpelling(it.first));
-	//		auto b = CXStringToCString(clang_getCursorSpelling(it.second->GetCursor()));
-	//		printf("%s <-> %s\n", a.c_str(), b.c_str());
-	//	}
-	//	printf("");
-	//}
-
+	struct STaggedTypeIndexAndBelongingFilePath
+	{
+		Niflect::CString m_filePath;
+		uint32 m_taggedTypeIdx;
+	};
 	void CResolver::Resolve4(CTaggedNode2* taggedRoot, const CResolvingContext& context, CResolvedData& data)
 	{
 		data.m_accessorBindingMapping = m_collectionData.m_accessorBindingMapping;
@@ -589,9 +576,12 @@ namespace NiflectGen
 		SResolvedMappings mappings{ *data.m_accessorBindingMapping, data.m_taggedMapping, data.m_untaggedTemplateMapping };
 		CResolvingDependenciesContext resolvingDepCtx(mappings, context.m_log);
 		SResolvingDependenciesData resolvingDepData{ data.m_signatureMapping };
+		Niflect::TArrayNif<STaggedTypeIndexAndBelongingFilePath> vecFilePathAndTaggedTypeIdx;
+		Niflect::TSet<Niflect::CString> setNoDup;
 		//未实现按CursorDeclaration依赖顺序遍历, 因此在最后ResolveDependcies
-		for (auto& it0 : data.m_taggedMapping.m_vecType)
+		for (uint32 idx0 = 0; idx0 < data.m_taggedMapping.m_vecType.size(); ++idx0)
 		{
+			auto& it0 = data.m_taggedMapping.m_vecType[idx0];
 			bool found = false;
 			for (auto& it1 : m_moduleRegInfo.m_userProvided.m_vecModuleHeader2)
 			{
@@ -599,6 +589,10 @@ namespace NiflectGen
 				if (it1 == filePath)
 				{
 					found = true;
+
+					if (setNoDup.insert(filePath).second)
+						vecFilePathAndTaggedTypeIdx.push_back({ filePath, idx0 });
+
 					break;
 				}
 			}
@@ -609,6 +603,79 @@ namespace NiflectGen
 			else
 			{
 				it0->InitForImportType();
+			}
+		}
+
+		for (auto& it0 : vecFilePathAndTaggedTypeIdx)
+		{
+			auto& cursor = data.m_taggedMapping.m_vecType[it0.m_taggedTypeIdx]->GetCursor();
+			CXSourceRange range = clang_getCursorExtent(cursor);
+			CXTranslationUnit translationUnit = clang_Cursor_getTranslationUnit(cursor);
+			{
+				CXFile begin_file, end_file;
+				unsigned begin_line, begin_column, end_line, end_column, begin_offset, end_offset;
+				clang_getSpellingLocation(clang_getRangeStart(range),
+					&begin_file, &begin_line, &begin_column, &begin_offset);
+				clang_getSpellingLocation(clang_getRangeEnd(range),
+					&end_file, &end_line, &end_column, &end_offset);
+				if (begin_file && end_file)
+				{
+					ASSERT(begin_file == end_file);
+					ASSERT(end_offset > begin_offset);
+
+					size_t size = 0;
+					auto contents = clang_getFileContents(translationUnit, begin_file, &size);
+
+					Niflect::CStringStream ss;
+					Niflect::CString str;
+					str.resize(begin_offset);
+					memcpy(&str[0], contents, begin_offset);
+					ss << str;
+					Niflect::CString line;
+					Niflect::TArrayNif<Niflect::CString> vecIncludeDirective;
+					const Niflect::CString keywordInclude = "include";
+					while (std::getline(ss, line))
+					{
+						bool found = false;
+						auto pos0 = line.find('#');
+						if (pos0 != std::string::npos)
+						{
+							auto pos1 = line.find(keywordInclude, pos0 + 1);
+							if (pos1 != std::string::npos)
+							{
+								auto pos2 = line.find_last_of('"');
+								if (pos2 == std::string::npos)
+									pos2 = line.find_last_of('>');
+								if (pos2 != std::string::npos)
+								{
+									auto posSingleLineComment = line.find("//");
+									if (posSingleLineComment == std::string::npos)
+									{
+										auto posQuotL = pos1 + keywordInclude.length() + 2;
+										vecIncludeDirective.push_back(line.substr(posQuotL, pos2 - posQuotL));
+										found = true;
+									}
+								}
+							}
+						}
+						if (!found)
+						{
+							if (vecIncludeDirective.size() > 0)
+								break;
+						}
+					}
+					auto includeFilePath = CIncludesHelper::ConvertToIncludePath(it0.m_filePath, m_moduleRegInfo.m_writingHeaderSearchPaths.m_vecForRegularConversion);
+					auto filePathNoExt = NiflectUtil::RemoveFileExt(includeFilePath);
+					auto expectedIncludeFilePath = filePathNoExt + NiflectGenDefinition::FileExt::GenH;
+					bool includedGenH = vecIncludeDirective.size() > 0;
+					if (includedGenH)
+					{
+						auto& lastInclude = vecIncludeDirective.back();
+						includedGenH = lastInclude == expectedIncludeFilePath;
+					}
+					if (!includedGenH)
+						GenLogError(context.m_log, NiflectUtil::FormatString("Expected `#include \"%s\"` at the top of the header and follows all other includes", expectedIncludeFilePath.c_str()));
+				}
 			}
 		}
 	}
