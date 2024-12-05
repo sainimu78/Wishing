@@ -22,7 +22,7 @@ namespace NiflectGen
 			NiflectUtil::DeleteDirectory(genSourceOutputDirPath);
 		}
 
-		m_moduleRegGenSource = NiflectGenDefinition::DirName::GenSource;
+		m_moduleGenSource = NiflectGenDefinition::DirName::GenSource;
 		m_moduleRegBasePath = NiflectGenDefinition::DirName::ModuleReg;
 		m_typeRegBasePath = NiflectGenDefinition::DirName::TypeReg;
 		m_genIncludeBasePath = NiflectGenDefinition::DirName::GenInclude;

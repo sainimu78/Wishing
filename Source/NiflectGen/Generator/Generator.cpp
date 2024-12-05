@@ -254,7 +254,7 @@ namespace NiflectGen
     }
     void CGenerator::SaveFileToGenSource(const CCodeLines& linesCode, const Niflect::CString& relativeFilePath) const
     {
-        auto relativeToGenSource = NiflectUtil::ConcatPath(m_moduleRegInfo.m_moduleRegGenSource, relativeFilePath);
+        auto relativeToGenSource = NiflectUtil::ConcatPath(m_moduleRegInfo.m_moduleGenSource, relativeFilePath);
         this->SaveCodeToFile(linesCode, relativeToGenSource);
     }
     void CGenerator::Save2(const CCodeGenData& genData) const
