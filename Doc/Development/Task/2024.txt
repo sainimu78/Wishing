@@ -82,6 +82,8 @@
 46. Done, Niflect, (结论为无分号时_gen.h未重生成时, GENERATED_BODY之后的代码无法被intellisense正确解析而标红) 确认 GENERATED_BODY 有无末尾分号对intellisense的影响
 47. NiflectGen, 发现 inheritableType 的 InitType 基类名获取错误是由于成员误用引起, 应梳理代码, 相应改名, 明确概念等, 避免误用
 	1. CInheritableTypeRegCodeWriter2::WriteInvokeInitType 中的 m_baseTaggedType->m_resocursorName 被误用为 m_baseTaggedType->m_taggedResoRoot.m_resocursorName
+	2. 进展
+		1. 确认2者作用不同, 后者为, 当 field 类型非指定 ModuleHeader 中的类型(即 ImportType)时, 是无初始化的, 因此2者作用不同, 可考虑改变量名和类名避免误解
 48. Done, Niflect, linux同signture问题
 	1. 分支用途备忘
 		1. 2种模式都能生成, 存在linux同signature问题, sainimu78_RegisteredTypeExp3, 4d36bfc497443164c3171b9a552d93ce81cbee41
@@ -127,7 +129,11 @@
 68. Done, (仅预留获取lifecycleMeta, 未实现默认堆创建释放) Niflect, 创建实例改写为静态函数, 方便接入不同的创建方法, 如默认堆, Niflect 的堆
 69. Done, (属误解, std::string 也不可, 仅因Bypass无定义所需形式的构造函数) Niflect, CString为何无法在field处初始化, 而std::string可
 70. Done, NiflectGen, 指针模板, 用于如 std::shared_ptr, 因为无法与1维容器模板区分, 可考虑整理复用 m_recursCollectiingData.m_settings.m_vecAccessorBindingSetting 的流程
-71. NiflectGen, 集成cmake
-72. NiflectGen, 考虑增加一些参数用于指定使用一定规范下的默认参数, 简化命令行参数, 可输出一些注释用于可能编译错误的提示; 
+71. Done, NiflectGen, 集成cmake
+	1. 结论
+		1. 已作简易实验, 验证可行, 但须更多工作方便集成, 有可能还需要为此制作模块工程生成工具
+		2. 接入 cmake 的 NiflectGenTool, 正确指定依赖后, 可实现编译系统自动检测被依赖的文件, 如含反射标记宏的文件, 被修改时才会触发工具执行, 集成的效果非常理想
+		3. 但考虑到生成的代码与平台无关, 还需要支持将生成的代码提交的用法, 因此 cmake 集成应通过另外的形式接入, 有可能通过手工执行 cmake 重新生成工程时执行 NiflectGenTool, 这种用法类似于新增文件
+72. Deprecated, (似乎无此必要, 因为集成已非常繁琐, 一些参数的简化, 微不足道) NiflectGen, 考虑增加一些参数用于指定使用一定规范下的默认参数, 简化命令行参数, 可输出一些注释用于可能编译错误的提示; 
 73. Deprecated, (由于仍须指定依赖的头文件搜索路径, 当依赖的头文件的包含头文件涉及量大时, 此办法无作用) NiflectGen, 将 ModuleHeader 移到 _GenTime 中的相应路径下, 并指定相应的 -I, 屏蔽其它头文件, 设想中可避免 include 不希望被解析的复杂头文件导致解析慢
 74. NiflectGen, 可能可利用 TranslationUnit 的保存载入实现对模块的解析缓存, 每次解析完都保存对应模块的 TU, 并通过选项指定依赖的模块, 以获取模块的 TU; 另外这种缓存方式可能须涉法获取模块间的依赖关系, 以使遍历依赖模块 TU 时可按依赖顺序进行.
