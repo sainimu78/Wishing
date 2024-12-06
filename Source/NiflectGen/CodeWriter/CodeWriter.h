@@ -7,8 +7,8 @@ namespace NiflectGen
 	
 	namespace EscapeChar
 	{
-		static const char* NewLine = "\n";
-		static const char* EmptyLine = "";
+		constexpr const char* NewLine = "\n";
+		constexpr const char* EmptyLine = "";
 	}
 
 	class CWritingHeaderSearchPaths
