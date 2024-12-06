@@ -1,6 +1,6 @@
 #include "NiflectGen/CodeWriter/TypeReg/TypeRegGenHeaderCodeWriter.h"
 #include "NiflectGen/CodeWriter/HardCoded/TypeRegGenHeaderTemplate.h"
-#include "NiflectGen/CodeWriter/CodeTemplate.h"
+#include "NiflectGen/CodeWriter/CppTemplate.h"
 
 namespace NiflectGen
 {
@@ -25,7 +25,7 @@ namespace NiflectGen
 
 		{
 			CCodeTemplate tpl;
-			tpl.ReadFromRawData(HardCodedTemplate::GenHeader);
+			ReadTemplateFromRawData(tpl, HardCodedTemplate::GenHeader);
 			CLabelToCodeMapping map;
 			MapLabelToLines(map, LABEL_0, linesTypeDeclarations);
 			MapLabelToLines(map, LABEL_1, linesStaticGetTypeSpecializations);

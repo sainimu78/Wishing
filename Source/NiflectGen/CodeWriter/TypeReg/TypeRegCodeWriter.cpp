@@ -1,7 +1,7 @@
 #include "NiflectGen/CodeWriter/TypeReg/TypeRegCodeWriter.h"
 #include "NiflectGen/Util/CursorUtil.h"
 //#include "NiflectGen/CodeWriter/HardCoded/TypeRegGenHeaderDeclTemplate.h"
-#include "NiflectGen/CodeWriter/CodeTemplate.h"
+#include "NiflectGen/CodeWriter/CppTemplate.h"
 #include "NiflectGen/CodeWriter/CppWriter.h"
 #include "NiflectGen/Base/NiflectGenDefinition.h"
 #include "NiflectGen/CodeWriter/HardCoded/TypeRegInitialRegTemplate.h"
@@ -105,7 +105,7 @@ namespace NiflectGen
 			}
 
 			CCodeTemplate tpl0;
-			tpl0.ReadFromRawData(hct);
+			ReadTemplateFromRawData(tpl0, hct);
 			CLabelToCodeMapping map;
 			MapLabelToText(map, LABEL_0, m_bindingTypeIndexedRoot->m_resocursorName);
 			MapLabelToText(map, LABEL_2, funcName);
@@ -138,7 +138,7 @@ namespace NiflectGen
 			//生成方法是最简单的, 只需要能够生成 TaggedType 的类型声明即可, TaggedType 无别名的复杂情况
 
 			CCodeTemplate tpl0;
-			tpl0.ReadFromRawData(HardCodedTemplate::CreateTypeAccessorDecl);
+			ReadTemplateFromRawData(tpl0, HardCodedTemplate::CreateTypeAccessorDecl);
 			CLabelToCodeMapping map;
 			MapLabelToText(map, LABEL_2, createTypeAccessorFuncName);
 			Niflect::TSet<Niflect::CString> setReplacedLabel;
@@ -147,7 +147,7 @@ namespace NiflectGen
 		}
 		{
 			CCodeTemplate tpl0;
-			tpl0.ReadFromRawData(HardCodedTemplate::CreateTypeAccessorImpl);
+			ReadTemplateFromRawData(tpl0, HardCodedTemplate::CreateTypeAccessorImpl);
 			CLabelToCodeMapping map;
 			MapLabelToText(map, LABEL_2, createTypeAccessorFuncName);
 
@@ -208,7 +208,7 @@ namespace NiflectGen
 
 			{
 				CCodeTemplate tpl0;
-				tpl0.ReadFromRawData(HardCodedTemplate::CreateAndInitTypeAccessor);
+				ReadTemplateFromRawData(tpl0, HardCodedTemplate::CreateAndInitTypeAccessor);
 				CLabelToCodeMapping map;
 				MapLabelToText(map, LABEL_4, accessorResocursorName);
 				MapLabelToText(map, LABEL_2, m_bindingTypeIndexedRoot->GetStaticGetTypeFuncName(context.m_moduleRegInfo.m_moduleScopeSymbolPrefix));
@@ -300,7 +300,7 @@ namespace NiflectGen
 			}
 			{
 				CCodeTemplate tpl0;
-				tpl0.ReadFromRawData(HardCodedTemplate::StaticGetTypeSpecDecl);
+				ReadTemplateFromRawData(tpl0, HardCodedTemplate::StaticGetTypeSpecDecl);
 				CLabelToCodeMapping map;
 				MapLabelToText(map, LABEL_2, staticGetTypeFuncName);
 				MapLabelToText(map, LABEL_10, context.m_moduleApiMacro);
@@ -310,7 +310,7 @@ namespace NiflectGen
 			}
 			{
 				CCodeTemplate tpl0;
-				tpl0.ReadFromRawData(HardCodedTemplate::StaticGetTypeSpecImpl);
+				ReadTemplateFromRawData(tpl0, HardCodedTemplate::StaticGetTypeSpecImpl);
 				CLabelToCodeMapping map;
 				MapLabelToText(map, LABEL_2, staticGetTypeFuncName);
 				MapLabelToText(map, LABEL_9, resocursorNameForLastTemplateArg);

@@ -1,7 +1,7 @@
 #include "NiflectGen/CodeWriter/ModuleReg/StaticGetTypeSpecCodeWriter.h"
 #include "NiflectGen/CodeWriter/CppWriter.h"
 #include "NiflectGen/Base/NiflectGenDefinition.h"
-#include "NiflectGen/CodeWriter/CodeTemplate.h"
+#include "NiflectGen/CodeWriter/CppTemplate.h"
 #include "NiflectGen/CodeWriter/HardCoded/StaticGetTypeTemplate.h"
 
 namespace NiflectGen
@@ -95,7 +95,7 @@ namespace NiflectGen
                     CIncludesHelper::ConvertFromHeaderFilePaths(vecHeaderData, context.m_moduleRegInfo.m_writingHeaderSearchPaths, linesGenHInclude);
 
                     CCodeTemplate tpl1;
-                    tpl1.ReadFromRawData(HardCodedTemplate::GenH);
+                    ReadTemplateFromRawData(tpl1, HardCodedTemplate::GenH);
                     CLabelToCodeMapping map;
                     MapLabelToLines(map, LABEL_0, linesGenHInclude);
                     Niflect::CString genHHeaderMacro = ConvertHeaderFilePathToUnderscoredStyle(staticGetTypeSpecData.m_genHHeaderFilePath);
@@ -169,7 +169,7 @@ namespace NiflectGen
                             }
                             {
                                 CCodeTemplate tpl1;
-                                tpl1.ReadFromRawData(HardCodedTemplate::LineNumberMacros);
+                                ReadTemplateFromRawData(tpl1, HardCodedTemplate::LineNumberMacros);
                                 CLabelToCodeMapping map;
                                 MapLabelToText(map, LABEL_7, NiflectUtil::FormatString("%u", lineNumber));
                                 MapLabelToText(map, LABEL_8, headerFilePath);
@@ -192,7 +192,7 @@ namespace NiflectGen
                     CIncludesHelper::ConvertFromHeaderFilePaths(vecHeaderData, context.m_moduleRegInfo.m_writingHeaderSearchPaths, linesGenCppInclude);
 
                     CCodeTemplate tpl1;
-                    tpl1.ReadFromRawData(HardCodedTemplate::GenCpp);
+                    ReadTemplateFromRawData(tpl1, HardCodedTemplate::GenCpp);
                     CLabelToCodeMapping map;
                     MapLabelToLines(map, LABEL_0, linesGenCppInclude);
                     CCodeLines linesImpl;

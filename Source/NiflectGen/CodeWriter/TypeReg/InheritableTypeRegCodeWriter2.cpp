@@ -1,7 +1,7 @@
 #include "NiflectGen/CodeWriter/TypeReg/InheritableTypeRegCodeWriter2.h"
 #include "NiflectGen/Util/CursorUtil.h"
 #include "NiflectGen/CodeWriter/HardCoded/InheritableTypeTemplate2.h"
-#include "NiflectGen/CodeWriter/CodeTemplate.h"
+#include "NiflectGen/CodeWriter/CppTemplate.h"
 #include "NiflectGen/CodeWriter/CppWriter.h"
 #include "NiflectGen/Base/NiflectGenDefinition.h"
 #include "NiflectGen/CodeWriter/TypeReg/TypeAccessorCodeWriter.h"
@@ -79,7 +79,7 @@ namespace NiflectGen
 		if (m_baseTaggedType != NULL)
 		{
 			CCodeTemplate tpl1;
-			tpl1.ReadFromRawData(HardCodedTemplate::InitTypeCode);
+			ReadTemplateFromRawData(tpl1, HardCodedTemplate::InitTypeCode);
 			CLabelToCodeMapping map;
 			auto& resocursorName = m_bindingTypeIndexedRoot->m_resocursorName;
 			MapLabelToText(map, LABEL_0, resocursorName);

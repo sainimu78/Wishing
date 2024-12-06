@@ -2,7 +2,7 @@
 #include "NiflectGen/CodeWriter/HardCoded/CreateTypeAccessorTemplate.h"
 #include "NiflectGen/CodeWriter/CppWriter.h"
 #include "NiflectGen/Base/NiflectGenDefinition.h"
-#include "NiflectGen/CodeWriter/CodeTemplate.h"
+#include "NiflectGen/CodeWriter/CppTemplate.h"
 
 namespace NiflectGen
 {
@@ -51,7 +51,7 @@ namespace NiflectGen
                 }
                 {
                     CCodeTemplate tpl1;
-                    tpl1.ReadFromRawData(HardCodedTemplate::FieldLayoutSpecH);
+                    ReadTemplateFromRawData(tpl1, HardCodedTemplate::FieldLayoutSpecH);
                     CLabelToCodeMapping map;
                     CCodeLines linesHInclude;
                     {
@@ -74,7 +74,7 @@ namespace NiflectGen
                 }
                 {
                     CCodeTemplate tpl1;
-                    tpl1.ReadFromRawData(HardCodedTemplate::FieldLayoutSpecCpp);
+                    ReadTemplateFromRawData(tpl1, HardCodedTemplate::FieldLayoutSpecCpp);
                     CLabelToCodeMapping map;
 
                     CCodeLines linesCppInclude;

@@ -53,21 +53,21 @@ namespace NiflectGen
 			m_labelPrefix = labelPrefix;
 			m_labelPostfix = labelPostfix;
 		}
-		void ReadFromFileStream(const Niflect::CString& filePath)
+		void ReadFromFileStream2(const Niflect::CString& filePath)
 		{
 			std::ifstream ifstm;
 			if (NiflectUtil::OpenFileStream(ifstm, filePath))
-				this->ReadFromInputStream(ifstm);
+				this->ReadFromInputStream2(ifstm);
 			else
 				ASSERT(false);
 		}
-		void ReadFromRawData(const char* psz)
+		void ReadFromRawData2(const char* psz)
 		{
 			std::stringstream ss1;
 			ss1 << psz;
-			this->ReadFromInputStream(ss1);
+			this->ReadFromInputStream2(ss1);
 		}
-		void ReadFromInputStream(std::istream& istm)
+		void ReadFromInputStream2(std::istream& istm)
 		{
 			using namespace Niflect;
 			CString line;
@@ -300,73 +300,6 @@ namespace NiflectGen
 		using namespace Niflect;
 		map.insert({ label, {CString(), &vecLine} });
 	}
-	static Niflect::CString ReplaceLabelToText1(const Niflect::CString& templateText, const Niflect::CString& label, const Niflect::CString& text)
-	{
-		CCodeTemplate tpl0;
-		tpl0.ReadFromRawData(templateText.c_str());
-		CLabelToCodeMapping map0;
-		MapLabelToText(map0, label, text);
-		CCodeLines lines0;
-		Niflect::TSet<Niflect::CString> setReplacedLabel;
-		tpl0.ReplaceLabels(map0, lines0, &setReplacedLabel);
-		ASSERT(setReplacedLabel.size() == map0.size());
-		ASSERT(lines0.size() == 1);
-		return lines0.back();
-	}
-	static Niflect::CString ReplaceLabelToText2(const Niflect::CString& templateText, const Niflect::CString& label0, const Niflect::CString& label1, const Niflect::CString& text0, const Niflect::CString& text1)
-	{
-		CCodeTemplate tpl0;
-		tpl0.ReadFromRawData(templateText.c_str());
-		CLabelToCodeMapping map0;
-		MapLabelToText(map0, label0, text0);
-		MapLabelToText(map0, label1, text1);
-		CCodeLines lines0;
-		Niflect::TSet<Niflect::CString> setReplacedLabel;
-		tpl0.ReplaceLabels(map0, lines0, &setReplacedLabel);
-		ASSERT(setReplacedLabel.size() == map0.size());
-		ASSERT(lines0.size() == 1);
-		return lines0.back();
-	}
-	static void ReplaceLabelToLines1(const Niflect::CString& templateText, const Niflect::CString& label0, const Niflect::CString& text0, CCodeLines& linesResult)
-	{
-		CCodeTemplate tpl0;
-		tpl0.ReadFromRawData(templateText.c_str());
-		CLabelToCodeMapping map0;
-		MapLabelToText(map0, label0, text0);
-		CCodeLines lines0;
-		Niflect::TSet<Niflect::CString> setReplacedLabel;
-		tpl0.ReplaceLabels(map0, linesResult, &setReplacedLabel);
-		ASSERT(setReplacedLabel.size() == map0.size());
-	}
-	static void ReplaceLabelToImplScopeLines(const CCodeLines& linesInScope, CCodeLines& vecLine)
-	{
-		const char* hct = 
-R"({
-	${L}
-})";
-		CCodeTemplate tpl1;
-		tpl1.ReadFromRawData(hct);
-		CLabelToCodeMapping map;
-		MapLabelToLines(map, "L", linesInScope);
-		Niflect::TSet<Niflect::CString> setReplacedLabel;
-		tpl1.ReplaceLabels(map, vecLine, &setReplacedLabel);
-	}
-	static void WriteLinesIntoNamespaceScope(const Niflect::CString& namespaceName, const CCodeLines& linesInScope, CCodeLines& vecLine)
-	{
-		const char* hct =
-R"(namespace ${Name}
-{
-	${Lines}
-})";
-		CCodeTemplate tpl1;
-		tpl1.ReadFromRawData(hct);
-		CLabelToCodeMapping map;
-		MapLabelToText(map, "Name", namespaceName);
-		MapLabelToLines(map, "Lines", linesInScope);
-		Niflect::TSet<Niflect::CString> setReplacedLabel;
-		tpl1.ReplaceLabels(map, vecLine, &setReplacedLabel);
-		ASSERT(setReplacedLabel.size() == map.size());
-	}
 	static void MapAndReplaceLabelsToTexts1(CCodeTemplate& tpl1, CCodeLines& vecLine, const Niflect::CString& label0, const Niflect::CString& text0)
 	{
 		CLabelToCodeMapping map1;
@@ -387,7 +320,7 @@ R"(namespace ${Name}
 		CCodeTemplate tpl;
 		//const char* pszFilePath = "F:/Fts/Proj/Test/Piccolo/engine/template/allSerializer.ipp.mustache";
 		const char* pszFilePath = "E:/TestFunctionTemplate0.template";
-		tpl.ReadFromFileStream(pszFilePath);
+		tpl.ReadFromFileStream2(pszFilePath);
 
 		TArrayNif<CString> vecLine;
 		tpl.TestReconstruct(vecLine);
@@ -421,7 +354,7 @@ R"(namespace ${Name}
 })";
 		std::stringstream ss0;
 		ss0 << pszTemplateText0;
-		tpl0.ReadFromInputStream(ss0);
+		tpl0.ReadFromInputStream2(ss0);
 
 		CLabelToCodeMapping map;
 		MapLabelToText(map, "FuncName0", "MyFirstName");
@@ -437,7 +370,7 @@ R"(namespace ${Name}
 		MapLabelToText(map, pszLabelArrayVar, pszDataArrayVar);
 		const char* pszTemplateText1 = R"(${ArrayVarName0}.push_back(${Number});)";
 		CCodeTemplate tpl1;
-		tpl1.ReadFromRawData(pszTemplateText1);
+		tpl1.ReadFromRawData2(pszTemplateText1);
 		CCodeLines vecLine6;
 		const char* pszLabelNumber = "Number";
 		MapAndReplaceLabelsToTexts2(tpl1, vecLine6, pszLabelArrayVar, pszLabelNumber, pszDataArrayVar, "1.1");

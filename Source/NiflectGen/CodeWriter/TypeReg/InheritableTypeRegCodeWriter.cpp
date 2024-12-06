@@ -1,7 +1,7 @@
 #include "NiflectGen/CodeWriter/TypeReg/InheritableTypeRegCodeWriter.h"
 #include "NiflectGen/Util/CursorUtil.h"
 #include "NiflectGen/CodeWriter/HardCoded/InheritableTypeTemplate.h"
-#include "NiflectGen/CodeWriter/CodeTemplate.h"
+#include "NiflectGen/CodeWriter/CppTemplate.h"
 #include "NiflectGen/CodeWriter/CppWriter.h"
 #include "NiflectGen/Base/NiflectGenDefinition.h"
 
@@ -14,7 +14,7 @@ namespace NiflectGen
 	void CInheritableTypeRegCodeWriter::WriteDecl(const CWritingContext& context, CTypeRegDeclWrittingData& data) const
 	{
 		CCodeTemplate tpl;
-		tpl.ReadFromRawData(HardCodedTemplate::Deprecated_InheritableTypeReg_ClassDecl);
+		ReadTemplateFromRawData(tpl, HardCodedTemplate::Deprecated_InheritableTypeReg_ClassDecl);
 		CLabelToCodeMapping map;
 		MapLabelToText(map, LABEL_SHARED_3, m_typeName.c_str());
 		MapLabelToText(map, LABEL_9, this->GetInfoTypeName().c_str());
@@ -33,7 +33,7 @@ namespace NiflectGen
 	void CInheritableTypeRegCodeWriter::WriteImpl(const CWritingContext& context, CTypeRegImplWrittingData& data) const
 	{
 		CCodeTemplate tpl;
-		tpl.ReadFromRawData(HardCodedTemplate::Deprecated_InheritableTypeReg_ClassImpl);
+		ReadTemplateFromRawData(tpl, HardCodedTemplate::Deprecated_InheritableTypeReg_ClassImpl);
 		CLabelToCodeMapping map;
 		MapLabelToText(map, LABEL_SHARED_3, m_typeName.c_str());
 		CCodeLines linesRegisterType;
@@ -50,7 +50,7 @@ namespace NiflectGen
 				CCodeWriter writer;
 				writer.WriteLine(HardCodedTemplate::Deprecated_TypeReg_ImplStaticInitType);
 				CCodeTemplate tpl;
-				tpl.ReadFromRawData(writer.m_code.c_str());
+				ReadTemplateFromRawData(tpl, writer.m_code.c_str());
 				CLabelToCodeMapping map;
 				MapLabelToText(map, LABEL_SHARED_3, m_typeName);
 				MapLabelToLines(map, LABEL_5, lines);
@@ -73,7 +73,7 @@ namespace NiflectGen
 				CCodeWriter writerInitType;
 				writerInitType.WriteLine(HardCodedTemplate::TypeReg_ImplStaticInitMethod);
 				CCodeTemplate tpl;
-				tpl.ReadFromRawData(writerInitType.m_code.c_str());
+				ReadTemplateFromRawData(tpl, writerInitType.m_code.c_str());
 				CLabelToCodeMapping map;
 				MapLabelToText(map, LABEL_SHARED_3, m_typeName);
 				MapLabelToLines(map, LABEL_32, lines);
@@ -119,7 +119,7 @@ namespace NiflectGen
 	void CInheritableTypeRegCodeWriter::WriteClass(const CWritingContext& context, CTypeRegClassWrittingData& data) const
 	{
 		CCodeTemplate tpl;
-		tpl.ReadFromRawData(HardCodedTemplate::InheritableTypeReg_Class);
+		ReadTemplateFromRawData(tpl, HardCodedTemplate::InheritableTypeReg_Class);
 		CLabelToCodeMapping map;
 		MapLabelToText(map, LABEL_SHARED_3, m_typeName.c_str());
 		MapLabelToText(map, LABEL_9, this->GetInfoTypeName().c_str());
@@ -136,7 +136,7 @@ namespace NiflectGen
 				CCodeWriter writer;
 				writer.WriteLine(HardCodedTemplate::TypeReg_StaticInitType);
 				CCodeTemplate tpl;
-				tpl.ReadFromRawData(writer.m_code.c_str());
+				ReadTemplateFromRawData(tpl, writer.m_code.c_str());
 				CLabelToCodeMapping map;
 				MapLabelToLines(map, LABEL_5, lines);
 				tpl.ReplaceLabels(map, linesInitType);
@@ -160,7 +160,7 @@ namespace NiflectGen
 				CCodeWriter writerInitType;
 				writerInitType.WriteLine(HardCodedTemplate::TypeReg_ImplStaticInitMethod);
 				CCodeTemplate tpl;
-				tpl.ReadFromRawData(writerInitType.m_code.c_str());
+				ReadTemplateFromRawData(tpl, writerInitType.m_code.c_str());
 				CLabelToCodeMapping map;
 				MapLabelToText(map, LABEL_SHARED_3, m_typeName);
 				MapLabelToLines(map, LABEL_32, lines);
@@ -180,7 +180,7 @@ namespace NiflectGen
 	void CInheritableTypeRegCodeWriter::WriteRegisterType(const CWritingContext& context, CTypeRegClassWrittingData& data) const
 	{
 		CCodeTemplate tpl;
-		tpl.ReadFromRawData(HardCodedTemplate::InheritableTypeReg_RegisterType_Class2);//todo: struct另有模板, 因为不需要构造析构, 相应的也需要提示不支持的用法
+		ReadTemplateFromRawData(tpl, HardCodedTemplate::InheritableTypeReg_RegisterType_Class2);//todo: struct另有模板, 因为不需要构造析构, 相应的也需要提示不支持的用法
 		CLabelToCodeMapping map;
 		MapLabelToText(map, LABEL_SHARED_3, m_typeName.c_str());
 		//Niflect::CString typeNameForHash;
@@ -200,7 +200,7 @@ namespace NiflectGen
 		tplWriter.WriteLine(MAKELABEL(LABEL_13));
 		tplWriter.WriteLine(HardCodedTemplate::CreateFieldLayout_Return2);
 		CCodeTemplate tpl;
-		tpl.ReadFromRawData(tplWriter.m_code.c_str());
+		ReadTemplateFromRawData(tpl, tplWriter.m_code.c_str());
 		CLabelToCodeMapping map;
 		MapLabelToText(map, LABEL_7, pszAccessorLevel0);
 		CCodeLines linesInitAccessor;
@@ -267,7 +267,7 @@ namespace NiflectGen
 		if (this->HasTaggedBaseType())
 		{
 			CCodeTemplate tpl;
-			tpl.ReadFromRawData(HardCodedTemplate::InheritableTypeReg_InitInheritance2);
+			ReadTemplateFromRawData(tpl, HardCodedTemplate::InheritableTypeReg_InitInheritance2);
 			CLabelToCodeMapping map;
 			MapLabelToText(map, LABEL_10, m_infoTypeNameOfBaseType.c_str());
 			//todo: baseType的namespace
@@ -389,7 +389,7 @@ namespace NiflectGen
 	static void AAAAAAAAAAAAAA(const CCodeLines& linesInitAccessor, CCodeLines& lines2)
 	{
 		CCodeTemplate tpl;
-		tpl.ReadFromRawData(HardCodedTemplate::InitField_Scope);
+		ReadTemplateFromRawData(tpl, HardCodedTemplate::InitField_Scope);
 		CLabelToCodeMapping map;
 		MapLabelToLines(map, LABEL_14, linesInitAccessor);
 		Niflect::TSet<Niflect::CString> setReplacedLabel;
@@ -776,7 +776,7 @@ namespace NiflectGen
 		CCodeWriter writerAccessorOffset;
 		{
 			CCodeTemplate tpl0;
-			tpl0.ReadFromRawData(templateAccessorOffset.c_str());
+			ReadTemplateFromRawData(tpl0, templateAccessorOffset.c_str());
 			CLabelToCodeMapping map0;
 			MapLabelToText(map0, LABEL_21, internalName);
 			MapLabelToText(map0, LABEL_25, fieldsOwnerTypeName);
@@ -789,7 +789,7 @@ namespace NiflectGen
 		auto strAccessorLevel = NiflectUtil::FormatString("%u", accessorLevel);
 		auto textGetNodeFromShared = ReplaceLabelToText1(HardCodedTemplate::CreateFieldLayout_GetNodeFromShared2, LABEL_7, strAccessorLevel);
 		CCodeTemplate tpl1;
-		tpl1.ReadFromRawData(tplWriter.m_code.c_str());
+		ReadTemplateFromRawData(tpl1, tplWriter.m_code.c_str());
 		CLabelToCodeMapping map;
 		MapLabelToText(map, LABEL_7, strAccessorLevel);
 		MapLabelToText(map, LABEL_12, registeredOrMiscTypeName);

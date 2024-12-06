@@ -1,5 +1,5 @@
 #include "NiflectGen/CodeWriter/TypeReg/TypeAccessorCodeWriter.h"
-#include "NiflectGen/CodeWriter/CodeTemplate.h"
+#include "NiflectGen/CodeWriter/CppTemplate.h"
 #include "NiflectGen/CodeWriter/HardCoded/TypeRegInitialRegTemplate.h"
 #include "NiflectGen/Collector/TaggedNode.h"//WriteNataArgNullOrVar
 
@@ -8,7 +8,7 @@ namespace NiflectGen
 	static void WriteNextInitNextAccessor2(const Niflect::CString& funcName, CCodeLines& linesCode)
 	{
 		CCodeTemplate tpl0;
-		tpl0.ReadFromRawData(HardCodedTemplate::CreateAndInitNextsAccessor);
+		ReadTemplateFromRawData(tpl0, HardCodedTemplate::CreateAndInitNextsAccessor);
 		CLabelToCodeMapping map;
 		MapLabelToText(map, LABEL_2, funcName);
 		Niflect::TSet<Niflect::CString> setReplacedLabel;
@@ -23,7 +23,7 @@ namespace NiflectGen
 		WriteNataArgNullOrVar(linesNata, linesCode, nataNullOrVar);
 		{
 			CCodeTemplate tpl0;
-			tpl0.ReadFromRawData(HardCodedTemplate::InitChildAccessor);
+			ReadTemplateFromRawData(tpl0, HardCodedTemplate::InitChildAccessor);
 			CLabelToCodeMapping map;
 			MapLabelToText(map, LABEL_0, fieldName);
 			auto invokeGetFieldOffset = ReplaceLabelToText2(HardCodedTemplate::GetFieldOffset, LABEL_0, LABEL_8, fieldOwnerResocursorName, fieldName);
@@ -41,7 +41,7 @@ namespace NiflectGen
 		WriteNextInitNextAccessor2(funcName, linesCode);
 		{
 			CCodeTemplate tpl0;
-			tpl0.ReadFromRawData(HardCodedTemplate::InitElementAccessor);
+			ReadTemplateFromRawData(tpl0, HardCodedTemplate::InitElementAccessor);
 			CLabelToCodeMapping map;
 			Niflect::TSet<Niflect::CString> setReplacedLabel;
 			tpl0.ReplaceLabels(map, linesCode, &setReplacedLabel);

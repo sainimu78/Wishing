@@ -12,6 +12,7 @@
 #include "NiflectGen/CodeWriter/ModuleReg/SplittedModuleRegCodeWriter2.h"
 #include "NiflectGen/CodeWriter/HardCoded/ModuleRegTemplate.h"
 #include "NiflectGen/CodeWriter/TypeReg/ModuleRegisteredTypeHeaderCodeWriter.h"
+#include "NiflectGen/CodeWriter/CppTemplate.h"
 
 #include "Niflect/Util/SystemUtil.h"//临时写文件测试用
 
@@ -335,7 +336,7 @@ namespace NiflectGen
         auto splitsCount = context.m_vecItem.size();
         {
             CCodeTemplate tpl1;
-            tpl1.ReadFromRawData(HardCodedTemplate::ModuleRegImpl);
+            ReadTemplateFromRawData(tpl1, HardCodedTemplate::ModuleRegImpl);
             CLabelToCodeMapping map;
             CCodeLines linesInclude;
             {

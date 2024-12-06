@@ -1,6 +1,6 @@
 #include "NiflectGen/CodeWriter/TypeReg/ModuleRegisteredTypeHeaderCodeWriter.h"
 #include "NiflectGen/CodeWriter/HardCoded/HardCodedTemplate.h"
-#include "NiflectGen/CodeWriter/CodeTemplate.h"
+#include "NiflectGen/CodeWriter/CppTemplate.h"
 #include "NiflectGen/Base/NiflectGenDefinition.h"
 #include "NiflectGen/CodeWriter/CppWriter.h"
 
@@ -62,7 +62,7 @@ namespace Niflect
 	void WriteModuleRegisteredTypeHeaderCodeWriter(const SModuleRegisteredTypeHeaderWritingContext& context, SModuleRegisteredTypeHeaderGenData& data)
 	{
 		CCodeTemplate tpl1;
-		tpl1.ReadFromRawData(HardCodedTemplate::ModuleRegisteredTypeHeader);
+		ReadTemplateFromRawData(tpl1, HardCodedTemplate::ModuleRegisteredTypeHeader);
 		CLabelToCodeMapping map;
 
 		CCodeLines linesInclude;

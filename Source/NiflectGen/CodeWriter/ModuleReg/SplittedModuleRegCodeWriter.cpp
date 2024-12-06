@@ -1,5 +1,5 @@
 #include "NiflectGen/CodeWriter/ModuleReg/SplittedModuleRegCodeWriter.h"
-#include "NiflectGen/CodeWriter/CodeTemplate.h"
+#include "NiflectGen/CodeWriter/CppTemplate.h"
 #include "NiflectGen/CodeWriter/HardCoded/SplittedModuleRegistrationTemplate.h"
 #include "Niflect/Util/StringUtil.h"
 #include "NiflectGen/CodeWriter/CppWriter.h"
@@ -32,7 +32,7 @@ namespace NiflectGen
             auto splittedModuleName = ReplaceLabelToText2(HardCodedTemplate::SplittedModuleName, LABEL_SHARED_0, LABEL_0, writingCtx.m_moduleName, NiflectUtil::FormatString("_%u", idx0));
             {
                 CCodeTemplate tpl;
-                tpl.ReadFromRawData(HardCodedTemplate::SplittedModuleRegH);
+                ReadTemplateFromRawData(tpl, HardCodedTemplate::SplittedModuleRegH);
                 CLabelToCodeMapping map;
                 MapLabelToText(map, LABEL_1, splittedModuleName);
                 tpl.ReplaceLabels(map, data.m_h);
@@ -45,7 +45,7 @@ namespace NiflectGen
 
             {
                 CCodeTemplate tpl;
-                tpl.ReadFromRawData(HardCodedTemplate::ModuleReg_TypeRegInitTable);
+                ReadTemplateFromRawData(tpl, HardCodedTemplate::ModuleReg_TypeRegInitTable);
                 CLabelToCodeMapping map;
                 MapLabelToText(map, LABEL_1, splittedModuleName);
                 tpl.ReplaceLabels(map, dataForInvokation.m_codeInitTables);
@@ -85,14 +85,14 @@ namespace NiflectGen
             CCodeLines linesInvokationRegisterTypeScope;
             {
                 CCodeTemplate tpl;
-                tpl.ReadFromRawData(HardCodedTemplate::TypeRegRegsterTypeScope);
+                ReadTemplateFromRawData(tpl, HardCodedTemplate::TypeRegRegsterTypeScope);
                 CLabelToCodeMapping map;
                 MapLabelToLines(map, LABEL_3, linesInvokationRegisterType);
                 tpl.ReplaceLabels(map, linesInvokationRegisterTypeScope);
             }
             {
                 CCodeTemplate tpl;
-                tpl.ReadFromRawData(HardCodedTemplate::SplittedModuleRegCpp);
+                ReadTemplateFromRawData(tpl, HardCodedTemplate::SplittedModuleRegCpp);
                 CLabelToCodeMapping map;
                 MapLabelToText(map, LABEL_1, splittedModuleName);
                 MapLabelToLines(map, LABEL_2, linesInvokationRegisterTypeScope);

@@ -1,6 +1,6 @@
 #include "NiflectGen/CodeWriter/GenTimeNiflectMacro.h"
 #include "NiflectGen/Base/NiflectGenDefinition.h"
-#include "NiflectGen/CodeWriter/CodeTemplate.h"
+#include "NiflectGen/CodeWriter/CppTemplate.h"
 #include "NiflectGen/CodeWriter/CppWriter.h"
 #include "Niflect/Util/SystemUtil.h"
 
@@ -30,7 +30,7 @@ namespace NiflectGen
 		}
 
 		CCodeTemplate tpl1;
-		tpl1.ReadFromInputStream(ifs);
+		ReadTemplateFromInputStream(tpl1, ifs);
 		CLabelToCodeMapping map;
 		MapLabelToLines(map, "GenTimeReplacement", linesMacroTagDefine);
 		Niflect::TSet<Niflect::CString> setReplacedLabel;
