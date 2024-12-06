@@ -55,7 +55,7 @@ namespace NiflectGen
 	{
 		const char* hct =
 R"({
-	${L}
+	)" MAKELABEL("L") R"(
 })";
 		CCodeTemplate tpl1;
 		ReadTemplateFromRawData(tpl1, hct);
@@ -67,9 +67,9 @@ R"({
 	void WriteLinesIntoNamespaceScope(const Niflect::CString& namespaceName, const CCodeLines& linesInScope, CCodeLines& vecLine)
 	{
 		const char* hct =
-R"(namespace ${Name}
+"namespace " MAKELABEL("Name") R"(
 {
-	${Lines}
+	)" MAKELABEL("Lines") R"(
 })";
 		CCodeTemplate tpl1;
 		ReadTemplateFromRawData(tpl1, hct);
