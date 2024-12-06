@@ -1,4 +1,4 @@
-#include "CMakeCodeTemplate.h"
+#include "CMakeTemplate.h"
 
 using namespace NiflectGen;
 using namespace WishingProjectTool;

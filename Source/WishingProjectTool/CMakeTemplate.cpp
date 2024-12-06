@@ -1,5 +1,4 @@
-#include "CMakeCodeTemplate.h"
-#include "NiflectGen/CodeWriter/CodeWriter.h"
+#include "CMakeTemplate.h"
 
 namespace WishingProjectTool
 {
