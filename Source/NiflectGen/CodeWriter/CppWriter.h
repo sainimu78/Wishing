@@ -142,7 +142,7 @@ namespace NiflectGen
 		void AddLine(const Niflect::CString& text)
 		{
 			m_data += text;
-			m_data += "\r\n";
+			m_data += EscapeChar::NewLine;
 		}
 
 	private:
