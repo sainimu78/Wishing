@@ -5,7 +5,7 @@ namespace WishingProjectTool
 {
 	void ReadTemplateFromRawData(NiflectGen::CCodeTemplate& tpl, const char* data)
 	{
-        tpl.InitLabelMarks("@{", "}");
+        tpl.InitLabelMarks(TEMPLATELABEL_L, TEMPLATELABEL_R);
         tpl.ReadFromRawData2(data);
 	}
 }
