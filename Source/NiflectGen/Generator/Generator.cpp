@@ -247,7 +247,7 @@ namespace NiflectGen
             outputDirPath = &m_moduleRegInfo.m_userProvided.m_genSourceOutputDirPath;
         auto filePath = NiflectUtil::ConcatPath(m_moduleRegInfo.m_userProvided.m_moduleName, relativeFilePath);
         filePath = NiflectUtil::ConcatPath(*outputDirPath, filePath);
-        CCppWriter writer;
+        CCodeWriter writer;
         writer.WriteLines(linesCode);
         NiflectUtil::MakeDirectories(filePath);
         NiflectUtil::WriteStringToFile(writer.m_code, filePath);

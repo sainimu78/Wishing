@@ -1,7 +1,7 @@
 ::参数[vs2015/vs2017/vs2022] [x64/Win32] [MD/MT]
 @echo off
 
-set AppName=Interedit
+set AppName=WishingProjectTool
 set AppOutputPath=%AppName%
 set option_output_dir=%1
 set option_generator_toolset=
@@ -51,13 +51,14 @@ cd %OutputDirName%
 ::xcopy "..\..\%option_platform%\*.*" "lib\Debug\" /y
 ::xcopy "..\..\Dependencies\lib\PhysX\vc14%option_platform%%option_md%\Debug\*.dll" "lib\Debug\" /y
 
-if 1==1 (
+::if 1==1 (
+if 1 NEQ 1 (
 	echo "====================Start Copy DLL ==========================="
 
-	xcopy "..\..\Dependencies\lib\llvm-project\%option_platform%%option_md%\Debug\bin\libclang.dll" "%AppOutputPath%\Debug\" /y
-	xcopy "..\..\Dependencies\lib\llvm-project\%option_platform%%option_md%\Debug\bin\libclang.pdb" "%AppOutputPath%\Debug\" /y
+	xcopy "..\..\..\..\ThirdParty\libclang\llvm-project\build\Windows\%option_platform%%option_md%\Debug\bin\libclang.dll" "Debug\%AppName%\" /y
+	xcopy "..\..\..\..\ThirdParty\libclang\llvm-project\build\Windows\%option_platform%%option_md%\Debug\bin\libclang.pdb" "Debug\%AppName%\" /y
 
-	xcopy "..\..\Dependencies\lib\llvm-project\%option_platform%%option_md%\Release\bin\libclang.dll" "%AppOutputPath%\Release\" /y
+	xcopy "..\..\..\..\ThirdParty\libclang\llvm-project\build\Windows\%option_platform%%option_md%\Release\bin\libclang.dll" "Release\%AppName%\" /y
 )
 
 if "%option_md%" NEQ "" (

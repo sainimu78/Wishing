@@ -37,7 +37,7 @@ namespace NiflectGen
 		CCodeLines linesHeader;
 		tpl1.ReplaceLabels(map, linesHeader, &setReplacedLabel);
 
-		CCppWriter writer;
+		CCodeWriter writer;
 		writer.WriteLines(linesHeader);
 		auto outputFilePath = NiflectUtil::ConcatPath(context.m_genTimeBasePath, relativeFilePath);
 		NiflectUtil::MakeDirectories(outputFilePath);

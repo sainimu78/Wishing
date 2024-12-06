@@ -6,46 +6,6 @@
 
 namespace NiflectGen
 {
-	class CCppWriterRef
-	{
-	public:
-		CCppWriterRef(Niflect::CString& code)
-			: m_code(code)
-		{
-
-		}
-
-	public:
-		void WriteLine(const Niflect::CString& line)
-		{
-			m_code += line + EscapeChar::NewLine;
-		}
-		void WriteLines(const CCodeLines& lines)
-		{
-			for (auto& it : lines)
-				m_code += it + EscapeChar::NewLine;
-		}
-		void Write(const Niflect::CString& code)
-		{
-			m_code += code;
-		}
-
-	public:
-		Niflect::CString& m_code;
-	};
-	class CCppWriter : public CCppWriterRef
-	{
-		typedef CCppWriterRef inherited;
-	public:
-		CCppWriter()
-			: inherited(m_stm)
-		{
-		}
-
-	private:
-		Niflect::CString m_stm;
-	};
-
 	class CHeaderFilePathData
 	{
 	public:
@@ -207,13 +167,6 @@ namespace NiflectGen
 	private:
 		Niflect::CString& m_data;
 	};
-
-	static void DebugPrintCodeLines(const CCodeLines& lines)
-	{
-		CCppWriter writer;
-		writer.WriteLines(lines);
-		printf("%s", writer.m_code.c_str());
-	}
 
 	static Niflect::CString ConvertToInternalFilePath(const Niflect::CString& relativeTypeRegFilePathNoExt)
 	{

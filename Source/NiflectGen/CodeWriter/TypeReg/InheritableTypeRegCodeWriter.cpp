@@ -47,7 +47,7 @@ namespace NiflectGen
 			this->WriteImplInitType(lines);
 			if (lines.size() > 0)
 			{
-				CCppWriter writer;
+				CCodeWriter writer;
 				writer.WriteLine(HardCodedTemplate::Deprecated_TypeReg_ImplStaticInitType);
 				CCodeTemplate tpl;
 				tpl.ReadFromRawData(writer.m_code.c_str());
@@ -70,7 +70,7 @@ namespace NiflectGen
 			this->WriteImplInitMethod(lines);
 			if (lines.size() > 0)
 			{
-				CCppWriter writerInitType;
+				CCodeWriter writerInitType;
 				writerInitType.WriteLine(HardCodedTemplate::TypeReg_ImplStaticInitMethod);
 				CCodeTemplate tpl;
 				tpl.ReadFromRawData(writerInitType.m_code.c_str());
@@ -133,7 +133,7 @@ namespace NiflectGen
 			this->WriteImplInitType(lines);
 			if (lines.size() > 0)
 			{
-				CCppWriter writer;
+				CCodeWriter writer;
 				writer.WriteLine(HardCodedTemplate::TypeReg_StaticInitType);
 				CCodeTemplate tpl;
 				tpl.ReadFromRawData(writer.m_code.c_str());
@@ -157,7 +157,7 @@ namespace NiflectGen
 			this->WriteImplInitMethod(lines);
 			if (lines.size() > 0)
 			{
-				CCppWriter writerInitType;
+				CCodeWriter writerInitType;
 				writerInitType.WriteLine(HardCodedTemplate::TypeReg_ImplStaticInitMethod);
 				CCodeTemplate tpl;
 				tpl.ReadFromRawData(writerInitType.m_code.c_str());
@@ -193,7 +193,7 @@ namespace NiflectGen
 	static const char* pszAccessorLevel0 = "0";
 	void CInheritableTypeRegCodeWriter::WriteCreateAccessorTree(const CWritingContext& context, CTypeRegClassWrittingData& data) const
 	{
-		CCppWriter tplWriter;
+		CCodeWriter tplWriter;
 		tplWriter.WriteLine(HardCodedTemplate::CreateFieldLayout_CreateField);
 		tplWriter.WriteLine(HardCodedTemplate::CreateFieldLayout_GetNodeFromShared2);
 		tplWriter.WriteLine(HardCodedTemplate::CreateFieldLayout_InitType222222222);
@@ -752,7 +752,7 @@ namespace NiflectGen
 		if (NiflectUtil::EndsWith(registeredOrMiscTypeName, '>'))
 			registeredOrMiscTypeName += ' ';
 
-		CCppWriter tplWriter;
+		CCodeWriter tplWriter;
 		tplWriter.WriteLine(templateStaticGetType);
 		tplWriter.WriteLine(HardCodedTemplate::InitField_CreateForMember);
 		tplWriter.WriteLine(MAKELABEL(LABEL_14));
@@ -773,7 +773,7 @@ namespace NiflectGen
 			break;
 		}
 		tplWriter.WriteLine(templateAssignToOwner);
-		CCppWriter writerAccessorOffset;
+		CCodeWriter writerAccessorOffset;
 		{
 			CCodeTemplate tpl0;
 			tpl0.ReadFromRawData(templateAccessorOffset.c_str());

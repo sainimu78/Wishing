@@ -48,6 +48,11 @@ namespace NiflectGen
 			, m_tabChar('\t')
 		{
 		}
+		void InitLabelMarks(const Niflect::CString& labelPrefix, const Niflect::CString& labelPostfix)
+		{
+			m_labelPrefix = labelPrefix;
+			m_labelPostfix = labelPostfix;
+		}
 		void ReadFromFileStream(const Niflect::CString& filePath)
 		{
 			std::ifstream ifstm;
@@ -279,8 +284,8 @@ namespace NiflectGen
 		}
 
 	private:
-		const Niflect::CString m_labelPrefix;//如有需要改成可设置即可
-		const Niflect::CString m_labelPostfix;
+		Niflect::CString m_labelPrefix;//如有需要改成可设置即可
+		Niflect::CString m_labelPostfix;
 		const char m_tabChar;
 		Niflect::TArrayNif<CSectionLine> m_vecSectionLine;
 		Niflect::TArrayNif<Niflect::CString> m_vecError;
