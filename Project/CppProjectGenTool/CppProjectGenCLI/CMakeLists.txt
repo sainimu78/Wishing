@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10.0)
 
-set(ModuleName WishingProjectTool)
+set(ModuleName CppProjectGenCLI)
 
 set(SourcePath ${RootSourcePath}/${ModuleName})
 file(GLOB_RECURSE ModuleSrc ${SourcePath}/*.cpp ${SourcePath}/*.h)
@@ -17,6 +17,7 @@ create_source_group(${RootSourcePath} ${SrcAll})
 add_executable(${ModuleName} ${SrcAll})
 
 target_link_libraries(${ModuleName} PRIVATE Niflect)
+target_link_libraries(${ModuleName} PRIVATE CppProjectGen)
 
 target_include_directories(${ModuleName}
 	PRIVATE ${RootSourcePath}
