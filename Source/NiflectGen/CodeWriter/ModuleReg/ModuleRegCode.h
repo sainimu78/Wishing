@@ -1,5 +1,5 @@
 #pragma once
-#include "NiflectGen/CodeWriter/CodeWriter.h"
+#include "NiflectGen/CodeWriter/CppWriter.h"
 
 namespace NiflectGen
 {
