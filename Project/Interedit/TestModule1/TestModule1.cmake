@@ -72,5 +72,6 @@ add_custom_command(
     COMMENT "NiflectGenTool generating ..."
 )
 
-add_custom_target(NiflectGenTool ALL DEPENDS "${NiflectGeneratedModulePrivateH}")
-add_dependencies(${ModuleName} NiflectGenTool) #使在 vs 中按 F5 也能触发生成
+add_custom_target(NiflectGenTool_${ModuleName} DEPENDS "${NiflectGeneratedModulePrivateH}")
+set_target_properties(NiflectGenTool_${ModuleName} PROPERTIES FOLDER "AutoGen")
+add_dependencies(${ModuleName} NiflectGenTool_${ModuleName})
