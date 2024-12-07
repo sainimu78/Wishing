@@ -18,8 +18,6 @@ namespace NiflectGen
 	}
 	void CInheritableTypeRegCodeWriter2::WriteResocursorNodeBodyCode(const SResocursorNodeBodyCodeWritingContext& context, CCodeLines& linesResoBodyCode) const
 	{
-		ASSERT(m_bindingTypeIndexedRoot->m_accessorBindingIndex);
-
 		//{
 		//	linesResoBodyCode.push_back("---------------");
 		//	for (uint32 idx = 0; idx < m_vecMemberIndexedRoot.size(); ++idx)
