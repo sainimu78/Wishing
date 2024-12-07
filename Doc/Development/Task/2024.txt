@@ -64,6 +64,7 @@
 31. Done, NiflectGen, 生成 Inheritable 的 InitType, 获取 InfoType 见 CTypeRegCodeWriter2::WriteInvokeRegisterType
 32. Done, NiflectGen, 生成 _gen.h, 可访问 private 成员
 33. Niflect, 封装如 StaticGetEnum, StaticGetClass 等, 确认是否可正确获取如导出的 StaticGetType, 因此也需要在 _gen.h 实现后再进行
+	1. 已验证可行, 但由于认为现代码未整理, 且 Cast 风格与代码生成相同, 应考虑是否统一后再确定是否定义
 34. Deprecated, (通过NiflectType的虚函数 InitTypeLayout 实现) NiflectGen, 重构支持直接在生成代码中初始化完整的accessor, 以支持inheritable序列化
 35. Done, NiflectGen, 可能须定义 CTypeLayout, 其中有 Accessor 数组;
 36. Done, (实验结论为现无法通过cmake实现SourceAndHeader模式生成代码后不执行cmake, 因此实际只能用HeaderOnly) NiflectGen, 生成代码后不应重新生成工程
