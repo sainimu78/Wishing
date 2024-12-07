@@ -284,7 +284,7 @@ namespace Niflect
 		{
 			return m_enumMeta.m_vecEnumConstMeta[idx].m_name;
 		}
-		uint32 FindIndexByEnumConstName(const CString& name) const
+		uint32 FindEnumConstMetaIndex(const CString& name) const
 		{
 			for (uint32 idx = 0; idx < m_enumMeta.m_vecEnumConstMeta.size(); ++idx)
 			{
@@ -298,12 +298,6 @@ namespace Niflect
 		{
 			auto idx = static_cast<uint32>(e);
 			return this->GetEnumConstNameByIndex(idx);
-		}
-		template <typename TEnumType>
-		TEnumType FindEnumConstByName(const CString& name) const
-		{
-			auto idx = this->FindIndexByEnumConstName(name);
-			return static_cast<TEnumType>(idx);
 		}
 
 	public:
