@@ -19,6 +19,7 @@ set_target_properties(${ModuleName} PROPERTIES
 
 target_include_directories(${ModuleName}
 	PUBLIC ${RootSourcePath}
+	PUBLIC ${SourcePath}
 )
 
 target_compile_definitions(${ModuleName}

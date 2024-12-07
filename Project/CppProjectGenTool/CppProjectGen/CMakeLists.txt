@@ -2,11 +2,13 @@ cmake_minimum_required(VERSION 3.10.0)
 
 set(ModuleName CppProjectGen)
 
-set(SourcePath ${RootSourcePath}/${ModuleName})
+set(ModuleSrcRoot ${RootSourcePath}/CppProjectGenTool)
+
+set(SourcePath ${ModuleSrcRoot}/${ModuleName})
 
 file(GLOB_RECURSE SrcAll ${SourcePath}/*.cpp ${SourcePath}/*.h)
 
-create_source_group(${RootSourcePath} ${SrcAll})
+create_source_group(${ModuleSrcRoot} ${SrcAll})
 
 add_library(${ModuleName} SHARED ${SrcAll})
 
@@ -16,7 +18,11 @@ set_target_properties(${ModuleName} PROPERTIES
 )
 
 target_include_directories(${ModuleName}
-	PUBLIC ${RootSourcePath}
+	PUBLIC ${ModuleSrcRoot}
+)
+
+target_include_directories(${ModuleName}
+	PUBLIC ${RootSourcePath}/NiflectGen
 )
 
 target_compile_definitions(${ModuleName}

@@ -1,5 +1,5 @@
 #pragma once
-#include "NiflectGen/CodeWriter/CodeWriter.h"
+#include "CodeWriter/CodeWriter.h"
 #include "Niflect/Util/FileStreamUtil.h"
 #include <sstream>
 #include <iostream>

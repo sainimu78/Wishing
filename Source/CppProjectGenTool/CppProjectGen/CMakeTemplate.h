@@ -1,5 +1,5 @@
 #pragma once
-#include "NiflectGen/CodeWriter/CodeTemplate.h"
+#include "CodeWriter/CodeTemplate.h"
 
 #define TEMPLATELABEL_L "@{"
 #define TEMPLATELABEL_R "}"
