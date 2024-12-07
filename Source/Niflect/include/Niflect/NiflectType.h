@@ -301,7 +301,7 @@ namespace Niflect
 		}
 
 	public:
-		static CEnum* Cast(inherited* base)
+		static CEnum* Cast(CNiflectType* base)
 		{
 			ASSERT(dynamic_cast<CEnum*>(base) != NULL);
 			return static_cast<CEnum*>(base);
@@ -389,7 +389,16 @@ namespace Niflect
 		CInheritableType* m_parent;//todo: 应定义AddChild建立层级关系; 进一步地, 可能还需要另外的容器建立引用关系, 目前不确认引用关系是静态或动态建立
 	};
 
-	typedef CInheritableType CStruct;
+	class CStruct : public CInheritableType
+	{
+		typedef CInheritableType inherited;
+	public:
+		static CStruct* Cast(CNiflectType* base)
+		{
+			ASSERT(dynamic_cast<CStruct*>(base) != NULL);
+			return static_cast<CStruct*>(base);
+		}
+	};
 	
 	//todo: 考虑是否从CStruct继承以复用树型关系, 但m_parent是不同的, 如果复用则CClass的m_parent使用CStruct的m_parent并相应Cast, 是否可接受
 	class CClass : public CInheritableType
