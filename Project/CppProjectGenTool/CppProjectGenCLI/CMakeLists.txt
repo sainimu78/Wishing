@@ -1,10 +1,11 @@
 cmake_minimum_required(VERSION 3.10.0)
 
+set(ProjectSrcRoot ${RootSourcePath}/CppProjectGenTool)
+
 set(ModuleName CppProjectGenCLI)
 
-set(ModuleSrcRoot ${RootSourcePath}/CppProjectGenTool)
-
-set(SourcePath ${ModuleSrcRoot}/${ModuleName})
+set(ModuleRootPath ${ProjectSrcRoot}/${ModuleName})
+set(SourcePath ${ModuleRootPath})
 file(GLOB_RECURSE ModuleSrc ${SourcePath}/*.cpp ${SourcePath}/*.h)
 
 #set(CodeWriterSourcePath ${RootSourcePath}/NiflectGen/CodeWriter)
@@ -14,7 +15,7 @@ set(SrcAll "")
 list(APPEND SrcAll ${ModuleSrc})
 #list(APPEND SrcAll ${CodeWriterSrc})
 
-create_source_group(${ModuleSrcRoot} ${SrcAll})
+create_source_group(${ModuleRootPath} ${SrcAll})
 
 add_executable(${ModuleName} ${SrcAll})
 
@@ -22,7 +23,7 @@ target_link_libraries(${ModuleName} PRIVATE Niflect)
 target_link_libraries(${ModuleName} PRIVATE CppProjectGen)
 
 target_include_directories(${ModuleName}
-	PRIVATE ${ModuleSrcRoot}
+	PRIVATE ${ProjectSrcRoot}
 )
 
 if(MSVC)

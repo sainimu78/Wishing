@@ -1,14 +1,15 @@
 cmake_minimum_required(VERSION 3.10.0)
 
+set(ProjectSrcRoot ${RootSourcePath}/CppProjectGenTool)
+
 set(ModuleName CppProjectGen)
 
-set(ModuleSrcRoot ${RootSourcePath}/CppProjectGenTool)
-
-set(SourcePath ${ModuleSrcRoot}/${ModuleName})
+set(ModuleRootPath ${ProjectSrcRoot}/${ModuleName})
+set(SourcePath ${ModuleRootPath})
 
 file(GLOB_RECURSE SrcAll ${SourcePath}/*.cpp ${SourcePath}/*.h)
 
-create_source_group(${ModuleSrcRoot} ${SrcAll})
+create_source_group(${ModuleRootPath} ${SrcAll})
 
 add_library(${ModuleName} SHARED ${SrcAll})
 
@@ -18,7 +19,7 @@ set_target_properties(${ModuleName} PROPERTIES
 )
 
 target_include_directories(${ModuleName}
-	PUBLIC ${ModuleSrcRoot}
+	PUBLIC ${ProjectSrcRoot}
 )
 
 target_include_directories(${ModuleName}

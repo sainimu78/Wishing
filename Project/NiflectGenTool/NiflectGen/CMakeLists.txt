@@ -2,11 +2,12 @@ cmake_minimum_required(VERSION 3.10.0)
 
 set(ModuleName NiflectGen)
 
-set(SourcePath ${RootSourcePath}/NiflectGen)
+set(ModuleRootPath ${RootSourcePath}/${ModuleName})
+set(SourcePath ${ModuleRootPath})
 
 file(GLOB_RECURSE SrcAll ${SourcePath}/*.cpp ${SourcePath}/*.h)
 
-create_source_group(${RootSourcePath} ${SrcAll})
+create_source_group(${ModuleRootPath} ${SrcAll})
 
 add_library(${ModuleName} SHARED ${SrcAll})
 

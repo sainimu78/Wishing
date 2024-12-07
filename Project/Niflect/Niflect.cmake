@@ -1,6 +1,7 @@
 set(ModuleName Niflect)
 
-set(SourcePath ${RootSourcePath}/Niflect/src)
+set(ModuleRootPath ${RootSourcePath}/Niflect)
+set(SourcePath ${ModuleRootPath}/src)
 file(GLOB_RECURSE Sources ${SourcePath}/*.cpp)
 create_source_group(${SourcePath} ${Sources})
 set(IncludePath ${RootSourcePath}/Niflect/include)

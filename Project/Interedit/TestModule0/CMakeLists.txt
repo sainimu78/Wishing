@@ -2,11 +2,11 @@ cmake_minimum_required(VERSION 3.20.0)
 
 set(ModuleName TestModule0)
 
-set(SourcePath ${RootSourcePath}/TestModule0)
+set(SourcePath ${RootSourcePath}/${ModuleName})
 
 file(GLOB_RECURSE SrcAll ${SourcePath}/*.cpp ${SourcePath}/*.h)
 
-create_source_group(${RootSourcePath} ${SrcAll})
+create_source_group(${SourcePath} ${SrcAll})
 
 add_library(${ModuleName} SHARED ${SrcAll})
 set_target_properties(${ModuleName} PROPERTIES 
