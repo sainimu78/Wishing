@@ -9,6 +9,9 @@ namespace Niflect
 	class TRegisteredType
 	{
 		template <typename T2>
+		friend CNiflectType* StaticGetTypeOld();
+
+		template <typename T2>
 		friend CNiflectType* StaticGetType();
 		friend class CNiflectTable;
 
@@ -26,8 +29,11 @@ namespace Niflect
 	CNiflectType* TRegisteredType<T>::s_type = NULL;
 
 	template <typename T>
-	CNiflectType* StaticGetType()
+	CNiflectType* StaticGetTypeOld()
 	{
 		return TRegisteredType<T>::s_type;
 	}
+
+	template <typename T>
+	CNiflectType* StaticGetType();
 }

@@ -29,7 +29,7 @@ namespace Engine
 	static CSharedAccessor CreateFieldLayoutForfFunctionPointerrrrrrrr()
 	{
 		auto accessor = Niflect::MakeShared<TAccessor>();
-		accessor->InitType(StaticGetType<TType>());
+		accessor->InitType(StaticGetTypeOld<TType>());
 		return accessor;
 	}
 
@@ -40,9 +40,9 @@ namespace Engine
 	CSharedAccessor CreateSSSSSSSSSSSS<Niflect::TArrayNif<float> >()
 	{
 		auto accessor0 = Niflect::MakeShared<TArrayAccessor<Niflect::TArrayNif<float> > >();
-		accessor0->InitType(StaticGetType<Niflect::TArrayNif<float> >());
+		accessor0->InitType(StaticGetTypeOld<Niflect::TArrayNif<float> >());
 		{
-			auto type = StaticGetType<float>();
+			auto type = StaticGetTypeOld<float>();
 			auto accessor1 = type->CreateFieldLayout();
 			accessor1->InitMemberMeta("reserved_dim0", Niflect::CAddrOffset::None);
 			accessor0->InitElementAccessor(accessor1);
@@ -53,9 +53,9 @@ namespace Engine
 	CSharedAccessor CreateSSSSSSSSSSSS<Niflect::TArrayNif<Niflect::CString> >()
 	{
 		auto accessor0 = Niflect::MakeShared<TArrayAccessor<Niflect::TArrayNif<Niflect::CString> > >();
-		accessor0->InitType(StaticGetType<Niflect::TArrayNif<Niflect::CString> >());
+		accessor0->InitType(StaticGetTypeOld<Niflect::TArrayNif<Niflect::CString> >());
 		{
-			auto type = StaticGetType<Niflect::CString>();
+			auto type = StaticGetTypeOld<Niflect::CString>();
 			auto accessor1 = type->CreateFieldLayout();
 			accessor1->InitMemberMeta("reserved_dim0", Niflect::CAddrOffset::None);
 			accessor0->InitElementAccessor(accessor1);
@@ -66,9 +66,9 @@ namespace Engine
 	CSharedAccessor CreateSSSSSSSSSSSS<Niflect::TArrayNif<TestAccessor2::TMyTransform<float> > >()
 	{
 		auto accessor0 = Niflect::MakeShared<TArrayAccessor<Niflect::TArrayNif<TestAccessor2::TMyTransform<float> > > >();
-		accessor0->InitType(StaticGetType<Niflect::TArrayNif<TestAccessor2::TMyTransform<float> > >());
+		accessor0->InitType(StaticGetTypeOld<Niflect::TArrayNif<TestAccessor2::TMyTransform<float> > >());
 		{
-			auto type = StaticGetType<TestAccessor2::TMyTransform<float> >();
+			auto type = StaticGetTypeOld<TestAccessor2::TMyTransform<float> >();
 			auto accessor1 = type->CreateFieldLayout();
 			accessor1->InitMemberMeta("reserved_dim0", Niflect::CAddrOffset::None);
 			accessor0->InitElementAccessor(accessor1);
@@ -79,23 +79,23 @@ namespace Engine
 	CSharedAccessor CreateSSSSSSSSSSSS<Niflect::TArrayNif<bool> >()
 	{
 		auto accessor0 = Niflect::MakeShared<TBitsArrayAccessor<Niflect::TArrayNif<bool> > >();
-		accessor0->InitType(StaticGetType<Niflect::TArrayNif<bool> >());
+		accessor0->InitType(StaticGetTypeOld<Niflect::TArrayNif<bool> >());
 		return accessor0;
 	}
 	template <>
 	CSharedAccessor CreateSSSSSSSSSSSS<std::vector<bool> >()
 	{
 		auto accessor0 = Niflect::MakeShared<TSTLBitsArrayAccessor<std::vector<bool> > >();
-		accessor0->InitType(StaticGetType<std::vector<bool> >());
+		accessor0->InitType(StaticGetTypeOld<std::vector<bool> >());
 		return accessor0;
 	}
 	template <>
 	CSharedAccessor CreateSSSSSSSSSSSS<Niflect::TArrayNif<Niflect::TArrayNif<float> > >()
 	{
 		auto accessor0 = Niflect::MakeShared<TArrayAccessor<Niflect::TArrayNif<Niflect::TArrayNif<float> > > >();
-		accessor0->InitType(StaticGetType<Niflect::TArrayNif<Niflect::TArrayNif<float> > >());
+		accessor0->InitType(StaticGetTypeOld<Niflect::TArrayNif<Niflect::TArrayNif<float> > >());
 		{
-			auto type = StaticGetType<Niflect::TArrayNif<float> >();
+			auto type = StaticGetTypeOld<Niflect::TArrayNif<float> >();
 			auto accessor1 = type->CreateFieldLayout();
 			accessor1->InitMemberMeta("reserved_dim0", Niflect::CAddrOffset::None);
 			accessor0->InitElementAccessor(accessor1);
@@ -106,15 +106,15 @@ namespace Engine
 	CSharedAccessor CreateSSSSSSSSSSSS<std::pair<Niflect::CString, float> >()
 	{
 		auto accessor0 = Niflect::MakeShared<CCompoundAccessor>();
-		accessor0->InitType(StaticGetType<std::pair<Niflect::CString, float> >());
+		accessor0->InitType(StaticGetTypeOld<std::pair<Niflect::CString, float> >());
 		{
-			auto type = StaticGetType<Niflect::CString>();
+			auto type = StaticGetTypeOld<Niflect::CString>();
 			auto accessor1 = type->CreateFieldLayout();
 			accessor1->InitMemberMeta("first", GetMemberVariableOffset(&std::pair<Niflect::CString, float>::first));
 			accessor0->AddChild(accessor1);
 		}
 		{
-			auto type = StaticGetType<float>();
+			auto type = StaticGetTypeOld<float>();
 			auto accessor1 = type->CreateFieldLayout();
 			accessor1->InitMemberMeta("second", GetMemberVariableOffset(&std::pair<Niflect::CString, float>::second));
 			accessor0->AddChild(accessor1);
@@ -125,9 +125,9 @@ namespace Engine
 	CSharedAccessor CreateSSSSSSSSSSSS<Niflect::TMap<Niflect::CString, float> >()
 	{
 		auto accessor0 = Niflect::MakeShared<TMapAccessor<Niflect::TMap<Niflect::CString, float> > >();
-		accessor0->InitType(StaticGetType<Niflect::TMap<Niflect::CString, float> >());
+		accessor0->InitType(StaticGetTypeOld<Niflect::TMap<Niflect::CString, float> >());
 		{
-			auto type = StaticGetType<std::pair<Niflect::CString, float> >();
+			auto type = StaticGetTypeOld<std::pair<Niflect::CString, float> >();
 			auto accessor1 = type->CreateFieldLayout();
 			accessor1->InitMemberMeta("reserved_dim0", Niflect::CAddrOffset::None);
 			accessor0->InitElementAccessor(accessor1);
@@ -138,28 +138,28 @@ namespace Engine
 	CSharedAccessor CreateSSSSSSSSSSSS<float>()
 	{
 		auto accessor0 = Niflect::MakeShared<CFloatAccessor>();
-		accessor0->InitType(StaticGetType<float>());
+		accessor0->InitType(StaticGetTypeOld<float>());
 		return accessor0;
 	}
 	template <>
 	CSharedAccessor CreateSSSSSSSSSSSS<bool>()
 	{
 		auto accessor0 = Niflect::MakeShared<CBoolAccessor>();
-		accessor0->InitType(StaticGetType<bool>());
+		accessor0->InitType(StaticGetTypeOld<bool>());
 		return accessor0;
 	}
 	template <>
 	CSharedAccessor CreateSSSSSSSSSSSS<Niflect::CString>()
 	{
 		auto accessor0 = Niflect::MakeShared<CStringAccessor>();
-		accessor0->InitType(StaticGetType<Niflect::CString>());
+		accessor0->InitType(StaticGetTypeOld<Niflect::CString>());
 		return accessor0;
 	}
 	template <>
 	CSharedAccessor CreateSSSSSSSSSSSS<TestAccessor2::EMyOption>()
 	{
 		auto accessor0 = Niflect::MakeShared<Engine::CEnumClassAccessor>();
-		accessor0->InitType(StaticGetType<TestAccessor2::EMyOption>());
+		accessor0->InitType(StaticGetTypeOld<TestAccessor2::EMyOption>());
 		return accessor0;
 	}
 }
@@ -314,57 +314,57 @@ namespace TestAccessor2
 	{
 		using namespace Niflect;
 		auto accessor0 = Niflect::MakeShared<CCompoundAccessor>();
-		accessor0->InitType(StaticGetType<CTestClassMy>());
+		accessor0->InitType(StaticGetTypeOld<CTestClassMy>());
 		{
-			auto type = StaticGetType<float>();
+			auto type = StaticGetTypeOld<float>();
 			auto accessor1 = type->CreateFieldLayout();
 			accessor1->InitMemberMeta("m_float_0", GetMemberVariableOffset(&CTestClassMy::m_float_0));
 			accessor0->AddChild(accessor1);
 		}
 		{
-			auto type = StaticGetType<bool>();
+			auto type = StaticGetTypeOld<bool>();
 			auto accessor1 = type->CreateFieldLayout();
 			accessor1->InitMemberMeta("m_bool_1", GetMemberVariableOffset(&CTestClassMy::m_bool_1));
 			accessor0->AddChild(accessor1);
 		}
 		{
-			auto type = StaticGetType<Niflect::TArrayNif<float> >();
+			auto type = StaticGetTypeOld<Niflect::TArrayNif<float> >();
 			auto accessor1 = type->CreateFieldLayout();
 			accessor1->InitMemberMeta("m_array_2", GetMemberVariableOffset(&CTestClassMy::m_array_2));
 			accessor0->AddChild(accessor1);
 		}
 		{
-			auto type = StaticGetType<Niflect::TArrayNif<Niflect::TArrayNif<float> > >();
+			auto type = StaticGetTypeOld<Niflect::TArrayNif<Niflect::TArrayNif<float> > >();
 			auto accessor1 = type->CreateFieldLayout();
 			accessor1->InitMemberMeta("m_array_array_3", GetMemberVariableOffset(&CTestClassMy::m_array_array_3));
 			accessor0->AddChild(accessor1);
 		}
 		{
-			auto type = StaticGetType<Niflect::TArrayNif<bool> >();
+			auto type = StaticGetTypeOld<Niflect::TArrayNif<bool> >();
 			auto accessor1 = type->CreateFieldLayout();
 			accessor1->InitMemberMeta("m_array_4", GetMemberVariableOffset(&CTestClassMy::m_array_4));
 			accessor0->AddChild(accessor1);
 		}
 		{
-			auto type = StaticGetType<std::vector<bool> >();
+			auto type = StaticGetTypeOld<std::vector<bool> >();
 			auto accessor1 = type->CreateFieldLayout();
 			accessor1->InitMemberMeta("m_array_5", GetMemberVariableOffset(&CTestClassMy::m_array_5));
 			accessor0->AddChild(accessor1);
 		}
 		{
-			auto type = StaticGetType<Niflect::TMap<Niflect::CString, float> >();
+			auto type = StaticGetTypeOld<Niflect::TMap<Niflect::CString, float> >();
 			auto accessor1 = type->CreateFieldLayout();
 			accessor1->InitMemberMeta("m_map_6", GetMemberVariableOffset(&CTestClassMy::m_map_6));
 			accessor0->AddChild(accessor1);
 		}
 		{
-			auto type = StaticGetType<Niflect::TArrayNif<Niflect::CString> >();
+			auto type = StaticGetTypeOld<Niflect::TArrayNif<Niflect::CString> >();
 			auto accessor1 = type->CreateFieldLayout();
 			accessor1->InitMemberMeta("m_array_7", GetMemberVariableOffset(&CTestClassMy::m_array_7));
 			accessor0->AddChild(accessor1);
 		}
 		{
-			auto type = StaticGetType<TMyTransform<float> >();
+			auto type = StaticGetTypeOld<TMyTransform<float> >();
 			auto accessor1 = type->CreateFieldLayout();
 			accessor1->InitMemberMeta("m_tm_8", GetMemberVariableOffset(&CTestClassMy::m_tm_8));
 			accessor0->AddChild(accessor1);
@@ -375,39 +375,39 @@ namespace TestAccessor2
 	{
 		using namespace Niflect;
 		auto accessor0 = Niflect::MakeShared<CCompoundAccessor>();
-		accessor0->InitType(StaticGetType<CTestClassMy2>());
+		accessor0->InitType(StaticGetTypeOld<CTestClassMy2>());
 		{
-			auto type = StaticGetType<bool>();
+			auto type = StaticGetTypeOld<bool>();
 			auto accessor1 = type->CreateFieldLayout();
 			accessor1->InitMemberMeta("m_derived_bool_0", GetMemberVariableOffset(&CTestClassMy2::m_derived_bool_0));
 			accessor0->AddChild(accessor1);
 		}
 		{
-			auto type = StaticGetType<Niflect::TArrayNif<float> >();
+			auto type = StaticGetTypeOld<Niflect::TArrayNif<float> >();
 			auto accessor1 = type->CreateFieldLayout();
 			accessor1->InitMemberMeta("m_derived_array_1", GetMemberVariableOffset(&CTestClassMy2::m_derived_array_1));
 			accessor0->AddChild(accessor1);
 		}
 		{
-			auto type = StaticGetType<float>();
+			auto type = StaticGetTypeOld<float>();
 			auto accessor1 = type->CreateFieldLayout();
 			accessor1->InitMemberMeta("m_derived_float_2", GetMemberVariableOffset(&CTestClassMy2::m_derived_float_2));
 			accessor0->AddChild(accessor1);
 		}
 		{
-			auto type = StaticGetType<Niflect::TArrayNif<bool> >();
+			auto type = StaticGetTypeOld<Niflect::TArrayNif<bool> >();
 			auto accessor1 = type->CreateFieldLayout();
 			accessor1->InitMemberMeta("m_derived_array_3", GetMemberVariableOffset(&CTestClassMy2::m_derived_array_3));
 			accessor0->AddChild(accessor1);
 		}
 		{
-			auto type = StaticGetType<bool>();
+			auto type = StaticGetTypeOld<bool>();
 			auto accessor1 = type->CreateFieldLayout();
 			accessor1->InitMemberMeta("m_derived_bool_4", GetMemberVariableOffset(&CTestClassMy2::m_derived_bool_4));
 			accessor0->AddChild(accessor1);
 		}
 		{
-			auto type = StaticGetType<Niflect::TArrayNif<TMyTransform<float> > >();
+			auto type = StaticGetTypeOld<Niflect::TArrayNif<TMyTransform<float> > >();
 			auto accessor1 = type->CreateFieldLayout();
 			accessor1->InitMemberMeta("m_derived_array_5", GetMemberVariableOffset(&CTestClassMy2::m_derived_array_5));
 			accessor0->AddChild(accessor1);
@@ -583,7 +583,7 @@ namespace TestAccessor2
 		{
 			if (rwParent->IsValue())
 			{
-				ASSERT(false);//没注册type与Property的绑定? 见 factory.Register(StaticGetType<float>(), StaticGetType<CPropertyFloat>());
+				ASSERT(false);//没注册type与Property的绑定? 见 factory.Register(StaticGetTypeOld<float>(), StaticGetTypeOld<CPropertyFloat>());
 			}
 			else if (rwParent->IsArray())
 			{
@@ -765,7 +765,7 @@ namespace TestAccessor2
 			table->InitTypesLayout();
 		}
 
-		auto type = StaticGetType<Niflect::TArrayNif<float> >();
+		auto type = StaticGetTypeOld<Niflect::TArrayNif<float> >();
 
 		Niflect::TArrayNif<float> srcData;
 		srcData.resize(2);
@@ -795,11 +795,11 @@ namespace TestAccessor2
 			enumMeta.InitAddConst("Default", NULL);
 			enumMeta.InitAddConst("Mode 0", NULL);
 			enumMeta.InitAddConst("Mode 1", NULL);
-			auto et = Niflect::CEnum::Cast(StaticGetType<EMyOption>());
+			auto et = Niflect::CEnum::Cast(StaticGetTypeOld<EMyOption>());
 			et->InitEnumMeta(enumMeta);
 		}
 
-		auto type = Niflect::CEnum::Cast(StaticGetType<EMyOption>());
+		auto type = Niflect::CEnum::Cast(StaticGetTypeOld<EMyOption>());
 		auto accessor0 = type->CreateFieldLayout();
 
 		EMyOption srcData = EMyOption::Mode1;
@@ -829,22 +829,22 @@ namespace TestAccessor2
 		//}
 		//static void StaticInitMethods()
 		//{
-		//	auto type = Cast<CClass>(StaticGetType<CMyClassBase0>());
+		//	auto type = Cast<CClass>(StaticGetTypeOld<CMyClassBase0>());
 		//	CNiflectMethod2 method;
 		//	method.m_InvokeFunc = &InvokeMethod_MyFunc0;
-		//	method.m_vecInputType.push_back(StaticGetType<CFloatField>());
-		//	method.m_vecInputType.push_back(StaticGetType<CMyClass0>());
+		//	method.m_vecInputType.push_back(StaticGetTypeOld<CFloatField>());
+		//	method.m_vecInputType.push_back(StaticGetTypeOld<CMyClass0>());
 		//	method.m_vecInputType.push_back(StaticGetType_Misc<CPointerField, bool*>("bool*"));
 		//	method.m_vecInputType.push_back(StaticGetType_Misc<CPointerField, CMyClass0*>("CMyClass0*"));
 		//	method.m_vecInputType.push_back(StaticGetType_Misc<CPointerField, float**>("float**"));
-		//	method.m_vecOutputType.push_back(StaticGetType<CBoolField>());
+		//	method.m_vecOutputType.push_back(StaticGetTypeOld<CBoolField>());
 		//	type->m_vecMethod.push_back(method);
 		//}
 
 		//{
 		//	using namespace MyTestClassScope;
 
-		//	auto type = Cast<CClass>(StaticGetType<CMyClassBase0>());
+		//	auto type = Cast<CClass>(StaticGetTypeOld<CMyClassBase0>());
 		//	CMyClassBase0 obj;
 
 		//	float a = 1.0f;
@@ -879,11 +879,11 @@ namespace TestAccessor2
 			enumMeta.InitAddConst("Default", NULL);
 			enumMeta.InitAddConst("Mode 0", NULL);
 			enumMeta.InitAddConst("Mode 1", NULL);
-			auto et = Niflect::CEnum::Cast(StaticGetType<EMyOption>());
+			auto et = Niflect::CEnum::Cast(StaticGetTypeOld<EMyOption>());
 			et->InitEnumMeta(enumMeta);
 		}
 
-		auto type = Niflect::CEnum::Cast(StaticGetType<EMyOption>());
+		auto type = Niflect::CEnum::Cast(StaticGetTypeOld<EMyOption>());
 		auto accessor0 = type->CreateFieldLayout();
 
 		EMyOption srcData = EMyOption::Mode1;
@@ -926,7 +926,7 @@ namespace TestAccessor2
 		}
 
 		{
-			auto type = StaticGetType<CTestClassMy>();
+			auto type = StaticGetTypeOld<CTestClassMy>();
 			auto accessor0 = type->CreateFieldLayout();
 
 			CTestClassMy srcData;
@@ -939,9 +939,9 @@ namespace TestAccessor2
 			printf("");
 		}
 		{
-			auto type0 = StaticGetType<CTestClassMy>();
+			auto type0 = StaticGetTypeOld<CTestClassMy>();
 			auto accessor0 = type0->CreateFieldLayout();
-			auto type1 = StaticGetType<CTestClassMy2>();
+			auto type1 = StaticGetTypeOld<CTestClassMy2>();
 			auto accessor1 = type1->CreateFieldLayout();
 
 			CTestClassMy2 srcData;
@@ -966,15 +966,15 @@ namespace TestAccessor2
 
 			{
 				CPropertyNodeFactory factory;
-				factory.Register(StaticGetType<bool>(), StaticGetType<CPropertyBool>());
-				factory.Register(StaticGetType<float>(), StaticGetType<CPropertyFloat>());
-				factory.Register(StaticGetType<Niflect::CString>(), StaticGetType<CPropertyString>());
-				factory.Register(StaticGetType<TMyTransform<float> >(), StaticGetType<TPropertyMyTransform<float> >());
+				factory.Register(StaticGetTypeOld<bool>(), StaticGetTypeOld<CPropertyBool>());
+				factory.Register(StaticGetTypeOld<float>(), StaticGetTypeOld<CPropertyFloat>());
+				factory.Register(StaticGetTypeOld<Niflect::CString>(), StaticGetTypeOld<CPropertyString>());
+				factory.Register(StaticGetTypeOld<TMyTransform<float> >(), StaticGetTypeOld<TPropertyMyTransform<float> >());
 
 				CSharedAccessor accessorSrc;
 				CRwNode rwSrc;
 				{
-					auto type0 = StaticGetType<CTestClassMy>();
+					auto type0 = StaticGetTypeOld<CTestClassMy>();
 					accessorSrc = type0->CreateFieldLayout();
 					auto instance = type0->MakeSharedInstance<void*>();
 					auto& srcData = *reinterpret_cast<CTestClassMy*>(instance.Get());

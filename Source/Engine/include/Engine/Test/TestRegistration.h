@@ -19,7 +19,7 @@ namespace Niflect
 	//}
 
 	template <>
-	ENGINE_API CNiflectType* StaticGetType<TestRegistration::CMyRegClass>();
+	ENGINE_API CNiflectType* StaticGetTypeOld<TestRegistration::CMyRegClass>();
 }
 
 namespace TestRegistration

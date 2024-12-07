@@ -18,7 +18,7 @@ namespace Niflect
 			ASSERT(!typeName.empty());
 			table->RegisterType<TInfo, TType>(typeName, &__InternalCreateFieldLayoutForFunctionPointer<TAccessor>);
 		}
-		return Niflect::StaticGetType<TType>();
+		return Niflect::StaticGetTypeOld<TType>();
 	}
 }
 
@@ -31,28 +31,28 @@ namespace Niflect
 	//}
 
 	//template <>
-	//NIFLECTTYPEREG_API CNiflectType* StaticGetType<float>()
+	//NIFLECTTYPEREG_API CNiflectType* StaticGetTypeOld<float>()
 	//{
 	//	return TInternalRegisteredType<float>::s_type;
 	//}
 	//template <>
-	//NIFLECTTYPEREG_API CNiflectType* StaticGetType<bool>()
+	//NIFLECTTYPEREG_API CNiflectType* StaticGetTypeOld<bool>()
 	//{
 	//	return TInternalRegisteredType<bool>::s_type;
 	//}
 	//template <>
-	//NIFLECTTYPEREG_API CNiflectType* StaticGetType<Niflect::TArrayNif<float> >()
+	//NIFLECTTYPEREG_API CNiflectType* StaticGetTypeOld<Niflect::TArrayNif<float> >()
 	//{
 	//	return TInternalRegisteredType<Niflect::TArrayNif<float> >::s_type;
 	//}
 	//template <>
-	//NIFLECTTYPEREG_API CNiflectType* StaticGetType<TestRegistration::CMyRegClass>()
+	//NIFLECTTYPEREG_API CNiflectType* StaticGetTypeOld<TestRegistration::CMyRegClass>()
 	//{
 	//	return TInternalRegisteredType<TestRegistration::CMyRegClass>::s_type;
 	//}
 
 	template <>
-	CNiflectType* StaticGetType<TestRegistration::CMyRegClass>()
+	CNiflectType* StaticGetTypeOld<TestRegistration::CMyRegClass>()
 	{
 		return TRegisteredType<TestRegistration::CMyRegClass>::s_type;
 	}
@@ -76,15 +76,15 @@ namespace TestRegistration
 	static Niflect::CSharedAccessor SSSSCreateFieldLayout()
 	{
 		auto node0 = Niflect::MakeShared<Niflect::CCompoundAccessor>();
-		node0->InitType(Niflect::StaticGetType<CMyRegClass>());
+		node0->InitType(Niflect::StaticGetTypeOld<CMyRegClass>());
 		{
-			auto type = Niflect::StaticGetType<float>();
+			auto type = Niflect::StaticGetTypeOld<float>();
 			auto node1 = type->CreateFieldLayout();
 			node1->InitMemberMeta("m_float_0", Niflect::GetMemberVariableOffset(&CMyRegClass::m_float_0));
 			node0->AddChild(node1);
 		}
 		{
-			auto type = Niflect::StaticGetType<bool>();
+			auto type = Niflect::StaticGetTypeOld<bool>();
 			auto node1 = type->CreateFieldLayout();
 			node1->InitMemberMeta("m_bool_1", Niflect::GetMemberVariableOffset(&CMyRegClass::m_bool_1));
 			node0->AddChild(node1);
@@ -212,7 +212,7 @@ namespace TestRegistration
 					GetOrRegisterType<bool, CBoolAccessor, CNiflectType>(table, "bool");
 				}
 
-				auto type = Niflect::StaticGetType<CMyRegClass>();
+				auto type = Niflect::StaticGetTypeOld<CMyRegClass>();
 
 				auto nata = CMyRegClassNata::Cast(type->GetNata());
 				printf("Nata, exampleValue: %f\n", nata->m_exampleValue);

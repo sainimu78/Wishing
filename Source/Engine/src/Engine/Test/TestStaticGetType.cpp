@@ -4,8 +4,8 @@ namespace TestRegistration
 {
 	void SSSSSSSS()
 	{
-		auto a = Niflect::StaticGetType<CMyRegClass>();
-		auto b = Niflect::StaticGetType<float>();
+		auto a = Niflect::StaticGetTypeOld<CMyRegClass>();
+		auto b = Niflect::StaticGetTypeOld<float>();
 		printf("%s, %s\n", a->GetTypeName().c_str(), b->GetTypeName().c_str());
 	}
 }
