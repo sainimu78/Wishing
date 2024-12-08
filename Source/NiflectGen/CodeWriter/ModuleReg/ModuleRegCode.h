@@ -17,7 +17,8 @@ namespace NiflectGen
 	{
 	public:
 		CModuleRegInfo()
-			: m_genFileMode(EGeneratingHeaderAndSourceFileMode::EHeaderOnly)
+			: m_toGenGeneratedBodyThisType(false)
+			, m_genFileMode(EGeneratingHeaderAndSourceFileMode::EHeaderOnly)
 		{
 		}
 		Niflect::CString m_moduleName;
@@ -30,6 +31,7 @@ namespace NiflectGen
 		Niflect::CString m_moduleApiMacro;
 		Niflect::CString m_moduleApiMacroHeader;
 		Niflect::CString m_toolHeaderSearchPath;
+		bool m_toGenGeneratedBodyThisType;
 		EGeneratingHeaderAndSourceFileMode m_genFileMode;
 	};
 

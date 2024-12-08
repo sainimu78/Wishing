@@ -164,7 +164,7 @@ namespace NiflectGen
             it0->WriteWriteCreateTypeAccessorFunc(createTypeAccessorCtx, createTypeAccessorData);
 
             {
-                STypeRegClassGenHWritingContext regClassCtx{ context.m_moduleRegInfo.m_userProvided.m_moduleApiMacro, context.m_log };
+                STypeRegClassGenHWritingContext regClassCtx{ context.m_moduleRegInfo, context.m_log };
                 it0->WriteGeneratedBody(regClassCtx, data.m_taggedTypeGeneratedBody);
             }
             {
@@ -334,6 +334,7 @@ namespace NiflectGen
     {
         auto moduleFilePath = NiflectUtil::FormatString("%s%s", m_moduleRegInfo.m_userProvided.m_moduleName.c_str(), NiflectGenDefinition::FileExt::PrivateH);
         auto splitsCount = context.m_vecItem.size();
+        if (splitsCount > 0)
         {
             CCodeTemplate tpl1;
             ReadTemplateFromRawData(tpl1, HardCodedTemplate::ModuleRegImpl);

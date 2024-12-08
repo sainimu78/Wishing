@@ -207,6 +207,10 @@ namespace NiflectGen
 			{
 				info.m_genSourceOutputDirPath = GetNextArgPath(argv, idx);
 			}
+			else if (strcmp(pszV, "-gbt") == 0)
+			{
+				info.m_toGenGeneratedBodyThisType = true;
+			}
 			else if (strcmp(pszV, "-fs") == 0)
 			{
 				info.m_genFileMode = EGeneratingHeaderAndSourceFileMode::ESourceAndHeader;

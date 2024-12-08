@@ -168,8 +168,7 @@ namespace NiflectGen
 
 	struct STypeRegClassGenHWritingContext
 	{
-		//const Niflect::CString& m_staticGetTypeFuncName;
-		const Niflect::CString& m_moduleApiMacro;
+		const CModuleRegInfoValidated& m_moduleRegInfo;
 		CGenLog* m_log;
 	};
 

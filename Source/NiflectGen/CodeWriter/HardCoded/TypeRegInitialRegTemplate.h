@@ -50,13 +50,15 @@ R"(type1->InitAccessorElementLayout(node0.Get());)";
 R"(StaticGetType<)" MAKELABEL(LABEL_9) ">";
 	constexpr const char* StaticGetTypeSpecDecl =
 R"(template <>
-)" MAKELABEL(LABEL_10) " CNiflectType* " MAKELABEL(LABEL_2) R"(();)";
+)" MAKELABEL(LABEL_10) "CNiflectType* " MAKELABEL(LABEL_2) R"(();)";
 	constexpr const char* StaticGetTypeSpecImpl =
 R"(template <>
 CNiflectType* )" MAKELABEL(LABEL_2) R"(()
 {
 	return TRegisteredType<)" MAKELABEL(LABEL_9) R"(>::s_type;
 })";
+	static const char* MacroBodyThisType =
+"using CThis = " MAKELABEL(LABEL_9) ";";
 	static const char* MacroBodyExposeToAccessor =
 R"(friend Niflect::CSharedAccessor Niflect::CreateTypeAccessor<)" MAKELABEL(LABEL_9) R"(>();)";
 	static const char* MacroBodyAnotherExample0 =

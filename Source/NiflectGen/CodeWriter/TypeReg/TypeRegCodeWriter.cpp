@@ -285,6 +285,13 @@ namespace NiflectGen
 					SCollectingGeneratedBodyWritingData forGenHData{ data.m_lineNumberMacroData.m_generatedBodyLineNumber };
 					this->CollectDataForGenH(forGenHData);
 				}
+				if (context.m_moduleRegInfo.m_userProvided.m_toGenGeneratedBodyThisType)
+				{
+					CMacroDefinitionData md;
+					md.m_namePostfix = "ThisType";
+					ReplaceLabelToLines1(HardCodedTemplate::MacroBodyThisType, LABEL_9, resocursorNameForLastTemplateArg, md.m_linesBody);
+					data.m_lineNumberMacroData.m_vecMacroDefinitionData.push_back(md);
+				}
 				{
 					CMacroDefinitionData md;
 					md.m_namePostfix = "ExposeToAccessor";
@@ -303,7 +310,12 @@ namespace NiflectGen
 				ReadTemplateFromRawData(tpl0, HardCodedTemplate::StaticGetTypeSpecDecl);
 				CLabelToCodeMapping map;
 				MapLabelToText(map, LABEL_2, staticGetTypeFuncName);
-				MapLabelToText(map, LABEL_10, context.m_moduleApiMacro);
+				auto apiMacroSpace = context.m_moduleRegInfo.m_userProvided.m_moduleApiMacro;
+				if (!apiMacroSpace.empty())
+				{
+					apiMacroSpace += ' ';
+					MapLabelToText(map, LABEL_10, apiMacroSpace);
+				}
 				Niflect::TSet<Niflect::CString> setReplacedLabel;
 				tpl0.ReplaceLabels(map, data.m_linesStaticGetTypeSpecDecl, &setReplacedLabel);
 				ASSERT(setReplacedLabel.size() == map.size());
