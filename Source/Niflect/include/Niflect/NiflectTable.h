@@ -82,10 +82,11 @@ namespace Niflect
 
 			auto shared = Niflect::MakeShared<TInfo>();
 			CNiflectType* type = shared.Get();
-			auto idx = this->AddType(shared);
+			auto idx = this->GetTypesCount();
 			ASSERT(!TRegisteredType<TType>::IsValid());
 			type->InitTypeMeta2(lifecycleMeta, inCreateTypeAccessorFunc, CNiflectType::GetTypeHash<TType>(), idx, id, &TRegisteredType<TType>::s_type, nata);
 			ASSERT(TRegisteredType<TType>::IsValid());
+			this->InsertType(shared, idx);
 		}
 		uint32 GetTypesCount() const
 		{
@@ -95,9 +96,9 @@ namespace Niflect
 		{
 			return m_vecType[idx].Get();
 		}
-		CNiflectType* FindTypeById(const Niflect::CString& id) const
+		CNiflectType* FindTypeByTypeName(const Niflect::CString& id) const
 		{
-			auto itFound = m_mapIdToIndex.find(&id);
+			auto itFound = m_mapIdToIndex.find(id);
 			if (itFound != m_mapIdToIndex.end())
 				return m_vecType[itFound->second].Get();
 			return NULL;
@@ -107,19 +108,17 @@ namespace Niflect
 			for (auto& it : m_vecType)
 				it->InitTypeLayout();
 		}
-		uint32 AddType(const CSharedNiflectType& type)
+		void InsertType(const CSharedNiflectType& type, uint32 idx)
 		{
-			uint32 idx = this->GetTypesCount();
-			auto ret = m_mapIdToIndex.insert({ &type->GetTypeName(), idx });
+			auto ret = m_mapIdToIndex.insert({ type->GetTypeName(), idx });
 			ASSERT(ret.second);
-			m_vecType.push_back(type);
-			return idx;
+			m_vecType.insert(m_vecType.begin() + idx, type);
 		}
 
 	public:
 		void DeleteType(const CNiflectType* type)//±¸ÓÃ
 		{
-			auto itFound = m_mapIdToIndex.find(&type->GetTypeName());
+			auto itFound = m_mapIdToIndex.find(type->GetTypeName());
 			ASSERT(itFound != m_mapIdToIndex.end());
 			m_vecType.erase(m_vecType.begin() + itFound->second);
 			m_mapIdToIndex.erase(itFound);
@@ -127,7 +126,7 @@ namespace Niflect
 
 	private:
 		TArrayNif<CSharedNiflectType> m_vecType;
-		TMap<CStringRef, uint32> m_mapIdToIndex;
+		TUnorderedMap<Niflect::CString, uint32> m_mapIdToIndex;
 		CString m_name;
 	};
 	using CSharedTable = TSharedPtr<CNiflectTable>;

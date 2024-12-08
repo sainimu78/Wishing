@@ -51,10 +51,11 @@ namespace Niflect
 
 		auto shared = Niflect::MakeShared<TInfo>();
 		CNiflectType* type = shared.Get();
-		auto idx = table->AddType(shared);
+		auto idx = table->GetTypesCount();
 		ASSERT(!)" MAKELABEL(LABEL_1) R"(TRegisteredType<TType>::IsValid());
 		type->InitTypeMeta2(lifecycleMeta, inCreateTypeAccessorFunc, CNiflectType::GetTypeHash<TType>(), idx, id, &)" MAKELABEL(LABEL_1) R"(TRegisteredType<TType>::s_type, nata);
 		ASSERT()" MAKELABEL(LABEL_1) R"(TRegisteredType<TType>::IsValid());
+		table->InsertType(shared, idx);
 	}
 })";
 	}

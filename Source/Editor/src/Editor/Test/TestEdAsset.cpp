@@ -14,14 +14,46 @@ constexpr const char* MyContent = TEST_CONTENT_ROOT_PATH;
 static void CreateAsset(const Niflect::CString& filePath)
 {
 	Editor::CEdMesh mesh;
+	mesh.m_debugName = "nihao";
 	auto type = mesh.GetType();
 	using namespace RwTree;
 	CRwNode rw;
-	type->SaveInstanceToRwNode(&mesh, &rw);
+	AddRwString(&rw, "TypeName", type->GetTypeName());
+	auto rwData = AddRwNode(&rw, "Data");
+	type->SaveInstanceToRwNode(&mesh, rwData);
 	std::ofstream ofs;
 	NiflectUtil::MakeDirectories(filePath);
 	if (NiflectUtil::OpenFileStream(ofs, filePath))
+	{
 		CJsonFormat::Write(&rw, ofs);
+	}
+	else
+	{
+		ASSERT(false);
+	}
+}
+static Niflect::TSharedPtr<Editor::CEdAsset> LoadAsset(Niflect::CNiflectTable* table, const Niflect::CString& filePath)
+{
+	Niflect::TSharedPtr<Editor::CEdAsset> asset;
+	using namespace RwTree;
+	std::ifstream ifs;
+	if (NiflectUtil::OpenFileStream(ifs, filePath))
+	{
+		CRwNode rw;
+		CJsonFormat::Read(&rw, ifs);
+		auto typeName = FindRwString(&rw, "TypeName");
+		if (auto type = table->FindTypeByTypeName(typeName))
+		{
+			auto rwData = FindRwNode(&rw, "Data");
+			asset = type->MakeSharedInstance<Editor::CEdAsset>();
+			type->LoadInstanceFromRwNode(asset.Get(), rwData);
+		}
+	}
+	else
+	{
+		ASSERT(false);
+	}
+	return asset;
 }
 
 void TestEdAsset()
@@ -34,8 +66,16 @@ void TestEdAsset()
 		Niflect::GeneratedInitTypes();
 		table->InitTypesLayout();
 
+		auto meshFilePath = NiflectUtil::ConcatPath(MyContent, "Mesh.json");
 		{
-			CreateAsset(NiflectUtil::ConcatPath(MyContent, "Mesh.json"));
+			{
+				CreateAsset(meshFilePath);
+			}
+			{
+				auto asset = LoadAsset(table, meshFilePath);
+				auto mesh = asset.Cast<Editor::CEdMesh>();
+				printf("");
+			}
 		}
 
 		tableHolder = NULL;
