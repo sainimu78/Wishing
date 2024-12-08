@@ -4,6 +4,7 @@
 #include "NiflectGen/CodeWriter/ModuleReg/ModuleRegCodeWriter.h"
 #include "NiflectGen/Base/NiflectGenDefinition.h"
 #include "NiflectGen/CodeWriter/CppWriter.h"
+#include <string.h>//memcpy
 
 namespace NiflectGen
 {
