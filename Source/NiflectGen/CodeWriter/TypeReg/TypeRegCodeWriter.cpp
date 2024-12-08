@@ -268,9 +268,11 @@ namespace NiflectGen
 						cppTypeKeyword = "enum class";
 					else
 						cppTypeKeyword = "enum";
-					CXType cxUnderlyingType = clang_getEnumDeclIntegerType(cursor);
-					if (cxUnderlyingType.kind != CXType_Int)
-						enumUnderlyingType = NiflectUtil::FormatString(" : %s", CXStringToCString(clang_getTypeSpelling(cxUnderlyingType)).c_str());
+					{
+						CXType cxUnderlyingType = clang_getEnumDeclIntegerType(cursor);
+						if (cxUnderlyingType.kind != CXType_Int)
+							enumUnderlyingType = NiflectUtil::FormatString(" : %s", CXStringToCString(clang_getTypeSpelling(cxUnderlyingType)).c_str());
+					}
 					break;
 				default:
 					ASSERT(false);
