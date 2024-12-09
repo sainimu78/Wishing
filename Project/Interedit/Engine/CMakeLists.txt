@@ -50,4 +50,38 @@ target_compile_definitions(${ModuleName}
 target_link_libraries(${ModuleName} PRIVATE Niflect)
 target_link_libraries(${ModuleName} PRIVATE TestModule1)
 
+set(ArgsModuleInclude "")
+foreach(It IN LISTS ModuleInclude)
+    list(APPEND ArgsModuleInclude "-h" "${It}")
+endforeach()
+
+set(ToolRelPathForTest Linux/Make_x64)
+set(ExeExt )
+if (WIN32)
+	set(ExeExt .exe)
+	set(ToolRelPathForTest Windows/vs2022_x64)
+endif()
+
+set(NiflectGeneratedModulePrivateH ${ModuleGenPath}/${ModuleName}_private.h)
+add_custom_command(
+    OUTPUT "${NiflectGeneratedModulePrivateH}"
+    COMMAND "${RootSourcePath}/../Build/NiflectGenTool/${ToolRelPathForTest}/Debug/NiflectGenTool/NiflectGenTool${ExeExt}" 
+            -n ${ModuleName} 
+            ${ArgsModuleInclude}
+            -am ENGINE_API 
+            -amh "${IncludePath}/Engine/EngineCommon.h" 
+            -a "${IncludePath}/EngineAccessorSetting.h" 
+            -t "${RootSourcePath}/Niflect/include" 
+            -I "${IncludePath}" 
+            -I "${RootSourcePath}/TestModule1/include" 
+            -g "${NiflectGeneratedRootPath}"
+			-gbt 
+    DEPENDS ${ModuleInclude}
+    COMMENT "NiflectGenTool generating ..."
+)
+
+add_custom_target(NiflectGenTool_${ModuleName} DEPENDS "${NiflectGeneratedModulePrivateH}")
+set_target_properties(NiflectGenTool_${ModuleName} PROPERTIES FOLDER "AutoGen")
+add_dependencies(${ModuleName} NiflectGenTool_${ModuleName})
+
 include(../TestModule1/TestModule1.cmake)
