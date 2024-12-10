@@ -122,7 +122,7 @@ void TestEdAsset()
 		}
 		if (true)
 		{
-			printf("Type `q` to quit\n");
+			printf("Type 'q' to quit\n");
 			while (true)
 			{
 				char cmd;
