@@ -59,6 +59,41 @@ static Niflect::TSharedPtr<Editor::CEdAsset> LoadAsset(Niflect::CNiflectTable* t
 	return asset;
 }
 
+static void CookAsset(Niflect::CNiflectTable* table, const Niflect::CString& originalFilePath, const Niflect::CString& cookedFilePath)
+{
+	auto asset = LoadAsset(table, originalFilePath);
+	auto type = asset->GetType();
+	if (auto nata = Editor::CTestEditorTypeNata::Cast(type->GetNata()))
+	{
+		if (nata->m_bindingType != NULL)
+		{
+			using namespace RwTree;
+			CRwNode rw;
+			AddRwString(&rw, "TypeName", nata->m_bindingType->GetTypeName());
+			auto rwData = AddRwNode(&rw, "Data");
+			type->SaveInstanceToRwNode(asset.Get(), rwData);
+			std::ofstream ofs;
+			NiflectUtil::MakeDirectories(cookedFilePath);
+			if (NiflectUtil::OpenFileStream(ofs, cookedFilePath))
+			{
+				CJsonFormat::Write(&rw, ofs);
+			}
+			else
+			{
+				ASSERT(false);
+			}
+		}
+		else
+		{
+			ASSERT(false);
+		}
+	}
+	else
+	{
+		ASSERT(false);
+	}
+}
+
 void TestEdAsset()
 {
 	auto memTest = Niflect::GetDefaultMemoryStats();
@@ -73,6 +108,7 @@ void TestEdAsset()
 		table->InitTypesLayout();
 
 		auto meshFilePath = NiflectUtil::ConcatPath(MyContent, "Mesh.json");
+		auto cookedFilePath = NiflectUtil::RemoveFileExt(meshFilePath) + "_cooked.json";
 		if (false)
 		{
 			{
@@ -105,7 +141,8 @@ void TestEdAsset()
 					done = true;
 					break;
 				case 'r':
-					valueInString = meshFilePath;
+					CookAsset(table, meshFilePath, cookedFilePath);
+					valueInString = cookedFilePath;
 					break;
 				default:
 					break;
@@ -114,7 +151,7 @@ void TestEdAsset()
 					break;
 
 				Niflect::CString input;
-				input = NiflectUtil::FormatString("%c %s", cmd, meshFilePath.c_str());
+				input = NiflectUtil::FormatString("%c %s", cmd, valueInString.c_str());
 				TestEngineEditMode::Run(input);
 			}
 		}

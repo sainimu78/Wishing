@@ -8,6 +8,9 @@ namespace TestEngineEditMode
 	class CTestMesh : public CTestAsset
 	{
 		GENERATED_BODY()
+	public:
+		virtual void DebugPrint() const override;
+
 	private:
 		NIF_F()
 		Niflect::CString m_debugName;

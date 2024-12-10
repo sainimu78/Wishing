@@ -19,7 +19,7 @@ void TestAPI_C()
 #include "Niflect/Serialization/JsonFormat.h"
 #include "TestModule1/TestModule1.h"
 
-static Niflect::TSharedPtr<Niflect::CNiflectTable> g_defaultTable;
+Niflect::TSharedPtr<Niflect::CNiflectTable> g_defaultTable;
 
 void TestEngineCreate()
 {

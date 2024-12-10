@@ -8,6 +8,6 @@ namespace TestEngineEditMode
 	{
 		GENERATED_BODY()
 	public:
-
+		virtual void DebugPrint() const {}
 	};
 }
