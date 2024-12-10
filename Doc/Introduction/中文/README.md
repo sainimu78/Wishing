@@ -168,7 +168,7 @@ C++ 开发者可能经历过 :
 
 当 C++ 反射框架并非完全的原生时, 这些工作可能就是必要的.
 
-因此, 追求原生是 C++ 开发者的强需求.
+因此原生性, 是 C++ 开发者的强需求.
 
 以下演示, 使用 Nfilect 能够实现何程度的原生性 :
 
@@ -218,7 +218,7 @@ namespace MyScope
 
 ### Nata
 
-Nata 是指原生风格 type/field 绑定的 metadata, 如 `CMyClassNata`. Nata 能被代码补全工具所解析, 使开发者能够不需要熟悉相应框架所支持的功能的情况下, 方便地编写 metadata.
+Nata 是指以原生风格编写的, type/field 的 metadata, 如 `CMyClassNata`. Nata 能被代码补全工具所解析, 使开发者能够不需要熟悉相应框架所支持的功能的情况下, 方便地编写 metadata.
 
 值得一提的是, 开发者甚至可封装 Nata 到另外的函数, 如 `MyGetNata()`.
 
@@ -366,7 +366,7 @@ C++ 原生风格即是重点
   - 如支持使用 `namespace` 或嵌套的 `namespace`
 - 真正意义的非入侵式反射实现
   - 可被反射的类型不要求从某个基类继承
-  - 如宏标签 `NIF_T` 是空定义的宏, 而 `GENERATED_BODY` 仅定义`friend` 声明, 这些宏标签均无另外串入另外的 field 或 method 的定义. (如需对宏标签另外命名, 仅需要通过 `#define` 定义即可.)
+  - 如宏标签 `NIF_T` 是空定义的宏, 而 `GENERATED_BODY` 仅定义`friend` 声明, 这些宏标签均无串入另外的 field 或 method 的定义. (如需对宏标签另外命名, 仅需要通过 `#define` 定义即可)
 - 使用称作 `RwTree` 的一种可扩展的 C++ 原生序列化方式
   - 将数据保存到统一的属性结构 `CRwNode`, 再序列化为其它任意的数据格式.
 
