@@ -143,3 +143,13 @@
 77. Editor, 编辑框架验证阶段 UI
 	1. 可参考 GAMES 104 Picolo 小引擎编辑器 F:\Fts\Proj\Test\Piccolo\engine\source\runtime\function\render
 	2. F:\Fts\Proj\Test\Wishing\Doc\备用资料\编辑器 UI Backend 的一种方案.md
+78. NiflectGen, Field 类型解析模式
+	1. Field Type Resolving Mode: Full(-frm), Partial(-prm)
+		1. Full 模式时, 找不到的类型视为一种错误, 适用于:
+			1. 自由使用 namespace
+			2. 依赖头文件简单
+			3. 不在怱或可接受可能很久的解析耗时
+		2. Partial 模式时, 该模式为默认模式, 找不到的类型则以类型文本定义原样复制, 适用于:
+			1. 使用 PCH
+			2. 依赖头文件复杂
+			3. 复杂的头文件通过 PCH 避免直接 include
