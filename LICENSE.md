@@ -204,6 +204,7 @@ The Wishing Project is under the Apache License v2.0:
    limitations under the License.
 
 ==============================================================================
+
 Software from third parties:
 ==============================================================================
 The Wishing Project contains third party software which is under different license
@@ -213,7 +214,22 @@ referenced in or included with the materials, such as in separate LICENSE.txt
 or LICENSE.md files accompanying the materials.
 
 In addition to the above, please note that all third party softwares utilized in 
-the Wishing Project are specifically referenced in the form of Licensed_xxx.cmake 
+the Wishing Project are specifically referenced in the form of Licensed_*.cmake 
 scripts. These scripts include the names and details of the respective softwares. 
 Furthermore, all third party softwares used across the project are organized 
 and stored in the ThirdParty directory.
+
+Information on the usage of third party softwares in the Wishing Project can be viewed by running the following command:
+
+on Windows
+
+```
+dir /S /B Licensed_*.cmake
+```
+
+on POSIX
+
+```
+find . -type f -name 'Licensed_*.cmake'
+```
+
