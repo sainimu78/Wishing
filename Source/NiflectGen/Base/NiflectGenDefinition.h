@@ -41,6 +41,8 @@ namespace NiflectGenDefinition
 		constexpr const char* Splitted = "_Splitted";
 	}
 
+#define NIFLECT_GEN_TIME_MACRO "_NIFLECTGEN"
+
 	namespace CodeTag
 	{
 #define MACROTAG_GENERATED_BODY "__NiflectGen_GeneratedBody"

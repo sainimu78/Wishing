@@ -9,11 +9,11 @@ namespace NiflectGen
 	void WriteGenTimeNiflectMacroHeader(const SGenTimeNiflectMacroHeaderWritingContext& context)
 	{
 		CCodeLines linesMacroTagDefine;
-		linesMacroTagDefine.push_back("#define GENERATED_BODY(...) typedef void* CONCAT_SYMBOLS_2(" MACROTAG_GENERATED_BODY ",__LINE__);");
-		linesMacroTagDefine.push_back("#define NIFLECTGENTAG_TYPE typedef void* " MACROTAG_TYPE ";");
-		linesMacroTagDefine.push_back("#define NIFLECTGENTAG_FIELD typedef void* CONCAT_SYMBOLS_2(" MACROTAG_FIELD ",__LINE__);");
-		linesMacroTagDefine.push_back("#define NIFLECTGENTAG_METHOD typedef void* " MACROTAG_METHOD ";");
-		linesMacroTagDefine.push_back(R"(#define NIFLECTGENTAG_ENUMCONST __attribute__((annotate(")" MACROTAG_ENUMCONST R"("))))");
+		linesMacroTagDefine.push_back("#define _NIFLECTGENTAG_GENERATED_BODY typedef void* CONCAT_SYMBOLS_2(" MACROTAG_GENERATED_BODY ",__LINE__);");
+		linesMacroTagDefine.push_back("#define _NIFLECTGENTAG_TYPE typedef void* " MACROTAG_TYPE ";");
+		linesMacroTagDefine.push_back("#define _NIFLECTGENTAG_FIELD typedef void* CONCAT_SYMBOLS_2(" MACROTAG_FIELD ",__LINE__);");
+		linesMacroTagDefine.push_back("#define _NIFLECTGENTAG_METHOD typedef void* " MACROTAG_METHOD ";");
+		linesMacroTagDefine.push_back(R"(#define _NIFLECTGENTAG_ENUMCONST __attribute__((annotate(")" MACROTAG_ENUMCONST R"("))))");
 
 		Niflect::CString relativeFilePath = NiflectGenDefinition::NiflectFramework::FilePath::NiflectMacroHeader;
 		std::ifstream ifs;

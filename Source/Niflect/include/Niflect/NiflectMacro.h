@@ -1,23 +1,22 @@
 #pragma once
 #include "Niflect/Util/ConcatSymbols.h"
 
-#ifdef NIFLECTGEN
+#ifdef _NIFLECTGEN
 ${GenTimeReplacement}
 #else
 // Include a redundant semicolon at the end of the generated code block, so that intellisense parsers can start parsing
 // a new declaration if the line number/generated code is out of date.
-#define GENERATED_BODY(...) CONCAT_SYMBOLS_4(CURRENT_FILE_ID,_,__LINE__,_GENERATED_BODY);
+#define _NIFLECTGENTAG_GENERATED_BODY CONCAT_SYMBOLS_4(CURRENT_FILE_ID,_,__LINE__,_GENERATED_BODY);
 
-#define NIFLECTGENTAG_TYPE 
-#define NIFLECTGENTAG_FIELD 
-#define NIFLECTGENTAG_METHOD 
-#define NIFLECTGENTAG_ENUMCONST
+#define _NIFLECTGENTAG_TYPE 
+#define _NIFLECTGENTAG_FIELD 
+#define _NIFLECTGENTAG_METHOD 
+#define _NIFLECTGENTAG_ENUMCONST
 #endif
 
-#define NIF_T(...) NIFLECTGENTAG_TYPE
+#define GENERATED_BODY(...) _NIFLECTGENTAG_GENERATED_BODY
 
-#define NIF_F(...) NIFLECTGENTAG_FIELD
-
-#define NIF_M(...) NIFLECTGENTAG_METHOD
-
-#define NIF_C(...) NIFLECTGENTAG_ENUMCONST
+#define NIF_T(...) _NIFLECTGENTAG_TYPE
+#define NIF_F(...) _NIFLECTGENTAG_FIELD
+#define NIF_M(...) _NIFLECTGENTAG_METHOD
+#define NIF_C(...) _NIFLECTGENTAG_ENUMCONST

@@ -1,5 +1,5 @@
 #include "NiflectGen/Generator/Generator.h"
-#include "NiflectGen/Util/CompilerUtil.h"
+#include "NiflectGen/Util/ParserUtil.h"
 #include "clang-c/Index.h"
 #include "NiflectGen/Generator/CursorNode.h"
 #include <iostream>
@@ -93,7 +93,7 @@ namespace NiflectGen
             memSrcCache.AddMemSourceRef(memSrc);
         }
 
-        CCompilerOption opt;
+        CParserOption opt;
         opt.InitDefault();
         opt.AddIncludePaths(m_moduleRegInfo.m_vecParsingHeaderSearchPath);
 

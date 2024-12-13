@@ -3,24 +3,10 @@
 
 namespace NiflectGen
 {
-    class CCompilerOption
+    class CParserOption
     {
     public:
-        void InitDefault()
-        {
-            m_vecArg.push_back("-x");
-            m_vecArg.push_back("c++");
-            m_vecArg.push_back("-std=c++14");
-            m_vecArg.push_back("-DNDEBUG");
-            m_vecArg.push_back("-D__clang__");
-            m_vecArg.push_back("-w");
-            m_vecArg.push_back("-MG");
-            m_vecArg.push_back("-M");
-            m_vecArg.push_back("-ferror-limit=0");
-            m_vecArg.push_back("-o clangLog.txt");
-            m_vecArg.push_back("-DNIFLECTGEN=");
-            this->UpdateArgV();
-        }
+        void InitDefault();
         void AddIncludePath(const Niflect::CString& path)
         {
             m_vecArg.push_back("-I" + path);
