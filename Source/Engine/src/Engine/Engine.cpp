@@ -42,7 +42,7 @@ void TestEngineCreate()
 	void* handle = dlopen("libTestModule1.so", RTLD_LAZY);
 	if (handle != NULL)
 	{
-		auto f = dlsym(handle, "GetModuleTestModule1");
+		auto f = dlsym(handle, Niflect::GeneratedGetModule);
 		auto GetModuleTestModule1Func = reinterpret_cast<Niflect::GetModuleFunc>(f);
 		debugModule = GetModuleTestModule1Func();
 	}
