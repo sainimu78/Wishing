@@ -18,11 +18,40 @@ void TestAPI_C()
 #include "Engine/DerivedObject.h"
 #include "Niflect/Serialization/JsonFormat.h"
 #include "TestModule1/TestModule1.h"
+#include "Niflect/NiflectModule.h"
+#ifdef WIN32
+#include <Windows.h>
+#else
+#include <dlfcn.h>
+#endif
 
 Niflect::TSharedPtr<Niflect::CNiflectTable> g_defaultTable;
 
 void TestEngineCreate()
 {
+	Niflect::CNiflectModule* debugModule = NULL;
+#ifdef WIN32
+	auto h = GetModuleHandle("TestModule1.dll");
+	if (h != NULL)
+	{
+		auto f = GetProcAddress(h, Niflect::GeneratedGetModule);
+		auto GetModuleTestModule1Func = reinterpret_cast<Niflect::GetModuleFunc>(f);
+		debugModule = GetModuleTestModule1Func();
+	}
+#else
+	void* handle = dlopen("libTestModule1.so", RTLD_LAZY);
+	if (handle != NULL)
+	{
+		auto f = dlsym(handle, "GetModuleTestModule1");
+		auto GetModuleTestModule1Func = reinterpret_cast<Niflect::GetModuleFunc>(f);
+		debugModule = GetModuleTestModule1Func();
+	}
+#endif
+	if (debugModule != NULL)
+		printf("Found Module : %s\n", debugModule->GetName().c_str());
+	else
+		ASSERT(false);
+
 	TestModule1Create();
 
 	g_defaultTable = Niflect::MakeShared<Niflect::CNiflectTable>();

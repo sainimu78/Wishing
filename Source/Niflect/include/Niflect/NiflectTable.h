@@ -32,7 +32,6 @@ namespace Niflect
 	//为Module中所有CNiflectType的容器, 不需要被继承
 	class CNiflectTable
 	{
-		friend class CNiflectModule;
 	public:
 		void Init(const CString& name)
 		{

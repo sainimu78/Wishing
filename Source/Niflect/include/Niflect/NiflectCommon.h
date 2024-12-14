@@ -48,11 +48,11 @@ ASSERT(false);\
     #endif
 #endif
 
-#ifdef WIN32
-#define NIFLECTMODULEREG_API extern "C" __declspec(dllexport)
-#else
-#define NIFLECTMODULEREG_API extern "C" __attribute__((visibility("default")))
-#endif
+//#ifdef WIN32
+//#define NIFLECTMODULEREG_API extern "C" __declspec(dllexport)
+//#else
+//#define NIFLECTMODULEREG_API extern "C" __attribute__((visibility("default")))
+//#endif
 
 //#ifdef WIN32
 //#define NIFLECTTYPEREG_API __declspec(dllexport)

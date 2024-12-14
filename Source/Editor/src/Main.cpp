@@ -7,7 +7,7 @@
 #include "Engine/Test/TestAccessor.h"
 #include "Editor/Test/TestSerializationRwTree.h"
 #include "TestModule0/TestModule0.h"
-#include "Niflect/NiflectRegistration.h"
+#include "Niflect/NiflectRegistrationOld.h"
 #include "Niflect/Memory/Default/DefaultMemory.h"
 #include "Engine/Test/TestAccessor2.h"
 #include "Engine/Engine.h"
@@ -39,7 +39,7 @@ int main(int argc, char** argv)
 	TestAPI_Cpp();
 
 
-	if (true)
+	if (false)
 	{
 		TestEdAsset();
 	}
@@ -63,7 +63,7 @@ int main(int argc, char** argv)
 		TestSerializationRwTree::TestSerialization();
 	}
 
-	if (false)
+	if (true)
 	{
 		auto memTest = Niflect::GetDefaultMemoryStats();
 		TestEngineCreate();

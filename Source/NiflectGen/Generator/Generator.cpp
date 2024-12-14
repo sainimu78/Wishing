@@ -276,6 +276,8 @@ namespace NiflectGen
             this->SaveFileToGenSource(it0.m_h, it0.m_headerFilePath);
             this->SaveFileToGenSource(it0.m_cpp, it0.m_sourceFilePath);
         }
+        if (genData.m_moduleRegGenData.m_genH.size() > 0)
+            this->SaveFileToGenSource(genData.m_moduleRegGenData.m_genH, genData.m_moduleRegGenData.m_genHIncludePath);
         this->SaveFileToGenSource(genData.m_moduleRegGenData.m_privateH, genData.m_moduleRegGenData.m_privateHIncludePath);
         this->SaveFileToGenSource(genData.m_moduleRegisteredTypeHeaderGenData.m_linesHeader, m_moduleRegInfo.m_moduleRegisteredTypeHeaderFilePath);
     }

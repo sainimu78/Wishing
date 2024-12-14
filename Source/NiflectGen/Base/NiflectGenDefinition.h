@@ -140,6 +140,10 @@ namespace NiflectGenDefinition
 			constexpr const char* Class = "CClass";
 			constexpr const char* Enum = "CEnum";
 		}
+		namespace FuncName
+		{
+			constexpr const char* GeneratedGetModule = "NiflectGeneratedGetModule";
+		}
 		namespace FileName
 		{
 			constexpr const char* ModuleRegisteredTypeHeader = "_RegisteredType.h";
@@ -154,6 +158,8 @@ namespace NiflectGenDefinition
 			constexpr const char* NiflectTypeHeader = "Niflect/NiflectType.h";
 			constexpr const char* NiflectTableHeader = "Niflect/NiflectTable.h";
 			constexpr const char* NiflectMacroHeader = "Niflect/NiflectMacro.h";
+			constexpr const char* NiflectModule = "Niflect/NiflectModule.h";
+			//constexpr const char* NiflectStaticModuleReg = "Niflect/NiflectStaticModuleReg.h";
 		}
 		namespace Setting
 		{
@@ -167,7 +173,7 @@ namespace NiflectGenDefinition
 		namespace LineNumberMacro
 		{
 			constexpr const char* GENERATED_BODY = "GENERATED_BODY";
-			constexpr const char* FID = "FID";
+			constexpr const char* FID = "FID_";
 		}
 	}
 }

@@ -1,5 +1,5 @@
 #include "Engine/Test/TestRegistration.h"
-#include "Niflect/NiflectRegistration.h"
+#include "Niflect/NiflectRegistrationOld.h"
 #include "Niflect/CommonlyUsed/CompoundAccessor.h"
 #include "Niflect/CommonlyUsed/ValueTypeAccessor.h"
 #include "Niflect/CommonlyUsed/ContainerTypeAccessor.h"

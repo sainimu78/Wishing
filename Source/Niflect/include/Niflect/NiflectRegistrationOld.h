@@ -3,6 +3,12 @@
 //#include "Niflect/Field/ArrayField.h"
 //#include "Niflect/Field/MapField.h"
 
+#ifdef WIN32
+#define NIFLECTMODULEREG_API extern "C" __declspec(dllexport)
+#else
+#define NIFLECTMODULEREG_API extern "C" __attribute__((visibility("default")))
+#endif
+
 namespace Niflect
 {
 	class CNiflectRegistration;
