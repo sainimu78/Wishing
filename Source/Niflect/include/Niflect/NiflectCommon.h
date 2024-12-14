@@ -2,7 +2,7 @@
 #include <cassert>
 #include <cstddef>//std::size_t, offsetof
 #include "IndexingConst.h"
-#include <cstdio>//fflush
+//#include <cstdio>//fflush
 
 //¹«¹²define, typedef, const
 
@@ -18,7 +18,7 @@ typedef unsigned long long uint64;
 
 #define ASSERT(b)\
     {\
-        fflush(stdout);\
+        /*fflush(stdout);*/\
         assert(b);\
     } do{} while(0)
 #endif
