@@ -39,6 +39,7 @@ void TestEngineCreate()
 		debugModule = GetModuleTestModule1Func();
 	}
 #else
+	//测试时须确保在相应 cmake 中指定 target_link_libraries(${ ModuleName } PRIVATE dl)
 	void* handle = dlopen("libTestModule1.so", RTLD_LAZY);
 	if (handle != NULL)
 	{
