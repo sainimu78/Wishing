@@ -142,7 +142,7 @@ namespace NiflectGenDefinition
 		}
 		namespace FuncNamePrefix
 		{
-			constexpr const char* GeneratedGetModule = "NiflectGeneratedGetModule_";
+			constexpr const char* GeneratedGetModuleInfo = "NiflectGeneratedGetModuleInfo_";
 		}
 		namespace FileName
 		{
@@ -158,8 +158,7 @@ namespace NiflectGenDefinition
 			constexpr const char* NiflectTypeHeader = "Niflect/NiflectType.h";
 			constexpr const char* NiflectTableHeader = "Niflect/NiflectTable.h";
 			constexpr const char* NiflectMacroHeader = "Niflect/NiflectMacro.h";
-			constexpr const char* NiflectModule = "Niflect/NiflectModule.h";
-			//constexpr const char* NiflectStaticModuleReg = "Niflect/NiflectStaticModuleReg.h";
+			constexpr const char* NiflectModuleInfoHeader = "Niflect/NiflectModuleInfo.h";
 		}
 		namespace Setting
 		{

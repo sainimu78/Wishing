@@ -31,7 +31,7 @@ namespace Niflect
 R"(#pragma once
 )" MAKELABEL(LABEL_0) R"(
 
-extern "C" )" MAKELABEL(LABEL_5) R"( Niflect::CNiflectModule* )" MAKELABEL(LABEL_6) "" MAKELABEL(LABEL_4) "();";
+extern "C" )" MAKELABEL(LABEL_5) R"( Niflect::CNiflectModuleInfo* )" MAKELABEL(LABEL_6) "" MAKELABEL(LABEL_4) "();";
 		static const char* StaticModuleRegImpl =
 R"(namespace Niflect
 {
@@ -40,18 +40,18 @@ R"(namespace Niflect
 	public:
 		CRegger_)" MAKELABEL(LABEL_4) R"((const Niflect::CString& name, const ModuleRegisterTypesFunc& RegisterTypesFunc, const ModuleInitTypesFunc& InitTypesFunc)
 		{
-			s_module = Niflect::MakeShared<CNiflectModule>();
-			s_module->InitMeta(name, RegisterTypesFunc, InitTypesFunc);
+			s_info = Niflect::MakeShared<CNiflectModuleInfo>();
+			s_info->InitMeta(name, RegisterTypesFunc, InitTypesFunc);
 		}
-		static CSharedModule s_module;
+		static CSharedModuleInfo s_info;
 	};
-	CSharedModule CRegger_)" MAKELABEL(LABEL_4) R"(::s_module;
+	CSharedModuleInfo CRegger_)" MAKELABEL(LABEL_4) R"(::s_info;
 	static CRegger_)" MAKELABEL(LABEL_4) R"( g_staticRegger_)" MAKELABEL(LABEL_4) R"((")" MAKELABEL(LABEL_4) R"(", &GeneratedInitialReg, &GeneratedInitTypes);
 })";
 		static const char* StaticModuleRegGetModuleC =
-"Niflect::CNiflectModule* " MAKELABEL(LABEL_6) "" MAKELABEL(LABEL_4) R"(()
+"Niflect::CNiflectModuleInfo* " MAKELABEL(LABEL_6) "" MAKELABEL(LABEL_4) R"(()
 {
-	return Niflect::CRegger_)" MAKELABEL(LABEL_4) R"(::s_module.Get();
+	return Niflect::CRegger_)" MAKELABEL(LABEL_4) R"(::s_info.Get();
 })";
 	}
 }

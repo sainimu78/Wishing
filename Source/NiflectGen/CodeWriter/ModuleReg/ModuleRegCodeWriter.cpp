@@ -364,7 +364,7 @@ namespace NiflectGen
                         if (toGenStaticModuleRegHeader)
                             vecHeaderData.push_back(genHFileName);
                         else
-                            vecHeaderData.push_back(NiflectGenDefinition::NiflectFramework::FilePath::NiflectModule);
+                            vecHeaderData.push_back(NiflectGenDefinition::NiflectFramework::FilePath::NiflectModuleInfoHeader);
                     }
                     CIncludesHelper::ConvertFromHeaderFilePaths(vecHeaderData, m_moduleRegInfo.m_writingHeaderSearchPaths, linesInclude);
                     MapLabelToLines(map, LABEL_0, linesInclude);
@@ -404,13 +404,13 @@ namespace NiflectGen
                         Niflect::TArrayNif<CHeaderFilePathData> vecHeaderData;
                         if (!context.m_moduleRegInfo.m_userProvided.m_moduleApiMacroHeader.empty())
                             vecHeaderData.push_back(context.m_moduleRegInfo.m_userProvided.m_moduleApiMacroHeader);//可能使用 PCH, 包含在其中, 因此也可不指定
-                        vecHeaderData.push_back(NiflectGenDefinition::NiflectFramework::FilePath::NiflectModule);
+                        vecHeaderData.push_back(NiflectGenDefinition::NiflectFramework::FilePath::NiflectModuleInfoHeader);
                         CIncludesHelper::ConvertFromHeaderFilePaths(vecHeaderData, m_moduleRegInfo.m_writingHeaderSearchPaths, linesInclude);
                         MapLabelToLines(map, LABEL_0, linesInclude);
                     }
                     MapLabelToText(map, LABEL_4, context.m_moduleRegInfo.m_userProvided.m_moduleName);
                     MapLabelToText(map, LABEL_5, context.m_moduleRegInfo.m_userProvided.m_moduleApiMacro);
-                    MapLabelToText(map, LABEL_6, NiflectGenDefinition::NiflectFramework::FuncNamePrefix::GeneratedGetModule);
+                    MapLabelToText(map, LABEL_6, NiflectGenDefinition::NiflectFramework::FuncNamePrefix::GeneratedGetModuleInfo);
                     Niflect::TSet<Niflect::CString> setReplacedLabel;
                     tpl1.ReplaceLabels(map, data.m_moduleRegGenData.m_genH, &setReplacedLabel);
                 }
@@ -431,7 +431,7 @@ namespace NiflectGen
                     ReadTemplateFromRawData(tpl1, HardCodedTemplate::StaticModuleRegGetModuleC);
                     CLabelToCodeMapping map;
                     MapLabelToText(map, LABEL_4, context.m_moduleRegInfo.m_userProvided.m_moduleName);
-                    MapLabelToText(map, LABEL_6, NiflectGenDefinition::NiflectFramework::FuncNamePrefix::GeneratedGetModule);
+                    MapLabelToText(map, LABEL_6, NiflectGenDefinition::NiflectFramework::FuncNamePrefix::GeneratedGetModuleInfo);
                     Niflect::TSet<Niflect::CString> setReplacedLabel;
                     tpl1.ReplaceLabels(map, data.m_moduleRegGenData.m_privateH, &setReplacedLabel);
                 }

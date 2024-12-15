@@ -1,51 +1,44 @@
 #pragma once
-#include "Niflect/NiflectTable.h"
+#include "Niflect/NiflectModuleInfo.h"
 
 namespace Niflect
 {
-	typedef void (*ModuleRegisterTypesFunc)(CNiflectTable* table);
-	typedef void (*ModuleInitTypesFunc)();
-
 	class CNiflectModule
 	{
 	public:
 		CNiflectModule()
-			: m_RegisterTypesFunc(NULL)
-			, m_InitTypesFunc(NULL)
+			: m_nativeHandle(NULL)
+			, m_info(NULL)
 		{
 		}
-		void InitMeta(const Niflect::CString& name, const ModuleRegisterTypesFunc& RegisterTypesFunc, const ModuleInitTypesFunc& InitTypesFunc)
+		void Init(void* nativeHandle, CNiflectModuleInfo* info)
 		{
-			m_name = name;
-			m_RegisterTypesFunc = RegisterTypesFunc;
-			m_InitTypesFunc = InitTypesFunc;
+			m_nativeHandle = nativeHandle;
+			m_info = info;
 		}
-		const Niflect::CString& GetName() const
+
+	public:
+		CNiflectModuleInfo* m_info;
+
+	private:
+		void* m_nativeHandle;
+	};
+
+	class CNiflectModuleManager
+	{
+	public:
+		NIFLECT_API void RegisterStaticlyLoadedModule(const Niflect::CString& moduleName);
+		uint32 GetModulesCount() const
 		{
-			return m_name;
+			return static_cast<uint32>(m_vecModule.size());
 		}
-		void RegisterTypes()
+		const CNiflectModule& GetModule(uint32 idx) const
 		{
-			m_RegisterTypesFunc(&m_table);
-		}
-		void InitTypes()
-		{
-			m_InitTypesFunc();
+			return m_vecModule[idx];
 		}
 
 	private:
-		Niflect::CString m_name;
-		CNiflectTable m_table;
-		ModuleRegisterTypesFunc m_RegisterTypesFunc;
-		ModuleInitTypesFunc m_InitTypesFunc;
+		Niflect::TArrayNif<CNiflectModule> m_vecModule;
+		Niflect::TMap<Niflect::CString, uint32> m_mapNameToIdx;
 	};
-	using CSharedModule = Niflect::TSharedPtr<CNiflectModule>;
-
-	typedef Niflect::CNiflectModule* (*NiflectGeneratedGetModuleFunc)();
-
-	static Niflect::CString GetGeneratedGetModuleFuncName(const Niflect::CString& moduleName)
-	{
-		constexpr const char* prefix = "NiflectGeneratedGetModule_";
-		return prefix + moduleName;
-	}
 }

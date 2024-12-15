@@ -29,30 +29,15 @@ Niflect::TSharedPtr<Niflect::CNiflectTable> g_defaultTable;
 
 void TestEngineCreate()
 {
-	Niflect::CNiflectModule* debugModule = NULL;
-	auto funcName = Niflect::GetGeneratedGetModuleFuncName("TestModule1");
-#ifdef WIN32
-	auto h = GetModuleHandle("TestModule1.dll");
-	if (h != NULL)
+	Niflect::CNiflectModuleManager mgr;
+	mgr.RegisterStaticlyLoadedModule("TestModule1");
+	ASSERT(mgr.GetModulesCount() == 1);
+	printf("Found %u module%s:\n", mgr.GetModulesCount(), mgr.GetModulesCount()>1?"s":"");
+	for (uint32 idx = 0; idx < mgr.GetModulesCount(); ++idx)
 	{
-		auto f = GetProcAddress(h, funcName.c_str());
-		auto GetModuleTestModule1Func = reinterpret_cast<Niflect::NiflectGeneratedGetModuleFunc>(f);
-		debugModule = GetModuleTestModule1Func();
+		auto& it = mgr.GetModule(idx);
+		printf("[%u] %s\n", idx, it.m_info->GetName().c_str());
 	}
-#else
-	//测试时须确保在相应 cmake 中指定 target_link_libraries(${ ModuleName } PRIVATE dl)
-	void* handle = dlopen("libTestModule1.so", RTLD_LAZY);
-	if (handle != NULL)
-	{
-		auto f = dlsym(handle, funcName.c_str());
-		auto GetModuleTestModule1Func = reinterpret_cast<Niflect::NiflectGeneratedGetModuleFunc>(f);
-		debugModule = GetModuleTestModule1Func();
-	}
-#endif
-	if (debugModule != NULL)
-		printf("Found Module : %s\n", debugModule->GetName().c_str());
-	else
-		ASSERT(false);
 
 	TestModule1Create();
 
