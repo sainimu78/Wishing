@@ -140,9 +140,9 @@ namespace NiflectGenDefinition
 			constexpr const char* Class = "CClass";
 			constexpr const char* Enum = "CEnum";
 		}
-		namespace FuncName
+		namespace FuncNamePrefix
 		{
-			constexpr const char* GeneratedGetModule = "NiflectGeneratedGetModule";
+			constexpr const char* GeneratedGetModule = "NiflectGeneratedGetModule_";
 		}
 		namespace FileName
 		{

@@ -30,12 +30,13 @@ Niflect::TSharedPtr<Niflect::CNiflectTable> g_defaultTable;
 void TestEngineCreate()
 {
 	Niflect::CNiflectModule* debugModule = NULL;
+	auto funcName = Niflect::GetGeneratedGetModuleFuncName("TestModule1");
 #ifdef WIN32
 	auto h = GetModuleHandle("TestModule1.dll");
 	if (h != NULL)
 	{
-		auto f = GetProcAddress(h, Niflect::GeneratedGetModule);
-		auto GetModuleTestModule1Func = reinterpret_cast<Niflect::GetModuleFunc>(f);
+		auto f = GetProcAddress(h, funcName.c_str());
+		auto GetModuleTestModule1Func = reinterpret_cast<Niflect::NiflectGeneratedGetModuleFunc>(f);
 		debugModule = GetModuleTestModule1Func();
 	}
 #else
@@ -43,8 +44,8 @@ void TestEngineCreate()
 	void* handle = dlopen("libTestModule1.so", RTLD_LAZY);
 	if (handle != NULL)
 	{
-		auto f = dlsym(handle, Niflect::GeneratedGetModule);
-		auto GetModuleTestModule1Func = reinterpret_cast<Niflect::GetModuleFunc>(f);
+		auto f = dlsym(handle, funcName.c_str());
+		auto GetModuleTestModule1Func = reinterpret_cast<Niflect::NiflectGeneratedGetModuleFunc>(f);
 		debugModule = GetModuleTestModule1Func();
 	}
 #endif

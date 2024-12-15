@@ -215,10 +215,6 @@ namespace NiflectGen
 			{
 				info.m_toGenStaticModuleReg = true;
 			}
-			else if (strcmp(pszV, "-emfd") == 0)
-			{
-				info.m_externModuleFuncNameMode = EGeneratingExternModuleFunctionNameMode::EDynamic;
-			}
 			else if (strcmp(pszV, "-fs") == 0)
 			{
 				info.m_genFileMode = EGeneratingHeaderAndSourceFileMode::ESourceAndHeader;

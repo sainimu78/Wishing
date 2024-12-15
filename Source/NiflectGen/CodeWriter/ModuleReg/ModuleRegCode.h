@@ -13,19 +13,12 @@ namespace NiflectGen
 		ESourceAndHeader,
 	};
 
-	enum class EGeneratingExternModuleFunctionNameMode
-	{
-		EStatic,
-		EDynamic,
-	};
-
 	class CModuleRegInfo
 	{
 	public:
 		CModuleRegInfo()
 			: m_toGenGeneratedBodyThisType(false)
 			, m_toGenStaticModuleReg(false)
-			, m_externModuleFuncNameMode(EGeneratingExternModuleFunctionNameMode::EStatic)
 			, m_genFileMode(EGeneratingHeaderAndSourceFileMode::EHeaderOnly)
 		{
 		}
@@ -41,7 +34,6 @@ namespace NiflectGen
 		Niflect::CString m_toolHeaderSearchPath;
 		bool m_toGenGeneratedBodyThisType;
 		bool m_toGenStaticModuleReg;
-		EGeneratingExternModuleFunctionNameMode m_externModuleFuncNameMode;
 		EGeneratingHeaderAndSourceFileMode m_genFileMode;
 	};
 

@@ -41,7 +41,11 @@ namespace Niflect
 	};
 	using CSharedModule = Niflect::TSharedPtr<CNiflectModule>;
 
-	typedef Niflect::CNiflectModule* (*GetModuleFunc)();
+	typedef Niflect::CNiflectModule* (*NiflectGeneratedGetModuleFunc)();
 
-	constexpr const char* GeneratedGetModule = "NiflectGeneratedGetModule";
+	static Niflect::CString GetGeneratedGetModuleFuncName(const Niflect::CString& moduleName)
+	{
+		constexpr const char* prefix = "NiflectGeneratedGetModule_";
+		return prefix + moduleName;
+	}
 }
