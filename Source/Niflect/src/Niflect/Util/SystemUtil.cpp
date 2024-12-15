@@ -28,22 +28,32 @@
 
 namespace NiflectUtil
 {
-    static bool create_directory(const Niflect::CString& path) {
+    static bool create_directory(const Niflect::CString& path)
+    {
         struct stat info;
-
         // 检查路径是否已存在
-        if (stat(path.c_str(), &info) != 0) {
+        if (stat(path.c_str(), &info) != 0)
+        {
             // 路径不存在，尝试创建
 #ifdef _WIN32
-            if (_mkdir(path.c_str()) != 0) {
-#else
-            if (mkdir(path.c_str(), 0777) != 0) {
-#endif
+            if (_mkdir(path.c_str()) != 0)
+            {
                 std::cerr << "Error creating directory: " << path << std::endl;
                 return false;
             }
+#else
+            if (mkdir(path.c_str(), 0777) != 0)
+            {
+                if (errno != EEXIST)
+                {
+                    std::cerr << "Error creating directory: " << path << std::endl;
+                    return false;
+                }
             }
-        else if (!(info.st_mode & S_IFDIR)) {
+#endif
+        }
+        else if (!(info.st_mode & S_IFDIR))
+        {
             // 路径存在但不是目录
             std::cerr << path << " exists but is not a directory." << std::endl;
             return false;
