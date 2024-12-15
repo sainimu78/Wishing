@@ -159,7 +159,11 @@ namespace NiflectUtil
 	static void WriteStringToFile(const Niflect::CString& data, const Niflect::CString& filePath)
 	{
 		std::ofstream ofs(filePath.c_str(), std::ios::binary);
-		ASSERT(ofs.is_open());
+		if (!ofs.is_open())
+		{
+			printf("%s\n", filePath.c_str());
+			ASSERT(false);
+		}
 		ofs << data;
 		ofs.close();
 	}
