@@ -23,7 +23,7 @@ target_compile_definitions(${ModuleName}
 	PRIVATE -DTESTMODULE0_C_EXPORTS
 )
 
-target_link_libraries(${ModuleName} PRIVATE Engine)
+target_link_libraries(${ModuleName} PRIVATE TestEngine)
 target_link_libraries(${ModuleName} PRIVATE Niflect)
 
 set(LinkParentName ${ModuleName})

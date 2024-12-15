@@ -1,5 +1,5 @@
 #include "Editor/Test/TestEdAsset.h"
-#include "Editor_private.h"
+#include "TestEditorCLI_private.h"
 #include "Niflect/Memory/Default/DefaultMemory.h"
 #include "Niflect/Util/ConcatHardCodedStrings.h"
 #include "Niflect/Util/StringUtil.h"

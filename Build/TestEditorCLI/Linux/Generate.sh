@@ -1,6 +1,6 @@
 #!/bin/bash
 
-AppName="Interedit"
+AppName="TestEditorCLI"
 AppOutputPath=$AppName
 option_output_dir=$1
 option_generator_toolset=""

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20.0)
 
-set(ModuleName Editor)
+set(ModuleName TestEngine)
 
 set(ModuleRootPath ${RootSourcePath}/${ModuleName})
 set(SourcePath ${ModuleRootPath}/src)
@@ -23,7 +23,14 @@ set(GenIncludePath ${ModuleGenPath}/include)
 #list(APPEND SrcAll ${GeneratedSrc})
 #end
 
-add_executable(${ModuleName} ${SrcAll})
+add_library(${ModuleName} SHARED ${SrcAll})
+
+target_precompile_headers(${ModuleName} PRIVATE ${SourcePath}/EngineDevelopmentMacro.h)
+
+set_target_properties(${ModuleName} PROPERTIES 
+    RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG}
+    RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE}
+)
 
 target_include_directories(${ModuleName}
 	PRIVATE ${SourcePath}
@@ -35,9 +42,13 @@ target_include_directories(${ModuleName}
 	PUBLIC ${GenIncludePath}
 )
 
-target_link_libraries(${ModuleName} PRIVATE Engine)
+target_compile_definitions(${ModuleName}
+	PRIVATE -DENGINE_EXPORTS
+	PRIVATE -DENGINE_C_EXPORTS
+)
+
 target_link_libraries(${ModuleName} PRIVATE Niflect)
-target_link_libraries(${ModuleName} PRIVATE TestModule0)
+target_link_libraries(${ModuleName} PRIVATE TestModule1)
 
 set(ArgsModuleInclude "")
 foreach(It IN LISTS ModuleInclude)
@@ -57,9 +68,12 @@ add_custom_command(
     COMMAND "${RootSourcePath}/../Build/NiflectGenTool/${ToolRelPathForTest}/Debug/NiflectGenTool/NiflectGenTool${ExeExt}" 
             -n ${ModuleName} 
             ${ArgsModuleInclude}
-            -a "${RootSourcePath}/Niflect/include/Niflect/CommonlyUsed/DefaultAccessorSetting.h" 
+            -am ENGINE_API 
+            -amh "${IncludePath}/Engine/EngineCommon.h" 
+            -a "${IncludePath}/EngineAccessorSetting.h" 
             -t "${RootSourcePath}/Niflect/include" 
             -I "${IncludePath}" 
+            -I "${RootSourcePath}/TestModule1/include" 
             -g "${NiflectGeneratedRootPath}"
 			-gbt 
     DEPENDS ${ModuleInclude}
@@ -70,8 +84,4 @@ add_custom_target(NiflectGenTool_${ModuleName} DEPENDS "${NiflectGeneratedModule
 set_target_properties(NiflectGenTool_${ModuleName} PROPERTIES FOLDER "AutoGen")
 add_dependencies(${ModuleName} NiflectGenTool_${ModuleName})
 
-if(MSVC)
-	set_target_properties(${ModuleName} PROPERTIES
-		VS_DEBUGGER_WORKING_DIRECTORY "$<IF:$<CONFIG:Debug>,${CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG},${CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE}>"
-	)
-endif()
+include(../TestModule1/TestModule1.cmake)

@@ -39,7 +39,7 @@ int main(int argc, char** argv)
 	TestAPI_Cpp();
 
 
-	if (true)
+	if (false)
 	{
 		TestEdAsset();
 	}
@@ -63,7 +63,7 @@ int main(int argc, char** argv)
 		TestSerializationRwTree::TestSerialization();
 	}
 
-	if (false)
+	if (true)
 	{
 		auto memTest = Niflect::GetDefaultMemoryStats();
 		TestEngineCreate();

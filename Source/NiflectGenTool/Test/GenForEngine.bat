@@ -2,13 +2,13 @@
 @cd ../../../Build/NiflectGenTool/Windows/vs2022_x64/Debug/NiflectGenTool
 
 @NiflectGenTool ^
--n Engine ^
--h ../../../../../../Source/Engine/include/Engine/EngineObject.h ^
--h ../../../../../../Source/Engine/include/Engine/DerivedObject.h ^
+-n TestEngine ^
+-h ../../../../../../Source/TestEngine/include/Engine/EngineObject.h ^
+-h ../../../../../../Source/TestEngine/include/Engine/DerivedObject.h ^
 -am ENGINE_API ^
--amh ../../../../../../Source/Engine/include/Engine/EngineCommon.h ^
--a ../../../../../../Source/Engine/include/EngineAccessorSetting.h ^
--I ../../../../../../Source/Engine/include ^
+-amh ../../../../../../Source/TestEngine/include/Engine/EngineCommon.h ^
+-a ../../../../../../Source/TestEngine/include/EngineAccessorSetting.h ^
+-I ../../../../../../Source/TestEngine/include ^
 -I ../../../../../../Source/TestModule1/include ^
 -t ../../../../../../Source/Niflect/include ^
 -g ../../../../../../Generated/NiflectGenerated 
