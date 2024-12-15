@@ -18,7 +18,6 @@ void TestAPI_C()
 #include "Engine/DerivedObject.h"
 #include "Niflect/Serialization/JsonFormat.h"
 #include "TestModule1/TestModule1.h"
-#include "Niflect/NiflectModule.h"
 #ifdef WIN32
 #include <Windows.h>
 #else
@@ -29,16 +28,6 @@ Niflect::TSharedPtr<Niflect::CNiflectTable> g_defaultTable;
 
 void TestEngineCreate()
 {
-	Niflect::CNiflectModuleManager mgr;
-	mgr.RegisterStaticlyLoadedModule("TestModule1");
-	ASSERT(mgr.GetModulesCount() == 1);
-	printf("Found %u module%s:\n", mgr.GetModulesCount(), mgr.GetModulesCount()>1?"s":"");
-	for (uint32 idx = 0; idx < mgr.GetModulesCount(); ++idx)
-	{
-		auto& it = mgr.GetModule(idx);
-		printf("[%u] %s\n", idx, it.m_info->GetName().c_str());
-	}
-
 	TestModule1Create();
 
 	g_defaultTable = Niflect::MakeShared<Niflect::CNiflectTable>();

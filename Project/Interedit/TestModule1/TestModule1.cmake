@@ -66,7 +66,6 @@ add_custom_command(
             ${ArgsModuleInclude}
             -am TESTMODULE1_API 
             -amh "${IncludePath}/TestModule1Common.h" 
-			-gsm 
             -a "${RootSourcePath}/Niflect/include/Niflect/CommonlyUsed/DefaultAccessorSetting.h" 
             -t "${RootSourcePath}/Niflect/include" 
             -I "${IncludePath}" 

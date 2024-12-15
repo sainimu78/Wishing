@@ -4,7 +4,6 @@ namespace Wishing
 {
 	void CEditorModuleManager::Initialize()
 	{
-
 	}
 	void CEditorModuleManager::Finalize()
 	{
