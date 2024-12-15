@@ -41,7 +41,7 @@ namespace Niflect
 	};
 	using CSharedModuleInfo = Niflect::TSharedPtr<CNiflectModuleInfo>;
 
-	typedef Niflect::CNiflectModuleInfo* (*NiflectGeneratedGetModuleInfoFunc)();
+	typedef Niflect::CNiflectModuleInfo* (*GeneratedGetModuleInfoFunc)();
 
 	static Niflect::CString GetGeneratedGetModuleInfoFuncName(const Niflect::CString& moduleName)
 	{

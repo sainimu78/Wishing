@@ -26,13 +26,13 @@ namespace Niflect
 		auto libName = ConvertToLibName(moduleName);
 		void* nativeHandle = NULL;
 		auto getInfoFuncName = Niflect::GetGeneratedGetModuleInfoFuncName(moduleName);
-		Niflect::NiflectGeneratedGetModuleInfoFunc Func = NULL;
+		Niflect::GeneratedGetModuleInfoFunc Func = NULL;
 #ifdef WIN32
 		auto moduleHandle = GetModuleHandle(libName.c_str());
 		if (moduleHandle != NULL)
 		{
 			nativeHandle = moduleHandle;
-			Func = reinterpret_cast<Niflect::NiflectGeneratedGetModuleInfoFunc>(GetProcAddress(moduleHandle, getInfoFuncName.c_str()));
+			Func = reinterpret_cast<Niflect::GeneratedGetModuleInfoFunc>(GetProcAddress(moduleHandle, getInfoFuncName.c_str()));
 		}
 #else
 		//测试时须确保在相应 cmake 中指定 target_link_libraries(${ ModuleName } PRIVATE dl)
@@ -40,7 +40,7 @@ namespace Niflect
 		if (moduleHandle != NULL)
 		{
 			nativeHandle = moduleHandle;
-			Func = reinterpret_cast<Niflect::NiflectGeneratedGetModuleInfoFunc>(dlsym(moduleHandle, getInfoFuncName.c_str()));
+			Func = reinterpret_cast<Niflect::GeneratedGetModuleInfoFunc>(dlsym(moduleHandle, getInfoFuncName.c_str()));
 		}
 #endif
 		if (Func != NULL)
