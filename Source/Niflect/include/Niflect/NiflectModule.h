@@ -27,7 +27,7 @@ namespace Niflect
 	class CNiflectModuleManager
 	{
 	public:
-		NIFLECT_API void RegisterStaticlyLoadedModule(const Niflect::CString& moduleName);
+		NIFLECT_API bool RegisterStaticlyLoadedModule(const Niflect::CString& moduleName);
 		uint32 GetModulesCount() const
 		{
 			return static_cast<uint32>(m_vecModule.size());

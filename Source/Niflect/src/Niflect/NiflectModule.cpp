@@ -18,11 +18,11 @@ namespace Niflect
 		return result;
 	}
 
-	void CNiflectModuleManager::RegisterStaticlyLoadedModule(const Niflect::CString& moduleName)
+	bool CNiflectModuleManager::RegisterStaticlyLoadedModule(const Niflect::CString& moduleName)
 	{
+		bool ok = false;
 		auto ret = m_mapNameToIdx.insert({ moduleName, this->GetModulesCount()});
 		ASSERT(ret.second);
-		
 		auto libName = ConvertToLibName(moduleName);
 		void* nativeHandle = NULL;
 		auto getInfoFuncName = Niflect::GetGeneratedGetModuleInfoFuncName(moduleName);
@@ -48,10 +48,12 @@ namespace Niflect
 			CNiflectModule md;
 			md.Init(nativeHandle, Func());
 			m_vecModule.push_back(md);
+			ok = true;
 		}
 		else
 		{
 			ASSERT(false);
 		}
+		return ok;
 	}
 }
