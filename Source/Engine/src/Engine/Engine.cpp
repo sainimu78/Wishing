@@ -40,7 +40,7 @@ void TestEngineCreate()
 	}
 #else
 	//测试时须确保在相应 cmake 中指定 target_link_libraries(${ ModuleName } PRIVATE dl)
-	void* handle = dlopen("libTestModule1.so", RTLD_LAZY);
+	void* handle = dlopen("libTestModule1.so", RTLD_NOLOAD);
 	if (handle != NULL)
 	{
 		auto f = dlsym(handle, Niflect::GeneratedGetModule);
