@@ -37,6 +37,8 @@ target_include_directories(${ModuleName}
 target_link_libraries(${ModuleName} PRIVATE Engine)
 target_link_libraries(${ModuleName} PRIVATE Niflect)
 
+include(Licensed_Qt.cmake)
+
 set(ArgsModuleInclude "")
 foreach(It IN LISTS ModuleInclude)
     list(APPEND ArgsModuleInclude "-h" "${It}")

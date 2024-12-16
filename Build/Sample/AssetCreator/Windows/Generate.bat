@@ -8,7 +8,8 @@ set option_generator_toolset=
 if [%1]==[] (
     set option_visual_studio=Visual Studio 17 2022
 	set option_output_dir=vs2022
-	set option_generator_toolset=v143
+	:: Qt 5.8 requires
+	set option_generator_toolset=v140
 ) else if "%1"=="vs2015" (
     set option_visual_studio=Visual Studio 14 2015
 ) else if "%1"=="vs2017" (
