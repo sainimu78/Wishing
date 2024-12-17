@@ -39,11 +39,12 @@ endif()
 if(WIN32)
 	set(QtRootPath "${RootThirdPartyPath}/Qt/Qt_5_12_12/build/${OsType}/5.12.12/${ArchType}/5.12/${Toolset}")
 	set(QtIncRootPath ${QtRootPath}/include)
+	set(LibPath "${QtRootPath}/bin")
 else()
 	set(QtRootPath "/usr")
 	set(QtIncRootPath ${QtRootPath}/include/x86_64-linux-gnu/qt5)
+	set(LibPath "${QtRootPath}/lib/x86_64-linux-gnu")
 endif()
-set(LibPath "${QtRootPath}/bin")
 
 include(${RootThirdPartyPath}/Qt/Qt_5_12_12/CMakeInclude/Deps.cmake)
 
