@@ -38,14 +38,15 @@ endif()
 
 if(WIN32)
 	set(QtRootPath "${RootThirdPartyPath}/Qt/Qt_5_12_12/build/${OsType}/5.12.12/${ArchType}/5.12/${Toolset}")
+	set(QtIncRootPath ${QtRootPath}/include)
 else()
 	set(QtRootPath "/usr")
+	set(QtIncRootPath ${QtRootPath}/include/x86_64-linux-gnu/qt5)
 endif()
 set(LibPath "${QtRootPath}/bin")
 
 include(${RootThirdPartyPath}/Qt/Qt_5_12_12/CMakeInclude/Deps.cmake)
 
-set(QtIncRootPath ${QtRootPath}/include)
 target_include_directories(${ModuleName} PRIVATE "${QtIncRootPath}")
 set(incPathList)
 foreach(dirName ${MyIncDirNames})
