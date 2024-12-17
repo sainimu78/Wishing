@@ -24,6 +24,12 @@ set(GenIncludePath ${ModuleGenPath}/include)
 
 add_executable(${ModuleName} ${SrcAll})
 
+if (WIN32)
+	set_target_properties(${ModuleName} PROPERTIES
+		LINK_FLAGS "/SUBSYSTEM:WINDOWS"
+	)
+endif()
+
 ## Qt 6.8.1 requires
 #if(MSVC)
 #    #add_compile_options(/Zc:__cplusplus)
