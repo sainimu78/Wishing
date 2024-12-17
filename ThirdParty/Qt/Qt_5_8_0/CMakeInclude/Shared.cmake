@@ -1,5 +1,5 @@
 
-add_library(Qt_5_8 SHARED IMPORTED)
+add_library(Qt_5_8_0 SHARED IMPORTED)
 
 
 #set_target_properties(Qt_5_8 PROPERTIES
@@ -29,10 +29,10 @@ elseif(WIN32)
 	endif()
 endif()
 
-set(QtRootPath "${RootThirdPartyPath}/Qt/build/${OsType}/5.8.0/${ArchType}/5.8/${Toolset}")
+set(QtRootPath "${RootThirdPartyPath}/Qt/Qt_5_8_0/build/${OsType}/5.8.0/${ArchType}/5.8/${Toolset}")
 set(LibPath "${QtRootPath}/bin")
 
-include(${RootThirdPartyPath}/Qt/CMakeInclude/Deps.cmake)
+include(${RootThirdPartyPath}/Qt/Qt_5_8_0/CMakeInclude/Deps.cmake)
 
 set(QtIncRootPath ${QtRootPath}/include)
 target_include_directories(${ModuleName} PRIVATE "${QtIncRootPath}")

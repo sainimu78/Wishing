@@ -24,6 +24,13 @@ set(GenIncludePath ${ModuleGenPath}/include)
 
 add_executable(${ModuleName} ${SrcAll})
 
+## Qt 6.8.1 requires
+#if(MSVC)
+#    #add_compile_options(/Zc:__cplusplus)
+#	target_compile_options(${ModuleName} PRIVATE /Zc:__cplusplus)
+#	target_compile_options(${ModuleName} PRIVATE /permissive-)
+#endif()
+
 target_include_directories(${ModuleName}
 	PRIVATE ${SourcePath}
 	PUBLIC ${IncludePath}
