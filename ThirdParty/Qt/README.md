@@ -2,7 +2,7 @@
 
 `CMakeInclude\Deps.cmake`
 
-## Build from source 5.15.16
+## Build from source 5.15.16 (Failed)
 
 https://download.qt.io/archive/qt/
 
@@ -43,12 +43,25 @@ Open cmd with VC native environment
 then
 
 ```
-..\configure -debug-and-release -skip qpa
+..\configure -debug-and-release
 cmake --build . --parallel
 cmake --install
 ```
 
 the `include` folder is located in the build folder
+
+add following code to the linking target cmake
+
+```
+# Qt 6.8.1 requires
+if(MSVC)
+    #add_compile_options(/Zc:__cplusplus)
+	target_compile_options(${ModuleName} PRIVATE /Zc:__cplusplus)
+	target_compile_options(${ModuleName} PRIVATE /permissive-)
+endif()
+```
+
+encounters error about "qt platform plugin ..."
 
 ### Ubuntu (Old experiment)
 
