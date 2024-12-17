@@ -4,7 +4,7 @@
 #include <Windows.h>
 #endif
 
-int EditorMain(int argc, char** argv)
+static int EditorMain(int argc, char** argv)
 {
     QApplication app(argc, argv);
 
