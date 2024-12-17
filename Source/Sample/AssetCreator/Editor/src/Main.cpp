@@ -27,16 +27,17 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 {
     int argc;
     wchar_t** argvW = CommandLineToArgvW(GetCommandLineW(), &argc);
-    if (!argvW)
+    if (argvW == NULL)
         return -1;
     char** argv = new char*[argc + 1];
     for (int idx = 0; idx < argc; ++idx)
         argv[idx] = CreateCharsFromWChars(CP_ACP, argvW[idx]);
     argv[argc] = 0;
-    EditorMain(argc, argv);
+    auto ret = EditorMain(argc, argv);
     for (int idx = 0; idx < argc; ++idx)
         delete[] argv[idx];
     delete[] argv;
+    return ret;
 }
 #else
 int main(int argc, char** argv)
