@@ -1,5 +1,5 @@
 
-add_library(Qt_5_12_12 SHARED IMPORTED)
+add_library(Qt_5_12_8 SHARED IMPORTED)
 
 
 #set_target_properties(Qt_5_8 PROPERTIES
@@ -10,6 +10,7 @@ add_library(Qt_5_12_12 SHARED IMPORTED)
 if(UNIX)
 	message(STATUS "Target Is on UNIX")
 	set(OsType Linux)
+	set(libPre lib)
 	set(DlPost .so)
 	set(SlPost .a)
 	if("${CMAKE_SIZEOF_VOID_P}" EQUAL "8")
@@ -37,7 +38,7 @@ elseif(WIN32)
 endif()
 
 if(WIN32)
-	set(QtRootPath "${RootThirdPartyPath}/Qt/Qt_5_12_12/build/${OsType}/5.12.12/${ArchType}/5.12/${Toolset}")
+	set(QtRootPath "${RootThirdPartyPath}/Qt/Qt_5_12_8/build/${OsType}/5.12.12/${ArchType}/5.12/${Toolset}")
 	set(QtIncRootPath ${QtRootPath}/include)
 	set(LibPath "${QtRootPath}/bin")
 else()
@@ -46,7 +47,7 @@ else()
 	set(LibPath "${QtRootPath}/lib/x86_64-linux-gnu")
 endif()
 
-include(${RootThirdPartyPath}/Qt/Qt_5_12_12/CMakeInclude/Deps.cmake)
+include(${RootThirdPartyPath}/Qt/Qt_5_12_8/CMakeInclude/Deps.cmake)
 
 target_include_directories(${ModuleName} PRIVATE "${QtIncRootPath}")
 set(incPathList)
@@ -63,6 +64,7 @@ if(WIN32)
 		list(APPEND binListRelease "${LibPath}/${libPre}${libName}${SlPost}")
 	endforeach()
 else()
+	target_compile_options(${ModuleName} PRIVATE -fPIC)
 	foreach(libName ${MyLibNames})
 		list(APPEND binListDebug "${LibPath}/${libPre}${libName}${DlPost}")
 		list(APPEND binListRelease "${LibPath}/${libPre}${libName}${DlPost}")

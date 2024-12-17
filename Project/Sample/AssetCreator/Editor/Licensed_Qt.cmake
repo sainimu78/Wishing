@@ -1,5 +1,5 @@
 if(MSVC)
 include(${RootThirdPartyPath}/Qt/Qt_5_8_0/CMakeInclude/Shared.cmake)
 else()
-include(${RootThirdPartyPath}/Qt/Qt_5_12_12/CMakeInclude/Shared.cmake)
+include(${RootThirdPartyPath}/Qt/Qt_5_12_8/CMakeInclude/Shared.cmake)
 endif()
