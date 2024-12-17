@@ -42,6 +42,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 #else
 int main(int argc, char** argv)
 {
-    EditorMain(argc, argv);
+    return EditorMain(argc, argv);
 }
 #endif
