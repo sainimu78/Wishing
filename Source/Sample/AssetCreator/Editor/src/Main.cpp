@@ -1,5 +1,5 @@
-#include <QApplication>
-#include <QPushButton>
+#include "QApplication"
+#include "Creator/QCreatorWindow.h"
 #ifdef WIN32
 #include <Windows.h>
 #endif
@@ -8,10 +8,10 @@ static int EditorMain(int argc, char** argv)
 {
     QApplication app(argc, argv);
 
-    QPushButton button("Hello, Qt!");
-    button.resize(200, 100);
-    button.show();
-
+    using namespace QtWishing;
+    QCreatorWindow wnd;
+    wnd.resize(800, 600);
+    wnd.show();
     return app.exec();
 }
 
