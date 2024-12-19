@@ -1,6 +1,6 @@
 #include "Widget/ContentExplorer/QContentView.h"
 
-namespace QtWishing
+namespace WishingQt
 {
 	QContentView::QContentView(QWidget* parentWidget)
 		: inherited(parentWidget)

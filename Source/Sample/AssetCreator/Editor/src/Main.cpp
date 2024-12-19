@@ -8,7 +8,7 @@ static int EditorMain(int argc, char** argv)
 {
     QApplication app(argc, argv);
 
-    using namespace QtWishing;
+    using namespace WishingQt;
     QCreatorWindow wnd;
     wnd.resize(600, 400);
     wnd.show();

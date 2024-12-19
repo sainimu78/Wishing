@@ -1,7 +1,7 @@
 #pragma once
 #include "QMainWindow"
 
-namespace QtWishing
+namespace WishingQt
 {
 	class QContentView;
 
@@ -10,6 +10,8 @@ namespace QtWishing
 		typedef QMainWindow inherited;
 	public:
 		QCreatorWindow(QWidget* parentWidget = NULL);
+
+	private:
 		QContentView* m_contentView;
 	};
 }

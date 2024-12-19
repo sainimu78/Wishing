@@ -1,7 +1,7 @@
 #pragma once
 #include "QTreeWidget"
 
-namespace QtWishing
+namespace WishingQt
 {
 	class QContentView : public QTreeWidget
 	{

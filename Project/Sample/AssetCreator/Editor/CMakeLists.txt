@@ -39,7 +39,6 @@ endif()
 
 target_include_directories(${ModuleName}
 	PRIVATE ${SourcePath}
-	PRIVATE ${SourcePath}/Widget
 	PUBLIC ${IncludePath}
 )
 

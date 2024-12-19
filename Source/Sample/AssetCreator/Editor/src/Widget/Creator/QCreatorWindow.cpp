@@ -1,16 +1,32 @@
-#include "Creator/QCreatorWindow.h"
-#include "ContentExplorer/QContentView.h"
+#include "Widget/Creator/QCreatorWindow.h"
+#include "Widget/ContentExplorer/QContentView.h"
 #include "QToolBar"
 #include "QToolTip"
+#include "QBoxLayout"
+#include "QPushButton"
 
-namespace QtWishing
+namespace WishingQt
 {
 	QCreatorWindow::QCreatorWindow(QWidget* parentWidget)
 		: inherited(parentWidget)
 	{
-		m_contentView = new QContentView(this);
+		auto wdgCentral = new QWidget(this);
+		this->setCentralWidget(wdgCentral);
+		auto mainLayout = new QHBoxLayout(wdgCentral);
 
-		this->setCentralWidget(m_contentView);
+		m_contentView = new QContentView(this);
+		mainLayout->addWidget(m_contentView);
+
+		auto panelRight = new QWidget(this);
+		auto rightLayout = new QVBoxLayout(panelRight);
+		mainLayout->addWidget(panelRight);
+
+		auto btnDebug = new QPushButton("Debug Create", this);
+		QObject::connect(btnDebug, &QPushButton::clicked, []()
+			{
+				QToolTip::showText(QCursor::pos(), "Debug Create");
+			});
+		rightLayout->addWidget(btnDebug);
 
 		auto toolBar = this->addToolBar("Default");
 		auto actDebug = new QAction("Nihao");
