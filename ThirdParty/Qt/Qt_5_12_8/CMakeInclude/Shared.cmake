@@ -47,7 +47,7 @@ else()
 	set(LibPath "${QtRootPath}/lib/x86_64-linux-gnu")
 endif()
 
-include(${RootThirdPartyPath}/Qt/Qt_5_12_8/CMakeInclude/Deps.cmake)
+include(${RootThirdPartyPath}/Qt/Qt_5_x/Deps.cmake)
 
 target_include_directories(${ModuleName} PRIVATE "${QtIncRootPath}")
 set(incPathList)

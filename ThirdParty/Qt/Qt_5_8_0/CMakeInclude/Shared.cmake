@@ -32,7 +32,7 @@ endif()
 set(QtRootPath "${RootThirdPartyPath}/Qt/Qt_5_8_0/build/${OsType}/5.8.0/${ArchType}/5.8/${Toolset}")
 set(LibPath "${QtRootPath}/bin")
 
-include(${RootThirdPartyPath}/Qt/Qt_5_8_0/CMakeInclude/Deps.cmake)
+include(${RootThirdPartyPath}/Qt/Qt_5_x/Deps.cmake)
 
 set(QtIncRootPath ${QtRootPath}/include)
 target_include_directories(${ModuleName} PRIVATE "${QtIncRootPath}")
