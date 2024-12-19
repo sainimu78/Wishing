@@ -10,7 +10,7 @@ static int EditorMain(int argc, char** argv)
 
     using namespace QtWishing;
     QCreatorWindow wnd;
-    wnd.resize(800, 600);
+    wnd.resize(600, 400);
     wnd.show();
     return app.exec();
 }
