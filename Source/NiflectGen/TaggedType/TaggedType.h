@@ -105,20 +105,41 @@ namespace NiflectGen
 		}
 
 	public:
-		static CTaggedInheritableTypeMember* Cast(inherited* base)
-		{
-			ASSERT(dynamic_cast<CTaggedInheritableTypeMember*>(base) != NULL);
-			return static_cast<CTaggedInheritableTypeMember*>(base);
-		}
-		static CTaggedInheritableTypeMember* CastChecked(inherited* base)
-		{
-			return dynamic_cast<CTaggedInheritableTypeMember*>(base);
-		}
-
-	public:
 		CX_CXXAccessSpecifier m_accessSpecifier;
 		Niflect::TArrayNif<CXCursor> m_vecDetailCursor;
 	};
+
+	class CTaggedInheritableTypeField : public CTaggedInheritableTypeMember
+	{
+		typedef CTaggedInheritableTypeMember inherited;
+	public:
+		static CTaggedInheritableTypeField* CastChecked(CTaggedNode2* base)
+		{
+			return dynamic_cast<CTaggedInheritableTypeField*>(base);
+		}
+	};
+
+	class CTaggedInheritableTypeMethod : public CTaggedInheritableTypeMember
+	{
+		typedef CTaggedInheritableTypeMember inherited;
+	public:
+		static CTaggedInheritableTypeMethod* CastChecked(CTaggedNode2* base)
+		{
+			return dynamic_cast<CTaggedInheritableTypeMethod*>(base);
+		}
+	};
+
+#ifdef PORTING_ACCESS_METHOD
+	class CTaggedInheritableTypeAccessMethod : public CTaggedInheritableTypeMember
+	{
+		typedef CTaggedInheritableTypeMember inherited;
+	public:
+		static CTaggedInheritableTypeAccessMethod* CastChecked(CTaggedNode2* base)
+		{
+			return dynamic_cast<CTaggedInheritableTypeAccessMethod*>(base);
+		}
+	};
+#endif
 
 	class CUntaggedTemplate : public CTaggedNode2
 	{

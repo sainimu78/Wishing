@@ -155,11 +155,16 @@ namespace NiflectGen
             };
             it0->WriteInvokeRegisterType(invokeRegisterTypeCtx, invokeRegisterTypeData);
 
+#ifdef PORTING_GETTER_SETTER_DEFAULTVALUE
+            Niflect::TArrayNif<SGetterSetterData> vecGetSetData;
+#endif
             STypeRegCreateTypeAccessorWritingContext createTypeAccessorCtx{ context.m_moduleRegInfo, context.m_log };
-            STypeRegCreateTypeAccessorWritingData createTypeAccessorData{
-                data.m_registerTypeAndfieldLayout.m_linesCreateFieldLayoutOfTypeDecl,
-                data.m_registerTypeAndfieldLayout.m_linesCreateFieldLayoutOfTypeImpl,
-                data.m_registerTypeAndfieldLayout.m_dependencyHeaderFilePathAddrs
+            STypeRegCreateTypeAccessorWritingData createTypeAccessorData{data.m_registerTypeAndfieldLayout.m_linesCreateFieldLayoutOfTypeDecl
+                , data.m_registerTypeAndfieldLayout.m_linesCreateFieldLayoutOfTypeImpl
+                , data.m_registerTypeAndfieldLayout.m_dependencyHeaderFilePathAddrs
+#ifdef PORTING_GETTER_SETTER_DEFAULTVALUE
+                , vecGetSetData
+#endif
             };
             it0->WriteWriteCreateTypeAccessorFunc(createTypeAccessorCtx, createTypeAccessorData);
 

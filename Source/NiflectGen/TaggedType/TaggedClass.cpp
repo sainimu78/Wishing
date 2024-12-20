@@ -31,8 +31,22 @@ namespace NiflectGen
 				else
 				{
 					auto found = FindTagByDisplayName(cursor, NiflectGenDefinition::CodeTag::Field);
+					if (found)
+						m_createdTaggedChild = Niflect::MakeShared<CTaggedInheritableTypeField>();
 					if (!found)
+					{
 						found = FindTagByDisplayName(cursor, NiflectGenDefinition::CodeTag::Method);
+						if (found)
+							m_createdTaggedChild = Niflect::MakeShared<CTaggedInheritableTypeMethod>();
+					}
+#ifdef PORTING_ACCESS_METHOD
+					if (!found)
+					{
+						found = FindTagByDisplayName(cursor, NiflectGenDefinition::CodeTag::AccessMethod);
+						if (found)
+							m_createdTaggedChild = Niflect::MakeShared<CTaggedInheritableTypeAccessMethod>();
+					}
+#endif
 					if (found)
 					{
 #ifdef SIMPLIFIED_MACRO_CURSOR_FINDING
@@ -70,9 +84,8 @@ namespace NiflectGen
 #else
 				context.m_tagCollection.TakeByTagLocation(m_tagLocation, macroCursor);
 #endif
-				auto taggedChild = MakeShared<CTaggedInheritableTypeMember>();
-				taggedChild->InitMember(m_lastAccessSpecifier);
-				this->AddChildAndInitDefault(taggedChild, cursor, macroCursor);
+				m_createdTaggedChild->InitMember(m_lastAccessSpecifier);
+				this->AddChildAndInitDefault(m_createdTaggedChild, cursor, macroCursor);
 				m_stage = EStage::None;
 				addedTaggedChild = true;
 			}

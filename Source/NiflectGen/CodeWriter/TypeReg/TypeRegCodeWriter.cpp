@@ -121,11 +121,19 @@ namespace NiflectGen
 	}
 	void CTypeRegCodeWriter2::WriteWriteCreateTypeAccessorFunc(const STypeRegCreateTypeAccessorWritingContext& context, STypeRegCreateTypeAccessorWritingData& data) const
 	{
-		this->WriteCreateTypeAccessor(context, data.m_linesCreateTypeAccessorDecl, data.m_linesCreateTypeAccessorImpl, data);
+		this->WriteCreateTypeAccessor(context, data.m_linesCreateTypeAccessorDecl, data.m_linesCreateTypeAccessorImpl, data.m_dependencyHeaderFilePathAddrs
+#ifdef PORTING_GETTER_SETTER_DEFAULTVALUE
+			, data.m_vecGetSetData
+#endif
+		);
 
 		this->CollectDependencyHeaderFilePathAddrs(data.m_dependencyHeaderFilePathAddrs);
 	}
-	void CTypeRegCodeWriter2::WriteCreateTypeAccessor(const STypeRegCreateTypeAccessorWritingContext& context, CCodeLines& dataDecl, CCodeLines& dataImpl, STypeRegCreateTypeAccessorWritingData& data) const
+	void CTypeRegCodeWriter2::WriteCreateTypeAccessor(const STypeRegCreateTypeAccessorWritingContext& context, CCodeLines& dataDecl, CCodeLines& dataImpl, CDependencyHeaderFilePathAddrs& dependencyHeaderFilePathAddrs
+#ifdef PORTING_GETTER_SETTER_DEFAULTVALUE
+		, Niflect::TArrayNif<SGetterSetterData>& vecGetSetData
+#endif
+	) const
 	{
 		auto createTypeAccessorFuncName = m_bindingTypeIndexedRoot->GetCreateTypeAccessorFuncName(context.m_moduleRegInfo.m_moduleScopeSymbolPrefix);
 		{
@@ -158,7 +166,7 @@ namespace NiflectGen
 				{
 					auto& setting = m_resolvedData->m_accessorBindingMapping->m_settings.m_vecAccessorBindingSetting[m_bindingTypeIndexedRoot->m_accessorBindingIndex];
 					accessorResocursorName = setting.m_accessorSettingResolvedInfo.m_resoInfo.m_resocursorName;
-					data.m_dependencyHeaderFilePathAddrs.m_vecImpl.push_back(&setting.m_accessorSettingResolvedInfo.m_resoInfo.m_requiredHeaderFilePath);
+					dependencyHeaderFilePathAddrs.m_vecImpl.push_back(&setting.m_accessorSettingResolvedInfo.m_resoInfo.m_requiredHeaderFilePath);
 
 					if (IsCursorTemplateDecl(setting.GetAccessorTypeDecl().m_cursorDecl))//注, 特化的 Kind 为 ClassDecl
 					{
@@ -194,7 +202,7 @@ namespace NiflectGen
 					{
 						ASSERT(p->IsValid());//todo: 报错
 						accessorResocursorName = p->m_accessorSettingResolvedInfo.m_resoInfo.m_resocursorName;
-						data.m_dependencyHeaderFilePathAddrs.m_vecImpl.push_back(&p->m_accessorSettingResolvedInfo.m_resoInfo.m_requiredHeaderFilePath);
+						dependencyHeaderFilePathAddrs.m_vecImpl.push_back(&p->m_accessorSettingResolvedInfo.m_resoInfo.m_requiredHeaderFilePath);
 					}
 					else
 					{
@@ -212,10 +220,14 @@ namespace NiflectGen
 				CLabelToCodeMapping map;
 				MapLabelToText(map, LABEL_4, accessorResocursorName);
 				MapLabelToText(map, LABEL_2, m_bindingTypeIndexedRoot->GetStaticGetTypeFuncName(context.m_moduleRegInfo.m_moduleScopeSymbolPrefix));
-				CCodeLines linesNexts;
-				SResocursorNodeBodyCodeWritingContext bodyCodeCtx{ context.m_moduleRegInfo };
-				this->WriteResocursorNodeBodyCode(bodyCodeCtx, linesNexts);
-				MapLabelToLines(map, LABEL_5, linesNexts);
+#ifdef PORTING_GETTER_SETTER_DEFAULTVALUE
+				SGetterSetterWritingData dddddData{ vecGetSetData };
+#else
+				SGetterSetterWritingData dddddData;
+#endif
+				SResocursorNodeBodyCodeWritingContext bodyCodeCtx{ context.m_moduleRegInfo, context.m_log };
+				this->WriteResocursorNodeBodyCode(bodyCodeCtx, dddddData);
+				MapLabelToLines(map, LABEL_5, dddddData.m_linesResoBodyCode);
 				Niflect::TSet<Niflect::CString> setReplacedLabel;
 				tpl0.ReplaceLabels(map, linesBody, &setReplacedLabel);
 				ASSERT(setReplacedLabel.size() == map.size());

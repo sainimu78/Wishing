@@ -575,25 +575,26 @@ namespace NiflectGen
 							auto& vecChild = itFound->second->DebugGetChildren();
 							for (uint32 idx = 0; idx < templateArgsCount; ++idx)
 							{
-								auto member = CTaggedInheritableTypeMember::Cast(vecChild[idx].Get());
-								auto& cursorField = member->GetCursor();
-								if (clang_getCXXAccessSpecifier(cursorField) != CX_CXXAccessSpecifier::CX_CXXPublic)
-								{
-									//此处 template type 并不是指上处 m_mapCursorDeclToUntaggedTemplate 中对应的 Untagged Template
-									//框架概念中并没有 Tagged Template, 即本就不支持模板类型反射, 因此提示信息中, 描述的是
-									//对于所有 Template 类型, 被解析需要子 Accessor 时, 只支持对应的为 Template 的 BindingType 其成员定义在 Public 作用域
-									GenLogError(context.m_log, "Field access scope must be public for a template type");
-									ok = false;
-									break;
-								}
-								auto type = clang_getCursorType(cursorField);
-								CXType argType = clang_Type_getTemplateArgumentAsType(underlyingType, idx);
-								auto argCursorDecl = clang_getTypeDeclaration(argType);
-								CTypeDecl typeDecl(argCursorDecl, argType);
-								auto kind = clang_getCursorKind(cursorField);
-								bool trueField_falseMethod = kind == CXCursor_FieldDecl;
-								ASSERT(trueField_falseMethod);
-								vecMemberInfo.push_back({ typeDecl, CXStringToCString(clang_getCursorSpelling(cursorField)), trueField_falseMethod, vecDetailCursor, detailCursorsArrayIndex });
+								ASSERT(false);
+								//auto member = CTaggedInheritableTypeMember::Cast(vecChild[idx].Get());
+								//auto& cursorField = member->GetCursor();
+								//if (clang_getCXXAccessSpecifier(cursorField) != CX_CXXAccessSpecifier::CX_CXXPublic)
+								//{
+								//	//此处 template type 并不是指上处 m_mapCursorDeclToUntaggedTemplate 中对应的 Untagged Template
+								//	//框架概念中并没有 Tagged Template, 即本就不支持模板类型反射, 因此提示信息中, 描述的是
+								//	//对于所有 Template 类型, 被解析需要子 Accessor 时, 只支持对应的为 Template 的 BindingType 其成员定义在 Public 作用域
+								//	GenLogError(context.m_log, "Field access scope must be public for a template type");
+								//	ok = false;
+								//	break;
+								//}
+								//auto type = clang_getCursorType(cursorField);
+								//CXType argType = clang_Type_getTemplateArgumentAsType(underlyingType, idx);
+								//auto argCursorDecl = clang_getTypeDeclaration(argType);
+								//CTypeDecl typeDecl(argCursorDecl, argType);
+								//auto kind = clang_getCursorKind(cursorField);
+								//bool trueField_falseMethod = kind == CXCursor_FieldDecl;
+								//ASSERT(trueField_falseMethod);
+								//vecMemberInfo.push_back({ typeDecl, CXStringToCString(clang_getCursorSpelling(cursorField)), trueField_falseMethod, vecDetailCursor, detailCursorsArrayIndex });
 							}
 							dimension++;
 							CTypeRegClassWrittingData dataInitFieldLayout2ForCompoundType(linesScope2, data.m_includePathRequirement);

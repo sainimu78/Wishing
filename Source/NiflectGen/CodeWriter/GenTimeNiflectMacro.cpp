@@ -14,6 +14,9 @@ namespace NiflectGen
 		linesMacroTagDefine.push_back("#define _NIFLECTGENTAG_FIELD typedef void* CONCAT_SYMBOLS_2(" MACROTAG_FIELD ",__LINE__);");
 		linesMacroTagDefine.push_back("#define _NIFLECTGENTAG_METHOD typedef void* " MACROTAG_METHOD ";");
 		linesMacroTagDefine.push_back(R"(#define _NIFLECTGENTAG_ENUMCONST __attribute__((annotate(")" MACROTAG_ENUMCONST R"("))))");
+#ifdef PORTING_ACCESS_METHOD
+		linesMacroTagDefine.push_back("#define REFLECTIONGENTAG_ACCESSMETHOD typedef void* CONCAT_SYMBOLS_2(" MACROTAG_ACCESSMETHOD ",__LINE__);");
+#endif
 
 		Niflect::CString relativeFilePath = NiflectGenDefinition::NiflectFramework::FilePath::NiflectMacroHeader;
 		std::ifstream ifs;

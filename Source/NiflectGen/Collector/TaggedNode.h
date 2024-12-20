@@ -48,6 +48,16 @@ namespace NiflectGen
 		CGenLog* m_log;
 	};
 
+#ifdef PORTING_GETTER_SETTER_DEFAULTVALUE
+	class CBuiltinMetadata
+	{
+	public:
+		Niflect::CString m_getterName;
+		Niflect::CString m_setterName;
+		Niflect::CString m_defaultValue;
+	};
+#endif
+
 	class CTaggedNode2
 	{
 	public:
@@ -79,6 +89,9 @@ namespace NiflectGen
 			return false;
 		}
 		void WriteCopyNataCode(CCodeLines& linesCopy) const;
+#ifdef PORTING_GETTER_SETTER_DEFAULTVALUE
+		void WriteCopyNataCodeExtractBuiltinMetadata(CCodeLines& linesCopy, CBuiltinMetadata& builtinMetadata, CGenLog* log) const;
+#endif
 
 	public:
 		const CXCursor& DebugGetMacroCursor() const
@@ -104,4 +117,5 @@ namespace NiflectGen
 	};
 
 	void WriteNataArgNullOrVar(const CCodeLines& linesNata, CCodeLines& linesCopy, Niflect::CString& nataNullOrVar);
+	bool ExtractBuiltinMetadata(const Niflect::CString& keyword, const Niflect::CString& firstLine, Niflect::CString& metadata, uint32& movedPos);
 }

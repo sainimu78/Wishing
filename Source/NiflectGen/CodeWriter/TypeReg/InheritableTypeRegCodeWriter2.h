@@ -10,10 +10,15 @@ namespace NiflectGen
 	{
 		typedef CTypeRegCodeWriter2 inherited;
 	public:
-		CInheritableTypeRegCodeWriter2(const Niflect::TArrayNif<CResolvedCursorNode>& vecFieldResocursorNode, const Niflect::TArrayNif<CTaggedInheritableTypeMember*>& vecField, const CTaggedType* baseTaggedType, uint32 generatedBodyLineNumber);
+		CInheritableTypeRegCodeWriter2(const Niflect::TArrayNif<CResolvedCursorNode>& vecFieldResocursorNode, const CTaggedType* baseTaggedType, uint32 generatedBodyLineNumber
+			, const Niflect::TArrayNif<CTaggedInheritableTypeField*>& vecField
+#ifdef PORTING_ACCESS_METHOD
+			, const Niflect::TArrayNif<CTaggedInheritableTypeAccessMethod*>& vecAccessMethod
+#endif
+		);
 
 	protected:
-		virtual void WriteResocursorNodeBodyCode(const SResocursorNodeBodyCodeWritingContext& context, CCodeLines& linesResoBodyCode) const override;
+		virtual void WriteResocursorNodeBodyCode(const SResocursorNodeBodyCodeWritingContext& context, SGetterSetterWritingData& data) const override;
 		virtual void CollectDependencyHeaderFilePathAddrs(CDependencyHeaderFilePathAddrs& dependencyHeaderFilePathAddrs) const override;
 		virtual void CollectDataForGenH(SCollectingGeneratedBodyWritingData& data) const override;
 
@@ -25,7 +30,10 @@ namespace NiflectGen
 
 	private:
 		const Niflect::TArrayNif<CResolvedCursorNode>& m_vecFieldResocursorNode;
-		const Niflect::TArrayNif<CTaggedInheritableTypeMember*>& m_vecField;
+		const Niflect::TArrayNif<CTaggedInheritableTypeField*>& m_vecField;
+#ifdef PORTING_ACCESS_METHOD
+		const Niflect::TArrayNif<CTaggedInheritableTypeAccessMethod*>& m_vecAccessMethod;
+#endif
 		const CTaggedType* m_baseTaggedType;
 		const uint32 m_generatedBodyLineNumber;
 	};

@@ -17,8 +17,6 @@ namespace NiflectGen
 	public:
 		virtual void Deprecated_ResolveDependcies(const TCursorMap<CTaggedType*>& mapCursorDeclToTaggedType) override;
 		virtual void ResolveDependcies(const CResolvingDependenciesContext& context, SResolvingDependenciesData& data) override;
-		virtual CSharedTypeRegCodeWriter Deprecated_CreateCodeWriter(const STypeRegClassWritingSetting& setting) const override;
-		virtual CSharedTypeRegCodeWriter CreateCodeWriter(const STypeRegClassWritingSetting& setting) const override;
 		virtual CSharedTypeRegCodeWriter2 CreateCodeWriter2() const override;
 
 	protected:
@@ -27,7 +25,11 @@ namespace NiflectGen
 	private:
 		CXCursor m_baseTypeSpecifierCursor;
 		CTaggedType* m_baseTaggedType;
-		Niflect::TArrayNif<CTaggedInheritableTypeMember*> m_vecMember;
+		Niflect::TArrayNif<CTaggedInheritableTypeField*> m_vecMemberField;
+		Niflect::TArrayNif<CTaggedInheritableTypeMethod*> m_vecMemberMethod;
+#ifdef PORTING_ACCESS_METHOD
+		Niflect::TArrayNif<CTaggedInheritableTypeAccessMethod*> m_vecMemberAccessMethod;
+#endif
 		Niflect::TArrayNif<CResolvedCursorNode> m_vecMemberIndexedRoot;
 		uint32 m_generatedBodyLineNumber;
 	};

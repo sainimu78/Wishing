@@ -178,11 +178,24 @@ namespace NiflectGen
 		CGenLog* m_log;
 	};
 
+#ifdef PORTING_GETTER_SETTER_DEFAULTVALUE
+	struct SGetterSetterData
+	{
+		CCodeLines m_linesGetter;
+		//std::string m_getterName;
+		CCodeLines m_linesSetter;
+		//std::string m_setterName;
+	};
+#endif
+
 	struct STypeRegCreateTypeAccessorWritingData
 	{
 		CCodeLines& m_linesCreateTypeAccessorDecl;
 		CCodeLines& m_linesCreateTypeAccessorImpl;
 		CDependencyHeaderFilePathAddrs& m_dependencyHeaderFilePathAddrs;
+#ifdef PORTING_GETTER_SETTER_DEFAULTVALUE
+		Niflect::TArrayNif<SGetterSetterData>& m_vecGetSetData;
+#endif
 	};
 
 	struct STypeRegRegisterTypeContext
@@ -200,6 +213,15 @@ namespace NiflectGen
 	struct SResocursorNodeBodyCodeWritingContext
 	{
 		const CModuleRegInfoValidated& m_moduleRegInfo;
+		CGenLog* m_log;
+	};
+
+	struct SGetterSetterWritingData
+	{
+#ifdef PORTING_GETTER_SETTER_DEFAULTVALUE
+		Niflect::TArrayNif<SGetterSetterData>& m_vecGetSetData;
+#endif
+		CCodeLines m_linesResoBodyCode;
 	};
 
 	class CTypeRegCodeWriter2
@@ -214,12 +236,16 @@ namespace NiflectGen
 		void WriteGeneratedBody(const STypeRegClassGenHWritingContext& context, CTypeRegTaggedTypeGeneratedHeaderData& data) const;
 
 	protected:
-		virtual void WriteResocursorNodeBodyCode(const SResocursorNodeBodyCodeWritingContext& context, CCodeLines& linesResoBodyCode) const {}
+		virtual void WriteResocursorNodeBodyCode(const SResocursorNodeBodyCodeWritingContext& context, SGetterSetterWritingData& data) const {}
 		virtual void CollectDependencyHeaderFilePathAddrs(CDependencyHeaderFilePathAddrs& dependencyHeaderFilePathAddrs) const = 0;
 		virtual void CollectDataForGenH(SCollectingGeneratedBodyWritingData& data) const {}
 
 	private:
-		void WriteCreateTypeAccessor(const STypeRegCreateTypeAccessorWritingContext& context, CCodeLines& dataDecl, CCodeLines& dataImpl, STypeRegCreateTypeAccessorWritingData& data) const;
+		void WriteCreateTypeAccessor(const STypeRegCreateTypeAccessorWritingContext& context, CCodeLines& dataDecl, CCodeLines& dataImpl, CDependencyHeaderFilePathAddrs& dependencyHeaderFilePathAddrs
+#ifdef PORTING_GETTER_SETTER_DEFAULTVALUE
+			, Niflect::TArrayNif<SGetterSetterData>& vecGetSetData
+#endif
+		) const;
 
 	public:
 		static bool CompareLess(const CTypeRegCodeWriter2& a, const CTypeRegCodeWriter2& b);

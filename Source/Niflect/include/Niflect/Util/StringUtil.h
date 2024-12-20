@@ -223,4 +223,16 @@ namespace NiflectUtil
 
 		return tokens;                       // 返回分割后的子字符串向量
 	}
+	static Niflect::CString Trim(const Niflect::CString& str)
+	{
+		auto is_space = [](unsigned char c) { return std::isspace(c); };
+
+		// 找到第一个非空白字符的位置
+		auto start = std::find_if_not(str.begin(), str.end(), is_space);
+		// 找到最后一个非空白字符的位置
+		auto end = std::find_if_not(str.rbegin(), str.rend(), is_space).base();
+
+		// 返回修剪后的字符串
+		return (start < end) ? Niflect::CString(start, end) : Niflect::CString();
+	}
 }
