@@ -667,6 +667,18 @@ namespace NiflectGen
 						}
 					}
 					auto includeFilePath = CIncludesHelper::ConvertToIncludePath(it0.m_filePath, m_moduleRegInfo.m_writingHeaderSearchPaths.m_vecForRegularConversion);
+					if (includeFilePath.empty())
+					{
+						Niflect::CString str;
+						for (uint32 idx1 = 0; idx1 < m_moduleRegInfo.m_writingHeaderSearchPaths.m_vecForRegularConversion.size(); ++idx1)
+						{
+							auto& it = m_moduleRegInfo.m_writingHeaderSearchPaths.m_vecForRegularConversion[idx1];
+							str += NiflectUtil::FormatString("[%u] %s\n", idx1, it.c_str());
+						}
+						GenLogError(context.m_log, NiflectUtil::FormatString(
+R"(The conversion of %s to an include directive failed because the file could not be found in the user provided include search paths, which are as follows:
+%s)", it0.m_filePath.c_str(), str.c_str()));
+					}
 					auto filePathNoExt = NiflectUtil::RemoveFileExt(includeFilePath);
 					auto expectedIncludeFilePath = filePathNoExt + NiflectGenDefinition::FileExt::GenH;
 					bool includedGenH = vecIncludeDirective.size() > 0;
