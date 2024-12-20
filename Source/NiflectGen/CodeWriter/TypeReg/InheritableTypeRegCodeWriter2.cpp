@@ -128,7 +128,8 @@ namespace NiflectGen
 			return hasInClassInitializer;
 		}
 	}
-#ifdef PORTING_GETTER_SETTER_DEFAULTVALUE
+#ifdef DEPRECATED_ACCESSMETHOD_MACRO_TAG
+#else
 	static bool ErrorIfSpecifiedButNotTagged(const Niflect::CString& specifiedMethodName, const char* pszMethodType, const Niflect::TArrayNif<CTaggedInheritableTypeAccessMethod*>& vecAccessMethod, CGenLog* log)
 	{
 		bool found = false;
@@ -169,14 +170,28 @@ namespace NiflectGen
 			auto& gs = data.m_vecGetSetData[idx];
 			if (builtinMetadata.m_getterName.empty())
 				WriteGetterSetter(HardCodedTemplate::GetterFunc, "Get", fieldTypeName, fieldName, gs.m_linesGetter, builtinMetadata.m_getterName);
+#ifdef DEPRECATED_ACCESSMETHOD_MACRO_TAG
+#else
 			else
 				ErrorIfSpecifiedButNotTagged(builtinMetadata.m_getterName, NiflectGenDefinition::NiflectFramework::BuiltinMetadata::Getter, m_vecAccessMethod, context.m_log);
+#endif
 			if (builtinMetadata.m_setterName.empty())
 				WriteGetterSetter(HardCodedTemplate::SetterFunc, "Set", fieldTypeName, fieldName, gs.m_linesSetter, builtinMetadata.m_setterName);
+#ifdef DEPRECATED_ACCESSMETHOD_MACRO_TAG
+#else
 			else
 				ErrorIfSpecifiedButNotTagged(builtinMetadata.m_setterName, NiflectGenDefinition::NiflectFramework::BuiltinMetadata::Setter, m_vecAccessMethod, context.m_log);
+#endif
 			if (builtinMetadata.m_defaultValue.empty())
 				TryParseInClassInitializer(fieldCursor, builtinMetadata.m_defaultValue);
+
+			{
+				//现未使用 Getter, Setter, DefaultValue 关键字, Field 的 In-class 初始化, 仅打印解析结果预留功能
+				Niflect::CString strNata;
+				for (auto& it1 : linesNata)
+					strNata += it1 += EscapeChar::NewLine;
+				printf("%s, %s, %s, %s\n", builtinMetadata.m_getterName.c_str(), builtinMetadata.m_setterName.c_str(), builtinMetadata.m_defaultValue.c_str(), strNata.c_str());
+			}
 #else
 			CCodeLines linesNata;
 			itB->WriteCopyNataCode(linesNata);

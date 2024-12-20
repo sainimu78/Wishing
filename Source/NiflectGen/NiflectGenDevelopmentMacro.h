@@ -45,3 +45,6 @@
 
 //移植 Getter Setter DefaultValue 关键字
 //#define PORTING_GETTER_SETTER_DEFAULTVALUE
+
+//废弃 ACCESSMETHOD 宏标签, 可减少一步指定对应 Getter / Setter
+#define DEPRECATED_ACCESSMETHOD_MACRO_TAG
