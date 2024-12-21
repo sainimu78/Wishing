@@ -1,4 +1,4 @@
-#include "Widget/ContentExplorer/QContentView.h"
+#include "Widget/ContentExplorer/ContentView.h"
 #include "Base/AssetCreatorDefinition.h"
 #include "Niflect/Util/SystemUtil.h"
 #include "Niflect/Util/StringUtil.h"

@@ -1,5 +1,5 @@
 #include "QApplication"
-#include "Widget/Creator/QCreatorWindow.h"
+#include "Widget/Creator/CreatorWindow.h"
 #ifdef WIN32
 #include <Windows.h>
 #endif
