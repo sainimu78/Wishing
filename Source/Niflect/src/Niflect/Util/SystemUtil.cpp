@@ -557,6 +557,7 @@ namespace NiflectUtil
                 continue; // Ìø¹ý "." ºÍ ".." Ïî
             }
 
+            Niflect::CString filename = entry->d_name;
             if (entry->d_type == DT_DIR) {
                 if (opt.m_maxDepth == 0 || depth < opt.m_maxDepth)
                 {
