@@ -15,7 +15,7 @@ namespace WishingQt
 
 		Niflect::TArrayNif<Niflect::CString> vecFound;
 		//auto searchPath = NiflectUtil::ConcatPath(AssetCreatorDefinition::DirPath::GetExampleAssetDirPath(), "Document");
-		auto& searchPath = AssetCreatorDefinition::DirPath::GetExampleAssetDirPath();
+		auto searchPath = AssetCreatorDefinition::DirPath::GetExampleAssetDirPath();
 		NiflectUtil::CollectFiles(searchPath, NiflectUtil::CCollectingOption([&](const NiflectUtil::SCollectingContext& ctx)
 			{
 				auto filePath = NiflectUtil::ConcatPath(ctx.m_dirPath, ctx.m_fileName);
