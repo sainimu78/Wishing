@@ -3,6 +3,7 @@
 #include "Niflect/Util/SystemUtil.h"
 #include "Niflect/Util/StringUtil.h"
 #include "QBoxLayout"
+#include "Widget/Util/CoreUtil.h"
 
 namespace WishingQt
 {
@@ -24,7 +25,7 @@ namespace WishingQt
 		for (auto& it : vecFound)
 		{
 			auto item = new QTreeWidgetItem;
-			item->setText(0, it.c_str());
+			item->setText(0, CStringToQString(it));
 			m_tree->addTopLevelItem(item);
 		}
 
