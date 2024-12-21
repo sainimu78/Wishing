@@ -543,7 +543,7 @@ namespace NiflectUtil
     }
 #else
     // 在 Linux 下递归遍历目录
-    static void CollectFilesRecurs_Windows(const Niflect::CString& rootDirPath, const Niflect::CString& relativeParentDirPath, const CCollectingOption& opt, uint32 depth) {
+    static void CollectFilesRecurs_Linux(const Niflect::CString& rootDirPath, const Niflect::CString& relativeParentDirPath, const CCollectingOption& opt, uint32 depth) {
         auto directory = NiflectUtil::ConcatPath(rootDirPath, relativeParentDirPath);
         DIR* dir = opendir(directory.c_str());
         if (!dir) {
