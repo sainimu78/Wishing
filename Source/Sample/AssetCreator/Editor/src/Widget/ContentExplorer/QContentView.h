@@ -3,10 +3,13 @@
 
 namespace WishingQt
 {
-	class QContentView : public QTreeWidget
+	class QContentView : public QWidget
 	{
-		typedef QTreeWidget inherited;
+		typedef QWidget inherited;
 	public:
 		QContentView(QWidget* parentWidget);
+
+	private:
+		QTreeWidget* m_tree;
 	};
 }

@@ -10,5 +10,31 @@ namespace NiflectUtil
 	NIFLECT_API bool FileExists(const Niflect::CString& path);
 	NIFLECT_API Niflect::CString GetCurrentWorkingDirPath();
 	NIFLECT_API Niflect::CString ResolvePath(const Niflect::CString& relativePath);
-	NIFLECT_API void SearchFiles(const Niflect::CString& dirPath, const Niflect::CString& pattern, Niflect::TArrayNif<Niflect::CString>& vecFound);
+
+	struct SCollectingContext
+	{
+		const Niflect::CString& m_dirPath;
+		const Niflect::CString& m_fileName;
+	};
+	typedef std::function<void(const SCollectingContext& ctx)> OnCollectedFunc;
+
+	class CCollectingOption
+	{
+		typedef CCollectingOption CThis;
+	public:
+		CCollectingOption(const OnCollectedFunc& Func)
+			: m_maxDepth(0)
+			, m_Func(Func)
+		{
+		}
+		CThis& SetMaxDepth(uint32 depth)
+		{
+			m_maxDepth = depth;
+			return *this;
+		}
+		uint32 m_maxDepth;
+		OnCollectedFunc m_Func;
+	};
+
+	NIFLECT_API void CollectFiles(const Niflect::CString& dirPath, const CCollectingOption& opt);
 }

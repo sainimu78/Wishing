@@ -1,5 +1,5 @@
 #include "QApplication"
-#include "Creator/QCreatorWindow.h"
+#include "Widget/Creator/QCreatorWindow.h"
 #ifdef WIN32
 #include <Windows.h>
 #endif
@@ -10,7 +10,11 @@ static int EditorMain(int argc, char** argv)
 
     using namespace WishingQt;
     QCreatorWindow wnd;
+#ifdef WIN32
+    wnd.resize(800, 600);
+#else
     wnd.resize(600, 400);
+#endif
     wnd.show();
     return app.exec();
 }
