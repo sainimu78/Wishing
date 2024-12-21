@@ -158,7 +158,7 @@ namespace NiflectGen
 	static Niflect::CString GetNextArgIncludeSearchPath(const char** argv, int& idx)
 	{
 		auto path = GetNextArgPath(argv, idx);
-		return CIncludesHelper::MakeIncludeSearchPath(path);
+		return NiflectUtil::ConvertToSearchPath(path);
 	}
 
 	static void ParseOptions(int argc, const char** argv, CModuleRegInfo& info)

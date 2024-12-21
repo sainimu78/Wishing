@@ -3,6 +3,7 @@
 #include <stdarg.h>
 #include <fstream>
 #include <algorithm>
+#include <cctype>
 
 namespace NiflectUtil
 {
@@ -68,6 +69,12 @@ namespace NiflectUtil
 			return result;
 		}
 		return filePath;
+	}
+	static Niflect::CString ConvertToSearchPath(const Niflect::CString& path)
+	{
+		if (path.back() != '/')
+			return path + '/';
+		return path;
 	}
 	static Niflect::CString ConcatPath(const Niflect::CString& a, const Niflect::CString& b)
 	{

@@ -96,12 +96,6 @@ namespace NiflectGen
 			WriteUsingNamespaceDirectives(pathCollector.m_vecPath, lines);
 		}
 		static void WriteUsingNamespaceDirectives(const CCodeLines& vecIncludePath, CCodeLines& lines);
-		static Niflect::CString MakeIncludeSearchPath(const Niflect::CString& path)
-		{
-			if (path.back() != '/')
-				return path + '/';
-			return path;
-		}
 
 	private:
 		static bool InternalConvertToIncludePath(const Niflect::CString& filePath, const Niflect::TArrayNif<Niflect::CString>& vecSearchPath, Niflect::CString& incPath)

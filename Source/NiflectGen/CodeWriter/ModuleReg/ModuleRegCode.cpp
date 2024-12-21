@@ -45,7 +45,7 @@ namespace NiflectGen
 			WriteGenTimeNiflectMacroHeader(ctx);
 		}
 
-		m_writingHeaderSearchPaths.m_vecForGenTimeConversion.push_back(CIncludesHelper::MakeIncludeSearchPath(genTimeBasePath));
+		m_writingHeaderSearchPaths.m_vecForGenTimeConversion.push_back(NiflectUtil::ConvertToSearchPath(genTimeBasePath));
 
 		for (auto& it : m_writingHeaderSearchPaths.m_vecForGenTimeConversion)
 			m_vecParsingHeaderSearchPath.push_back(it);
