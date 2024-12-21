@@ -2,7 +2,6 @@
 #include "Niflect/NiflectBase.h"
 #include <functional>
 #include "clang-c/Index.h"
-#include "Niflect/Util/StringUtil.h"
 
 namespace NiflectGen
 {

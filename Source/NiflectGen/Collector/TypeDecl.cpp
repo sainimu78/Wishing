@@ -1,5 +1,6 @@
 #include "NiflectGen/Collector/TypeDecl.h"
 #include "Niflect/Util/DebugUtil.h"
+#include "Niflect/Util/StringUtil.h"
 
 namespace NiflectGen
 {

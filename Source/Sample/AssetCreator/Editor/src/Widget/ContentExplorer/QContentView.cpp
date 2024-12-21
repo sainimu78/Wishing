@@ -9,8 +9,7 @@ namespace WishingQt
 		: inherited(parentWidget)
 	{
 		Niflect::TArrayNif<Niflect::CString> vecFound;
-		auto searchPath = NiflectUtil::ResolvePath(AssetCreatorDefinition::DirPath::ExampleAsset);
-		searchPath = NiflectUtil::ConvertToSearchPath(NiflectUtil::ConcatPath(searchPath, "Document"));
+		auto searchPath = NiflectUtil::ConvertToSearchPath(NiflectUtil::ConcatPath(AssetCreatorDefinition::DirPath::GetExampleAssetDirPath(), "Document"));
 		NiflectUtil::SearchFiles(searchPath, "*", vecFound);
 		for (auto& it : vecFound)
 		{
