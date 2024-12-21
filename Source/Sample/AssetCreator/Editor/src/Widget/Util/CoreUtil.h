@@ -1,6 +1,6 @@
 #pragma once
 #include "Niflect/NiflectBase.h"
-#include "QtCore/qstring.h"
+#include "QString"
 
 namespace WishingQt
 {

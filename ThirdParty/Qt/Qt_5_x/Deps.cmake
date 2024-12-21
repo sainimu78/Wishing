@@ -7,5 +7,6 @@ list(APPEND MyLibNames
 )
 set(MyIncDirNames)
 list(APPEND MyIncDirNames
+	QtCore
 	QtWidgets
 )
