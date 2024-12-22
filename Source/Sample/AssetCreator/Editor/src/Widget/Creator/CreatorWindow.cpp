@@ -4,6 +4,9 @@
 #include "QToolTip"
 #include "QBoxLayout"
 #include "QPushButton"
+#include "Project/Project.h"
+#include "Base/AssetCreatorDefinition.h"
+#include "Niflect/Util/StringUtil.h"
 
 namespace WishingQt
 {
@@ -24,6 +27,9 @@ namespace WishingQt
 		auto btnDebug = new QPushButton("Debug Create", this);
 		QObject::connect(btnDebug, &QPushButton::clicked, []()
 			{
+				auto fileName = Niflect::CString("DefaultProject") + AssetCreatorDefinition::FileExt::Project;
+				auto filePath = NiflectUtil::ConcatPath(AssetCreatorDefinition::DirPath::GetExampleAssetDirPath(), fileName);
+				Wishing::CreateProject(filePath);
 				QToolTip::showText(QCursor::pos(), "Debug Create");
 			});
 		rightLayout->addWidget(btnDebug);

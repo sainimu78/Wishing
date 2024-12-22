@@ -7,4 +7,8 @@ namespace AssetCreatorDefinition
 	{
 		Niflect::CString GetExampleAssetDirPath();
 	}
+	namespace FileExt
+	{
+		constexpr const char* Project = ".wishingproj";
+	}
 }

@@ -2,9 +2,8 @@
 
 namespace Wishing
 {
-	class CContentManager
+	class CContentReferenceNode
 	{
-	public:
 
 	};
 }
