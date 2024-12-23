@@ -23,5 +23,6 @@ namespace NiflectGen
 #else
 		CXSourceLocation m_tagLocation;
 #endif
+		Niflect::TSharedPtr<CTaggedInheritableTypeMember> m_createdTaggedChild;
 	};
 }
