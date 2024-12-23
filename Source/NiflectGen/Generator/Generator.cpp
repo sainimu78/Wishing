@@ -250,7 +250,19 @@ namespace NiflectGen
         CCodeWriter writer;
         writer.WriteLines(linesCode);
         NiflectUtil::MakeDirectories(filePath);
-        NiflectUtil::WriteStringToFile(writer.m_code, filePath);
+        std::ofstream ofs;
+        if (NiflectUtil::OpenFileStream(ofs, filePath))
+        {
+            // 写入BOM（Byte Order Mark），以明确表示文件是UTF-8编码
+            unsigned char bom[] = { 0xEF, 0xBB, 0xBF };
+            ofs.write(reinterpret_cast<const char*>(bom), sizeof(bom));
+            ofs << writer.m_code;
+            ofs.close();
+        }
+        else
+        {
+            ASSERT(false);
+        }
     }
     void CGenerator::SaveFileToGenSource(const CCodeLines& linesCode, const Niflect::CString& relativeFilePath) const
     {

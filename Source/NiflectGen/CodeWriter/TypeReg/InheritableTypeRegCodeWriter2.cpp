@@ -25,17 +25,50 @@ namespace NiflectGen
 
 	}
 #ifdef PORTING_GETTER_SETTER_DEFAULTVALUE
+	static bool IsTypePrefix(char charPrefix, Niflect::CString& result)
+	{
+		if (result.size() >= 1 && result[0] == charPrefix)
+		{
+			bool isTypePrefix = result.size() >= 2;
+			if (isTypePrefix)
+				isTypePrefix = std::isupper(result[1]);
+			return isTypePrefix;
+		}
+		return false;
+	}
 	static void ConvertFieldToFuncName(const Niflect::CString& fieldName, const Niflect::CString& funcNamePrefix, Niflect::CString& funcName)
 	{
-		funcName = fieldName;
-		const Niflect::CString memberPrefix = "m_";
-		auto pos = fieldName.find(memberPrefix);
-		if (pos != std::string::npos)
-			funcName = fieldName.substr(pos + memberPrefix.length(), fieldName.length() - memberPrefix.length());
-		auto& firstLetter = funcName[0];
-		if (std::islower(firstLetter))
-			firstLetter = std::toupper(firstLetter);
-		funcName = funcNamePrefix + funcName;
+		//funcName = fieldName;
+		//const Niflect::CString memberPrefix = "m_";
+		//auto pos = fieldName.find(memberPrefix);
+		//if (pos != std::string::npos)
+		//	funcName = fieldName.substr(pos + memberPrefix.length(), fieldName.length() - memberPrefix.length());
+		//auto& firstLetter = funcName[0];
+		//if (std::islower(firstLetter))
+		//	firstLetter = std::toupper(firstLetter);
+		//funcName = funcNamePrefix + funcName;
+
+		// Start by assuming the fieldName is the input to be converted
+		Niflect::CString result = fieldName;
+
+		// Remove 'm_' or 'm' prefix
+		if (result.size() >= 2 && result[0] == 'm' && result[1] == '_') {
+			result = result.substr(2);
+		}
+		else if (result.size() >= 1 && result[0] == 'm') {
+			result = result.substr(1);
+		}
+
+		if (IsTypePrefix('b', result))
+			result = result.substr(1);
+
+		// Capitalize the first letter
+		if (!result.empty() && std::islower(result[0])) {
+			result[0] = std::toupper(result[0]);
+		}
+
+		// Prepend the function name prefix
+		funcName = funcNamePrefix + result;
 	}
 	static void WriteGetterSetter(const char* hct, const Niflect::CString& funcNamePrefix, const Niflect::CString& fieldTypeName, const Niflect::CString& fieldName, CCodeLines& lines, Niflect::CString& funcName)
 	{
