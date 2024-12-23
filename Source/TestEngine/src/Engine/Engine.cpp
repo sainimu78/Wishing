@@ -72,6 +72,23 @@ void TestEngineRun()
 		printf("%s\n", ss.str().c_str());
 	}
 	{
+		using CTestType = TestModule1::SMyRecord;
+		auto type = Niflect::StaticGetType<CTestType>();
+		RwTree::CRwNode rw;
+		CTestType srcData;
+		{
+			TestModule1::InitForTest_SMyRecord(srcData);
+			type->SaveInstanceToRwNode(&srcData, &rw);
+		}
+		auto instance = type->MakeSharedInstance<CTestType>();
+		CTestType& dstData = *instance;
+		type->LoadInstanceFromRwNode(&dstData, &rw);
+		ASSERT(srcData == dstData);
+		Niflect::CStringStream ss;
+		RwTree::CJsonFormat::Write(&rw, ss);
+		printf("%s\n", ss.str().c_str());
+	}
+	{
 		auto type = Niflect::CEnum::Cast(Niflect::StaticGetType<TestModule1::ETestEnum0>());
 		auto& em = type->GetEnumMeta();
 		for (auto& it : em.m_vecEnumConstMeta)

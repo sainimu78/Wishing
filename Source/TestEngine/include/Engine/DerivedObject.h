@@ -27,6 +27,7 @@ namespace Engine
 			m_array_test_base_5.resize(2);
 			for (auto& it : m_array_test_base_5)
 				it.InitForTest();
+			TestModule1::InitForTest_SMyRecord(m_my_record_6);
 		}
 		bool operator==(const CDerivedObject& rhs) const
 		{
@@ -37,6 +38,7 @@ namespace Engine
 				&& m_derived_std_string_3 == rhs.m_derived_std_string_3
 				&& m_test_class_4 == rhs.m_test_class_4
 				&& m_array_test_base_5 == rhs.m_array_test_base_5
+				&& m_my_record_6 == rhs.m_my_record_6
 				;
 		}
 	public:
@@ -52,6 +54,8 @@ namespace Engine
 		TestModule1::CTestClass1 m_test_class_4;
 		NIF_F()
 		Niflect::TArrayNif<TestModule1::CTestBase1> m_array_test_base_5;
+		NIF_F()
+		TestModule1::SMyRecord m_my_record_6;
 	};
 
 	NIF_T()

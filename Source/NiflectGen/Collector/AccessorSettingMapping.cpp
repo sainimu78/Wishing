@@ -191,21 +191,24 @@ namespace NiflectGen
 			auto cursor = clang_getTypeDeclaration(fieldOrArgCXType);
 			if (!taggedMapping.InitIndexedNodeForClassDecl(cursor, *this, resultIndexedParent))
 			{
-				auto& parentAs = m_settings.m_vecAccessorBindingSetting[parentResonode.m_accessorBindingIndex];
-				if (parentAs.m_accessorSettingResolvedInfo.m_isPointerTemplate)
+				if (parentResonode.m_accessorBindingIndex != INDEX_NONE)
 				{
-					auto cxType = clang_getCursorType(cursor);
-					auto resocursorName = CXStringToCString(clang_getTypeSpelling(cxType));//通过 Field 的 Cursor 的 CXType 可获取到完整 Scope 的 Spelling
-					auto headerFilePath = GetCursorFilePath(cursor);
-					//auto resocursorName = GenerateNamespacesAndScopesCode(cursor);
-					//resocursorName += CXStringToCString(clang_getCursorSpelling(cursor));
-					resultIndexedParent.InitForClassDecl(resocursorName, INDEX_NONE, INDEX_NONE, headerFilePath);
-				}
-				else
-				{
-					auto& tpl = parentAs.m_bindingResocursorName;
-					auto arg = CXStringToCString(clang_getTypeSpelling(clang_getCursorType(cursor)));
-					GenLogError(context.m_log, NiflectUtil::FormatString("The template arg %s of the container template %s must be tagged", arg.c_str(), tpl.c_str()));
+					auto& parentAs = m_settings.m_vecAccessorBindingSetting[parentResonode.m_accessorBindingIndex];
+					if (parentAs.m_accessorSettingResolvedInfo.m_isPointerTemplate)
+					{
+						auto cxType = clang_getCursorType(cursor);
+						auto resocursorName = CXStringToCString(clang_getTypeSpelling(cxType));//通过 Field 的 Cursor 的 CXType 可获取到完整 Scope 的 Spelling
+						auto headerFilePath = GetCursorFilePath(cursor);
+						//auto resocursorName = GenerateNamespacesAndScopesCode(cursor);
+						//resocursorName += CXStringToCString(clang_getCursorSpelling(cursor));
+						resultIndexedParent.InitForClassDecl(resocursorName, INDEX_NONE, INDEX_NONE, headerFilePath);
+					}
+					else
+					{
+						auto& tpl = parentAs.m_bindingResocursorName;
+						auto arg = CXStringToCString(clang_getTypeSpelling(clang_getCursorType(cursor)));
+						GenLogError(context.m_log, NiflectUtil::FormatString("The template arg %s of the container template %s must be tagged", arg.c_str(), tpl.c_str()));
+					}
 				}
 			}
 		}
