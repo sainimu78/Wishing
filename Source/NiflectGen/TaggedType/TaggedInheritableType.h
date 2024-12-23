@@ -9,6 +9,9 @@ namespace NiflectGen
 	public:
 		CTaggedInheritableType();
 
+	public:
+		virtual bool RequiredGenHIncluded() const { return m_generatedBodyLineNumber != INDEX_NONE; }
+
 	protected:
 		void InitBaseTypeSpecifierCursor(const CXCursor& cursor);
 		bool CollectGeneratedBodyTag(const CXCursor& cursor, const CXCursorKind& kind);

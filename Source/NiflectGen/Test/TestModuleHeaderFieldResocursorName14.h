@@ -14,6 +14,6 @@ namespace TestMyFinding
 		}
 
 		NIF_F()
-		Niflect::TArrayNif<std::pair<Niflect::CString, float> > m_array_pair_string_float_0;
+		Niflect::TArray<std::pair<Niflect::CString, float> > m_array_pair_string_float_0;
 	};
 }

@@ -3,32 +3,6 @@
 
 namespace Niflect
 {
-	class CStringRef
-	{
-	public:
-		CStringRef()
-			: m_p(NULL)
-		{
-		}
-		CStringRef(const Niflect::CString* p)
-			: m_p(p)
-		{
-		}
-		CStringRef(const Niflect::CString& localScopeTmp)
-			: m_p(&localScopeTmp)
-		{
-		}
-		bool operator<(const CStringRef& rhs) const
-		{
-			return (*m_p) < (*rhs.m_p);
-		}
-		const Niflect::CString& Get() const
-		{
-			return *m_p;
-		}
-		const Niflect::CString* m_p;
-	};
-
 	//为Module中所有CNiflectType的容器, 不需要被继承
 	class CNiflectTable
 	{

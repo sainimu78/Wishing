@@ -17,9 +17,13 @@ namespace DefaultAccessorSetting
 	NIF_AS_A() TSetting<CFloatAccessor, float>;
 	NIF_AS_A() TSetting<CStringAccessor, Niflect::CString>;
 	template <typename TInstance, typename T>
-	NIF_AS_A() TSetting<TArrayAccessor<TInstance>, Niflect::TArrayNif<T> >;
+	NIF_AS_A() TSetting<TArrayAccessor<TInstance>, Niflect::TArray<T> >;
+	//template <typename TInstance, typename T>
+	//NIF_AS_A() TSetting<TArrayAccessor<TInstance>, Niflect::TArrayNif<T> >;
 	template <typename TInstance>
-	NIF_AS_A() TSetting<TBitsArrayAccessor<TInstance>, Niflect::TArrayNif<bool> >;
+	NIF_AS_A() TSetting<TBitsArrayAccessor<TInstance>, Niflect::TArray<bool> >;
+	//template <typename TInstance>
+	//NIF_AS_A() TSetting<TBitsArrayAccessor<TInstance>, Niflect::TArrayNif<bool> >;
 	template <typename TInstance, typename T0, typename T1>
 	NIF_AS_A() TSetting<TMapAccessor<TInstance>, Niflect::TMap<T0, T1>, std::pair<T0, T1> >;
 	template <typename T0, typename T1>

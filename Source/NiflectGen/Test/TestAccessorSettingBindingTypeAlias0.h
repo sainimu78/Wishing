@@ -25,8 +25,8 @@ namespace EngineTypeBindingSettingScope
 	//NIF_BS() TBindingSetting<CFloatAccessor, MyString1>;//fail
 	//NIF_BS() TBindingSetting<CFloatAccessor, MyString2>;//fail
 
-	//区分如 TArrayNif 与 std::vector, TStdPairAlias 与 std::pair 的方法为检查原始模板定义的参数个数是否相同
-	//这意味着无法区分分部特化的别名模板, 如 TArrayNif 与 TArrayNifAlias
+	//区分如 TArray 与 std::vector, TStdPairAlias 与 std::pair 的方法为检查原始模板定义的参数个数是否相同
+	//这意味着无法区分分部特化的别名模板, 如 TArray 与 TArrayNifAlias
 	//如需要实现此区分, 可考虑遍历 aliasChain 每级时的特化形式, 这涉及非常繁琐的递归分析
 
 	//template <typename T0, typename T1>
@@ -77,7 +77,7 @@ namespace EngineTypeBindingSettingScope
 	template <typename TInstance, typename T>
 	NIF_BS() TBindingSetting<TStlArrayAccessor<TInstance>, std::vector<T> >;
 	template <typename TInstance, typename T>
-	NIF_BS() TBindingSetting<TStlArrayAccessor<TInstance>, Niflect::TArrayNif<T> >;//ok
+	NIF_BS() TBindingSetting<TStlArrayAccessor<TInstance>, Niflect::TArray<T> >;//ok
 	//template <typename TInstance>
 	//NIF_BS() TBindingSetting<TStlBitsArrayAccessor<TInstance>, std::vector<bool> >;//ok
 	//template <typename TInstance>
@@ -113,5 +113,5 @@ namespace EngineTypeBindingSettingScope
 	//template <typename TInstance>
 	//NIF_BS() TBindingSetting<TStlBitsArrayAccessor<TInstance>, StdVectorAlias2<bool, std::allocator<bool> > >;//ok
 	//template <typename TInstance>
-	//NIF_BS() TBindingSetting<TStlBitsArrayAccessor<TInstance>, TScope<Niflect::TArrayNif<Niflect::CString> >::TSubArray<int32>::TSubStdVectorAlias3<bool, std::allocator<bool> > >;//ok
+	//NIF_BS() TBindingSetting<TStlBitsArrayAccessor<TInstance>, TScope<Niflect::TArray<Niflect::CString> >::TSubArray<int32>::TSubStdVectorAlias3<bool, std::allocator<bool> > >;//ok
 }

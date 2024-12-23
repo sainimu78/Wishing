@@ -40,13 +40,13 @@ namespace TestMyFinding
 		NIF_F()
 		std::pair<Niflect::CString, CMyClass_0> m_pair_string_my_2;
 		NIF_F()
-		Niflect::TArrayNif<CMyClass_0> m_array_my_3;
+		Niflect::TArray<CMyClass_0> m_array_my_3;
 		NIF_F()
 		Niflect::TMap<Niflect::CString, CMyClass_0> m_map_string_my_4;
 		NIF_F()
-		Niflect::TArrayNif<Niflect::TMap<Niflect::CString, Niflect::TArrayNif<CMyClass_0> > > m_array_map_string_array_my_5;
+		Niflect::TArray<Niflect::TMap<Niflect::CString, Niflect::TArray<CMyClass_0> > > m_array_map_string_array_my_5;
 		NIF_F()
-		Niflect::TMap<Niflect::CString, Niflect::TArrayNif<Niflect::TMap<Niflect::CString, CMyClass_0> > > m_map_string_array_map_string_my_6;
+		Niflect::TMap<Niflect::CString, Niflect::TArray<Niflect::TMap<Niflect::CString, CMyClass_0> > > m_map_string_array_map_string_my_6;
 	};
 }
 

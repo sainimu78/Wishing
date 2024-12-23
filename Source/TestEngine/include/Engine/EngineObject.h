@@ -112,15 +112,15 @@ namespace Engine
 		NIF_F()
 		std::string m_std_string_3;
 		NIF_F()
-		Niflect::TArrayNif<float> m_array_float_4;
+		Niflect::TArray<float> m_array_float_4;
 		NIF_F()
 		std::vector<float> m_std_array_float_5;
 		NIF_F()
-		Niflect::TArrayNif<Niflect::TArrayNif<float> > m_array_array_float_6;
+		Niflect::TArray<Niflect::TArray<float> > m_array_array_float_6;
 		NIF_F()
-		Niflect::TArrayNif<bool> m_bits_7;
+		Niflect::TArray<bool> m_bits_7;
 		NIF_F()
-		Niflect::TArrayNif<Niflect::TArrayNif<bool> > m_array_bits_8;
+		Niflect::TArray<Niflect::TArray<bool> > m_array_bits_8;
 	};
 
 	NIF_T()

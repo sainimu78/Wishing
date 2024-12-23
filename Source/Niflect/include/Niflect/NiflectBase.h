@@ -59,7 +59,8 @@ namespace Niflect
 	
 	using CString = StlCompliantType2::CBasicString<THeapAllocator<char> >;
 
-	//避免与已有的TArray同名, 因此暂时加后缀
+	template <typename TElement>
+	using TArray = StlCompliantType2::TVector<TElement, THeapAllocator<TElement> >;
 	template <typename TElement>
 	using TArrayNif = StlCompliantType2::TVector<TElement, THeapAllocator<TElement> >;
 

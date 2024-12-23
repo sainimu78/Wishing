@@ -117,8 +117,8 @@ namespace TestGen
 					Niflect::TArrayNif<Niflect::CString> vecExpected;
 					vecExpected.push_back("TestAccessor2::TMyTransform<float>");
 					vecExpected.push_back("EngineTypeBindingSettingScope::CMyTM");
-					vecExpected.push_back("Niflect::TArrayNif<float>");
-					vecExpected.push_back("Niflect::TArrayNif<EngineTypeBindingSettingScope::CMyTM>");
+					vecExpected.push_back("Niflect::TArray<float>");
+					vecExpected.push_back("Niflect::TArray<EngineTypeBindingSettingScope::CMyTM>");
 					vecExpected.push_back("TestGenMyScope::MyAliasInt8_0");
 					vecExpected.push_back("TestGenMyScope::MyAliasInt8_1");
 					vecExpected.push_back("Niflect::TMap<Niflect::CString, EngineTypeBindingSettingScope::CMyTM>");
@@ -280,9 +280,9 @@ namespace TestGen
 					vecExpectedA.push_back("TestAccessor2::TMyTransformAccessor<float>");
 					vecExpectedB.push_back("MyScope2::SubScope1::TMySubScope1TM<int64>");
 					vecExpectedA.push_back("TestAccessor2::TMyTransformAccessor<float>");
-					vecExpectedB.push_back("Niflect::TArrayNif<MyScope2::SMyStruct>");
+					vecExpectedB.push_back("Niflect::TArray<MyScope2::SMyStruct>");
 					vecExpectedA.push_back("Niflect::TArrayAccessor");
-					vecExpectedB.push_back("Niflect::TArrayNif");
+					vecExpectedB.push_back("Niflect::TArray");
 					vecExpectedA.push_back("Niflect::CCompoundAccessor");
 					vecExpectedB.push_back("std::pair");
 					uint32 idxA = 0;
@@ -326,12 +326,12 @@ namespace TestGen
 					resolver.Resolve4(&taggedRoot, resolvingContext, resolvedData);
 					ASSERT(log.m_vecText.size() == 0);
 					Niflect::TArrayNif<Niflect::CString> vecExpected;
+					vecExpected.push_back(moduleHeader);//类本身ResocursorNode所在头文件
 					vecExpected.push_back("Niflect/NiflectBase.h");
 					vecExpected.push_back("Engine/Test/TestMyTransform.h");
 					vecExpected.push_back("_GenTime/string");
-					vecExpected.push_back(moduleHeader);//类本身ResocursorNode所在头文件
-					vecExpected.push_back("NiflectGen/Test/TestSomeTypes.h");
 					vecExpected.push_back(moduleHeader);//自定义TMyArray所在头文件
+					vecExpected.push_back("NiflectGen/Test/TestSomeTypes.h");
 					uint32 idxExpected = 0;
 					for (auto& it0 : resolvedData.m_signatureMapping.m_vecItem)
 					{

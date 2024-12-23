@@ -431,7 +431,10 @@ namespace NiflectGen
 
 		for (auto& it0 : vecFilePathAndTaggedTypeIdx)
 		{
-			auto& cursor = data.m_taggedMapping.m_vecType[it0.m_taggedTypeIdx]->GetCursor();
+			auto& tt = data.m_taggedMapping.m_vecType[it0.m_taggedTypeIdx];
+			if (!tt->RequiredGenHIncluded())
+				continue;
+			auto& cursor = tt->GetCursor();
 			CXSourceRange range = clang_getCursorExtent(cursor);
 			CXTranslationUnit translationUnit = clang_Cursor_getTranslationUnit(cursor);
 			{

@@ -19,7 +19,7 @@ namespace TestMyFinding
 		NIF_F()
 		TestAccessor2::TMyTransform<float> m_tm_0;
 		NIF_F()
-		TArrayNif<bool> m_bits_1;
+		TArray<bool> m_bits_1;
 		NIF_F()
 		std::vector<bool> m_std_bits_2;
 	};

@@ -53,7 +53,7 @@ namespace Engine
 		NIF_F()
 		TestModule1::CTestClass1 m_test_class_4;
 		NIF_F()
-		Niflect::TArrayNif<TestModule1::CTestBase1> m_array_test_base_5;
+		Niflect::TArray<TestModule1::CTestBase1> m_array_test_base_5;
 		NIF_F()
 		TestModule1::SMyRecord m_my_record_6;
 	};
@@ -91,7 +91,7 @@ namespace Engine
 
 	private:
 		NIF_F()
-		Niflect::TArrayNif<float> m_derived_array_float_0;
+		Niflect::TArray<float> m_derived_array_float_0;
 		NIF_F()
 		bool m_derived_bool_1;
 		NIF_F()

@@ -48,12 +48,12 @@ namespace TestGen
 					auto it = vecSignature.begin();
 					//单一类型
 					ASSERT(*(it++) == "TestMyFinding::EMyOption");
+					ASSERT(*(it++) == "TestMyFinding::CMyClass_0");
 					ASSERT(*(it++) == "float");
 					ASSERT(*(it++) == "bool");
 					ASSERT(*(it++) == "Niflect::CString");
 					ASSERT(*(it++) == "int32");
 					ASSERT(*(it++) == "TestAccessor2::TMyTransform<float>");
-					ASSERT(*(it++) == "TestMyFinding::CMyClass_0");
 					ASSERT(it == vecSignature.end());
 				});
 		}
@@ -85,10 +85,10 @@ namespace TestGen
 					ASSERT(vecSignature.size() == 4);
 					auto it = vecSignature.begin();
 					//特化
-					ASSERT(*(it++) == "TestAccessor2::TMyTransform<float>");
-					ASSERT(*(it++) == "Niflect::TArrayNif<bool>");
-					ASSERT(*(it++) == "std::vector<bool>");
 					ASSERT(*(it++) == "TestMyFinding::CMyClass_0");
+					ASSERT(*(it++) == "TestAccessor2::TMyTransform<float>");
+					ASSERT(*(it++) == "Niflect::TArray<bool>");
+					ASSERT(*(it++) == "std::vector<bool>");
 					ASSERT(it == vecSignature.end());
 				});
 		}
@@ -120,10 +120,10 @@ namespace TestGen
 					ASSERT(vecSignature.size() == 4);
 					auto it = vecSignature.begin();
 					//1维容器模板
-					ASSERT(*(it++) == "float");
-					ASSERT(*(it++) == "Niflect::TArrayNif<float>");
-					ASSERT(*(it++) == "+float");
 					ASSERT(*(it++) == "TestMyFinding::CMyClass_0");
+					ASSERT(*(it++) == "float");
+					ASSERT(*(it++) == "Niflect::TArray<float>");
+					ASSERT(*(it++) == "+float");
 					ASSERT(it == vecSignature.end());
 				});
 		}
@@ -155,12 +155,12 @@ namespace TestGen
 					ASSERT(vecSignature.size() == 6);
 					auto it = vecSignature.begin();
 					//嵌套1维容器模板
-					ASSERT(*(it++) == "float");
-					ASSERT(*(it++) == "Niflect::TArrayNif<float>");
-					ASSERT(*(it++) == "+float");
-					ASSERT(*(it++) == "Niflect::TArrayNif<Niflect::TArrayNif<float> >");
-					ASSERT(*(it++) == "+Niflect::TArrayNif<float>");
 					ASSERT(*(it++) == "TestMyFinding::CMyClass_0");
+					ASSERT(*(it++) == "float");
+					ASSERT(*(it++) == "Niflect::TArray<float>");
+					ASSERT(*(it++) == "+float");
+					ASSERT(*(it++) == "Niflect::TArray<Niflect::TArray<float> >");
+					ASSERT(*(it++) == "+Niflect::TArray<float>");
 					ASSERT(it == vecSignature.end());
 				});
 		}
@@ -192,12 +192,12 @@ namespace TestGen
 					ASSERT(vecSignature.size() == 6);
 					auto it = vecSignature.begin();
 					//结构模板
+					ASSERT(*(it++) == "TestMyFinding::CMyClass_0");
 					ASSERT(*(it++) == "Niflect::CString");
 					ASSERT(*(it++) == "float");
 					ASSERT(*(it++) == "std::pair<Niflect::CString, float>");
 					ASSERT(*(it++) == "-Niflect::CString");
 					ASSERT(*(it++) == "-float");
-					ASSERT(*(it++) == "TestMyFinding::CMyClass_0");
 					ASSERT(it == vecSignature.end());
 				});
 		}
@@ -229,6 +229,7 @@ namespace TestGen
 					ASSERT(vecSignature.size() == 8);
 					auto it = vecSignature.begin();
 					//1维容器模板与结构模板
+					ASSERT(*(it++) == "TestMyFinding::CMyClass_0");
 					ASSERT(*(it++) == "Niflect::CString");
 					ASSERT(*(it++) == "float");
 					ASSERT(*(it++) == "std::pair<Niflect::CString, float>");
@@ -236,7 +237,6 @@ namespace TestGen
 					ASSERT(*(it++) == "-float");
 					ASSERT(*(it++) == "Niflect::TMap<Niflect::CString, float>");
 					ASSERT(*(it++) == "+std::pair<Niflect::CString, float>");
-					ASSERT(*(it++) == "TestMyFinding::CMyClass_0");
 					ASSERT(it == vecSignature.end());
 				});
 		}
@@ -268,16 +268,16 @@ namespace TestGen
 					ASSERT(vecSignature.size() == 10);
 					auto it = vecSignature.begin();
 					//不同的1容器模板嵌套
+					ASSERT(*(it++) == "TestMyFinding::CMyClass_0");
 					ASSERT(*(it++) == "Niflect::CString");
 					ASSERT(*(it++) == "float");
-					ASSERT(*(it++) == "Niflect::TArrayNif<float>");
+					ASSERT(*(it++) == "Niflect::TArray<float>");
 					ASSERT(*(it++) == "+float");
-					ASSERT(*(it++) == "std::pair<Niflect::CString, Niflect::TArrayNif<float> >");
+					ASSERT(*(it++) == "std::pair<Niflect::CString, Niflect::TArray<float> >");
 					ASSERT(*(it++) == "-Niflect::CString");
-					ASSERT(*(it++) == "-Niflect::TArrayNif<float>");
-					ASSERT(*(it++) == "Niflect::TMap<Niflect::CString, Niflect::TArrayNif<float> >");
-					ASSERT(*(it++) == "+std::pair<Niflect::CString, Niflect::TArrayNif<float> >");
-					ASSERT(*(it++) == "TestMyFinding::CMyClass_0");
+					ASSERT(*(it++) == "-Niflect::TArray<float>");
+					ASSERT(*(it++) == "Niflect::TMap<Niflect::CString, Niflect::TArray<float> >");
+					ASSERT(*(it++) == "+std::pair<Niflect::CString, Niflect::TArray<float> >");
 					ASSERT(it == vecSignature.end());
 				});
 		}
@@ -309,14 +309,14 @@ namespace TestGen
 					ASSERT(vecSignature.size() == 8);
 					auto it = vecSignature.begin();
 					//1维容器模板套特化
-					ASSERT(*(it++) == "Niflect::CString");
-					ASSERT(*(it++) == "Niflect::TArrayNif<bool>");
-					ASSERT(*(it++) == "std::pair<Niflect::CString, Niflect::TArrayNif<bool> >");
-					ASSERT(*(it++) == "-Niflect::CString");
-					ASSERT(*(it++) == "-Niflect::TArrayNif<bool>");
-					ASSERT(*(it++) == "Niflect::TMap<Niflect::CString, Niflect::TArrayNif<bool> >");
-					ASSERT(*(it++) == "+std::pair<Niflect::CString, Niflect::TArrayNif<bool> >");
 					ASSERT(*(it++) == "TestMyFinding::CMyClass_0");
+					ASSERT(*(it++) == "Niflect::CString");
+					ASSERT(*(it++) == "Niflect::TArray<bool>");
+					ASSERT(*(it++) == "std::pair<Niflect::CString, Niflect::TArray<bool> >");
+					ASSERT(*(it++) == "-Niflect::CString");
+					ASSERT(*(it++) == "-Niflect::TArray<bool>");
+					ASSERT(*(it++) == "Niflect::TMap<Niflect::CString, Niflect::TArray<bool> >");
+					ASSERT(*(it++) == "+std::pair<Niflect::CString, Niflect::TArray<bool> >");
 					ASSERT(it == vecSignature.end());
 				});
 		}
@@ -348,6 +348,7 @@ namespace TestGen
 					ASSERT(vecSignature.size() == 10);
 					auto it = vecSignature.begin();
 					//不同的1维容器模板嵌套
+					ASSERT(*(it++) == "TestMyFinding::CMyClass_0");
 					ASSERT(*(it++) == "Niflect::CString");
 					ASSERT(*(it++) == "float");
 					ASSERT(*(it++) == "std::pair<Niflect::CString, float>");
@@ -355,9 +356,8 @@ namespace TestGen
 					ASSERT(*(it++) == "-float");
 					ASSERT(*(it++) == "Niflect::TMap<Niflect::CString, float>");
 					ASSERT(*(it++) == "+std::pair<Niflect::CString, float>");
-					ASSERT(*(it++) == "Niflect::TArrayNif<Niflect::TMap<Niflect::CString, float> >");
+					ASSERT(*(it++) == "Niflect::TArray<Niflect::TMap<Niflect::CString, float> >");
 					ASSERT(*(it++) == "+Niflect::TMap<Niflect::CString, float>");
-					ASSERT(*(it++) == "TestMyFinding::CMyClass_0");
 					ASSERT(it == vecSignature.end());
 				});
 		}
@@ -389,18 +389,18 @@ namespace TestGen
 					ASSERT(vecSignature.size() == 12);
 					auto it = vecSignature.begin();
 					//不同的1维容器模板嵌套
+					ASSERT(*(it++) == "TestMyFinding::CMyClass_0");
 					ASSERT(*(it++) == "Niflect::CString");
 					ASSERT(*(it++) == "float");
-					ASSERT(*(it++) == "Niflect::TArrayNif<float>");
+					ASSERT(*(it++) == "Niflect::TArray<float>");
 					ASSERT(*(it++) == "+float");
-					ASSERT(*(it++) == "std::pair<Niflect::CString, Niflect::TArrayNif<float> >");
+					ASSERT(*(it++) == "std::pair<Niflect::CString, Niflect::TArray<float> >");
 					ASSERT(*(it++) == "-Niflect::CString");
-					ASSERT(*(it++) == "-Niflect::TArrayNif<float>");
-					ASSERT(*(it++) == "Niflect::TMap<Niflect::CString, Niflect::TArrayNif<float> >");
-					ASSERT(*(it++) == "+std::pair<Niflect::CString, Niflect::TArrayNif<float> >");
-					ASSERT(*(it++) == "Niflect::TArrayNif<Niflect::TMap<Niflect::CString, Niflect::TArrayNif<float> > >");
-					ASSERT(*(it++) == "+Niflect::TMap<Niflect::CString, Niflect::TArrayNif<float> >");
-					ASSERT(*(it++) == "TestMyFinding::CMyClass_0");
+					ASSERT(*(it++) == "-Niflect::TArray<float>");
+					ASSERT(*(it++) == "Niflect::TMap<Niflect::CString, Niflect::TArray<float> >");
+					ASSERT(*(it++) == "+std::pair<Niflect::CString, Niflect::TArray<float> >");
+					ASSERT(*(it++) == "Niflect::TArray<Niflect::TMap<Niflect::CString, Niflect::TArray<float> > >");
+					ASSERT(*(it++) == "+Niflect::TMap<Niflect::CString, Niflect::TArray<float> >");
 					ASSERT(it == vecSignature.end());
 				});
 		}
@@ -432,6 +432,7 @@ namespace TestGen
 					ASSERT(vecSignature.size() == 15);
 					auto it = vecSignature.begin();
 					//位置在后的成员不产生重复Signature
+					ASSERT(*(it++) == "TestMyFinding::CMyClass_0");
 					ASSERT(*(it++) == "Niflect::CString");
 					ASSERT(*(it++) == "float");
 					ASSERT(*(it++) == "std::pair<Niflect::CString, float>");
@@ -439,14 +440,13 @@ namespace TestGen
 					ASSERT(*(it++) == "-float");
 					ASSERT(*(it++) == "Niflect::TMap<Niflect::CString, float>");
 					ASSERT(*(it++) == "+std::pair<Niflect::CString, float>");
-					ASSERT(*(it++) == "Niflect::TArrayNif<Niflect::TMap<Niflect::CString, float> >");
+					ASSERT(*(it++) == "Niflect::TArray<Niflect::TMap<Niflect::CString, float> >");
 					ASSERT(*(it++) == "+Niflect::TMap<Niflect::CString, float>");
-					ASSERT(*(it++) == "std::pair<Niflect::CString, Niflect::TArrayNif<Niflect::TMap<Niflect::CString, float> > >");
+					ASSERT(*(it++) == "std::pair<Niflect::CString, Niflect::TArray<Niflect::TMap<Niflect::CString, float> > >");
 					ASSERT(*(it++) == "-Niflect::CString");
-					ASSERT(*(it++) == "-Niflect::TArrayNif<Niflect::TMap<Niflect::CString, float> >");
-					ASSERT(*(it++) == "Niflect::TMap<Niflect::CString, Niflect::TArrayNif<Niflect::TMap<Niflect::CString, float> > >");
-					ASSERT(*(it++) == "+std::pair<Niflect::CString, Niflect::TArrayNif<Niflect::TMap<Niflect::CString, float> > >");
-					ASSERT(*(it++) == "TestMyFinding::CMyClass_0");
+					ASSERT(*(it++) == "-Niflect::TArray<Niflect::TMap<Niflect::CString, float> >");
+					ASSERT(*(it++) == "Niflect::TMap<Niflect::CString, Niflect::TArray<Niflect::TMap<Niflect::CString, float> > >");
+					ASSERT(*(it++) == "+std::pair<Niflect::CString, Niflect::TArray<Niflect::TMap<Niflect::CString, float> > >");
 					ASSERT(it == vecSignature.end());
 				});
 		}
@@ -478,15 +478,16 @@ namespace TestGen
 					ASSERT(vecSignature.size() == 40);
 					auto it = vecSignature.begin();
 					//综合测试
+					ASSERT(*(it++) == "TestMyFinding::CMyClass_0");
 					ASSERT(*(it++) == "float");
 					ASSERT(*(it++) == "bool");
-					ASSERT(*(it++) == "Niflect::TArrayNif<float>");
+					ASSERT(*(it++) == "Niflect::TArray<float>");
 					ASSERT(*(it++) == "+float");
-					ASSERT(*(it++) == "Niflect::TArrayNif<bool>");
-					ASSERT(*(it++) == "Niflect::TArrayNif<Niflect::TArrayNif<float> >");
-					ASSERT(*(it++) == "+Niflect::TArrayNif<float>");
-					ASSERT(*(it++) == "Niflect::TArrayNif<Niflect::TArrayNif<bool> >");
-					ASSERT(*(it++) == "+Niflect::TArrayNif<bool>");
+					ASSERT(*(it++) == "Niflect::TArray<bool>");
+					ASSERT(*(it++) == "Niflect::TArray<Niflect::TArray<float> >");
+					ASSERT(*(it++) == "+Niflect::TArray<float>");
+					ASSERT(*(it++) == "Niflect::TArray<Niflect::TArray<bool> >");
+					ASSERT(*(it++) == "+Niflect::TArray<bool>");
 					ASSERT(*(it++) == "std::vector<float>");
 					ASSERT(*(it++) == "+float");
 					ASSERT(*(it++) == "std::vector<bool>");
@@ -497,27 +498,26 @@ namespace TestGen
 					ASSERT(*(it++) == "Niflect::TMap<Niflect::CString, float>");
 					ASSERT(*(it++) == "+std::pair<Niflect::CString, float>");
 					ASSERT(*(it++) == "int32");
-					ASSERT(*(it++) == "std::pair<Niflect::CString, Niflect::TArrayNif<float> >");
+					ASSERT(*(it++) == "std::pair<Niflect::CString, Niflect::TArray<float> >");
 					ASSERT(*(it++) == "-Niflect::CString");
-					ASSERT(*(it++) == "-Niflect::TArrayNif<float>");
-					ASSERT(*(it++) == "Niflect::TMap<Niflect::CString, Niflect::TArrayNif<float> >");
-					ASSERT(*(it++) == "+std::pair<Niflect::CString, Niflect::TArrayNif<float> >");
-					ASSERT(*(it++) == "std::pair<Niflect::CString, Niflect::TArrayNif<bool> >");
+					ASSERT(*(it++) == "-Niflect::TArray<float>");
+					ASSERT(*(it++) == "Niflect::TMap<Niflect::CString, Niflect::TArray<float> >");
+					ASSERT(*(it++) == "+std::pair<Niflect::CString, Niflect::TArray<float> >");
+					ASSERT(*(it++) == "std::pair<Niflect::CString, Niflect::TArray<bool> >");
 					ASSERT(*(it++) == "-Niflect::CString");
-					ASSERT(*(it++) == "-Niflect::TArrayNif<bool>");
-					ASSERT(*(it++) == "Niflect::TMap<Niflect::CString, Niflect::TArrayNif<bool> >");
-					ASSERT(*(it++) == "+std::pair<Niflect::CString, Niflect::TArrayNif<bool> >");
-					ASSERT(*(it++) == "Niflect::TArrayNif<Niflect::TMap<Niflect::CString, float> >");
+					ASSERT(*(it++) == "-Niflect::TArray<bool>");
+					ASSERT(*(it++) == "Niflect::TMap<Niflect::CString, Niflect::TArray<bool> >");
+					ASSERT(*(it++) == "+std::pair<Niflect::CString, Niflect::TArray<bool> >");
+					ASSERT(*(it++) == "Niflect::TArray<Niflect::TMap<Niflect::CString, float> >");
 					ASSERT(*(it++) == "+Niflect::TMap<Niflect::CString, float>");
-					ASSERT(*(it++) == "std::pair<Niflect::CString, Niflect::TArrayNif<Niflect::TMap<Niflect::CString, float> > >");
+					ASSERT(*(it++) == "std::pair<Niflect::CString, Niflect::TArray<Niflect::TMap<Niflect::CString, float> > >");
 					ASSERT(*(it++) == "-Niflect::CString");
-					ASSERT(*(it++) == "-Niflect::TArrayNif<Niflect::TMap<Niflect::CString, float> >");
-					ASSERT(*(it++) == "Niflect::TMap<Niflect::CString, Niflect::TArrayNif<Niflect::TMap<Niflect::CString, float> > >");
-					ASSERT(*(it++) == "+std::pair<Niflect::CString, Niflect::TArrayNif<Niflect::TMap<Niflect::CString, float> > >");
+					ASSERT(*(it++) == "-Niflect::TArray<Niflect::TMap<Niflect::CString, float> >");
+					ASSERT(*(it++) == "Niflect::TMap<Niflect::CString, Niflect::TArray<Niflect::TMap<Niflect::CString, float> > >");
+					ASSERT(*(it++) == "+std::pair<Niflect::CString, Niflect::TArray<Niflect::TMap<Niflect::CString, float> > >");
 					ASSERT(*(it++) == "TestAccessor2::TMyTransform<float>");
-					ASSERT(*(it++) == "Niflect::TArrayNif<Niflect::TMap<Niflect::CString, Niflect::TArrayNif<float> > >");
-					ASSERT(*(it++) == "+Niflect::TMap<Niflect::CString, Niflect::TArrayNif<float> >");
-					ASSERT(*(it++) == "TestMyFinding::CMyClass_0");
+					ASSERT(*(it++) == "Niflect::TArray<Niflect::TMap<Niflect::CString, Niflect::TArray<float> > >");
+					ASSERT(*(it++) == "+Niflect::TMap<Niflect::CString, Niflect::TArray<float> >");
 					ASSERT(it == vecSignature.end());
 				});
 		}
@@ -549,10 +549,10 @@ namespace TestGen
 					ASSERT(vecSignature.size() == 4);
 					auto it = vecSignature.begin();
 					//成员为TaggedType
-					ASSERT(*(it++) == "bool");
 					ASSERT(*(it++) == "TestMyFinding::CMyClass_0");
-					ASSERT(*(it++) == "float");
 					ASSERT(*(it++) == "TestMyFinding::CMyClass_1");
+					ASSERT(*(it++) == "bool");
+					ASSERT(*(it++) == "float");
 					ASSERT(it == vecSignature.end());
 				});
 		}
@@ -584,32 +584,32 @@ namespace TestGen
 					ASSERT(vecSignature.size() == 26);
 					auto it = vecSignature.begin();
 					//成员含TaggedType的综合测试
+					ASSERT(*(it++) == "TestMyFinding::CMyClass_0");
+					ASSERT(*(it++) == "TestMyFinding::CMyClass_1");
 					ASSERT(*(it++) == "bool");
 					ASSERT(*(it++) == "float");
-					ASSERT(*(it++) == "TestMyFinding::CMyClass_0");
 					ASSERT(*(it++) == "Niflect::CString");
 					ASSERT(*(it++) == "std::pair<Niflect::CString, TestMyFinding::CMyClass_0>");
 					ASSERT(*(it++) == "-Niflect::CString");
 					ASSERT(*(it++) == "-TestMyFinding::CMyClass_0");
-					ASSERT(*(it++) == "Niflect::TArrayNif<TestMyFinding::CMyClass_0>");
+					ASSERT(*(it++) == "Niflect::TArray<TestMyFinding::CMyClass_0>");
 					ASSERT(*(it++) == "+TestMyFinding::CMyClass_0");
 					ASSERT(*(it++) == "Niflect::TMap<Niflect::CString, TestMyFinding::CMyClass_0>");
 					ASSERT(*(it++) == "+std::pair<Niflect::CString, TestMyFinding::CMyClass_0>");
-					ASSERT(*(it++) == "std::pair<Niflect::CString, Niflect::TArrayNif<TestMyFinding::CMyClass_0> >");
+					ASSERT(*(it++) == "std::pair<Niflect::CString, Niflect::TArray<TestMyFinding::CMyClass_0> >");
 					ASSERT(*(it++) == "-Niflect::CString");
-					ASSERT(*(it++) == "-Niflect::TArrayNif<TestMyFinding::CMyClass_0>");
-					ASSERT(*(it++) == "Niflect::TMap<Niflect::CString, Niflect::TArrayNif<TestMyFinding::CMyClass_0> >");
-					ASSERT(*(it++) == "+std::pair<Niflect::CString, Niflect::TArrayNif<TestMyFinding::CMyClass_0> >");
-					ASSERT(*(it++) == "Niflect::TArrayNif<Niflect::TMap<Niflect::CString, Niflect::TArrayNif<TestMyFinding::CMyClass_0> > >");
-					ASSERT(*(it++) == "+Niflect::TMap<Niflect::CString, Niflect::TArrayNif<TestMyFinding::CMyClass_0> >");
-					ASSERT(*(it++) == "Niflect::TArrayNif<Niflect::TMap<Niflect::CString, TestMyFinding::CMyClass_0> >");
+					ASSERT(*(it++) == "-Niflect::TArray<TestMyFinding::CMyClass_0>");
+					ASSERT(*(it++) == "Niflect::TMap<Niflect::CString, Niflect::TArray<TestMyFinding::CMyClass_0> >");
+					ASSERT(*(it++) == "+std::pair<Niflect::CString, Niflect::TArray<TestMyFinding::CMyClass_0> >");
+					ASSERT(*(it++) == "Niflect::TArray<Niflect::TMap<Niflect::CString, Niflect::TArray<TestMyFinding::CMyClass_0> > >");
+					ASSERT(*(it++) == "+Niflect::TMap<Niflect::CString, Niflect::TArray<TestMyFinding::CMyClass_0> >");
+					ASSERT(*(it++) == "Niflect::TArray<Niflect::TMap<Niflect::CString, TestMyFinding::CMyClass_0> >");
 					ASSERT(*(it++) == "+Niflect::TMap<Niflect::CString, TestMyFinding::CMyClass_0>");
-					ASSERT(*(it++) == "std::pair<Niflect::CString, Niflect::TArrayNif<Niflect::TMap<Niflect::CString, TestMyFinding::CMyClass_0> > >");
+					ASSERT(*(it++) == "std::pair<Niflect::CString, Niflect::TArray<Niflect::TMap<Niflect::CString, TestMyFinding::CMyClass_0> > >");
 					ASSERT(*(it++) == "-Niflect::CString");
-					ASSERT(*(it++) == "-Niflect::TArrayNif<Niflect::TMap<Niflect::CString, TestMyFinding::CMyClass_0> >");
-					ASSERT(*(it++) == "Niflect::TMap<Niflect::CString, Niflect::TArrayNif<Niflect::TMap<Niflect::CString, TestMyFinding::CMyClass_0> > >");
-					ASSERT(*(it++) == "+std::pair<Niflect::CString, Niflect::TArrayNif<Niflect::TMap<Niflect::CString, TestMyFinding::CMyClass_0> > >");
-					ASSERT(*(it++) == "TestMyFinding::CMyClass_1");
+					ASSERT(*(it++) == "-Niflect::TArray<Niflect::TMap<Niflect::CString, TestMyFinding::CMyClass_0> >");
+					ASSERT(*(it++) == "Niflect::TMap<Niflect::CString, Niflect::TArray<Niflect::TMap<Niflect::CString, TestMyFinding::CMyClass_0> > >");
+					ASSERT(*(it++) == "+std::pair<Niflect::CString, Niflect::TArray<Niflect::TMap<Niflect::CString, TestMyFinding::CMyClass_0> > >");
 					ASSERT(it == vecSignature.end());
 				});
 		}
@@ -640,14 +640,14 @@ namespace TestGen
 					resolvedData.m_signatureMapping.DebugGenSignatures(vecSignature);
 					Niflect::TArrayNif<Niflect::CString> vecExpected;
 					//1维容器模板套结构模板
+					vecExpected.push_back("TestMyFinding::CMyClass_0");
 					vecExpected.push_back("Niflect::CString");
 					vecExpected.push_back("float");
 					vecExpected.push_back("std::pair<Niflect::CString, float>");
 					vecExpected.push_back("-Niflect::CString");
 					vecExpected.push_back("-float");
-					vecExpected.push_back("Niflect::TArrayNif<std::pair<Niflect::CString, float> >");
+					vecExpected.push_back("Niflect::TArray<std::pair<Niflect::CString, float> >");
 					vecExpected.push_back("+std::pair<Niflect::CString, float>");
-					vecExpected.push_back("TestMyFinding::CMyClass_0");
 					uint32 idx = 0;
 					for (auto& it : vecSignature)
 						ASSERT(vecExpected[idx++] == it);

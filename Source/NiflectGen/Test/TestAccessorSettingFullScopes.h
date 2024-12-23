@@ -43,8 +43,8 @@ namespace TestGenMyScope
 	};
 
 	using MyAliasSub_0 = CSub_0;
-	using MyAliasSub_1 = Niflect::TArrayNif<float>;
-	typedef Niflect::TArrayNif<float> MyAliasSub_2;
+	using MyAliasSub_1 = Niflect::TArray<float>;
+	typedef Niflect::TArray<float> MyAliasSub_2;
 }
 
 namespace EngineTypeBindingSettingScope
@@ -57,8 +57,8 @@ namespace EngineTypeBindingSettingScope
 
 	using CMyTM = TestAccessor2::TMyTransform<float>;
 	NIF_AS_A() TSetting<TestAccessor2::TMyTransformAccessor<float>, CMyTM>;
-	NIF_AS_A() TSetting<TestAccessor2::TMyTransformAccessor<float>, TArrayNif<float> >;
-	NIF_AS_A() TSetting<TestAccessor2::TMyTransformAccessor<float>, TArrayNif<EngineTypeBindingSettingScope::CMyTM> >;
+	NIF_AS_A() TSetting<TestAccessor2::TMyTransformAccessor<float>, TArray<float> >;
+	NIF_AS_A() TSetting<TestAccessor2::TMyTransformAccessor<float>, TArray<EngineTypeBindingSettingScope::CMyTM> >;
 
 	using namespace TestGenMyScope;
 	NIF_AS_A() TSetting<TestAccessor2::TMyTransformAccessor<float>, TestGenMyScope::MyAliasInt8_0>;
