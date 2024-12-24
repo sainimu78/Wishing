@@ -337,18 +337,19 @@ namespace NiflectGen
     }
     void CTemplateBasedCppWriter::WriteModuleReg(const SModuleRegWritingContext2& context, SModuleRegWritingData2& data) const
     {
-        auto moduleFilePath = NiflectUtil::FormatString("%s%s", m_moduleRegInfo.m_userProvided.m_moduleName.c_str(), NiflectGenDefinition::FileExt::PrivateH);
+        auto moduleGenPrivateFilePath = NiflectUtil::FormatString("%s%s", m_moduleRegInfo.m_userProvided.m_moduleName.c_str(), NiflectGenDefinition::FileExt::PrivateH);
+        data.m_moduleRegGenData.m_privateHIncludePath = NiflectUtil::ConcatPath(m_moduleRegInfo.m_genSrcBasePath, moduleGenPrivateFilePath);
         auto splitsCount = context.m_vecItem.size();
         if (splitsCount > 0)
         {
-            Niflect::CString genHFileName;
+            Niflect::CString moduleGenHFilePath;
             const bool toGenStaticModuleRegHeader = true;
             if (context.m_moduleRegInfo.m_userProvided.m_toGenStaticModuleReg)
             {
                 if (toGenStaticModuleRegHeader)
                 {
-                    genHFileName = NiflectUtil::FormatString("%s%s", m_moduleRegInfo.m_userProvided.m_moduleName.c_str(), NiflectGenDefinition::FileExt::GenH);
-                    data.m_moduleRegGenData.m_genHIncludePath = NiflectUtil::ConcatPath(NiflectGenDefinition::DirName::GenInclude, genHFileName);
+                    moduleGenHFilePath = NiflectUtil::FormatString("%s%s", m_moduleRegInfo.m_userProvided.m_moduleName.c_str(), NiflectGenDefinition::FileExt::GenH);
+                    data.m_moduleRegGenData.m_genHIncludePath = NiflectUtil::ConcatPath(m_moduleRegInfo.m_genIncludeBasePath, moduleGenHFilePath);
                 }
             }
             {
@@ -367,7 +368,7 @@ namespace NiflectGen
                     if (context.m_moduleRegInfo.m_userProvided.m_toGenStaticModuleReg)
                     {
                         if (toGenStaticModuleRegHeader)
-                            vecHeaderData.push_back(genHFileName);
+                            vecHeaderData.push_back(moduleGenHFilePath);
                         else
                             vecHeaderData.push_back(NiflectGenDefinition::NiflectFramework::FilePath::NiflectModuleInfoHeader);
                     }
@@ -442,7 +443,6 @@ namespace NiflectGen
                 }
             }
         }
-        data.m_moduleRegGenData.m_privateHIncludePath = moduleFilePath;
     }
     void CTemplateBasedCppWriter::WriteVerificationCode()
     {

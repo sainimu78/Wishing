@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.20.0)
 
 include(../RootPathSetup.cmake)
+set(ProjectName TestEditorCLI)
+set(ProjectRootSourcePath "${RootSourcePath}")
+set(ProjectGeneratedRootPath "${GeneratedRootPath}")
 
 include(${RootProjectPath}/CommonBeforeProject.cmake)
 project(TestEditorCLI)

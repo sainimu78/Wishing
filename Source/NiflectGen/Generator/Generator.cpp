@@ -245,7 +245,7 @@ namespace NiflectGen
         const auto* outputDirPath = &m_moduleRegInfo.m_userProvided.m_genOutputDirPath;
         if (!m_moduleRegInfo.m_userProvided.m_genSourceOutputDirPath.empty())
             outputDirPath = &m_moduleRegInfo.m_userProvided.m_genSourceOutputDirPath;
-        auto filePath = NiflectUtil::ConcatPath(m_moduleRegInfo.m_userProvided.m_moduleName, relativeFilePath);
+        auto filePath = NiflectUtil::ConcatPath(m_moduleRegInfo.m_genSourceRootParentDir, relativeFilePath);
         filePath = NiflectUtil::ConcatPath(*outputDirPath, filePath);
         CCodeWriter writer;
         writer.WriteLines(linesCode);
@@ -266,7 +266,7 @@ namespace NiflectGen
     }
     void CGenerator::SaveFileToGenSource(const CCodeLines& linesCode, const Niflect::CString& relativeFilePath) const
     {
-        auto relativeToGenSource = NiflectUtil::ConcatPath(m_moduleRegInfo.m_moduleGenSource, relativeFilePath);
+        auto relativeToGenSource = NiflectUtil::ConcatPath(m_moduleRegInfo.m_moduleGenSourceRoot, relativeFilePath);
         this->SaveCodeToFile(linesCode, relativeToGenSource);
     }
     void CGenerator::Save2(const CCodeGenData& genData) const

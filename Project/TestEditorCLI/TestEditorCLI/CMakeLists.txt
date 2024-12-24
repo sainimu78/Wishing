@@ -14,11 +14,10 @@ set(SrcAll "")
 list(APPEND SrcAll ${ModuleSrc})
 list(APPEND SrcAll ${ModuleInclude})
 
-get_filename_component(NiflectGeneratedRootPath "${RootSourcePath}/../Generated/NiflectGenerated" ABSOLUTE)
-set(ModuleGenPath ${NiflectGeneratedRootPath}/${ModuleName}/_GenSource)
-set(GenIncludePath ${ModuleGenPath}/include)
+set(GenSourcePrivate ${ProjectGeneratedRootPath}/${ModuleName}/_GenSource)
+set(GenSourcePublic ${GenSourcePrivate}/include)
 #beign, 用于模式 EGeneratingHeaderAndSourceFileMode::ESourceAndHeader, 将生成文件加到模块
-#file(GLOB_RECURSE GeneratedSrc ${ModuleGenPath}/*.cpp ${ModuleGenPath}/*.h)
+#file(GLOB_RECURSE GeneratedSrc ${GenSourcePrivate}/*.cpp ${GenSourcePrivate}/*.h)
 #create_source_group(${NiflectGeneratedRootPath} ${GeneratedSrc})
 #list(APPEND SrcAll ${GeneratedSrc})
 #end
@@ -31,8 +30,8 @@ target_include_directories(${ModuleName}
 )
 
 target_include_directories(${ModuleName}
-	PRIVATE ${ModuleGenPath}
-	PUBLIC ${GenIncludePath}
+	PRIVATE ${GenSourcePrivate}
+	PUBLIC ${GenSourcePublic}
 )
 
 target_link_libraries(${ModuleName} PRIVATE TestEngine)
@@ -51,7 +50,7 @@ if (WIN32)
 	set(ToolRelPathForTest Windows/vs2022_x64)
 endif()
 
-set(NiflectGeneratedModulePrivateH ${ModuleGenPath}/${ModuleName}_private.h)
+set(NiflectGeneratedModulePrivateH ${GenSourcePrivate}/${ModuleName}_private.h)
 add_custom_command(
     OUTPUT "${NiflectGeneratedModulePrivateH}"
     COMMAND "${RootSourcePath}/../Build/NiflectGenTool/${ToolRelPathForTest}/Debug/NiflectGenTool/NiflectGenTool${ExeExt}" 
@@ -60,7 +59,7 @@ add_custom_command(
             -a "${RootSourcePath}/Niflect/include/Niflect/CommonlyUsed/DefaultAccessorSetting.h" 
             -t "${RootSourcePath}/Niflect/include" 
             -I "${IncludePath}" 
-            -g "${NiflectGeneratedRootPath}"
+            -g "${ProjectGeneratedRootPath}/${ModuleName}"
 			-gbt 
     DEPENDS ${ModuleInclude}
     COMMENT "NiflectGenTool generating ..."

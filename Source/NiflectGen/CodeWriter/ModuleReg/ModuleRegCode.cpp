@@ -14,18 +14,21 @@ namespace NiflectGen
 
 		m_userProvided = info;
 
-		auto moduleGenDirPath = NiflectUtil::ConcatPath(info.m_genOutputDirPath, info.m_moduleName);
+		//m_genSourceRootParentDir 现为空, 预留附加一层输出目录
+
+		auto moduleGenDirPath = NiflectUtil::ConcatPath(info.m_genOutputDirPath, m_genSourceRootParentDir);
 		NiflectUtil::DeleteDirectory(moduleGenDirPath);
 		if (!info.m_genSourceOutputDirPath.empty())
 		{
-			auto genSourceOutputDirPath = NiflectUtil::ConcatPath(info.m_genSourceOutputDirPath, info.m_moduleName);
+			auto genSourceOutputDirPath = NiflectUtil::ConcatPath(info.m_genSourceOutputDirPath, m_genSourceRootParentDir);
 			NiflectUtil::DeleteDirectory(genSourceOutputDirPath);
 		}
 
-		m_moduleGenSource = NiflectGenDefinition::DirName::GenSource;
+		m_moduleGenSourceRoot = NiflectGenDefinition::DirName::GenSourceRoot;
 		m_moduleRegBasePath = NiflectGenDefinition::DirName::ModuleReg;
 		m_typeRegBasePath = NiflectGenDefinition::DirName::TypeReg;
 		m_genIncludeBasePath = NiflectGenDefinition::DirName::GenInclude;
+		m_genSrcBasePath = NiflectGenDefinition::DirName::GenSrc;
 
 		m_moduleRegisteredTypeHeaderFilePath = NiflectUtil::ConcatPath(m_typeRegBasePath, NiflectGenDefinition::NiflectFramework::FileName::ModuleRegisteredTypeHeader);
 		m_moduleScopeSymbolPrefix = "_" + info.m_moduleName + "_";

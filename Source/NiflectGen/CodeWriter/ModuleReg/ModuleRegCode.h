@@ -43,11 +43,13 @@ namespace NiflectGen
 		bool Init(const CModuleRegInfo& info);
 		Niflect::CString GetSourceFileExtForGenFileMode() const;
 
-		Niflect::CString m_moduleGenSource;
+		Niflect::CString m_moduleGenSourceRoot;
 		Niflect::CString m_typeRegBasePath;
 		Niflect::CString m_genIncludeBasePath;
+		Niflect::CString m_genSrcBasePath;
 		Niflect::CString m_moduleRegBasePath;
 		Niflect::CString m_genTimeBasePath;
+		Niflect::CString m_genSourceRootParentDir;
 		Niflect::CString m_moduleRegisteredTypeHeaderFilePath;
 		Niflect::CString m_moduleScopeSymbolPrefix;
 		Niflect::TArrayNif<Niflect::CString> m_vecParsingHeaderSearchPath;

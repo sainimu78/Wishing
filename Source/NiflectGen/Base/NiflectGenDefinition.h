@@ -33,10 +33,11 @@ namespace NiflectGenDefinition
 
 	namespace DirName
 	{
-		constexpr const char* GenSource = "_GenSource";
+		constexpr const char* GenSourceRoot = "_GenSource";
 		constexpr const char* ModuleReg = "_ModuleReg";
 		constexpr const char* TypeReg = "_TypeReg";
 		constexpr const char* GenInclude = "include";
+		constexpr const char* GenSrc = "";
 		constexpr const char* GenTime = "_GenTime";
 		constexpr const char* Splitted = "_Splitted";
 	}
