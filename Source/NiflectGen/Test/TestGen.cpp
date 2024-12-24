@@ -380,6 +380,7 @@ namespace TestGen
 					writer.Write3(writingContext, genData);
 				});
 			gen->Save2(genData);
+			gen->Cleanup();
 		}
 	}
 	void TestCollector()

@@ -293,6 +293,10 @@ namespace NiflectGen
         this->SaveFileToGenSource(genData.m_moduleRegGenData.m_privateH, genData.m_moduleRegGenData.m_privateHIncludePath);
         this->SaveFileToGenSource(genData.m_moduleRegisteredTypeHeaderGenData.m_linesHeader, m_moduleRegInfo.m_moduleRegisteredTypeHeaderFilePath);
     }
+    void CGenerator::Cleanup() const
+    {
+        NiflectUtil::DeleteDirectory(m_moduleRegInfo.m_genTimeBasePath);
+    }
 
     CXChildVisitResult visitAST(CXCursor cursor, CXCursor parent, CXClientData data)
     {

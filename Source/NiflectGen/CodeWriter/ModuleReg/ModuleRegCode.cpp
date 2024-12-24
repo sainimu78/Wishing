@@ -35,17 +35,17 @@ namespace NiflectGen
 		//须添加在最后, NiflectMacro.h 应使用 _GenTime 中生成的, 而 NiflectMacro.h 仍须使用 m_toolHeaderSearchPath 中的其它头文件, 如 ConcatSymbols.h
 		m_writingHeaderSearchPaths.m_vecForRegularConversion.push_back(m_userProvided.m_toolHeaderSearchPath);
 		
-		auto genTimeBasePath = NiflectUtil::ConcatPath(moduleGenDirPath, NiflectGenDefinition::DirName::GenTime);
-		GenerateBypassSTLHeaders(genTimeBasePath);
+		m_genTimeBasePath = NiflectUtil::ConcatPath(moduleGenDirPath, NiflectGenDefinition::DirName::GenTime);
+		GenerateBypassSTLHeaders(m_genTimeBasePath);
 		{
 			CGenLog log;
 			Niflect::TArrayNif<Niflect::CString> vecToolHeaderSearchPath;
 			vecToolHeaderSearchPath.push_back(m_userProvided.m_toolHeaderSearchPath);
-			SGenTimeNiflectMacroHeaderWritingContext ctx{ vecToolHeaderSearchPath, genTimeBasePath, &log };
+			SGenTimeNiflectMacroHeaderWritingContext ctx{ vecToolHeaderSearchPath, m_genTimeBasePath, &log };
 			WriteGenTimeNiflectMacroHeader(ctx);
 		}
 
-		m_writingHeaderSearchPaths.m_vecForGenTimeConversion.push_back(NiflectUtil::ConvertToSearchPath(genTimeBasePath));
+		m_writingHeaderSearchPaths.m_vecForGenTimeConversion.push_back(NiflectUtil::ConvertToSearchPath(m_genTimeBasePath));
 
 		for (auto& it : m_writingHeaderSearchPaths.m_vecForGenTimeConversion)
 			m_vecParsingHeaderSearchPath.push_back(it);

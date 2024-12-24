@@ -313,6 +313,7 @@ int main(int argc, const char** argv)
 					CCodeGenData genData;
 					gen->Generate(genData);
 					gen->Save2(genData);
+					gen->Cleanup();
 				}
 				else
 				{
