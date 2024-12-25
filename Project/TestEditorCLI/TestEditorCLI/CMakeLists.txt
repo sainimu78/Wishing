@@ -3,18 +3,18 @@ cmake_minimum_required(VERSION 3.20.0)
 set(ModuleName TestEditorCLI)
 
 set(ModuleRootPath ${RootSourcePath}/${ModuleName})
-set(SourcePath ${ModuleRootPath}/src)
+set(ModuleSourcePath ${ModuleRootPath}/src)
 set(ModuleIncludePath ${ModuleRootPath}/include)
 
 set(ModuleIncludePaths "")
 list(APPEND ModuleIncludePaths ${ModuleIncludePath})
 
-file(GLOB_RECURSE ModuleSrc ${SourcePath}/*.cpp ${SourcePath}/*.h)
-create_source_group(${SourcePath} ${ModuleSrc})
+file(GLOB_RECURSE ModuleSources ${ModuleSourcePath}/*.cpp ${ModuleSourcePath}/*.h)
+create_source_group(${ModuleSourcePath} ${ModuleSources})
 file(GLOB_RECURSE ModuleHeaders ${ModuleIncludePath}/*.h)
 create_source_group(${ModuleIncludePath} ${ModuleHeaders})
 set(SrcAll "")
-list(APPEND SrcAll ${ModuleSrc})
+list(APPEND SrcAll ${ModuleSources})
 list(APPEND SrcAll ${ModuleHeaders})
 
 set(GenOutputDirPath ${ProjectGeneratedRootPath}/${ModuleName})
@@ -29,7 +29,7 @@ set(GenSourcePublic ${GenSourcePrivate}/include)
 add_executable(${ModuleName} ${SrcAll})
 
 target_include_directories(${ModuleName}
-	PRIVATE ${SourcePath}
+	PRIVATE ${ModuleSourcePath}
 	PUBLIC ${ModuleIncludePath}
 )
 

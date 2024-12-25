@@ -3,20 +3,20 @@ cmake_minimum_required(VERSION 3.20.0)
 set(ModuleName TestEngine)
 
 set(ModuleRootPath ${RootSourcePath}/${ModuleName})
-set(SourcePath ${ModuleRootPath}/src)
+set(ModuleSourcePath ${ModuleRootPath}/src)
 set(ModuleIncludePath ${ModuleRootPath}/include)
 
 set(ModuleIncludePaths "")
 list(APPEND ModuleIncludePaths ${ModuleIncludePath})
 list(APPEND ModuleIncludePaths ${RootSourcePath}/TestModule1/include)
 
-file(GLOB_RECURSE ModuleSrc ${SourcePath}/*.cpp ${SourcePath}/*.h)
-create_source_group(${SourcePath} ${ModuleSrc})
-file(GLOB_RECURSE ModuleInclude ${ModuleIncludePath}/*.h)
-create_source_group(${ModuleIncludePath} ${ModuleInclude})
+file(GLOB_RECURSE ModuleSources ${ModuleSourcePath}/*.cpp ${ModuleSourcePath}/*.h)
+create_source_group(${ModuleSourcePath} ${ModuleSources})
+file(GLOB_RECURSE ModuleHeaders ${ModuleIncludePath}/*.h)
+create_source_group(${ModuleIncludePath} ${ModuleHeaders})
 set(SrcAll "")
-list(APPEND SrcAll ${ModuleSrc})
-list(APPEND SrcAll ${ModuleInclude})
+list(APPEND SrcAll ${ModuleSources})
+list(APPEND SrcAll ${ModuleHeaders})
 
 set(GenOutputDirPath ${ProjectGeneratedRootPath}/${ModuleName})
 set(GenSourcePrivate ${GenOutputDirPath}/_GenSource)
@@ -29,7 +29,7 @@ set(GenSourcePublic ${GenSourcePrivate}/include)
 
 add_library(${ModuleName} SHARED ${SrcAll})
 
-target_precompile_headers(${ModuleName} PRIVATE ${SourcePath}/EngineDevelopmentMacro.h)
+target_precompile_headers(${ModuleName} PRIVATE ${ModuleSourcePath}/EngineDevelopmentMacro.h)
 
 set_target_properties(${ModuleName} PROPERTIES 
     RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG}
@@ -37,7 +37,7 @@ set_target_properties(${ModuleName} PROPERTIES
 )
 
 target_include_directories(${ModuleName}
-	PRIVATE ${SourcePath}
+	PRIVATE ${ModuleSourcePath}
 	PUBLIC ${ModuleIncludePaths}
 )
 
@@ -54,9 +54,9 @@ target_compile_definitions(${ModuleName}
 target_link_libraries(${ModuleName} PRIVATE Niflect)
 target_link_libraries(${ModuleName} PRIVATE TestModule1)
 
-set(ArgsModuleInclude "")
-foreach(It IN LISTS ModuleInclude)
-    list(APPEND ArgsModuleInclude "-h" "${It}")
+set(ArgsModuleHeaders "")
+foreach(It IN LISTS ModuleHeaders)
+    list(APPEND ArgsModuleHeaders "-h" "${It}")
 endforeach()
 set(ArgsModuleIncludePaths "")
 foreach(It IN LISTS ModuleIncludePaths)
@@ -75,7 +75,7 @@ add_custom_command(
     OUTPUT "${NiflectGeneratedModulePrivateH}"
     COMMAND "${RootSourcePath}/../Build/NiflectGenTool/${ToolRelPathForTest}/Debug/NiflectGenTool/NiflectGenTool${ExeExt}" 
             -n ${ModuleName} 
-            ${ArgsModuleInclude}
+            ${ArgsModuleHeaders}
             -am ENGINE_API 
             -amh "${ModuleIncludePath}/Engine/EngineCommon.h" 
             -a "${ModuleIncludePath}/EngineAccessorSetting.h" 
@@ -83,7 +83,7 @@ add_custom_command(
             ${ArgsModuleIncludePaths} 
             -g "${GenOutputDirPath}"
 			-gbt 
-    DEPENDS ${ModuleInclude}
+    DEPENDS ${ModuleHeaders}
     COMMENT "NiflectGenTool ${ModuleName}"
 )
 
