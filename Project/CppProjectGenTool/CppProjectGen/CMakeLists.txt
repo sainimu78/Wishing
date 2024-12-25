@@ -10,7 +10,7 @@ set(ModuleIncludePath ${ModuleRootPath})
 
 set(IncludePathsPrivate "")
 set(IncludePathsPublic "")
-list(APPEND IncludePathsPrivate ${RootSourcePath})
+list(APPEND IncludePathsPrivate ${ModuleSourcePath})
 list(APPEND IncludePathsPrivate ${RootSourcePath})
 list(APPEND IncludePathsPrivate ${RootSourcePath}/NiflectGen)
 list(APPEND IncludePathsPublic ${ModuleIncludePath})
