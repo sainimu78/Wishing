@@ -4,17 +4,21 @@ set(ModuleName TestModule1)
 
 set(ModuleRootPath ${RootSourcePath}/${ModuleName})
 set(SourcePath ${ModuleRootPath}/src)
-set(IncludePath ${ModuleRootPath}/include)
+set(ModuleIncludePath ${ModuleRootPath}/include)
+
+set(ModuleIncludePaths "")
+list(APPEND ModuleIncludePaths ${ModuleIncludePath})
 
 file(GLOB_RECURSE ModuleSrc ${SourcePath}/*.cpp ${SourcePath}/*.h)
 create_source_group(${SourcePath} ${ModuleSrc})
-file(GLOB_RECURSE ModuleInclude ${IncludePath}/*.h)
-create_source_group(${IncludePath} ${ModuleInclude})
+file(GLOB_RECURSE ModuleHeaders ${ModuleIncludePath}/*.h)
+create_source_group(${ModuleIncludePath} ${ModuleHeaders})
 set(SrcAll "")
 list(APPEND SrcAll ${ModuleSrc})
-list(APPEND SrcAll ${ModuleInclude})
+list(APPEND SrcAll ${ModuleHeaders})
 
-set(GenSourcePrivate ${ProjectGeneratedRootPath}/${ModuleName}/_GenSource)
+set(GenOutputDirPath ${ProjectGeneratedRootPath}/${ModuleName})
+set(GenSourcePrivate ${GenOutputDirPath}/_GenSource)
 set(GenSourcePublic ${GenSourcePrivate}/include)
 #beign, 用于模式 EGeneratingHeaderAndSourceFileMode::ESourceAndHeader, 将生成文件加到模块
 #file(GLOB_RECURSE GeneratedSrc ${GenSourcePrivate}/*.cpp ${GenSourcePrivate}/*.h)
@@ -31,7 +35,7 @@ set_target_properties(${ModuleName} PROPERTIES
 
 target_include_directories(${ModuleName}
 	PRIVATE ${SourcePath}
-	PUBLIC ${IncludePath}
+	PUBLIC ${ModuleIncludePath}
 )
 
 target_include_directories(${ModuleName}
@@ -45,9 +49,13 @@ target_compile_definitions(${ModuleName}
 
 target_link_libraries(${ModuleName} PRIVATE Niflect)
 
-set(ArgsModuleInclude "")
-foreach(It IN LISTS ModuleInclude)
-    list(APPEND ArgsModuleInclude "-h" "${It}")
+set(ArgsModuleHeaders "")
+foreach(It IN LISTS ModuleHeaders)
+    list(APPEND ArgsModuleHeaders "-h" "${It}")
+endforeach()
+set(ArgsModuleIncludePaths "")
+foreach(It IN LISTS ModuleIncludePaths)
+	list(APPEND ArgsModuleIncludePaths "-I" "${It}")
 endforeach()
 
 set(ToolRelPathForTest Linux/Make_x64)
@@ -62,20 +70,21 @@ add_custom_command(
     OUTPUT "${NiflectGeneratedModulePrivateH}"
     COMMAND "${RootSourcePath}/../Build/NiflectGenTool/${ToolRelPathForTest}/Debug/NiflectGenTool/NiflectGenTool${ExeExt}" 
             -n ${ModuleName} 
-            ${ArgsModuleInclude}
+            ${ArgsModuleHeaders}
             -am TESTMODULE1_API 
-            -amh "${IncludePath}/TestModule1Common.h" 
+            -amh "${ModuleIncludePath}/TestModule1Common.h" 
             -a "${RootSourcePath}/Niflect/include/Niflect/CommonlyUsed/DefaultAccessorSetting.h" 
             -t "${RootSourcePath}/Niflect/include" 
-            -I "${IncludePath}" 
-            -g "${ProjectGeneratedRootPath}/${ModuleName}"
-    DEPENDS ${ModuleInclude}
-    COMMENT "NiflectGenTool generating ..."
+            ${ArgsModuleIncludePaths} 
+            -g "${GenOutputDirPath}"
+    DEPENDS ${ModuleHeaders}
+    COMMENT "NiflectGenTool ${ModuleName}"
 )
 
-add_custom_target(NiflectGenTool_${ModuleName} DEPENDS "${NiflectGeneratedModulePrivateH}")
-set_target_properties(NiflectGenTool_${ModuleName} PROPERTIES FOLDER "AutoGen")
-add_dependencies(${ModuleName} NiflectGenTool_${ModuleName})
+set(GenToolName NiflectGenTool_${ModuleName})
+add_custom_target(${GenToolName} DEPENDS "${NiflectGeneratedModulePrivateH}")
+set_target_properties(${GenToolName} PROPERTIES FOLDER "AutoGen")
+add_dependencies(${ModuleName} ${GenToolName})
 
 #if(UNIX)
 #	file(MAKE_DIRECTORY ${NiflectGeneratedRootPath}) # 由于创建目录的函数实现存在缺陷, NiflectGenTool 并发执行时出现首次创建不存在的输出目录失败与之后写文件失败, 因此仅在 UNIX 上通过 cmake 创建输出目录

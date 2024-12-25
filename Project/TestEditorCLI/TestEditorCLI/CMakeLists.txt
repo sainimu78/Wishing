@@ -4,17 +4,21 @@ set(ModuleName TestEditorCLI)
 
 set(ModuleRootPath ${RootSourcePath}/${ModuleName})
 set(SourcePath ${ModuleRootPath}/src)
-set(IncludePath ${ModuleRootPath}/include)
+set(ModuleIncludePath ${ModuleRootPath}/include)
+
+set(ModuleIncludePaths "")
+list(APPEND ModuleIncludePaths ${ModuleIncludePath})
 
 file(GLOB_RECURSE ModuleSrc ${SourcePath}/*.cpp ${SourcePath}/*.h)
 create_source_group(${SourcePath} ${ModuleSrc})
-file(GLOB_RECURSE ModuleHeaders ${IncludePath}/*.h)
-create_source_group(${IncludePath} ${ModuleHeaders})
+file(GLOB_RECURSE ModuleHeaders ${ModuleIncludePath}/*.h)
+create_source_group(${ModuleIncludePath} ${ModuleHeaders})
 set(SrcAll "")
 list(APPEND SrcAll ${ModuleSrc})
 list(APPEND SrcAll ${ModuleHeaders})
 
-set(GenSourcePrivate ${ProjectGeneratedRootPath}/${ModuleName}/_GenSource)
+set(GenOutputDirPath ${ProjectGeneratedRootPath}/${ModuleName})
+set(GenSourcePrivate ${GenOutputDirPath}/_GenSource)
 set(GenSourcePublic ${GenSourcePrivate}/include)
 #beign, 用于模式 EGeneratingHeaderAndSourceFileMode::ESourceAndHeader, 将生成文件加到模块
 #file(GLOB_RECURSE GeneratedSrc ${GenSourcePrivate}/*.cpp ${GenSourcePrivate}/*.h)
@@ -26,7 +30,7 @@ add_executable(${ModuleName} ${SrcAll})
 
 target_include_directories(${ModuleName}
 	PRIVATE ${SourcePath}
-	PUBLIC ${IncludePath}
+	PUBLIC ${ModuleIncludePath}
 )
 
 target_include_directories(${ModuleName}
@@ -41,6 +45,10 @@ target_link_libraries(${ModuleName} PRIVATE TestModule0)
 set(ArgsModuleHeaders "")
 foreach(It IN LISTS ModuleHeaders)
     list(APPEND ArgsModuleHeaders "-h" "${It}")
+endforeach()
+set(ArgsModuleIncludePaths "")
+foreach(It IN LISTS ModuleIncludePaths)
+	list(APPEND ArgsModuleIncludePaths "-I" "${It}")
 endforeach()
 
 set(ToolRelPathForTest Linux/Make_x64)
@@ -58,11 +66,11 @@ add_custom_command(
             ${ArgsModuleHeaders}
             -a "${RootSourcePath}/Niflect/include/Niflect/CommonlyUsed/DefaultAccessorSetting.h" 
             -t "${RootSourcePath}/Niflect/include" 
-            -I "${IncludePath}" 
-            -g "${ProjectGeneratedRootPath}/${ModuleName}"
+            ${ArgsModuleIncludePaths}
+            -g "${GenOutputDirPath}" 
 			-gbt 
     DEPENDS ${ModuleHeaders}
-    COMMENT "NiflectGenTool generating ..."
+    COMMENT "NiflectGenTool ${ModuleName}"
 )
 
 set(GenToolName NiflectGenTool_${ModuleName})

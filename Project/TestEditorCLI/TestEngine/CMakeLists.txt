@@ -4,17 +4,22 @@ set(ModuleName TestEngine)
 
 set(ModuleRootPath ${RootSourcePath}/${ModuleName})
 set(SourcePath ${ModuleRootPath}/src)
-set(IncludePath ${ModuleRootPath}/include)
+set(ModuleIncludePath ${ModuleRootPath}/include)
+
+set(ModuleIncludePaths "")
+list(APPEND ModuleIncludePaths ${ModuleIncludePath})
+list(APPEND ModuleIncludePaths ${RootSourcePath}/TestModule1/include)
 
 file(GLOB_RECURSE ModuleSrc ${SourcePath}/*.cpp ${SourcePath}/*.h)
 create_source_group(${SourcePath} ${ModuleSrc})
-file(GLOB_RECURSE ModuleInclude ${IncludePath}/*.h)
-create_source_group(${IncludePath} ${ModuleInclude})
+file(GLOB_RECURSE ModuleInclude ${ModuleIncludePath}/*.h)
+create_source_group(${ModuleIncludePath} ${ModuleInclude})
 set(SrcAll "")
 list(APPEND SrcAll ${ModuleSrc})
 list(APPEND SrcAll ${ModuleInclude})
 
-set(GenSourcePrivate ${ProjectGeneratedRootPath}/${ModuleName}/_GenSource)
+set(GenOutputDirPath ${ProjectGeneratedRootPath}/${ModuleName})
+set(GenSourcePrivate ${GenOutputDirPath}/_GenSource)
 set(GenSourcePublic ${GenSourcePrivate}/include)
 #beign, 用于模式 EGeneratingHeaderAndSourceFileMode::ESourceAndHeader, 将生成文件加到模块
 #file(GLOB_RECURSE GeneratedSrc ${GenSourcePrivate}/*.cpp ${GenSourcePrivate}/*.h)
@@ -33,7 +38,7 @@ set_target_properties(${ModuleName} PROPERTIES
 
 target_include_directories(${ModuleName}
 	PRIVATE ${SourcePath}
-	PUBLIC ${IncludePath}
+	PUBLIC ${ModuleIncludePaths}
 )
 
 target_include_directories(${ModuleName}
@@ -53,6 +58,10 @@ set(ArgsModuleInclude "")
 foreach(It IN LISTS ModuleInclude)
     list(APPEND ArgsModuleInclude "-h" "${It}")
 endforeach()
+set(ArgsModuleIncludePaths "")
+foreach(It IN LISTS ModuleIncludePaths)
+	list(APPEND ArgsModuleIncludePaths "-I" "${It}")
+endforeach()
 
 set(ToolRelPathForTest Linux/Make_x64)
 set(ExeExt )
@@ -68,15 +77,14 @@ add_custom_command(
             -n ${ModuleName} 
             ${ArgsModuleInclude}
             -am ENGINE_API 
-            -amh "${IncludePath}/Engine/EngineCommon.h" 
-            -a "${IncludePath}/EngineAccessorSetting.h" 
+            -amh "${ModuleIncludePath}/Engine/EngineCommon.h" 
+            -a "${ModuleIncludePath}/EngineAccessorSetting.h" 
             -t "${RootSourcePath}/Niflect/include" 
-            -I "${IncludePath}" 
-            -I "${RootSourcePath}/TestModule1/include" 
-            -g "${ProjectGeneratedRootPath}/${ModuleName}"
+            ${ArgsModuleIncludePaths} 
+            -g "${GenOutputDirPath}"
 			-gbt 
     DEPENDS ${ModuleInclude}
-    COMMENT "NiflectGenTool generating ..."
+    COMMENT "NiflectGenTool ${ModuleName}"
 )
 
 add_custom_target(NiflectGenTool_${ModuleName} DEPENDS "${NiflectGeneratedModulePrivateH}")
