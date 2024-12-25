@@ -14,18 +14,21 @@ namespace NiflectGen
 
 		m_userProvided = info;
 
-		auto moduleGenDirPath = NiflectUtil::ConcatPath(info.m_genOutputDirPath, info.m_moduleName);
+		//m_genSourceRootParentDir 现为空, 预留附加一层输出目录
+
+		auto moduleGenDirPath = NiflectUtil::ConcatPath(info.m_genOutputDirPath, m_genSourceRootParentDir);
 		NiflectUtil::DeleteDirectory(moduleGenDirPath);
 		if (!info.m_genSourceOutputDirPath.empty())
 		{
-			auto genSourceOutputDirPath = NiflectUtil::ConcatPath(info.m_genSourceOutputDirPath, info.m_moduleName);
+			auto genSourceOutputDirPath = NiflectUtil::ConcatPath(info.m_genSourceOutputDirPath, m_genSourceRootParentDir);
 			NiflectUtil::DeleteDirectory(genSourceOutputDirPath);
 		}
 
-		m_moduleGenSource = NiflectGenDefinition::DirName::GenSource;
+		m_moduleGenSourceRoot = NiflectGenDefinition::DirName::GenSourceRoot;
 		m_moduleRegBasePath = NiflectGenDefinition::DirName::ModuleReg;
 		m_typeRegBasePath = NiflectGenDefinition::DirName::TypeReg;
 		m_genIncludeBasePath = NiflectGenDefinition::DirName::GenInclude;
+		m_genSrcBasePath = NiflectGenDefinition::DirName::GenSrc;
 
 		m_moduleRegisteredTypeHeaderFilePath = NiflectUtil::ConcatPath(m_typeRegBasePath, NiflectGenDefinition::NiflectFramework::FileName::ModuleRegisteredTypeHeader);
 		m_moduleScopeSymbolPrefix = "_" + info.m_moduleName + "_";
@@ -35,17 +38,17 @@ namespace NiflectGen
 		//须添加在最后, NiflectMacro.h 应使用 _GenTime 中生成的, 而 NiflectMacro.h 仍须使用 m_toolHeaderSearchPath 中的其它头文件, 如 ConcatSymbols.h
 		m_writingHeaderSearchPaths.m_vecForRegularConversion.push_back(m_userProvided.m_toolHeaderSearchPath);
 		
-		auto genTimeBasePath = NiflectUtil::ConcatPath(moduleGenDirPath, NiflectGenDefinition::DirName::GenTime);
-		GenerateBypassSTLHeaders(genTimeBasePath);
+		m_genTimeBasePath = NiflectUtil::ConcatPath(moduleGenDirPath, NiflectGenDefinition::DirName::GenTime);
+		GenerateBypassSTLHeaders(m_genTimeBasePath);
 		{
 			CGenLog log;
 			Niflect::TArrayNif<Niflect::CString> vecToolHeaderSearchPath;
 			vecToolHeaderSearchPath.push_back(m_userProvided.m_toolHeaderSearchPath);
-			SGenTimeNiflectMacroHeaderWritingContext ctx{ vecToolHeaderSearchPath, genTimeBasePath, &log };
+			SGenTimeNiflectMacroHeaderWritingContext ctx{ vecToolHeaderSearchPath, m_genTimeBasePath, &log };
 			WriteGenTimeNiflectMacroHeader(ctx);
 		}
 
-		m_writingHeaderSearchPaths.m_vecForGenTimeConversion.push_back(CIncludesHelper::MakeIncludeSearchPath(genTimeBasePath));
+		m_writingHeaderSearchPaths.m_vecForGenTimeConversion.push_back(NiflectUtil::ConvertToSearchPath(m_genTimeBasePath));
 
 		for (auto& it : m_writingHeaderSearchPaths.m_vecForGenTimeConversion)
 			m_vecParsingHeaderSearchPath.push_back(it);
@@ -69,9 +72,9 @@ namespace NiflectGen
 		{
 			info.m_moduleName = "Engine";
 			info.m_genOutputDirPath = CONCAT_HARDCODED_STRINGS_2(ROOT_TEST_PROJECT_PATH, "/Generated/NiflectGenerated");
-			info.m_vecModuleHeaderSearchPath2.push_back(CONCAT_HARDCODED_STRINGS_2(ROOT_TEST_INCLUDE_PATH, "/Engine/include"));
-			info.m_toolHeaderSearchPath = CONCAT_HARDCODED_STRINGS_2(ROOT_TEST_INCLUDE_PATH, "/Niflect/include");
-			info.m_vecModuleHeaderSearchPath2.push_back(ROOT_TEST_INCLUDE_PATH);
+			info.m_toolHeaderSearchPath = CONCAT_HARDCODED_STRINGS_2(ROOT_TEST_INCLUDE_PATH, "/Niflect/include/");
+			info.m_vecModuleHeaderSearchPath2.push_back(CONCAT_HARDCODED_STRINGS_2(ROOT_TEST_INCLUDE_PATH, "/TestEngine/include/"));
+			info.m_vecModuleHeaderSearchPath2.push_back(CONCAT_HARDCODED_STRINGS_2(ROOT_TEST_INCLUDE_PATH, "/"));
 		}
 	}
 }

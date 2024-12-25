@@ -23,6 +23,7 @@ namespace NiflectGen
 		NIFLECTGEN_API void Generate(CCodeGenData& genData, TestInterfaceFunc TestFunc = NULL);
 		//NIFLECTGEN_API void Save() const;
 		NIFLECTGEN_API void Save2(const CCodeGenData& genData) const;
+		NIFLECTGEN_API void Cleanup() const;
 
 	public:
 		const CModuleRegInfoValidated& GetModuleRegInfo() const { return m_moduleRegInfo; }

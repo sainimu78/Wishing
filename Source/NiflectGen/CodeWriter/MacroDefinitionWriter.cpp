@@ -1,6 +1,6 @@
 #include "NiflectGen/CodeWriter/MacroDefinitionWriter.h"
 #include "Niflect/Util/StringUtil.h"
-#include "NiflectGen/CodeWriter/CodeTemplate.h"
+#include "NiflectGen/CodeWriter/CppTemplate.h"
 #include "NiflectGen/CodeWriter/HardCoded/MacroDefinitionTemplate.h"
 
 namespace NiflectGen
@@ -12,7 +12,7 @@ namespace NiflectGen
     void WriteLineNumberMacroDefinition(const Niflect::CString& macroName, const CCodeLines& linesBody, CCodeLines& linesDefinition)
     {
         CCodeTemplate tpl1;
-        tpl1.ReadFromRawData(HardCodedTemplate::LineNumberMacroDefinition);
+        ReadTemplateFromRawData(tpl1, HardCodedTemplate::LineNumberMacroDefinition);
         CLabelToCodeMapping map;
         MapLabelToText(map, LABEL_7, macroName);
         MapLabelToLines(map, LABEL_8, linesBody);

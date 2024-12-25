@@ -33,13 +33,16 @@ namespace NiflectGenDefinition
 
 	namespace DirName
 	{
-		constexpr const char* GenSource = "_GenSource";
+		constexpr const char* GenSourceRoot = "_GenSource";
 		constexpr const char* ModuleReg = "_ModuleReg";
 		constexpr const char* TypeReg = "_TypeReg";
 		constexpr const char* GenInclude = "include";
+		constexpr const char* GenSrc = "";
 		constexpr const char* GenTime = "_GenTime";
 		constexpr const char* Splitted = "_Splitted";
 	}
+
+#define NIFLECT_GEN_TIME_MACRO "_NIFLECTGEN"
 
 	namespace CodeTag
 	{
@@ -48,6 +51,9 @@ namespace NiflectGenDefinition
 #define MACROTAG_FIELD "__NiflectGen_Field"
 #define MACROTAG_METHOD "__NiflectGen_Method"
 #define MACROTAG_ENUMCONST "__NiflectGen_EnumConst"
+#ifdef PORTING_ACCESS_METHOD
+#define MACROTAG_ACCESSMETHOD "__ReflectionGen_AccessMethod"
+#endif
 
 #ifdef ACCESSOR_SETTING_ABCD
 #else
@@ -59,6 +65,9 @@ namespace NiflectGenDefinition
 		constexpr const char* Field = MACROTAG_FIELD;
 		constexpr const char* Method = MACROTAG_METHOD;
 		constexpr const char* EnumConstant = MACROTAG_ENUMCONST;
+#ifdef PORTING_ACCESS_METHOD
+		constexpr const char* AccessMethod = MACROTAG_ACCESSMETHOD;
+#endif
 
 #ifdef ACCESSOR_SETTING_ABCD
 		//static bool IsAccessorSettingA(const Niflect::CString& text)
@@ -138,6 +147,10 @@ namespace NiflectGenDefinition
 			constexpr const char* Class = "CClass";
 			constexpr const char* Enum = "CEnum";
 		}
+		namespace FuncNamePrefix
+		{
+			constexpr const char* GeneratedGetModuleInfo = "NiflectGeneratedGetModuleInfo_";
+		}
 		namespace FileName
 		{
 			constexpr const char* ModuleRegisteredTypeHeader = "_RegisteredType.h";
@@ -152,6 +165,7 @@ namespace NiflectGenDefinition
 			constexpr const char* NiflectTypeHeader = "Niflect/NiflectType.h";
 			constexpr const char* NiflectTableHeader = "Niflect/NiflectTable.h";
 			constexpr const char* NiflectMacroHeader = "Niflect/NiflectMacro.h";
+			constexpr const char* NiflectModuleInfoHeader = "Niflect/NiflectModuleInfo.h";
 		}
 		namespace Setting
 		{
@@ -165,7 +179,19 @@ namespace NiflectGenDefinition
 		namespace LineNumberMacro
 		{
 			constexpr const char* GENERATED_BODY = "GENERATED_BODY";
-			constexpr const char* FID = "FID";
+			constexpr const char* FID = "FID_";
 		}
+		namespace FuncName
+		{
+			constexpr const char* CopyDerivedMeta = "MakeDerivedNata";//"_CopyDerivedMetadata";
+		}
+#ifdef PORTING_GETTER_SETTER_DEFAULTVALUE
+		namespace BuiltinMetadata
+		{
+			constexpr const char* Getter = "Getter";
+			constexpr const char* Setter = "Setter";
+			constexpr const char* DefaultValue = "DefaultValue";
+		}
+#endif
 	}
 }

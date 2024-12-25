@@ -284,7 +284,7 @@ namespace Niflect
 		{
 			return m_enumMeta.m_vecEnumConstMeta[idx].m_name;
 		}
-		uint32 FindIndexByEnumConstName(const CString& name) const
+		uint32 FindEnumConstMetaIndex(const CString& name) const
 		{
 			for (uint32 idx = 0; idx < m_enumMeta.m_vecEnumConstMeta.size(); ++idx)
 			{
@@ -299,15 +299,9 @@ namespace Niflect
 			auto idx = static_cast<uint32>(e);
 			return this->GetEnumConstNameByIndex(idx);
 		}
-		template <typename TEnumType>
-		TEnumType FindEnumConstByName(const CString& name) const
-		{
-			auto idx = this->FindIndexByEnumConstName(name);
-			return static_cast<TEnumType>(idx);
-		}
 
 	public:
-		static CEnum* Cast(inherited* base)
+		static CEnum* Cast(CNiflectType* base)
 		{
 			ASSERT(dynamic_cast<CEnum*>(base) != NULL);
 			return static_cast<CEnum*>(base);
@@ -395,7 +389,16 @@ namespace Niflect
 		CInheritableType* m_parent;//todo: 应定义AddChild建立层级关系; 进一步地, 可能还需要另外的容器建立引用关系, 目前不确认引用关系是静态或动态建立
 	};
 
-	typedef CInheritableType CStruct;
+	class CStruct : public CInheritableType
+	{
+		typedef CInheritableType inherited;
+	public:
+		static CStruct* Cast(CNiflectType* base)
+		{
+			ASSERT(dynamic_cast<CStruct*>(base) != NULL);
+			return static_cast<CStruct*>(base);
+		}
+	};
 	
 	//todo: 考虑是否从CStruct继承以复用树型关系, 但m_parent是不同的, 如果复用则CClass的m_parent使用CStruct的m_parent并相应Cast, 是否可接受
 	class CClass : public CInheritableType

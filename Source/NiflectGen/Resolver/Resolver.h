@@ -55,13 +55,11 @@ namespace NiflectGen
 	public:
 		CResolver(const CCollectionData& collectionData, const CModuleRegInfoValidated& moduleRegInfo);
 		//void Resolve(CTaggedNode2* taggedRoot, CResolvingContext& context, CResolvedData& data);
-		void Deprecated_Resolve2(CTaggedNode2* taggedRoot, CResolvingContext& context, CResolvedData& data);
 		void Resolve4(CTaggedNode2* taggedRoot, const CResolvingContext& context, CResolvedData& data);
 
 	private:
 		//void ResolveRecurs(CTaggedNode2* taggedParent, CResolvingContext& context, CResolvedData& data);
 		void ResolveRecurs2(CTaggedNode2* taggedParent, CResolvingContext& context, CResolvedData& data);
-		void TestResolveRecurs3(CTaggedNode2* taggedParent, CResolvingContext& context, CResolvedData& data, int lv = 0);
 		void ResolveRecurs4(const CResolvingContext& context, CTaggedNode2* taggedParent, CResolvedData& data, CTaggedTypesMapping& resolvedMapping, CUntaggedTemplatesMapping& untaggedTemplatesMapping);
 
 	//public:

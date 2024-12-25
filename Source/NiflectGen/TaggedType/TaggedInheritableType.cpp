@@ -94,18 +94,24 @@ namespace NiflectGen
 			m_baseTaggedType = taggedMapping.m_vecType[itFound->second];
 
 		//成员变量
-		ASSERT(m_vecMember.size() == 0);
+		ASSERT(m_vecMemberField.size() == 0);
 		for (auto& it : m_vecChild)
 		{
 			//嵌套类型也为taggedType的子节点
-			if (auto member = CTaggedInheritableTypeMember::CastChecked(it.Get()))
-				m_vecMember.push_back(member);
+			if (auto member = CTaggedInheritableTypeField::CastChecked(it.Get()))
+				m_vecMemberField.push_back(member);
+			else if (auto member = CTaggedInheritableTypeMethod::CastChecked(it.Get()))
+				m_vecMemberMethod.push_back(member);
+#ifdef PORTING_ACCESS_METHOD
+			else if (auto member = CTaggedInheritableTypeAccessMethod::CastChecked(it.Get()))
+				m_vecMemberAccessMethod.push_back(member);
+#endif
 		}
 
-		m_vecMemberIndexedRoot.resize(m_vecMember.size());
-		for (uint32 idx0 = 0; idx0 < m_vecMember.size(); ++idx0)
+		m_vecMemberIndexedRoot.resize(m_vecMemberField.size());
+		for (uint32 idx0 = 0; idx0 < m_vecMemberField.size(); ++idx0)
 		{
-			auto& it0 = m_vecMember[idx0];
+			auto& it0 = m_vecMemberField[idx0];
 			auto& indexedRoot = m_vecMemberIndexedRoot[idx0];
 			auto& fieldCursor = it0->GetCursor();
 			SResonodesInitContext asMapCtx{ context.m_log };
@@ -124,27 +130,6 @@ namespace NiflectGen
 		//在后执行, 仅为使成员依赖的类型先注册, 实际上顺序并不重要, 但认为依赖出现在前更方便查看
 		inherited::ResolveDependcies(context, data);
 	}
-	CSharedTypeRegCodeWriter CTaggedInheritableType::Deprecated_CreateCodeWriter(const STypeRegClassWritingSetting& setting) const
-	{
-		CXCursor baseTypeCursorDecl = g_invalidCursor;
-		if (m_baseTaggedType != NULL)
-			baseTypeCursorDecl = m_baseTaggedType->GetCursor();
-		Niflect::TArrayNif<CTaggedInheritableTypeMember*> vecMember;
-		for (auto& it : m_vecChild)
-		{
-			//嵌套类型也为taggedType的子节点
-			if (auto member = CTaggedInheritableTypeMember::CastChecked(it.Get()))
-				vecMember.push_back(member);
-		}
-		return Niflect::MakeShared<CInheritableTypeRegCodeWriter_ObjectAccessor>(this->GetCursor(), setting, baseTypeCursorDecl, vecMember);
-	}
-	CSharedTypeRegCodeWriter CTaggedInheritableType::CreateCodeWriter(const STypeRegClassWritingSetting& setting) const
-	{
-		CXCursor baseTypeCursorDecl = g_invalidCursor;
-		if (m_baseTaggedType != NULL)
-			baseTypeCursorDecl = m_baseTaggedType->GetCursor();
-		return Niflect::MakeShared<CInheritableTypeRegCodeWriter_ObjectAccessor>(this->GetCursor(), setting, baseTypeCursorDecl, m_vecMember);
-	}
 	CSharedTypeRegCodeWriter2 CTaggedInheritableType::CreateCodeWriter2() const
 	{
 		//CXCursor baseTypeCursorDecl = g_invalidCursor;
@@ -152,7 +137,12 @@ namespace NiflectGen
 		//	baseTypeCursorDecl = m_baseTaggedType->GetCursor();
 		//return Niflect::MakeShared<CInheritableTypeRegCodeWriter_ObjectAccessor>(this->GetCursor(), setting, baseTypeCursorDecl, m_vecMember);
 
-		return Niflect::MakeShared<CInheritableTypeRegCodeWriter2>(m_vecMemberIndexedRoot, m_vecMember, m_baseTaggedType, m_generatedBodyLineNumber);
+		return Niflect::MakeShared<CInheritableTypeRegCodeWriter2>(m_vecMemberIndexedRoot, m_baseTaggedType, m_generatedBodyLineNumber
+			, m_vecMemberField
+#ifdef PORTING_ACCESS_METHOD
+			, m_vecMemberAccessMethod
+#endif
+		);
 	}
 	void CTaggedInheritableType::DebugDerivedPrint(FILE* fp) const
 	{

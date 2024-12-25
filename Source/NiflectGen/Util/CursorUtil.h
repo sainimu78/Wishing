@@ -2,7 +2,6 @@
 #include "Niflect/NiflectBase.h"
 #include <functional>
 #include "clang-c/Index.h"
-#include "Niflect/Util/StringUtil.h"
 
 namespace NiflectGen
 {
@@ -53,4 +52,5 @@ namespace NiflectGen
 	bool IsCAccessorClassDecl(const CXCursor& cursor);
 	Niflect::CString GetCursorFilePath(const CXCursor& cursor);
 	Niflect::CString GetMacroExpansionTokensInString(const CXCursor& cursor);
+	Niflect::CString GetCursorFormattedLocationInfo(const CXCursor& cursor);;
 }

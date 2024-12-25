@@ -230,11 +230,98 @@ namespace NiflectGen
 		taggedNode->InitMacroExpansionCursor(macroCursor);
 		m_vecChild.push_back(taggedNode);
 	}
+	bool ExtractBuiltinMetadata(const Niflect::CString& keyword, const Niflect::CString& line, Niflect::CString& metadata, uint32& movedPos)
+	{
+		auto pos0 = line.find(keyword, movedPos);
+		if (pos0 != std::string::npos)
+		{
+			pos0 += keyword.length();
+			auto pos1 = line.find("=", pos0);
+			if (pos1 != std::string::npos)
+			{
+				pos1 += 1;
+				auto pos2 = line.find(";", pos1);
+				if (pos2 == std::string::npos)
+					pos2 = line.length();
+				metadata = line.substr(pos1, pos2 - pos1);
+				metadata = NiflectUtil::Trim(metadata);
+
+				if (pos2 < line.length() - 1)
+				{
+					pos2 += 1;
+					while (true)
+					{
+						auto& ch = line[pos2];
+						if (ch == ' ')
+							pos2++;
+						else
+							break;
+					}
+				}
+				movedPos = static_cast<uint32>(pos2);
+				return true;
+			}
+		}
+		return false;
+	}
+	struct SAsignmentExprParsingInfo
+	{
+		const char* m_keyword;
+		Niflect::CString* m_value;
+	};
+	static void ParseAsignmentExpression(const Niflect::CString& line, const Niflect::TArrayNif<SAsignmentExprParsingInfo>& vecInfo, Niflect::TArrayNif<Niflect::CString>& vecExtractedKeyword, uint32& maxMovedPos)
+	{
+		maxMovedPos = 0;
+		bool anyFailed = false;
+		for (auto& it0 : vecInfo)
+		{
+			uint32 movedPos = 0;
+			if (ExtractBuiltinMetadata(it0.m_keyword, line, *it0.m_value, movedPos))
+			{
+				maxMovedPos = std::max(maxMovedPos, movedPos);
+			}
+			else
+			{
+				anyFailed = true;
+			}
+		}
+		if (anyFailed)
+		{
+			size_t startPos = 0;
+			while (true)
+			{
+				auto pos0 = line.find('=', startPos);
+				if (pos0 != std::string::npos)
+				{
+					auto extractedKeyword = line.substr(startPos, pos0 - 1 - startPos);
+					extractedKeyword = NiflectUtil::Trim(extractedKeyword);
+					bool found = false;
+					for (auto& it1 : vecInfo)
+					{
+						if (extractedKeyword == it1.m_keyword)
+						{
+							found = true;
+							break;
+						}
+					}
+					if (!found)
+						vecExtractedKeyword.push_back(extractedKeyword);
+					startPos = line.find(';', pos0 + 1);
+					if (startPos != std::string::npos)
+						startPos++;
+				}
+				else
+				{
+					break;
+				}
+			}
+		}
+	}
 	void CTaggedNode2::WriteCopyNataCode(CCodeLines& linesCopy) const
 	{
 		if (m_linesRawNata.size() > 0)
 		{
-			Niflect::CString firstLine = "auto nata = MakeDerivedNata(";
+			Niflect::CString firstLine = NiflectUtil::FormatString("auto nata = %s(", NiflectGenDefinition::NiflectFramework::FuncName::CopyDerivedMeta);
 			uint32 idx = 0;
 			linesCopy.push_back(firstLine + m_linesRawNata[idx++]);
 			for (; idx < m_linesRawNata.size(); ++idx)
@@ -242,6 +329,51 @@ namespace NiflectGen
 			linesCopy.back() += ");";
 		}
 	}
+#ifdef PORTING_GETTER_SETTER_DEFAULTVALUE
+	void CTaggedNode2::WriteCopyNataCodeExtractBuiltinMetadata(CCodeLines& linesCopy, CBuiltinMetadata& builtinMetadata, CGenLog* log) const
+	{
+		if (m_linesRawNata.size() > 0)
+		{
+			Niflect::CString code = NiflectUtil::FormatString("auto nata = %s(", NiflectGenDefinition::NiflectFramework::FuncName::CopyDerivedMeta);
+			uint32 idx = 0;
+			auto firstLine = m_linesRawNata[idx++];
+			Niflect::TArrayNif<SAsignmentExprParsingInfo> vecInfo;
+			vecInfo.push_back({ NiflectGenDefinition::NiflectFramework::BuiltinMetadata::Getter, &builtinMetadata.m_getterName });
+			vecInfo.push_back({ NiflectGenDefinition::NiflectFramework::BuiltinMetadata::Setter, &builtinMetadata.m_setterName });
+			vecInfo.push_back({ NiflectGenDefinition::NiflectFramework::BuiltinMetadata::DefaultValue, &builtinMetadata.m_defaultValue });
+			uint32 movedPos = 0;
+			Niflect::TArrayNif<Niflect::CString> vecExtractedKeyword;
+			ParseAsignmentExpression(firstLine, vecInfo, vecExtractedKeyword, movedPos);
+			if (vecExtractedKeyword.size() > 0)
+			{
+				Niflect::CString strUndef;
+				for (uint32 idx1 = 0; idx1 < vecExtractedKeyword.size(); ++idx1)
+				{
+					strUndef += vecExtractedKeyword[idx1];
+					if (idx1 != vecExtractedKeyword.size() - 1)
+						strUndef += ';';
+				}
+				Niflect::CString strDef;
+				for (uint32 idx1 = 0; idx1 < vecInfo.size(); ++idx1)
+				{
+					strDef += vecInfo[idx1].m_keyword;
+					if (idx1 != vecInfo.size() - 1)
+						strDef += ';';
+				}
+				GenLogError(log, NiflectUtil::FormatString("Undefined builtin metadata keyword: %s (Supported: %s), at: %s", strUndef.c_str(), strDef.c_str(), GetCursorFormattedLocationInfo(this->GetCursor()).c_str()));
+			}
+			if (movedPos > 0)
+				firstLine = firstLine.substr(movedPos, firstLine.length() - movedPos);
+			if (!firstLine.empty())
+			{
+				linesCopy.push_back(code + firstLine);
+				for (; idx < m_linesRawNata.size(); ++idx)
+					linesCopy.push_back(m_linesRawNata[idx]);
+				linesCopy.back() += ");";
+			}
+		}
+	}
+#endif
 	void CTaggedNode2::DebugPrint(FILE* fp, uint32 level) const
 	{
 		auto strLevel = NiflectUtil::DebugIndentToString(level);

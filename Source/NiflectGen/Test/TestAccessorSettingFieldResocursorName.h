@@ -16,8 +16,8 @@ namespace EngineTypeBindingSettingScope
 	NIF_AS_A() TSetting<CStringAccessor, Niflect::CString>;
 	NIF_AS_A() TSetting<CSTLStringAccessor, std::string>;
 	template <typename TInstance, typename T>
-	NIF_AS_A() TSetting<TArrayAccessor<TInstance>, Niflect::TArrayNif<T> >;
-	NIF_AS_A() TSetting<CBitsArrayAccessor, Niflect::TArrayNif<bool> >;
+	NIF_AS_A() TSetting<TArrayAccessor<TInstance>, Niflect::TArray<T> >;
+	NIF_AS_A() TSetting<CBitsArrayAccessor, Niflect::TArray<bool> >;
 	template <typename TInstance, typename T0, typename T1>
 	NIF_AS_A() TSetting<TMapAccessor<TInstance>, Niflect::TMap<T0, T1>, std::pair<T0, T1> >;
 	template <typename T0, typename T1>

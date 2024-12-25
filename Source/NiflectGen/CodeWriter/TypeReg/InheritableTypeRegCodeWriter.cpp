@@ -1,7 +1,7 @@
 #include "NiflectGen/CodeWriter/TypeReg/InheritableTypeRegCodeWriter.h"
 #include "NiflectGen/Util/CursorUtil.h"
 #include "NiflectGen/CodeWriter/HardCoded/InheritableTypeTemplate.h"
-#include "NiflectGen/CodeWriter/CodeTemplate.h"
+#include "NiflectGen/CodeWriter/CppTemplate.h"
 #include "NiflectGen/CodeWriter/CppWriter.h"
 #include "NiflectGen/Base/NiflectGenDefinition.h"
 
@@ -14,7 +14,7 @@ namespace NiflectGen
 	void CInheritableTypeRegCodeWriter::WriteDecl(const CWritingContext& context, CTypeRegDeclWrittingData& data) const
 	{
 		CCodeTemplate tpl;
-		tpl.ReadFromRawData(HardCodedTemplate::Deprecated_InheritableTypeReg_ClassDecl);
+		ReadTemplateFromRawData(tpl, HardCodedTemplate::Deprecated_InheritableTypeReg_ClassDecl);
 		CLabelToCodeMapping map;
 		MapLabelToText(map, LABEL_SHARED_3, m_typeName.c_str());
 		MapLabelToText(map, LABEL_9, this->GetInfoTypeName().c_str());
@@ -33,7 +33,7 @@ namespace NiflectGen
 	void CInheritableTypeRegCodeWriter::WriteImpl(const CWritingContext& context, CTypeRegImplWrittingData& data) const
 	{
 		CCodeTemplate tpl;
-		tpl.ReadFromRawData(HardCodedTemplate::Deprecated_InheritableTypeReg_ClassImpl);
+		ReadTemplateFromRawData(tpl, HardCodedTemplate::Deprecated_InheritableTypeReg_ClassImpl);
 		CLabelToCodeMapping map;
 		MapLabelToText(map, LABEL_SHARED_3, m_typeName.c_str());
 		CCodeLines linesRegisterType;
@@ -47,10 +47,10 @@ namespace NiflectGen
 			this->WriteImplInitType(lines);
 			if (lines.size() > 0)
 			{
-				CCppWriter writer;
+				CCodeWriter writer;
 				writer.WriteLine(HardCodedTemplate::Deprecated_TypeReg_ImplStaticInitType);
 				CCodeTemplate tpl;
-				tpl.ReadFromRawData(writer.m_code.c_str());
+				ReadTemplateFromRawData(tpl, writer.m_code.c_str());
 				CLabelToCodeMapping map;
 				MapLabelToText(map, LABEL_SHARED_3, m_typeName);
 				MapLabelToLines(map, LABEL_5, lines);
@@ -70,10 +70,10 @@ namespace NiflectGen
 			this->WriteImplInitMethod(lines);
 			if (lines.size() > 0)
 			{
-				CCppWriter writerInitType;
+				CCodeWriter writerInitType;
 				writerInitType.WriteLine(HardCodedTemplate::TypeReg_ImplStaticInitMethod);
 				CCodeTemplate tpl;
-				tpl.ReadFromRawData(writerInitType.m_code.c_str());
+				ReadTemplateFromRawData(tpl, writerInitType.m_code.c_str());
 				CLabelToCodeMapping map;
 				MapLabelToText(map, LABEL_SHARED_3, m_typeName);
 				MapLabelToLines(map, LABEL_32, lines);
@@ -119,7 +119,7 @@ namespace NiflectGen
 	void CInheritableTypeRegCodeWriter::WriteClass(const CWritingContext& context, CTypeRegClassWrittingData& data) const
 	{
 		CCodeTemplate tpl;
-		tpl.ReadFromRawData(HardCodedTemplate::InheritableTypeReg_Class);
+		ReadTemplateFromRawData(tpl, HardCodedTemplate::InheritableTypeReg_Class);
 		CLabelToCodeMapping map;
 		MapLabelToText(map, LABEL_SHARED_3, m_typeName.c_str());
 		MapLabelToText(map, LABEL_9, this->GetInfoTypeName().c_str());
@@ -133,10 +133,10 @@ namespace NiflectGen
 			this->WriteImplInitType(lines);
 			if (lines.size() > 0)
 			{
-				CCppWriter writer;
+				CCodeWriter writer;
 				writer.WriteLine(HardCodedTemplate::TypeReg_StaticInitType);
 				CCodeTemplate tpl;
-				tpl.ReadFromRawData(writer.m_code.c_str());
+				ReadTemplateFromRawData(tpl, writer.m_code.c_str());
 				CLabelToCodeMapping map;
 				MapLabelToLines(map, LABEL_5, lines);
 				tpl.ReplaceLabels(map, linesInitType);
@@ -157,10 +157,10 @@ namespace NiflectGen
 			this->WriteImplInitMethod(lines);
 			if (lines.size() > 0)
 			{
-				CCppWriter writerInitType;
+				CCodeWriter writerInitType;
 				writerInitType.WriteLine(HardCodedTemplate::TypeReg_ImplStaticInitMethod);
 				CCodeTemplate tpl;
-				tpl.ReadFromRawData(writerInitType.m_code.c_str());
+				ReadTemplateFromRawData(tpl, writerInitType.m_code.c_str());
 				CLabelToCodeMapping map;
 				MapLabelToText(map, LABEL_SHARED_3, m_typeName);
 				MapLabelToLines(map, LABEL_32, lines);
@@ -180,7 +180,7 @@ namespace NiflectGen
 	void CInheritableTypeRegCodeWriter::WriteRegisterType(const CWritingContext& context, CTypeRegClassWrittingData& data) const
 	{
 		CCodeTemplate tpl;
-		tpl.ReadFromRawData(HardCodedTemplate::InheritableTypeReg_RegisterType_Class2);//todo: struct另有模板, 因为不需要构造析构, 相应的也需要提示不支持的用法
+		ReadTemplateFromRawData(tpl, HardCodedTemplate::InheritableTypeReg_RegisterType_Class2);//todo: struct另有模板, 因为不需要构造析构, 相应的也需要提示不支持的用法
 		CLabelToCodeMapping map;
 		MapLabelToText(map, LABEL_SHARED_3, m_typeName.c_str());
 		//Niflect::CString typeNameForHash;
@@ -193,14 +193,14 @@ namespace NiflectGen
 	static const char* pszAccessorLevel0 = "0";
 	void CInheritableTypeRegCodeWriter::WriteCreateAccessorTree(const CWritingContext& context, CTypeRegClassWrittingData& data) const
 	{
-		CCppWriter tplWriter;
+		CCodeWriter tplWriter;
 		tplWriter.WriteLine(HardCodedTemplate::CreateFieldLayout_CreateField);
 		tplWriter.WriteLine(HardCodedTemplate::CreateFieldLayout_GetNodeFromShared2);
 		tplWriter.WriteLine(HardCodedTemplate::CreateFieldLayout_InitType222222222);
 		tplWriter.WriteLine(MAKELABEL(LABEL_13));
 		tplWriter.WriteLine(HardCodedTemplate::CreateFieldLayout_Return2);
 		CCodeTemplate tpl;
-		tpl.ReadFromRawData(tplWriter.m_code.c_str());
+		ReadTemplateFromRawData(tpl, tplWriter.m_code.c_str());
 		CLabelToCodeMapping map;
 		MapLabelToText(map, LABEL_7, pszAccessorLevel0);
 		CCodeLines linesInitAccessor;
@@ -267,7 +267,7 @@ namespace NiflectGen
 		if (this->HasTaggedBaseType())
 		{
 			CCodeTemplate tpl;
-			tpl.ReadFromRawData(HardCodedTemplate::InheritableTypeReg_InitInheritance2);
+			ReadTemplateFromRawData(tpl, HardCodedTemplate::InheritableTypeReg_InitInheritance2);
 			CLabelToCodeMapping map;
 			MapLabelToText(map, LABEL_10, m_infoTypeNameOfBaseType.c_str());
 			//todo: baseType的namespace
@@ -389,7 +389,7 @@ namespace NiflectGen
 	static void AAAAAAAAAAAAAA(const CCodeLines& linesInitAccessor, CCodeLines& lines2)
 	{
 		CCodeTemplate tpl;
-		tpl.ReadFromRawData(HardCodedTemplate::InitField_Scope);
+		ReadTemplateFromRawData(tpl, HardCodedTemplate::InitField_Scope);
 		CLabelToCodeMapping map;
 		MapLabelToLines(map, LABEL_14, linesInitAccessor);
 		Niflect::TSet<Niflect::CString> setReplacedLabel;
@@ -575,25 +575,26 @@ namespace NiflectGen
 							auto& vecChild = itFound->second->DebugGetChildren();
 							for (uint32 idx = 0; idx < templateArgsCount; ++idx)
 							{
-								auto member = CTaggedInheritableTypeMember::Cast(vecChild[idx].Get());
-								auto& cursorField = member->GetCursor();
-								if (clang_getCXXAccessSpecifier(cursorField) != CX_CXXAccessSpecifier::CX_CXXPublic)
-								{
-									//此处 template type 并不是指上处 m_mapCursorDeclToUntaggedTemplate 中对应的 Untagged Template
-									//框架概念中并没有 Tagged Template, 即本就不支持模板类型反射, 因此提示信息中, 描述的是
-									//对于所有 Template 类型, 被解析需要子 Accessor 时, 只支持对应的为 Template 的 BindingType 其成员定义在 Public 作用域
-									GenLogError(context.m_log, "Field access scope must be public for a template type");
-									ok = false;
-									break;
-								}
-								auto type = clang_getCursorType(cursorField);
-								CXType argType = clang_Type_getTemplateArgumentAsType(underlyingType, idx);
-								auto argCursorDecl = clang_getTypeDeclaration(argType);
-								CTypeDecl typeDecl(argCursorDecl, argType);
-								auto kind = clang_getCursorKind(cursorField);
-								bool trueField_falseMethod = kind == CXCursor_FieldDecl;
-								ASSERT(trueField_falseMethod);
-								vecMemberInfo.push_back({ typeDecl, CXStringToCString(clang_getCursorSpelling(cursorField)), trueField_falseMethod, vecDetailCursor, detailCursorsArrayIndex });
+								ASSERT(false);
+								//auto member = CTaggedInheritableTypeMember::Cast(vecChild[idx].Get());
+								//auto& cursorField = member->GetCursor();
+								//if (clang_getCXXAccessSpecifier(cursorField) != CX_CXXAccessSpecifier::CX_CXXPublic)
+								//{
+								//	//此处 template type 并不是指上处 m_mapCursorDeclToUntaggedTemplate 中对应的 Untagged Template
+								//	//框架概念中并没有 Tagged Template, 即本就不支持模板类型反射, 因此提示信息中, 描述的是
+								//	//对于所有 Template 类型, 被解析需要子 Accessor 时, 只支持对应的为 Template 的 BindingType 其成员定义在 Public 作用域
+								//	GenLogError(context.m_log, "Field access scope must be public for a template type");
+								//	ok = false;
+								//	break;
+								//}
+								//auto type = clang_getCursorType(cursorField);
+								//CXType argType = clang_Type_getTemplateArgumentAsType(underlyingType, idx);
+								//auto argCursorDecl = clang_getTypeDeclaration(argType);
+								//CTypeDecl typeDecl(argCursorDecl, argType);
+								//auto kind = clang_getCursorKind(cursorField);
+								//bool trueField_falseMethod = kind == CXCursor_FieldDecl;
+								//ASSERT(trueField_falseMethod);
+								//vecMemberInfo.push_back({ typeDecl, CXStringToCString(clang_getCursorSpelling(cursorField)), trueField_falseMethod, vecDetailCursor, detailCursorsArrayIndex });
 							}
 							dimension++;
 							CTypeRegClassWrittingData dataInitFieldLayout2ForCompoundType(linesScope2, data.m_includePathRequirement);
@@ -752,7 +753,7 @@ namespace NiflectGen
 		if (NiflectUtil::EndsWith(registeredOrMiscTypeName, '>'))
 			registeredOrMiscTypeName += ' ';
 
-		CCppWriter tplWriter;
+		CCodeWriter tplWriter;
 		tplWriter.WriteLine(templateStaticGetType);
 		tplWriter.WriteLine(HardCodedTemplate::InitField_CreateForMember);
 		tplWriter.WriteLine(MAKELABEL(LABEL_14));
@@ -773,10 +774,10 @@ namespace NiflectGen
 			break;
 		}
 		tplWriter.WriteLine(templateAssignToOwner);
-		CCppWriter writerAccessorOffset;
+		CCodeWriter writerAccessorOffset;
 		{
 			CCodeTemplate tpl0;
-			tpl0.ReadFromRawData(templateAccessorOffset.c_str());
+			ReadTemplateFromRawData(tpl0, templateAccessorOffset.c_str());
 			CLabelToCodeMapping map0;
 			MapLabelToText(map0, LABEL_21, internalName);
 			MapLabelToText(map0, LABEL_25, fieldsOwnerTypeName);
@@ -789,7 +790,7 @@ namespace NiflectGen
 		auto strAccessorLevel = NiflectUtil::FormatString("%u", accessorLevel);
 		auto textGetNodeFromShared = ReplaceLabelToText1(HardCodedTemplate::CreateFieldLayout_GetNodeFromShared2, LABEL_7, strAccessorLevel);
 		CCodeTemplate tpl1;
-		tpl1.ReadFromRawData(tplWriter.m_code.c_str());
+		ReadTemplateFromRawData(tpl1, tplWriter.m_code.c_str());
 		CLabelToCodeMapping map;
 		MapLabelToText(map, LABEL_7, strAccessorLevel);
 		MapLabelToText(map, LABEL_12, registeredOrMiscTypeName);

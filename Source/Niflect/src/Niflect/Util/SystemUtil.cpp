@@ -1,7 +1,5 @@
 #include "Niflect/Util/SystemUtil.h"
-#ifdef TEST_TestResolvePath
 #include "Niflect/Util/StringUtil.h"//TestResolvePath
-#endif
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -28,22 +26,32 @@
 
 namespace NiflectUtil
 {
-    static bool create_directory(const Niflect::CString& path) {
+    static bool create_directory(const Niflect::CString& path)
+    {
         struct stat info;
-
         // 检查路径是否已存在
-        if (stat(path.c_str(), &info) != 0) {
+        if (stat(path.c_str(), &info) != 0)
+        {
             // 路径不存在，尝试创建
 #ifdef _WIN32
-            if (_mkdir(path.c_str()) != 0) {
-#else
-            if (mkdir(path.c_str(), 0777) != 0) {
-#endif
+            if (_mkdir(path.c_str()) != 0)
+            {
                 std::cerr << "Error creating directory: " << path << std::endl;
                 return false;
             }
+#else
+            if (mkdir(path.c_str(), 0777) != 0)
+            {
+                if (errno != EEXIST)
+                {
+                    std::cerr << "Error creating directory: " << path << std::endl;
+                    return false;
+                }
             }
-        else if (!(info.st_mode & S_IFDIR)) {
+#endif
+        }
+        else if (!(info.st_mode & S_IFDIR))
+        {
             // 路径存在但不是目录
             std::cerr << path << " exists but is not a directory." << std::endl;
             return false;
@@ -480,6 +488,103 @@ namespace NiflectUtil
 
 
 
+#include <iostream>
+#include <string>
+#include <vector>
+#include <cstring>
+
+#ifdef _WIN32
+#include <windows.h>
+#else
+#include <dirent.h>
+#include <sys/stat.h>
+#endif
+
+namespace NiflectUtil
+{
+#ifdef _WIN32
+    // 在 Windows 下递归遍历目录
+    static void CollectFilesRecurs_Windows(const Niflect::CString& rootDirPath, const Niflect::CString& relativeParentDirPath, const CCollectingOption& opt, uint32 depth) {
+        auto directory = NiflectUtil::ConcatPath(rootDirPath, relativeParentDirPath);
+        Niflect::CString searchPattern = directory;
+        if (searchPattern.back() != '/')
+            searchPattern += "/*";
+        else
+            searchPattern += '*';
+        WIN32_FIND_DATA find_data;
+        HANDLE handle = FindFirstFile(searchPattern.c_str(), &find_data);
+
+        if (handle == INVALID_HANDLE_VALUE) {
+            std::cerr << "无法打开目录: " << directory << std::endl;
+            return;
+        }
+
+        do {
+            Niflect::CString filename = find_data.cFileName;
+            if (filename == "." || filename == "..") {
+                continue; // 跳过 "." 和 ".." 项
+            }
+
+            if (find_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
+                if (opt.m_maxDepth == 0 || depth < opt.m_maxDepth)
+                {
+                    auto relDirPath = NiflectUtil::ConcatPath(relativeParentDirPath, filename);
+                    CollectFilesRecurs_Windows(rootDirPath, relDirPath, opt, depth + 1); // 递归搜索子目录
+                }
+            }
+            else {
+                SCollectingContext ctx{ relativeParentDirPath, filename };
+                opt.m_Func(ctx);
+            }
+
+        } while (FindNextFile(handle, &find_data) != 0);
+
+        FindClose(handle);
+    }
+#else
+    // 在 Linux 下递归遍历目录
+    static void CollectFilesRecurs_Linux(const Niflect::CString& rootDirPath, const Niflect::CString& relativeParentDirPath, const CCollectingOption& opt, uint32 depth) {
+        auto directory = NiflectUtil::ConcatPath(rootDirPath, relativeParentDirPath);
+        DIR* dir = opendir(directory.c_str());
+        if (!dir) {
+            std::cerr << "无法打开目录: " << directory << std::endl;
+            return;
+        }
+
+        struct dirent* entry;
+        while ((entry = readdir(dir))) {
+            if (entry->d_name[0] == '.') {
+                continue; // 跳过 "." 和 ".." 项
+            }
+
+            Niflect::CString filename = entry->d_name;
+            if (entry->d_type == DT_DIR) {
+                if (opt.m_maxDepth == 0 || depth < opt.m_maxDepth)
+                {
+                    auto relDirPath = NiflectUtil::ConcatPath(relativeParentDirPath, filename);
+                    CollectFilesRecurs_Linux(rootDirPath, relDirPath, opt, depth + 1); // 递归搜索子目录
+                }
+            }
+            else {
+                SCollectingContext ctx{ relativeParentDirPath, filename };
+                opt.m_Func(ctx);
+            }
+        }
+
+        closedir(dir);
+    }
+#endif
+
+    void CollectFiles(const Niflect::CString& dirPath, const CCollectingOption& opt)
+    {
+        Niflect::CString relativeParentDirPath;
+#ifdef _WIN32
+        CollectFilesRecurs_Windows(dirPath, relativeParentDirPath, opt, 1);
+#else
+        CollectFilesRecurs_Linux(dirPath, relativeParentDirPath, opt, 1);
+#endif
+    }
+}
 
 
 

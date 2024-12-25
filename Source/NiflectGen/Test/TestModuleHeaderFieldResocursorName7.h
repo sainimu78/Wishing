@@ -15,7 +15,7 @@ namespace TestMyFinding
 		}
 
 		NIF_F()
-		Niflect::TMap<Niflect::CString, Niflect::TArrayNif<bool> > m_map_string_bits_0;
+		Niflect::TMap<Niflect::CString, Niflect::TArray<bool> > m_map_string_bits_0;
 	};
 }
 

@@ -1,5 +1,5 @@
 #pragma once
-#include "NiflectGen/CodeWriter/CodeWriter.h"
+#include "NiflectGen/CodeWriter/CppWriter.h"
 
 namespace NiflectGen
 {
@@ -17,7 +17,9 @@ namespace NiflectGen
 	{
 	public:
 		CModuleRegInfo()
-			: m_genFileMode(EGeneratingHeaderAndSourceFileMode::EHeaderOnly)
+			: m_toGenGeneratedBodyThisType(false)
+			, m_toGenStaticModuleReg(false)
+			, m_genFileMode(EGeneratingHeaderAndSourceFileMode::EHeaderOnly)
 		{
 		}
 		Niflect::CString m_moduleName;
@@ -30,6 +32,8 @@ namespace NiflectGen
 		Niflect::CString m_moduleApiMacro;
 		Niflect::CString m_moduleApiMacroHeader;
 		Niflect::CString m_toolHeaderSearchPath;
+		bool m_toGenGeneratedBodyThisType;
+		bool m_toGenStaticModuleReg;
 		EGeneratingHeaderAndSourceFileMode m_genFileMode;
 	};
 
@@ -39,10 +43,13 @@ namespace NiflectGen
 		bool Init(const CModuleRegInfo& info);
 		Niflect::CString GetSourceFileExtForGenFileMode() const;
 
-		Niflect::CString m_moduleGenSource;
+		Niflect::CString m_moduleGenSourceRoot;
 		Niflect::CString m_typeRegBasePath;
 		Niflect::CString m_genIncludeBasePath;
+		Niflect::CString m_genSrcBasePath;
 		Niflect::CString m_moduleRegBasePath;
+		Niflect::CString m_genTimeBasePath;
+		Niflect::CString m_genSourceRootParentDir;
 		Niflect::CString m_moduleRegisteredTypeHeaderFilePath;
 		Niflect::CString m_moduleScopeSymbolPrefix;
 		Niflect::TArrayNif<Niflect::CString> m_vecParsingHeaderSearchPath;

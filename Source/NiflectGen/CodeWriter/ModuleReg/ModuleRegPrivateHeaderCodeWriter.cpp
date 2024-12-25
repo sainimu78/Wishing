@@ -1,7 +1,7 @@
 #include "NiflectGen/CodeWriter/ModuleReg/ModuleRegPrivateHeaderCodeWriter.h"
 #include "NiflectGen/CodeWriter/HardCoded/ModuleRegPrivateHeaderTemplate.h"
 #include "NiflectGen/CodeWriter/CppWriter.h"
-#include "NiflectGen/CodeWriter/CodeTemplate.h"
+#include "NiflectGen/CodeWriter/CppTemplate.h"
 
 namespace NiflectGen
 {
@@ -29,7 +29,7 @@ namespace NiflectGen
         //CIncludesHelper::WriteIncludeDirectives(vecIncludePath, linesIncludes);
         {
             CCodeTemplate tpl;
-            tpl.ReadFromRawData(HardCodedTemplate::ModuleRegPrivateH);
+            ReadTemplateFromRawData(tpl, HardCodedTemplate::ModuleRegPrivateH);
             CLabelToCodeMapping map;
             MapLabelToText(map, LABEL_SHARED_0, writingCtx.m_moduleName);
             MapLabelToLines(map, LABEL_2, linesMergedRegisterTypes);

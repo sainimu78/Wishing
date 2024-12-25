@@ -15,7 +15,7 @@ namespace TestMyFinding
 		}
 
 		NIF_F()
-		Niflect::TArrayNif<Niflect::TMap<Niflect::CString, float> > m_array_map_string_float_0;
+		Niflect::TArray<Niflect::TMap<Niflect::CString, float> > m_array_map_string_float_0;
 	};
 }
 

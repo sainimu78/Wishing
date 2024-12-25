@@ -10,7 +10,7 @@ cd ../../../Build/NiflectGenTool/Linux/Make_x64/Debug/NiflectGenTool
 -amh ../../../../../../Source/TestModule1/include/TestModule1/TestModule1Common.h \
 -a ../../../../../../Source/Niflect/include/Niflect/CommonlyUsed/DefaultAccessorSetting.h \
 -I ../../../../../../Source/TestModule1/include \
--I ../../../../../../Source/Niflect/include \
+-t ../../../../../../Source/Niflect/include \
 -g ../../../../../../Generated/NiflectGenerated 
 
 cd $old

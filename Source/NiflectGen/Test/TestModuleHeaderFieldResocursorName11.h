@@ -24,13 +24,13 @@ namespace TestMyFinding
 		NIF_F()
 		bool m_bool_1;
 		NIF_F()
-		TArrayNif<float> m_array_float_2;
+		TArray<float> m_array_float_2;
 		NIF_F()
-		Niflect::TArrayNif<bool> m_bits_3;
+		Niflect::TArray<bool> m_bits_3;
 		NIF_F()
-		Niflect::TArrayNif<Niflect::TArrayNif<float> > m_array_array_float_4;
+		Niflect::TArray<Niflect::TArray<float> > m_array_array_float_4;
 		NIF_F()
-		Niflect::TArrayNif<Niflect::TArrayNif<bool> > m_array_bits_5;
+		Niflect::TArray<Niflect::TArray<bool> > m_array_bits_5;
 		NIF_F()
 		std::vector<float> m_std_array_float_6;
 		NIF_F()
@@ -44,17 +44,17 @@ namespace TestMyFinding
 		NIF_F()
 		std::pair<Niflect::CString, float> m_pair_string_float_11;
 		NIF_F()
-		Niflect::TMap<Niflect::CString, Niflect::TArrayNif<float> > m_map_string_array_float_12;
+		Niflect::TMap<Niflect::CString, Niflect::TArray<float> > m_map_string_array_float_12;
 		NIF_F()
-		Niflect::TMap<Niflect::CString, Niflect::TArrayNif<bool> > m_map_string_bits_13;
+		Niflect::TMap<Niflect::CString, Niflect::TArray<bool> > m_map_string_bits_13;
 		NIF_F()
-		Niflect::TMap<Niflect::CString, Niflect::TArrayNif<Niflect::TMap<Niflect::CString, float> > > m_map_string_array_map_string_float_14;
+		Niflect::TMap<Niflect::CString, Niflect::TArray<Niflect::TMap<Niflect::CString, float> > > m_map_string_array_map_string_float_14;
 		NIF_F()
 		TestAccessor2::TMyTransform<float> m_tm_15;
 		NIF_F()
-		Niflect::TArrayNif<Niflect::TMap<Niflect::CString, float> > m_array_map_string_float_16;
+		Niflect::TArray<Niflect::TMap<Niflect::CString, float> > m_array_map_string_float_16;
 		NIF_F()
-		Niflect::TArrayNif<Niflect::TMap<Niflect::CString, Niflect::TArrayNif<float> > > m_array_map_string_array_float_17;
+		Niflect::TArray<Niflect::TMap<Niflect::CString, Niflect::TArray<float> > > m_array_map_string_array_float_17;
 		//NIF_F()
 		//TestAccessor2::TMyTransform<bool> m_tm_18;
 	};

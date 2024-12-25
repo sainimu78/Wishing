@@ -24,5 +24,6 @@ namespace NiflectGen
 		CXSourceLocation m_tagLocation;
 #endif
 		CX_CXXAccessSpecifier m_lastAccessSpecifier;
+		Niflect::TSharedPtr<CTaggedInheritableTypeMember> m_createdTaggedChild;
 	};
 }

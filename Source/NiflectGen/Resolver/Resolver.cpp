@@ -4,6 +4,7 @@
 #include "NiflectGen/CodeWriter/ModuleReg/ModuleRegCodeWriter.h"
 #include "NiflectGen/Base/NiflectGenDefinition.h"
 #include "NiflectGen/CodeWriter/CppWriter.h"
+#include <string.h>//memcpy
 
 namespace NiflectGen
 {
@@ -191,156 +192,6 @@ namespace NiflectGen
 	//		this->ResolveRecurs(it0.Get(), context, data);
 	//	}
 	//}
-	void CResolver::Deprecated_Resolve2(CTaggedNode2* taggedRoot, CResolvingContext& context, CResolvedData& data)
-	{
-		auto& accessorBindingMapping = data.deprecated_m_mapping.m_accessorBindingMapping;
-		for (auto& it0 : m_collectionData.deprecated_m_vecBindingSetting)
-		{
-			if (!it0.Deprecated_IsValidBindingSetting())
-			{
-				GenLogError(context.m_log, "Unable to obtain type bindings from the TBindingSetting template instance");
-				break;
-			}
-			
-			auto accessorBindingIndex = static_cast<uint32>(accessorBindingMapping.m_vecAccessorBinding2.size());
-
-			bool ok = false;
-			auto& bindingTypeDecl = it0.GetBindingTypeDecl();
-			if (clang_getCursorKind(bindingTypeDecl.m_cursorDecl) == CXCursor_NoDeclFound)
-			{
-				ok = accessorBindingMapping.m_mapBasicTypeKindToAccessorBindingIndex.insert({ bindingTypeDecl.m_CXType.kind, {accessorBindingIndex, bindingTypeDecl.m_CXType} }).second;
-			}
-			else
-			{
-				auto cursorDecl = bindingTypeDecl.m_cursorDecl;
-				bool declValid = true;
-				auto kind = clang_getCursorKind(cursorDecl);
-				if ((kind == CXCursor_TypeAliasTemplateDecl) || (kind == CXCursor_TypeAliasDecl))
-				{
-					auto itFound = m_collectionData.deprecated_m_mapAliasTemplateDeclToClassTemplateCursor.find(cursorDecl);
-					if (itFound != m_collectionData.deprecated_m_mapAliasTemplateDeclToClassTemplateCursor.end())
-					{
-						cursorDecl = itFound->second;
-					}
-					else
-					{
-						declValid = false;
-					}
-				}
-
-				if (declValid)
-				{
-					ok = accessorBindingMapping.m_mapBasicCusorDeclToAccessorBindingIndex.insert({ bindingTypeDecl.m_cursorDecl, accessorBindingIndex }).second;
-					//ok = accessorBindingMapping.m_mapBasicCusorDeclToAccessorBindingIndex.insert({ cursorDecl, accessorBindingIndex }).second;//原始Decl, 留作备用
-				}
-			}
-			if (!ok)
-			{
-				GenLogError(context.m_log, "Binding types are conflicting, an identical binding type is expected for an accessor");
-				break;//todo: 处于2层for, 需要有另外的逻辑检查有错误则不遍历sibling
-			}
-
-			CAccessorBinding item(it0.GetAccessorTypeDecl(), it0.m_actualFieldDeclCursor, it0.m_accessorData);
-			for (uint32 idx1 = 0; idx1 < it0.GetBindingTypeDeclsCount(); ++idx1)
-			{
-				auto& bindingTypeDecl = it0.GetBindingTypeDecl(idx1);
-				item.m_vecWWWW.push_back(bindingTypeDecl);
-			}
-			//auto a = CXStringToCString(clang_getCursorSpelling(item.m_accessorCursorDecl));
-			//printf("%s\n", a.c_str());
-			accessorBindingMapping.m_vecAccessorBinding2.emplace_back(item);
-		}
-
-#ifdef TAGGED_REQUIREMENT_OF_NON_TEMPLATE_ACCESSOR_TYPE
-		//todo: 可简化, 实际上只有非模板cursor才有可能具有TaggedNode
-		for (auto& it0 : accessorBindingMapping.m_vecAccessorBinding2)
-		{
-			auto ret = m_mapAccessorCursorDeclToAccessorBindingIndex.insert({ it0.m_accessorSubcursor.m_cursorDecl, &it0.m_accessorTaggedType });
-			if (!ret.second)
-			{
-				GenLogError(context.m_log, "Accessor types are conflicting, an identical binding is expected");
-				break;//todo: 处于2层for, 需要有另外的逻辑检查有错误则不遍历sibling
-			}
-			//for (auto& it1 : it0.m_vecWWWW)
-			//{
-			//	auto ret = m_mapAccessorCursorDeclToAccessorBindingIndex.insert({ it1.m_subcursor.m_cursorDecl, &it1.m_untaggedType });
-			//	if (!ret.second)
-			//	{
-			//		for (auto& ssssssss : m_mapAccessorCursorDeclToAccessorBindingIndex)
-			//		{
-			//			auto a = CXStringToCString(clang_getCursorSpelling(ssssssss.first));
-			//			printf("%s\n", a.c_str());
-			//		}
-			//		auto a = CXStringToCString(clang_getCursorSpelling(it1.m_subcursor.m_cursorDecl));
-			//		printf("%s\n", a.c_str());
-
-			//		GenLogError(context.m_log, "Accessor types are conflicting, an identical binding is expected");
-			//		break;//todo: 处于2层for, 需要有另外的逻辑检查有错误则不遍历sibling
-			//	}
-			//}
-		}
-#else
-#endif
-
-		this->ResolveRecurs2(taggedRoot, context, data);
-
-		ASSERT(m_foundCursorsCount <= accessorBindingMapping.m_vecAccessorBinding2.size());
-
-		//for (auto& it0 : accessorBindingMapping.m_vecAccessorBinding2)
-		//{
-		//	auto a = CXStringToCString(clang_getCursorSpelling(it0.m_accessorCursorDecl));
-		//	printf("%s\n", a.c_str());
-		//}
-
-		//未实现按CursorDeclaration依赖顺序遍历, 因此在最后ResolveDependcies
-		for (auto& it : data.m_vecResolvedTypes2)
-			it.m_taggedType->Deprecated_ResolveDependcies(data.deprecated_m_mapping.m_mapCursorDeclToTaggedType);
-
-		//for (auto& it : data.m_mapping.m_mapCursorDeclToUntaggedTemplate)
-		//{
-		//	auto a = CXStringToCString(clang_getCursorSpelling(it.first));
-		//	if (a == "TMyTransform")
-		//		printf("");
-		//	printf("%s\n", a.c_str());
-		//}
-
-		this->TestResolveRecurs3(taggedRoot, context, data);
-
-		auto& vec0 = m_collectionData.m_accessorBindingMapping->m_settings.m_vecAccessorBindingSetting;
-
-		for (uint32 idx0 = 0; idx0 < vec0.size(); ++idx0)
-		{
-			auto& bSubcursor = vec0[idx0].GetBindingTypeDecl();
-			auto a = CXStringToCString(clang_getCursorSpelling(bSubcursor.m_cursorDecl));
-
-			Niflect::CString dddddd;
-			GenerateTemplateInstanceCode(bSubcursor, dddddd);
-			auto ddddddd = clang_getSpecializedCursorTemplate(bSubcursor.m_cursorDecl);
-
-			auto itFound0 = data.deprecated_m_mapping.m_mapCursorDeclToUntaggedTemplate.find(bSubcursor.m_cursorDecl);
-			if (itFound0 != data.deprecated_m_mapping.m_mapCursorDeclToUntaggedTemplate.end())
-			{
-				auto b = CXStringToCString(clang_getCursorSpelling(itFound0->second->GetCursor()));
-				printf("");
-			}
-			else
-			{
-				printf("");
-			}
-
-			//特化的原定义, 即从ClassDecl获取到ClassTemplate
-			auto itFound1 = data.deprecated_m_mapping.m_mapCursorDeclToUntaggedTemplate.find(ddddddd);
-			if (itFound1 != data.deprecated_m_mapping.m_mapCursorDeclToUntaggedTemplate.end())
-			{
-				auto b = CXStringToCString(clang_getCursorSpelling(itFound1->second->GetCursor()));
-				printf("");
-			}
-			else
-			{
-				printf("");
-			}
-		}
-	}
 	//static void FindBindingTypeRecurs(const CAccessorBindingMapping2* mapping, const CXType& fieldOrArgCXType, const Niflect::TArrayNif<CXCursor>& vecDetailCursor, Niflect::TArrayNif<uint32>& vecFoundIdx, uint32& detailIteratingIdx);
 	//static void IterateForTemplate(const CAccessorBindingMapping2* mapping, const CXType& fieldOrArgCXType, const Niflect::TArrayNif<CXCursor>& vecDetailCursor, Niflect::TArrayNif<uint32>& vecFoundIdx, uint32& detailIteratingIdx)
 	//{
@@ -460,40 +311,6 @@ namespace NiflectGen
 	//	uint32 detailIteratingIdx = 0;
 	//	FindBindingTypeRecurs(mapping, fieldCXType, vecDetailCursor, vecFoundIdx, detailIteratingIdx);
 	//}
-	void CResolver::TestResolveRecurs3(CTaggedNode2* taggedParent, CResolvingContext& context, CResolvedData& data, int lv)
-	{
-		if (auto taggedType = CTaggedType::CastChecked(taggedParent))
-		{
-			//auto a = CXStringToCString(clang_getCursorSpelling(taggedParent->GetCursor()));
-			//auto strLevel = NiflectUtil::DebugIndentToString(lv);
-			//printf("%s%s\n", strLevel.c_str(), a.c_str());
-		}
-		else if (auto taggedType = CTaggedInheritableTypeMember::CastChecked(taggedParent))
-		{
-			//auto a = CXStringToCString(clang_getCursorSpelling(taggedParent->GetCursor()));
-			//auto strLevel = NiflectUtil::DebugIndentToString(lv);
-			//printf("%s%s\n", strLevel.c_str(), a.c_str());
-
-			auto memberName = CXStringToCString(clang_getCursorSpelling(taggedParent->GetCursor()));
-			//仅为测试成员类型查找BindingType
-			auto underScorePos = memberName.find_last_of('_');
-			if (underScorePos != std::string::npos && (underScorePos > 1))
-			{
-				auto& fieldCursor = taggedParent->GetCursor();
-				Niflect::TArrayNif<uint32> vecFoundIdx;
-				ASSERT(false);//下函数已改写
-				//m_collectionData.m_accessorBindingMapping->FindBindingTypeForField(fieldCursor, taggedType->m_vecDetailCursor, vecFoundIdx);
-				ASSERT(vecFoundIdx.size() > 0);
-				printf("");
-			}
-		}
-
-		lv++;
-		for (auto& it0 : taggedParent->DebugGetChildren())
-		{
-			this->TestResolveRecurs3(it0.Get(), context, data, lv);
-		}
-	}
 	void CResolver::ResolveRecurs2(CTaggedNode2* taggedParent, CResolvingContext& context, CResolvedData& data)
 	{
 		if (auto taggedType = CTaggedType::CastChecked(taggedParent))
@@ -614,7 +431,10 @@ namespace NiflectGen
 
 		for (auto& it0 : vecFilePathAndTaggedTypeIdx)
 		{
-			auto& cursor = data.m_taggedMapping.m_vecType[it0.m_taggedTypeIdx]->GetCursor();
+			auto& tt = data.m_taggedMapping.m_vecType[it0.m_taggedTypeIdx];
+			if (!tt->RequiredGenHIncluded())
+				continue;
+			auto& cursor = tt->GetCursor();
 			CXSourceRange range = clang_getCursorExtent(cursor);
 			CXTranslationUnit translationUnit = clang_Cursor_getTranslationUnit(cursor);
 			{
@@ -666,6 +486,18 @@ namespace NiflectGen
 						}
 					}
 					auto includeFilePath = CIncludesHelper::ConvertToIncludePath(it0.m_filePath, m_moduleRegInfo.m_writingHeaderSearchPaths.m_vecForRegularConversion);
+					if (includeFilePath.empty())
+					{
+						Niflect::CString str;
+						for (uint32 idx1 = 0; idx1 < m_moduleRegInfo.m_writingHeaderSearchPaths.m_vecForRegularConversion.size(); ++idx1)
+						{
+							auto& it = m_moduleRegInfo.m_writingHeaderSearchPaths.m_vecForRegularConversion[idx1];
+							str += NiflectUtil::FormatString("[%u] %s\n", idx1, it.c_str());
+						}
+						GenLogError(context.m_log, NiflectUtil::FormatString(
+R"(The conversion of %s to an include directive failed because the file could not be found in the user provided include search paths, which are as follows:
+%s)", it0.m_filePath.c_str(), str.c_str()));
+					}
 					auto filePathNoExt = NiflectUtil::RemoveFileExt(includeFilePath);
 					auto expectedIncludeFilePath = filePathNoExt + NiflectGenDefinition::FileExt::GenH;
 					bool includedGenH = vecIncludeDirective.size() > 0;

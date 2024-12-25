@@ -158,7 +158,7 @@ namespace NiflectGen
 	static Niflect::CString GetNextArgIncludeSearchPath(const char** argv, int& idx)
 	{
 		auto path = GetNextArgPath(argv, idx);
-		return CIncludesHelper::MakeIncludeSearchPath(path);
+		return NiflectUtil::ConvertToSearchPath(path);
 	}
 
 	static void ParseOptions(int argc, const char** argv, CModuleRegInfo& info)
@@ -207,6 +207,14 @@ namespace NiflectGen
 			{
 				info.m_genSourceOutputDirPath = GetNextArgPath(argv, idx);
 			}
+			else if (strcmp(pszV, "-gbt") == 0)
+			{
+				info.m_toGenGeneratedBodyThisType = true;
+			}
+			else if (strcmp(pszV, "-gsm") == 0)
+			{
+				info.m_toGenStaticModuleReg = true;
+			}
 			else if (strcmp(pszV, "-fs") == 0)
 			{
 				info.m_genFileMode = EGeneratingHeaderAndSourceFileMode::ESourceAndHeader;
@@ -243,13 +251,13 @@ int main(int argc, const char** argv)
 				
 				//const char* argvTest[] = {
 				//	"Placeholder",
-				//	"-n", "Engine",
-				//	"-h", "\"../../../../../../Source/Engine/include/Engine/EngineObject.h\"",
-				//	"-h", "../../../../../../Source/Engine/include/Engine/DerivedObject.h",
+				//	"-n", "TestEngine",
+				//	"-h", "\"../../../../../../Source/TestEngine/include/Engine/EngineObject.h\"",
+				//	"-h", "../../../../../../Source/TestEngine/include/Engine/DerivedObject.h",
 				//	"-am", "ENGINE_API",
-				//	"-amh", "../../../../../../Source/Engine/include/Engine/EngineCommon.h",
-				//	"-a", "../../../../../../Source/Engine/include/EngineAccessorSetting.h",
-				//	"-I", "../../../../../../Source/Engine/include",
+				//	"-amh", "../../../../../../Source/TestEngine/include/Engine/EngineCommon.h",
+				//	"-a", "../../../../../../Source/TestEngine/include/EngineAccessorSetting.h",
+				//	"-I", "../../../../../../Source/TestEngine/include",
 				//	"-I", "../../../../../../Source/TestModule1/include",
 				//	//"-I", "../../../../../../Source/Engine/ResolverCustom",
 				//	"-t", "../../../../../../Source/Niflect/include",
@@ -305,6 +313,7 @@ int main(int argc, const char** argv)
 					CCodeGenData genData;
 					gen->Generate(genData);
 					gen->Save2(genData);
+					gen->Cleanup();
 				}
 				else
 				{

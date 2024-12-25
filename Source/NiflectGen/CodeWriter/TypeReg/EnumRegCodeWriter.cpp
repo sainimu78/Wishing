@@ -1,7 +1,7 @@
 #include "NiflectGen/CodeWriter/TypeReg/EnumRegCodeWriter.h"
 #include "NiflectGen/Util/CursorUtil.h"
 #include "NiflectGen/CodeWriter/HardCoded/EnumTemplate.h"
-#include "NiflectGen/CodeWriter/CodeTemplate.h"
+#include "NiflectGen/CodeWriter/CppTemplate.h"
 #include "NiflectGen/CodeWriter/CppWriter.h"
 #include "NiflectGen/Resolver/ResolvedData.h"
 
@@ -64,7 +64,7 @@ namespace NiflectGen
 		auto& tt = m_resolvedData->m_taggedMapping.m_vecType[m_bindingTypeIndexedRoot->m_taggedTypeIndex];
 
 		CCodeTemplate tpl1;
-		tpl1.ReadFromRawData(HardCodedTemplate::InitTypeCode);
+		ReadTemplateFromRawData(tpl1, HardCodedTemplate::InitTypeCode);
 		CLabelToCodeMapping map;
 		MapLabelToText(map, LABEL_0, m_bindingTypeIndexedRoot->m_resocursorName);
 		CCodeLines linesAddConsts;

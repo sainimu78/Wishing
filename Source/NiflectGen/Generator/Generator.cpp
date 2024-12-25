@@ -1,5 +1,5 @@
 #include "NiflectGen/Generator/Generator.h"
-#include "NiflectGen/Util/CompilerUtil.h"
+#include "NiflectGen/Util/ParserUtil.h"
 #include "clang-c/Index.h"
 #include "NiflectGen/Generator/CursorNode.h"
 #include <iostream>
@@ -93,7 +93,7 @@ namespace NiflectGen
             memSrcCache.AddMemSourceRef(memSrc);
         }
 
-        CCompilerOption opt;
+        CParserOption opt;
         opt.InitDefault();
         opt.AddIncludePaths(m_moduleRegInfo.m_vecParsingHeaderSearchPath);
 
@@ -245,16 +245,28 @@ namespace NiflectGen
         const auto* outputDirPath = &m_moduleRegInfo.m_userProvided.m_genOutputDirPath;
         if (!m_moduleRegInfo.m_userProvided.m_genSourceOutputDirPath.empty())
             outputDirPath = &m_moduleRegInfo.m_userProvided.m_genSourceOutputDirPath;
-        auto filePath = NiflectUtil::ConcatPath(m_moduleRegInfo.m_userProvided.m_moduleName, relativeFilePath);
+        auto filePath = NiflectUtil::ConcatPath(m_moduleRegInfo.m_genSourceRootParentDir, relativeFilePath);
         filePath = NiflectUtil::ConcatPath(*outputDirPath, filePath);
-        CCppWriter writer;
+        CCodeWriter writer;
         writer.WriteLines(linesCode);
         NiflectUtil::MakeDirectories(filePath);
-        NiflectUtil::WriteStringToFile(writer.m_code, filePath);
+        std::ofstream ofs;
+        if (NiflectUtil::OpenFileStream(ofs, filePath))
+        {
+            // 写入BOM（Byte Order Mark），以明确表示文件是UTF-8编码
+            unsigned char bom[] = { 0xEF, 0xBB, 0xBF };
+            ofs.write(reinterpret_cast<const char*>(bom), sizeof(bom));
+            ofs << writer.m_code;
+            ofs.close();
+        }
+        else
+        {
+            ASSERT(false);
+        }
     }
     void CGenerator::SaveFileToGenSource(const CCodeLines& linesCode, const Niflect::CString& relativeFilePath) const
     {
-        auto relativeToGenSource = NiflectUtil::ConcatPath(m_moduleRegInfo.m_moduleGenSource, relativeFilePath);
+        auto relativeToGenSource = NiflectUtil::ConcatPath(m_moduleRegInfo.m_moduleGenSourceRoot, relativeFilePath);
         this->SaveCodeToFile(linesCode, relativeToGenSource);
     }
     void CGenerator::Save2(const CCodeGenData& genData) const
@@ -276,8 +288,14 @@ namespace NiflectGen
             this->SaveFileToGenSource(it0.m_h, it0.m_headerFilePath);
             this->SaveFileToGenSource(it0.m_cpp, it0.m_sourceFilePath);
         }
+        if (genData.m_moduleRegGenData.m_genH.size() > 0)
+            this->SaveFileToGenSource(genData.m_moduleRegGenData.m_genH, genData.m_moduleRegGenData.m_genHIncludePath);
         this->SaveFileToGenSource(genData.m_moduleRegGenData.m_privateH, genData.m_moduleRegGenData.m_privateHIncludePath);
         this->SaveFileToGenSource(genData.m_moduleRegisteredTypeHeaderGenData.m_linesHeader, m_moduleRegInfo.m_moduleRegisteredTypeHeaderFilePath);
+    }
+    void CGenerator::Cleanup() const
+    {
+        NiflectUtil::DeleteDirectory(m_moduleRegInfo.m_genTimeBasePath);
     }
 
     CXChildVisitResult visitAST(CXCursor cursor, CXCursor parent, CXClientData data)

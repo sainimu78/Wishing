@@ -31,6 +31,8 @@ namespace NiflectGen
 				{
 					auto found = FindTagByDisplayName(cursor, NiflectGenDefinition::CodeTag::Field);
 					if (found)
+						m_createdTaggedChild = Niflect::MakeShared<CTaggedInheritableTypeField>();
+					if (found)
 					{
 #ifdef SIMPLIFIED_MACRO_CURSOR_FINDING
 #else
@@ -61,8 +63,7 @@ namespace NiflectGen
 #else
 				context.m_tagCollection.TakeByTagLocation(m_tagLocation, macroCursor);
 #endif
-				auto taggedChild = MakeShared<CTaggedInheritableTypeMember>();
-				this->AddChildAndInitDefault(taggedChild, cursor, macroCursor);
+				this->AddChildAndInitDefault(m_createdTaggedChild, cursor, macroCursor);
 				m_stage = EStage::None;
 				addedTaggedChild = true;
 			}

@@ -30,7 +30,7 @@ namespace NiflectGen
 				WriteDDDDDDDD(it, lv, pszLv, lines);
 		}
 	}
-	void CMiscTypeRegCodeWriter::WriteResocursorNodeBodyCode(const SResocursorNodeBodyCodeWritingContext& context, CCodeLines& linesResoBodyCode) const
+	void CMiscTypeRegCodeWriter::WriteResocursorNodeBodyCode(const SResocursorNodeBodyCodeWritingContext& context, SGetterSetterWritingData& data) const
 	{
 		//linesResoBodyCode.push_back(NiflectUtil::FormatString("My Name: %s", m_bindingTypeIndexedRoot->m_resocursorName.c_str()));
 		ASSERT(m_bindingTypeIndexedRoot->m_accessorBindingIndex != INDEX_NONE);
@@ -46,7 +46,7 @@ namespace NiflectGen
 				if (!as.m_accessorSettingResolvedInfo.m_isPointerTemplate)
 				{
 					auto elemStaticGetTypeFuncName = elemResocursorNode->GetStaticGetTypeFuncName(context.m_moduleRegInfo.m_moduleScopeSymbolPrefix);
-					WriteNextInitElementAccessor2(elemStaticGetTypeFuncName, linesResoBodyCode);
+					WriteNextInitElementAccessor2(elemStaticGetTypeFuncName, data.m_linesResoBodyCode);
 				}
 			}
 			else
@@ -72,7 +72,7 @@ namespace NiflectGen
 					auto it0 = ut->GetChild(idx);
 					auto fieldStaticGetTypeFuncName = m_bindingTypeIndexedRoot->m_vecChild[idx].GetStaticGetTypeFuncName(context.m_moduleRegInfo.m_moduleScopeSymbolPrefix);
 					auto fieldName = CXStringToCString(clang_getCursorSpelling(it0->GetCursor()));
-					WriteNextInitChildAccessor2(m_bindingTypeIndexedRoot->m_resocursorName, fieldStaticGetTypeFuncName, fieldName, CCodeLines(), linesResoBodyCode);
+					WriteNextInitChildAccessor2(m_bindingTypeIndexedRoot->m_resocursorName, fieldStaticGetTypeFuncName, fieldName, CCodeLines(), data.m_linesResoBodyCode);
 				}
 			}
 		}

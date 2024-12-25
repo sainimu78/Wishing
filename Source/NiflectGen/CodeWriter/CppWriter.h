@@ -1,49 +1,15 @@
 #pragma once
 #include "Niflect/NiflectBase.h"
-#include "Niflect/Util/StringUtil.h"
 #include "NiflectGen/CodeWriter/CodeWriter.h"
 #include "NiflectGen/CodeWriter/CodeRequirement.h"
 
 namespace NiflectGen
 {
-	class CCppWriterRef
+	class CWritingHeaderSearchPaths
 	{
 	public:
-		CCppWriterRef(Niflect::CString& code)
-			: m_code(code)
-		{
-
-		}
-
-	public:
-		void WriteLine(const Niflect::CString& line)
-		{
-			m_code += line + EscapeChar::NewLine;
-		}
-		void WriteLines(const CCodeLines& lines)
-		{
-			for (auto& it : lines)
-				m_code += it + EscapeChar::NewLine;
-		}
-		void Write(const Niflect::CString& code)
-		{
-			m_code += code;
-		}
-
-	public:
-		Niflect::CString& m_code;
-	};
-	class CCppWriter : public CCppWriterRef
-	{
-		typedef CCppWriterRef inherited;
-	public:
-		CCppWriter()
-			: inherited(m_stm)
-		{
-		}
-
-	private:
-		Niflect::CString m_stm;
+		Niflect::TArrayNif<Niflect::CString> m_vecForRegularConversion;//header search paths for regular header file path conversion at writing code stage
+		Niflect::TArrayNif<Niflect::CString> m_vecForGenTimeConversion;//header search paths for bypass header file path conversion at writing code stage
 	};
 
 	class CHeaderFilePathData
@@ -86,20 +52,7 @@ namespace NiflectGen
 		{
 			WriteIncludeDirectives(vecIncData, lines);
 		}
-		static void WriteIncludeDirectives(const Niflect::TArrayNif<SIncludeDerectiveData>& vecIncData, CCodeLines& lines)
-		{
-			for (auto& it : vecIncData)
-			{
-				char cL = '\"';
-				char cR = '\"';
-				if (it.m_isFromSystemHeaderSearchPaths)
-				{
-					cL = '<';
-					cR = '>';
-				}
-				lines.push_back(NiflectUtil::FormatString("#include %c%s%c", cL, it.m_incPath.c_str(), cR));
-			}
-		}
+		static void WriteIncludeDirectives(const Niflect::TArrayNif<SIncludeDerectiveData>& vecIncData, CCodeLines& lines);
 		static Niflect::CString ConvertToIncludePath(const Niflect::CString& filePath, const Niflect::TArrayNif<Niflect::CString>& vecSearchPath)
 		{
 			Niflect::CString incPath;
@@ -142,17 +95,7 @@ namespace NiflectGen
 		{
 			WriteUsingNamespaceDirectives(pathCollector.m_vecPath, lines);
 		}
-		static void WriteUsingNamespaceDirectives(const CCodeLines& vecIncludePath, CCodeLines& lines)
-		{
-			for (auto& it : vecIncludePath)
-				lines.push_back(NiflectUtil::FormatString("using namespace %s;", it.c_str()));
-		}
-		static Niflect::CString MakeIncludeSearchPath(const Niflect::CString& path)
-		{
-			if (path.back() != '/')
-				return path + '/';
-			return path;
-		}
+		static void WriteUsingNamespaceDirectives(const CCodeLines& vecIncludePath, CCodeLines& lines);
 
 	private:
 		static bool InternalConvertToIncludePath(const Niflect::CString& filePath, const Niflect::TArrayNif<Niflect::CString>& vecSearchPath, Niflect::CString& incPath)
@@ -186,44 +129,19 @@ namespace NiflectGen
 		{
 			this->AddLine("#pragma once");
 		}
-		void AddInclude(const Niflect::CString& filePath)
-		{
-			ASSERT(!filePath.empty());
-			this->AddLine(NiflectUtil::FormatString("#include \"%s\"", filePath.c_str()));
-		}
-		void AddSystemInclude(const Niflect::CString& filePath)
-		{
-			ASSERT(!filePath.empty());
-			this->AddLine(NiflectUtil::FormatString("#include <%s>", filePath.c_str()));
-		}
+		void AddInclude(const Niflect::CString& filePath);
+		void AddSystemInclude(const Niflect::CString& filePath);
 
 	private:
 		void AddLine(const Niflect::CString& text)
 		{
 			m_data += text;
-			m_data += "\r\n";
+			m_data += EscapeChar::NewLine;
 		}
 
 	private:
 		Niflect::CString& m_data;
 	};
 
-	static void DebugPrintCodeLines(const CCodeLines& lines)
-	{
-		CCppWriter writer;
-		writer.WriteLines(lines);
-		printf("%s", writer.m_code.c_str());
-	}
-
-	static Niflect::CString ConvertToInternalFilePath(const Niflect::CString& relativeTypeRegFilePathNoExt)
-	{
-		auto fileNameNoExt = NiflectUtil::GetFileName(relativeTypeRegFilePathNoExt);
-		auto internalFileNameNoExt = "_" + fileNameNoExt;
-		Niflect::CString dirPath;
-		NiflectUtil::GetParentDirPathSafe(relativeTypeRegFilePathNoExt, dirPath);
-		auto internalRelativeTypeRegFilePathNoExt = internalFileNameNoExt;
-		if (!dirPath.empty())
-			internalRelativeTypeRegFilePathNoExt = NiflectUtil::ConcatPath(dirPath, internalFileNameNoExt);
-		return internalRelativeTypeRegFilePathNoExt;
-	}
+	Niflect::CString ConvertToInternalFilePath(const Niflect::CString& relativeTypeRegFilePathNoExt);
 }

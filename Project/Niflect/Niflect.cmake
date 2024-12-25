@@ -1,6 +1,7 @@
 set(ModuleName Niflect)
 
-set(SourcePath ${RootSourcePath}/Niflect/src)
+set(ModuleRootPath ${RootSourcePath}/Niflect)
+set(SourcePath ${ModuleRootPath}/src)
 file(GLOB_RECURSE Sources ${SourcePath}/*.cpp)
 create_source_group(${SourcePath} ${Sources})
 set(IncludePath ${RootSourcePath}/Niflect/include)
@@ -22,10 +23,12 @@ target_include_directories(${ModuleName}
 
 if(CMAKE_CXX_COMPILER MATCHES "c\\+\\+$")
 	message(STATUS "Using GCC")
-	find_library(PTHREAD_LIB pthread)
-	if (PTHREAD_LIB)
-		target_link_libraries(${ModuleName} PRIVATE ${PTHREAD_LIB})
-	endif()
+	#find_library(PTHREAD_LIB pthread)
+	#if (PTHREAD_LIB)
+	#	target_link_libraries(${ModuleName} PRIVATE ${PTHREAD_LIB})
+	#endif()
+	target_link_libraries(${ModuleName} PRIVATE pthread)
+	target_link_libraries(${ModuleName} PRIVATE dl) # For loading module info using dlopen
 elseif(CMAKE_CXX_COMPILER MATCHES "clang\\+\\+$")
 	message(STATUS "Using Clang")
 	

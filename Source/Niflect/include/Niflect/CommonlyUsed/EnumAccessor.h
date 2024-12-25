@@ -33,7 +33,7 @@ namespace Niflect
 			auto et = this->GetEnum();
 			auto rwValue = rw->GetValue();
 			auto name = rwValue->GetString();
-			auto idx = et->FindIndexByEnumConstName(name);
+			auto idx = et->FindEnumConstMetaIndex(name);
 			ASSERT(idx != INDEX_NONE);//可能由于此枚举类型的版本不同导致查找失败
 			switch (et->GetTypeSize())
 			{

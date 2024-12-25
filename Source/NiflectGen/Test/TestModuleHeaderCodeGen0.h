@@ -48,7 +48,7 @@ namespace TestMyFinding
 		//NIF_F()
 		//TestSomeScope::SMyStruct m_my_struct_5;
 		NIF_F()
-		Niflect::TArrayNif<float> m_array_float_6;
+		Niflect::TArray<float> m_array_float_6;
 		NIF_F()
 		EMyBitMask m_e_bit_mask_7;
 		NIF_F()

@@ -3,6 +3,7 @@
 #include <stdarg.h>
 #include <fstream>
 #include <algorithm>
+#include <cctype>
 
 namespace NiflectUtil
 {
@@ -68,6 +69,12 @@ namespace NiflectUtil
 			return result;
 		}
 		return filePath;
+	}
+	static Niflect::CString ConvertToSearchPath(const Niflect::CString& path)
+	{
+		if (path.back() != '/')
+			return path + '/';
+		return path;
 	}
 	static Niflect::CString ConcatPath(const Niflect::CString& a, const Niflect::CString& b)
 	{
@@ -159,7 +166,11 @@ namespace NiflectUtil
 	static void WriteStringToFile(const Niflect::CString& data, const Niflect::CString& filePath)
 	{
 		std::ofstream ofs(filePath.c_str(), std::ios::binary);
-		ASSERT(ofs.is_open());
+		if (!ofs.is_open())
+		{
+			printf("%s\n", filePath.c_str());
+			ASSERT(false);
+		}
 		ofs << data;
 		ofs.close();
 	}
@@ -185,5 +196,50 @@ namespace NiflectUtil
 		std::transform(lowerA.begin(), lowerA.end(), lowerA.begin(), ::tolower);
 		std::transform(lowerB.begin(), lowerB.end(), lowerB.begin(), ::tolower);
 		return lowerA < lowerB;
+	}
+	static Niflect::TArrayNif<Niflect::CString> Split(const Niflect::CString& str, char delimiter) {
+		Niflect::TArrayNif<Niflect::CString> tokens;  // 用于存储分割后的子字符串
+		Niflect::CString token;                // 临时存储每个子字符串
+		for (char ch : str) {             // 遍历输入字符串中的每个字符
+			if (ch == delimiter) {        // 如果当前字符是分隔符
+				if (!token.empty()) {     // 并且临时子字符串不为空
+					tokens.push_back(token); // 将临时子字符串添加到结果向量中
+					token.clear();        // 清空临时子字符串
+				}
+			}
+			else {
+				token += ch;              // 如果当前字符不是分隔符，则将其添加到临时子字符串中
+			}
+		}
+		if (!token.empty()) {             // 如果最后一个临时子字符串不为空
+			tokens.push_back(token);      // 将其添加到结果向量中
+		}
+		return tokens;                    // 返回分割后的子字符串向量
+	}
+	static Niflect::TArrayNif<Niflect::CString> Split(const Niflect::CString& str, const Niflect::CString& delimiter) {
+		Niflect::TArrayNif<Niflect::CString> tokens;  // 用于存储分割后的子字符串
+		size_t start = 0;                 // 开始位置
+		size_t end = 0;                   // 结束位置
+
+		while ((end = str.find(delimiter, start)) != std::string::npos) {
+			// 找到分隔符位置
+			tokens.push_back(str.substr(start, end - start)); // 提取子字符串并添加到结果向量中
+			start = end + delimiter.length();                 // 更新开始位置
+		}
+		tokens.push_back(str.substr(start)); // 添加最后一个子字符串
+
+		return tokens;                       // 返回分割后的子字符串向量
+	}
+	static Niflect::CString Trim(const Niflect::CString& str)
+	{
+		auto is_space = [](unsigned char c) { return std::isspace(c); };
+
+		// 找到第一个非空白字符的位置
+		auto start = std::find_if_not(str.begin(), str.end(), is_space);
+		// 找到最后一个非空白字符的位置
+		auto end = std::find_if_not(str.rbegin(), str.rend(), is_space).base();
+
+		// 返回修剪后的字符串
+		return (start < end) ? Niflect::CString(start, end) : Niflect::CString();
 	}
 }

@@ -53,8 +53,10 @@ namespace NiflectGen
 	class CModuleRegGenData
 	{
 	public:
-		CCodeLines m_privateH;
+		Niflect::CString m_genHIncludePath;
+		CCodeLines m_genH;
 		Niflect::CString m_privateHIncludePath;
+		CCodeLines m_privateH;
 	};
 
 	class SModuleRegisteredTypeHeaderGenData

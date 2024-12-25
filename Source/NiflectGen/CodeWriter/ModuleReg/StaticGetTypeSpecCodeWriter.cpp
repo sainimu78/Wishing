@@ -1,7 +1,7 @@
 #include "NiflectGen/CodeWriter/ModuleReg/StaticGetTypeSpecCodeWriter.h"
 #include "NiflectGen/CodeWriter/CppWriter.h"
 #include "NiflectGen/Base/NiflectGenDefinition.h"
-#include "NiflectGen/CodeWriter/CodeTemplate.h"
+#include "NiflectGen/CodeWriter/CppTemplate.h"
 #include "NiflectGen/CodeWriter/HardCoded/StaticGetTypeTemplate.h"
 
 namespace NiflectGen
@@ -80,8 +80,8 @@ namespace NiflectGen
                 auto headerFilePath = CIncludesHelper::ConvertToIncludePath(*it0.m_taggedTypeHeaderFilePathAddr, context.m_moduleRegInfo.m_writingHeaderSearchPaths.m_vecForRegularConversion);
                 auto relativeTypeRegFilePathNoExt = NiflectUtil::RemoveFileExt(headerFilePath);
                 auto& staticGetTypeSpecData = data.m_vecStaticGetTypeSpecData[idx0];
-                auto typeRegSplittedFilePathNoExt = NiflectUtil::ConcatPath(context.m_moduleRegInfo.m_genIncludeBasePath, relativeTypeRegFilePathNoExt);
-                staticGetTypeSpecData.m_genHHeaderFilePath = typeRegSplittedFilePathNoExt + NiflectGenDefinition::FileExt::GenH;
+                auto relativeStaticGetTypeGenHFilePath = relativeTypeRegFilePathNoExt + NiflectGenDefinition::FileExt::GenH;
+                staticGetTypeSpecData.m_genHHeaderFilePath = NiflectUtil::ConcatPath(context.m_moduleRegInfo.m_genIncludeBasePath, relativeStaticGetTypeGenHFilePath);
                 auto internalRelativeTypeRegFilePathNoExt = NiflectUtil::ConcatPath(context.m_moduleRegInfo.m_typeRegBasePath, ConvertToInternalFilePath(relativeTypeRegFilePathNoExt));
                 staticGetTypeSpecData.m_implSourceFilePath = internalRelativeTypeRegFilePathNoExt + NiflectGenDefinition::FileNamePostfix::Gen + context.m_moduleRegInfo.GetSourceFileExtForGenFileMode();
 
@@ -95,17 +95,17 @@ namespace NiflectGen
                     CIncludesHelper::ConvertFromHeaderFilePaths(vecHeaderData, context.m_moduleRegInfo.m_writingHeaderSearchPaths, linesGenHInclude);
 
                     CCodeTemplate tpl1;
-                    tpl1.ReadFromRawData(HardCodedTemplate::GenH);
+                    ReadTemplateFromRawData(tpl1, HardCodedTemplate::GenH);
                     CLabelToCodeMapping map;
                     MapLabelToLines(map, LABEL_0, linesGenHInclude);
-                    Niflect::CString genHHeaderMacro = ConvertHeaderFilePathToUnderscoredStyle(staticGetTypeSpecData.m_genHHeaderFilePath);
+                    Niflect::CString genHHeaderMacro = ConvertHeaderFilePathToUnderscoredStyle(relativeStaticGetTypeGenHFilePath);
                     {
                         //_gen.h 改为无 pragma once, 并增加宏 #error 检查, _gen.h 是特殊写法, 
                         // 由于定义 CURRENT_FILE_ID, 因此不能加 pragma once, 否则 CURRENT_FILE_ID 不能在 _gen.h 作为依赖时被包含解析, 导致 CURRENT_FILE_ID 预处理错误.
                         // 现象为 CURRENT_FILE_ID 被解析为展开的 include 顺序中最先出现的 FID 定义.
                         // 如 DerivedObject_gen.h 的 GENERATED_BODY 被解析为 TestModule1_gen.h 中的 FID_xxx_GENERATED_BODY
                         MapLabelToText(map, LABEL_11, genHHeaderMacro);
-                        MapLabelToText(map, LABEL_12, staticGetTypeSpecData.m_genHHeaderFilePath);
+                        MapLabelToText(map, LABEL_12, relativeStaticGetTypeGenHFilePath);
                         MapLabelToText(map, LABEL_13, headerFilePath);
                     }
                     CCodeLines linesTypeDecls;
@@ -169,7 +169,7 @@ namespace NiflectGen
                             }
                             {
                                 CCodeTemplate tpl1;
-                                tpl1.ReadFromRawData(HardCodedTemplate::LineNumberMacros);
+                                ReadTemplateFromRawData(tpl1, HardCodedTemplate::LineNumberMacros);
                                 CLabelToCodeMapping map;
                                 MapLabelToText(map, LABEL_7, NiflectUtil::FormatString("%u", lineNumber));
                                 MapLabelToText(map, LABEL_8, headerFilePath);
@@ -192,7 +192,7 @@ namespace NiflectGen
                     CIncludesHelper::ConvertFromHeaderFilePaths(vecHeaderData, context.m_moduleRegInfo.m_writingHeaderSearchPaths, linesGenCppInclude);
 
                     CCodeTemplate tpl1;
-                    tpl1.ReadFromRawData(HardCodedTemplate::GenCpp);
+                    ReadTemplateFromRawData(tpl1, HardCodedTemplate::GenCpp);
                     CLabelToCodeMapping map;
                     MapLabelToLines(map, LABEL_0, linesGenCppInclude);
                     CCodeLines linesImpl;

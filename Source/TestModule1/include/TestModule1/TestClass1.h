@@ -4,6 +4,30 @@
 namespace TestModule1
 {
 	NIF_T()
+	struct SMyRecord
+	{
+		NIF_F()
+		float m_float_0;
+		NIF_F()
+		bool m_bool_1;
+		NIF_F()
+		int32 m_int_2;
+	};
+	static bool operator==(const SMyRecord& a, const SMyRecord& b)
+	{
+		return a.m_float_0 == b.m_float_0
+			&& a.m_bool_1 == b.m_bool_1
+			&& a.m_int_2 == b.m_int_2
+			;
+	}
+	static void InitForTest_SMyRecord(SMyRecord& rec)
+	{
+		rec.m_float_0 = 123.0f;
+		rec.m_bool_1 = false;
+		rec.m_int_2 = 456;
+	}
+
+	NIF_T()
 	class CTestBase1
 	{
 		GENERATED_BODY()

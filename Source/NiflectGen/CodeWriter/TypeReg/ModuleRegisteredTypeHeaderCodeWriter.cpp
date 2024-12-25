@@ -1,6 +1,6 @@
 #include "NiflectGen/CodeWriter/TypeReg/ModuleRegisteredTypeHeaderCodeWriter.h"
 #include "NiflectGen/CodeWriter/HardCoded/HardCodedTemplate.h"
-#include "NiflectGen/CodeWriter/CodeTemplate.h"
+#include "NiflectGen/CodeWriter/CppTemplate.h"
 #include "NiflectGen/Base/NiflectGenDefinition.h"
 #include "NiflectGen/CodeWriter/CppWriter.h"
 
@@ -51,10 +51,11 @@ namespace Niflect
 
 		auto shared = Niflect::MakeShared<TInfo>();
 		CNiflectType* type = shared.Get();
-		auto idx = table->AddType(shared);
+		auto idx = table->GetTypesCount();
 		ASSERT(!)" MAKELABEL(LABEL_1) R"(TRegisteredType<TType>::IsValid());
 		type->InitTypeMeta2(lifecycleMeta, inCreateTypeAccessorFunc, CNiflectType::GetTypeHash<TType>(), idx, id, &)" MAKELABEL(LABEL_1) R"(TRegisteredType<TType>::s_type, nata);
 		ASSERT()" MAKELABEL(LABEL_1) R"(TRegisteredType<TType>::IsValid());
+		table->InsertType(shared, idx);
 	}
 })";
 	}
@@ -62,7 +63,7 @@ namespace Niflect
 	void WriteModuleRegisteredTypeHeaderCodeWriter(const SModuleRegisteredTypeHeaderWritingContext& context, SModuleRegisteredTypeHeaderGenData& data)
 	{
 		CCodeTemplate tpl1;
-		tpl1.ReadFromRawData(HardCodedTemplate::ModuleRegisteredTypeHeader);
+		ReadTemplateFromRawData(tpl1, HardCodedTemplate::ModuleRegisteredTypeHeader);
 		CLabelToCodeMapping map;
 
 		CCodeLines linesInclude;

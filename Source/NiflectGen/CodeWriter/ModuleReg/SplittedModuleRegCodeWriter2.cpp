@@ -1,6 +1,6 @@
 #include "NiflectGen/CodeWriter/ModuleReg/SplittedModuleRegCodeWriter2.h"
 #include "NiflectGen/Base/NiflectGenDefinition.h"
-#include "NiflectGen/CodeWriter/CodeTemplate.h"
+#include "NiflectGen/CodeWriter/CppTemplate.h"
 #include "NiflectGen/CodeWriter/HardCoded/SplittedModuleRegTemplate.h"
 #include "NiflectGen/CodeWriter/CppWriter.h"
 #include "NiflectGen/CodeWriter/ModuleReg/CreateTypeAccessorCodeWriter.h"
@@ -38,7 +38,7 @@ namespace NiflectGen
                     if (it1->m_taggedTypeInit.m_lines.size() > 0)
                     {
                         CCodeTemplate tpl1;
-                        tpl1.ReadFromRawData(HardCodedTemplate::ImplScope);
+                        ReadTemplateFromRawData(tpl1, HardCodedTemplate::ImplScope);
                         CLabelToCodeMapping map;
                         MapLabelToLines(map, LABEL_3, it1->m_taggedTypeInit.m_lines);
                         Niflect::TSet<Niflect::CString> setReplacedLabel;
@@ -64,7 +64,7 @@ namespace NiflectGen
                     }
                     {
                         CCodeTemplate tpl1;
-                        tpl1.ReadFromRawData(HardCodedTemplate::SplittedModuleRegH);
+                        ReadTemplateFromRawData(tpl1, HardCodedTemplate::SplittedModuleRegH);
                         CLabelToCodeMapping map;
                         CCodeLines linesInclude;
                         {
@@ -82,7 +82,7 @@ namespace NiflectGen
                     CCodeLines linesImpl;
                     {
                         CCodeTemplate tpl1;
-                        tpl1.ReadFromRawData(HardCodedTemplate::SplittedModuleRegFuncImpl);
+                        ReadTemplateFromRawData(tpl1, HardCodedTemplate::SplittedModuleRegFuncImpl);
                         CLabelToCodeMapping map;
                         MapLabelToText(map, LABEL_2, registerTypesFuncName);
                         CCodeLines linesInvoke;
@@ -98,7 +98,7 @@ namespace NiflectGen
                     if (linesInvokeInitTypes.size() > 0)
                     {
                         CCodeTemplate tpl1;
-                        tpl1.ReadFromRawData(HardCodedTemplate::InitTypesFuncImpl);
+                        ReadTemplateFromRawData(tpl1, HardCodedTemplate::InitTypesFuncImpl);
                         CLabelToCodeMapping map;
                         MapLabelToText(map, LABEL_2, initTypesFuncName);
                         MapLabelToLines(map, LABEL_3, linesInvokeInitTypes);
@@ -107,7 +107,7 @@ namespace NiflectGen
                     }
                     {
                         CCodeTemplate tpl1;
-                        tpl1.ReadFromRawData(HardCodedTemplate::SplittedModuleRegCpp);
+                        ReadTemplateFromRawData(tpl1, HardCodedTemplate::SplittedModuleRegCpp);
                         CLabelToCodeMapping map;
                         CCodeLines linesInclude;
                         auto& createTypeAccessorSpecData = context.m_typeRegCreateTypeAccessorSpecGenData.m_vecCreateTypeAccessorSpecData[idx0];

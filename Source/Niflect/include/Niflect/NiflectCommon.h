@@ -2,6 +2,7 @@
 #include <cassert>
 #include <cstddef>//std::size_t, offsetof
 #include "IndexingConst.h"
+#include <cstdio>//fflush
 
 //¹«¹²define, typedef, const
 
@@ -15,7 +16,11 @@ typedef long long int64;
 typedef unsigned int uint32;
 typedef unsigned long long uint64;
 
-#define ASSERT(b) assert(b)
+#define ASSERT(b)\
+{\
+    fflush(stdout);\
+    assert(b);\
+} do{} while(0)
 #endif
 
 #ifndef LogError
@@ -43,11 +48,11 @@ ASSERT(false);\
     #endif
 #endif
 
-#ifdef WIN32
-#define NIFLECTMODULEREG_API extern "C" __declspec(dllexport)
-#else
-#define NIFLECTMODULEREG_API extern "C" __attribute__((visibility("default")))
-#endif
+//#ifdef WIN32
+//#define NIFLECTMODULEREG_API extern "C" __declspec(dllexport)
+//#else
+//#define NIFLECTMODULEREG_API extern "C" __attribute__((visibility("default")))
+//#endif
 
 //#ifdef WIN32
 //#define NIFLECTTYPEREG_API __declspec(dllexport)
