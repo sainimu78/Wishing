@@ -6,9 +6,11 @@ set(ModuleRootPath ${RootSourcePath}/${ModuleName})
 set(ModuleSourcePath ${ModuleRootPath}/src)
 set(ModuleIncludePath ${ModuleRootPath}/include)
 
-set(ModuleIncludePaths "")
-list(APPEND ModuleIncludePaths ${ModuleIncludePath})
-list(APPEND ModuleIncludePaths ${RootSourcePath}/TestModule1/include)
+set(IncludePathsPrivate "")
+set(IncludePathsPublic "")
+list(APPEND IncludePathsPrivate ${ModuleSourcePath})
+list(APPEND IncludePathsPrivate ${RootSourcePath}/TestModule1/include)
+list(APPEND IncludePathsPublic ${ModuleIncludePath})
 
 file(GLOB_RECURSE ModuleSources ${ModuleSourcePath}/*.cpp ${ModuleSourcePath}/*.h)
 create_source_group(${ModuleSourcePath} ${ModuleSources})
@@ -37,8 +39,8 @@ set_target_properties(${ModuleName} PROPERTIES
 )
 
 target_include_directories(${ModuleName}
-	PRIVATE ${ModuleSourcePath}
-	PUBLIC ${ModuleIncludePaths}
+	PRIVATE ${IncludePathsPrivate}
+	PUBLIC ${IncludePathsPublic}
 )
 
 target_include_directories(${ModuleName}
@@ -54,13 +56,16 @@ target_compile_definitions(${ModuleName}
 target_link_libraries(${ModuleName} PRIVATE Niflect)
 target_link_libraries(${ModuleName} PRIVATE TestModule1)
 
-set(ArgsModuleHeaders "")
+set(OptModuleHeaders "")
 foreach(It IN LISTS ModuleHeaders)
-    list(APPEND ArgsModuleHeaders "-h" "${It}")
+    list(APPEND OptModuleHeaders "-h" "${It}")
 endforeach()
-set(ArgsModuleIncludePaths "")
-foreach(It IN LISTS ModuleIncludePaths)
-	list(APPEND ArgsModuleIncludePaths "-I" "${It}")
+set(OptModuleIncludePaths "")
+foreach(It IN LISTS IncludePathsPrivate)
+	list(APPEND OptModuleIncludePaths "-I" "${It}")
+endforeach()
+foreach(It IN LISTS IncludePathsPublic)
+	list(APPEND OptModuleIncludePaths "-I" "${It}")
 endforeach()
 
 set(ToolRelPathForTest Linux/Make_x64)
@@ -75,21 +80,22 @@ add_custom_command(
     OUTPUT "${NiflectGeneratedModulePrivateH}"
     COMMAND "${RootSourcePath}/../Build/NiflectGenTool/${ToolRelPathForTest}/Debug/NiflectGenTool/NiflectGenTool${ExeExt}" 
             -n ${ModuleName} 
-            ${ArgsModuleHeaders}
+            ${OptModuleHeaders}
             -am ENGINE_API 
             -amh "${ModuleIncludePath}/Engine/EngineCommon.h" 
             -a "${ModuleIncludePath}/EngineAccessorSetting.h" 
             -t "${RootSourcePath}/Niflect/include" 
-            ${ArgsModuleIncludePaths} 
+            ${OptModuleIncludePaths} 
             -g "${GenOutputDirPath}"
 			-gbt 
     DEPENDS ${ModuleHeaders}
     COMMENT "NiflectGenTool ${ModuleName}"
 )
 
-add_custom_target(NiflectGenTool_${ModuleName} DEPENDS "${NiflectGeneratedModulePrivateH}")
-set_target_properties(NiflectGenTool_${ModuleName} PROPERTIES FOLDER "AutoGen")
-add_dependencies(${ModuleName} NiflectGenTool_${ModuleName})
+set(GenToolName NiflectGenTool_${ModuleName})
+add_custom_target(${GenToolName} DEPENDS "${NiflectGeneratedModulePrivateH}")
+set_target_properties(${GenToolName} PROPERTIES FOLDER "AutoGen")
+add_dependencies(${ModuleName} ${GenToolName})
 
 #if(UNIX)
 #	file(MAKE_DIRECTORY ${NiflectGeneratedRootPath}) # 由于创建目录的函数实现存在缺陷, NiflectGenTool 并发执行时出现首次创建不存在的输出目录失败与之后写文件失败, 因此仅在 UNIX 上通过 cmake 创建输出目录

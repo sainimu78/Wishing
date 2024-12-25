@@ -6,8 +6,10 @@ set(ModuleRootPath ${RootSourcePath}/${ModuleName})
 set(ModuleSourcePath ${ModuleRootPath}/src)
 set(ModuleIncludePath ${ModuleRootPath}/include)
 
-set(ModuleIncludePaths "")
-list(APPEND ModuleIncludePaths ${ModuleIncludePath})
+set(IncludePathsPrivate "")
+set(IncludePathsPublic "")
+list(APPEND IncludePathsPrivate ${ModuleSourcePath})
+list(APPEND IncludePathsPublic ${ModuleIncludePath})
 
 file(GLOB_RECURSE ModuleSources ${ModuleSourcePath}/*.cpp ${ModuleSourcePath}/*.h)
 create_source_group(${ModuleSourcePath} ${ModuleSources})
@@ -29,8 +31,8 @@ set(GenSourcePublic ${GenSourcePrivate}/include)
 add_executable(${ModuleName} ${SrcAll})
 
 target_include_directories(${ModuleName}
-	PRIVATE ${ModuleSourcePath}
-	PUBLIC ${ModuleIncludePath}
+	PRIVATE ${IncludePathsPrivate}
+	PUBLIC ${IncludePathsPublic}
 )
 
 target_include_directories(${ModuleName}
@@ -42,13 +44,16 @@ target_link_libraries(${ModuleName} PRIVATE TestEngine)
 target_link_libraries(${ModuleName} PRIVATE Niflect)
 target_link_libraries(${ModuleName} PRIVATE TestModule0)
 
-set(ArgsModuleHeaders "")
+set(OptModuleHeaders "")
 foreach(It IN LISTS ModuleHeaders)
-    list(APPEND ArgsModuleHeaders "-h" "${It}")
+    list(APPEND OptModuleHeaders "-h" "${It}")
 endforeach()
-set(ArgsModuleIncludePaths "")
-foreach(It IN LISTS ModuleIncludePaths)
-	list(APPEND ArgsModuleIncludePaths "-I" "${It}")
+set(OptModuleIncludePaths "")
+foreach(It IN LISTS IncludePathsPrivate)
+	list(APPEND OptModuleIncludePaths "-I" "${It}")
+endforeach()
+foreach(It IN LISTS IncludePathsPublic)
+	list(APPEND OptModuleIncludePaths "-I" "${It}")
 endforeach()
 
 set(ToolRelPathForTest Linux/Make_x64)
@@ -63,10 +68,10 @@ add_custom_command(
     OUTPUT "${NiflectGeneratedModulePrivateH}"
     COMMAND "${RootSourcePath}/../Build/NiflectGenTool/${ToolRelPathForTest}/Debug/NiflectGenTool/NiflectGenTool${ExeExt}" 
             -n ${ModuleName} 
-            ${ArgsModuleHeaders}
+            ${OptModuleHeaders}
             -a "${RootSourcePath}/Niflect/include/Niflect/CommonlyUsed/DefaultAccessorSetting.h" 
             -t "${RootSourcePath}/Niflect/include" 
-            ${ArgsModuleIncludePaths}
+            ${OptModuleIncludePaths}
             -g "${GenOutputDirPath}" 
 			-gbt 
     DEPENDS ${ModuleHeaders}
