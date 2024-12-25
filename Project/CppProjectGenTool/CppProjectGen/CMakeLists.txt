@@ -8,8 +8,12 @@ set(ModuleRootPath ${ProjectSrcRoot}/${ModuleName})
 set(ModuleSourcePath ${ModuleRootPath})
 set(ModuleIncludePath ${ModuleRootPath})
 
-set(ModuleIncludePaths "")
-list(APPEND ModuleIncludePaths ${ModuleIncludePath})
+set(IncludePathsPrivate "")
+set(IncludePathsPublic "")
+list(APPEND IncludePathsPrivate ${RootSourcePath})
+list(APPEND IncludePathsPrivate ${RootSourcePath})
+list(APPEND IncludePathsPrivate ${RootSourcePath}/NiflectGen)
+list(APPEND IncludePathsPublic ${ModuleIncludePath})
 
 file(GLOB_RECURSE ModuleSources ${ModuleSourcePath}/*.cpp ${ModuleSourcePath}/*.h)
 create_source_group(${ModuleSourcePath} ${ModuleSources})
@@ -25,10 +29,8 @@ set_target_properties(${ModuleName} PROPERTIES
 )
 
 target_include_directories(${ModuleName}
-	PRIVATE ${RootSourcePath}
-	PRIVATE ${RootSourcePath}/NiflectGen
-	PRIVATE ${ModuleSourcePath}
-	PUBLIC ${ModuleIncludePaths}
+	PRIVATE ${IncludePathsPrivate}
+	PUBLIC ${IncludePathsPublic}
 )
 
 target_compile_definitions(${ModuleName}
