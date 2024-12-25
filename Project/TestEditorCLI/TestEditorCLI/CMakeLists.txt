@@ -8,11 +8,11 @@ set(IncludePath ${ModuleRootPath}/include)
 
 file(GLOB_RECURSE ModuleSrc ${SourcePath}/*.cpp ${SourcePath}/*.h)
 create_source_group(${SourcePath} ${ModuleSrc})
-file(GLOB_RECURSE ModuleInclude ${IncludePath}/*.h)
-create_source_group(${IncludePath} ${ModuleInclude})
+file(GLOB_RECURSE ModuleHeaders ${IncludePath}/*.h)
+create_source_group(${IncludePath} ${ModuleHeaders})
 set(SrcAll "")
 list(APPEND SrcAll ${ModuleSrc})
-list(APPEND SrcAll ${ModuleInclude})
+list(APPEND SrcAll ${ModuleHeaders})
 
 set(GenSourcePrivate ${ProjectGeneratedRootPath}/${ModuleName}/_GenSource)
 set(GenSourcePublic ${GenSourcePrivate}/include)
@@ -38,9 +38,9 @@ target_link_libraries(${ModuleName} PRIVATE TestEngine)
 target_link_libraries(${ModuleName} PRIVATE Niflect)
 target_link_libraries(${ModuleName} PRIVATE TestModule0)
 
-set(ArgsModuleInclude "")
-foreach(It IN LISTS ModuleInclude)
-    list(APPEND ArgsModuleInclude "-h" "${It}")
+set(ArgsModuleHeaders "")
+foreach(It IN LISTS ModuleHeaders)
+    list(APPEND ArgsModuleHeaders "-h" "${It}")
 endforeach()
 
 set(ToolRelPathForTest Linux/Make_x64)
@@ -55,13 +55,13 @@ add_custom_command(
     OUTPUT "${NiflectGeneratedModulePrivateH}"
     COMMAND "${RootSourcePath}/../Build/NiflectGenTool/${ToolRelPathForTest}/Debug/NiflectGenTool/NiflectGenTool${ExeExt}" 
             -n ${ModuleName} 
-            ${ArgsModuleInclude}
+            ${ArgsModuleHeaders}
             -a "${RootSourcePath}/Niflect/include/Niflect/CommonlyUsed/DefaultAccessorSetting.h" 
             -t "${RootSourcePath}/Niflect/include" 
             -I "${IncludePath}" 
             -g "${ProjectGeneratedRootPath}/${ModuleName}"
 			-gbt 
-    DEPENDS ${ModuleInclude}
+    DEPENDS ${ModuleHeaders}
     COMMENT "NiflectGenTool generating ..."
 )
 
