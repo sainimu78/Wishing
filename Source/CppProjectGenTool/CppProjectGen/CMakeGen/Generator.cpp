@@ -1,10 +1,10 @@
-#include "CppProjectGen.h"
+#include "CMakeGen/Generator.h"
 #include "CMakeTemplate.h"
 
 namespace CppProjectGen
 {
     using namespace NiflectGen;
-    using namespace WishingProjectTool;
+    using namespace CMakeGen;
 
 	void TestInvokation()
 	{

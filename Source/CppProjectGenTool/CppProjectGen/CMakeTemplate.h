@@ -6,7 +6,7 @@
 
 #define MAKELABEL(name) TEMPLATELABEL_L name TEMPLATELABEL_R
 
-namespace WishingProjectTool
+namespace CMakeGen
 {
 	void ReadTemplateFromRawData(NiflectGen::CCodeTemplate& tpl, const char* data);
 }

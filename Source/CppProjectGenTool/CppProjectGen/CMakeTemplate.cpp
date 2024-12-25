@@ -1,6 +1,6 @@
 #include "CMakeTemplate.h"
 
-namespace WishingProjectTool
+namespace CMakeGen
 {
 	void ReadTemplateFromRawData(NiflectGen::CCodeTemplate& tpl, const char* data)
 	{

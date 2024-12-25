@@ -5,11 +5,17 @@ set(ProjectSrcRoot ${RootSourcePath}/CppProjectGenTool)
 set(ModuleName CppProjectGen)
 
 set(ModuleRootPath ${ProjectSrcRoot}/${ModuleName})
-set(SourcePath ${ModuleRootPath})
+set(ModuleSourcePath ${ModuleRootPath})
+set(ModuleIncludePath ${ModuleRootPath})
 
-file(GLOB_RECURSE SrcAll ${SourcePath}/*.cpp ${SourcePath}/*.h)
+set(ModuleIncludePaths "")
+list(APPEND ModuleIncludePaths ${ModuleIncludePath})
 
-create_source_group(${ModuleRootPath} ${SrcAll})
+file(GLOB_RECURSE ModuleSources ${ModuleSourcePath}/*.cpp ${ModuleSourcePath}/*.h)
+create_source_group(${ModuleSourcePath} ${ModuleSources})
+
+set(SrcAll "")
+list(APPEND SrcAll ${ModuleSources})
 
 add_library(${ModuleName} SHARED ${SrcAll})
 
@@ -19,11 +25,10 @@ set_target_properties(${ModuleName} PROPERTIES
 )
 
 target_include_directories(${ModuleName}
-	PUBLIC ${ProjectSrcRoot}
-)
-
-target_include_directories(${ModuleName}
-	PUBLIC ${RootSourcePath}/NiflectGen
+	PRIVATE ${RootSourcePath}
+	PRIVATE ${RootSourcePath}/NiflectGen
+	PRIVATE ${ModuleSourcePath}
+	PUBLIC ${ModuleIncludePaths}
 )
 
 target_compile_definitions(${ModuleName}

@@ -1,4 +1,4 @@
-#include "CppProjectGen/CppProjectGen.h"
+#include "CMakeGen/Generator.h"
 
 int main()
 {
