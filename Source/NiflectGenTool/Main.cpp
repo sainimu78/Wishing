@@ -221,8 +221,7 @@ namespace NiflectGen
 			}
 			else
 			{
-				printf("Unknown option: %s\n", pszV);
-				ASSERT(false);
+				LogError("Unknown option: %s\n", pszV);
 			}
 		}
 	}
