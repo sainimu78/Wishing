@@ -4,6 +4,7 @@ include(../RootPathSetup.cmake)
 set(ProjectName TestEditorCLI)
 set(ProjectRootSourcePath "${RootSourcePath}")
 set(ProjectGeneratedRootPath "${GeneratedRootPath}")
+set(ProjectRootThirdPartyPath "${RootThirdPartyPath}")
 
 include(${RootProjectPath}/CommonBeforeProject.cmake)
 project(TestEditorCLI)
@@ -13,7 +14,10 @@ if(MSVC)
     set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT TestEditorCLI)
 endif()
 
+add_library(Niflect SHARED IMPORTED)
+
+
+add_subdirectory(Niflect)
 add_subdirectory(TestEditorCLI)
 add_subdirectory(TestEngine)
-add_subdirectory(Base)
 add_subdirectory(TestModule0)
