@@ -1,8 +1,11 @@
 
 set(LibName Niflect)
 set(LibRootPath ${ProjectRootThirdPartyPath}/${LibName}/${LibName})
+set(LibTargetName ${LibName}_${ModuleName})
 
-target_link_libraries(${ModuleName} PRIVATE ${LibName})
+add_library(${LibTargetName} SHARED IMPORTED)
+
+target_link_libraries(${ModuleName} PRIVATE ${LibTargetName})
 
 target_include_directories(${ModuleName} PRIVATE "${LibRootPath}/include")
 
@@ -25,7 +28,7 @@ if("${CMAKE_SIZEOF_VOID_P}" EQUAL "8")
 	if(WIN32)
 		set(libclangLibDebug "${LibRootPath}/build/Windows/x64/Debug/bin/${LibName}${SlPost}")
 		set(libclangLibRelease "${LibRootPath}/build/Windows/x64/Release/bin/${LibName}${SlPost}")
-		set_target_properties(${LibName} PROPERTIES
+		set_target_properties(${LibTargetName} PROPERTIES
 			IMPORTED_IMPLIB_DEBUG "${libclangLibDebug}"
 			IMPORTED_IMPLIB_RELEASE "${libclangLibRelease}"
 			IMPORTED_IMPLIB_RELWITHDEBINFO "${libclangLibDebug}"
@@ -35,7 +38,7 @@ if("${CMAKE_SIZEOF_VOID_P}" EQUAL "8")
 	else()
 		set(libclangBinDebug "${CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG}/${LibName}${DlPost}")
 		set(libclangBinRelease "${CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE}/${LibName}${DlPost}")
-		set_target_properties(${LibName} PROPERTIES
+		set_target_properties(${LibTargetName} PROPERTIES
 			IMPORTED_LOCATION_DEBUG "${libclangBinDebug}"
 			IMPORTED_LOCATION_RELEASE "${libclangBinRelease}"
 			IMPORTED_LOCATION_RELWITHDEBINFO "${libclangBinDebug}"
@@ -43,7 +46,7 @@ if("${CMAKE_SIZEOF_VOID_P}" EQUAL "8")
 		)
 	endif()
 	
-	target_link_libraries(${ModuleName} PRIVATE ${LibName})
+	target_link_libraries(${ModuleName} PRIVATE ${LibTargetName})
 else()
 	message(ERROR "asdf")
 endif()

@@ -1,5 +1,9 @@
 
-add_library(Qt_5_8_0 SHARED IMPORTED)
+set(LibName Qt_5_8_0)
+set(LibRootPath ${ProjectRootThirdPartyPath}/Qt/${LibName}/${LibName})
+set(LibTargetName ${LibName}_${ModuleName})
+
+add_library(${LibTargetName} SHARED IMPORTED)
 
 
 #set_target_properties(Qt_5_8 PROPERTIES
@@ -29,7 +33,7 @@ elseif(WIN32)
 	endif()
 endif()
 
-set(QtRootPath "${RootThirdPartyPath}/Qt/Qt_5_8_0/build/${OsType}/5.8.0/${ArchType}/5.8/${Toolset}")
+set(QtRootPath "${LibRootPath}/build/5.8/${Toolset}")
 set(LibPath "${QtRootPath}/bin")
 
 include(${RootThirdPartyPath}/Qt/Qt_5_x/Deps.cmake)

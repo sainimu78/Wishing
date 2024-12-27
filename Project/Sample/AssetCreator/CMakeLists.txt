@@ -2,8 +2,9 @@ cmake_minimum_required(VERSION 3.20.0)
 
 include(../SampleRootPathSetup.cmake)
 set(ProjectName AssetCreator)
-set(ProjectRootSourcePath "${RootSourcePath}/Sample/${ProjectName}")
-set(ProjectGeneratedRootPath "${GeneratedRootPath}/Sample/${ProjectName}")
+set(ProjectRootSourcePath ${RootSourcePath}/Sample/${ProjectName})
+set(ProjectGeneratedRootPath ${GeneratedRootPath}/Sample/${ProjectName})
+set(ProjectRootThirdPartyPath ${RootThirdPartyPath})
 
 include(${RootProjectPath}/CommonBeforeProject.cmake)
 project(${ProjectName})
@@ -15,4 +16,3 @@ endif()
 
 add_subdirectory(Editor)
 add_subdirectory(Engine)
-include(${RootProjectPath}/Niflect/Niflect.cmake)
