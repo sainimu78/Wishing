@@ -25,7 +25,6 @@ target_compile_definitions(${ModuleName}
 
 include(../Base/Niflect.cmake)
 
-target_link_libraries(${ModuleName} PRIVATE Niflect)
 target_link_libraries(${ModuleName} PRIVATE TestEngine)
 
 set(LinkParentName ${ModuleName})

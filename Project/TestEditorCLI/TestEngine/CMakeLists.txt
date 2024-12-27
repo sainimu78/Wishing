@@ -46,11 +46,10 @@ target_compile_definitions(${ModuleName}
 
 include(../Base/Default.cmake)
 
-target_link_libraries(${ModuleName} PRIVATE Niflect)
 target_link_libraries(${ModuleName} PRIVATE TestModule1)
 
 #if(UNIX)
 #	file(MAKE_DIRECTORY ${NiflectGeneratedRootPath}) # 由于创建目录的函数实现存在缺陷, NiflectGenTool 并发执行时出现首次创建不存在的输出目录失败与之后写文件失败, 因此仅在 UNIX 上通过 cmake 创建输出目录
 #endif()
 
-add_subdirectory(TestModule1)
+include(../TestModule1/Shared.cmake)

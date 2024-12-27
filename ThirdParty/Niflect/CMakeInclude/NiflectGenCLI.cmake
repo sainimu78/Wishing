@@ -41,15 +41,33 @@ if(ModuleAPIMacroHeader)
 endif()
 
 set(ExeExt )
-if (WIN32)
+set(Platform Windows)
+if(WIN32)
+	message(STATUS "Target Is on WIN32")
+	set(Platform Windows)
+	set(DlPost .dll)
+	set(SlPost .lib)
 	set(ExeExt .exe)
+elseif(UNIX)
+	message(STATUS "Target Is on UNIX")
+	set(Platform Linux)
+	set(DlPost .so)
+	set(SlPost .a)
+elseif(APPLE)
+	message(STATUS "Target Is on APPLE")
+	message(FATAL_ERROR "Platform & DynamicLibraryPrefix & DynamicLibraryPostfix are not specified")
+endif()
+
+set(Arch x86)
+if("${CMAKE_SIZEOF_VOID_P}" EQUAL "8")
+	set(Arch x64)
 endif()
 
 set(GenToolName NiflectGenCLI)
 
 set(GenToolExeName ${GenToolName}${ExeExt})
-set(GenToolBinDirPathDebug ${NiflectRootPath}/Debug/bin)
-set(GenToolBinDirPathRelease ${EditorBinDirPath}/Release/bin)
+set(GenToolBinDirPathDebug ${NiflectRootPath}/build/${Platform}/${Arch}/Debug/bin)
+set(GenToolBinDirPathRelease ${EditorBinDirPath}/build/${Platform}/${Arch}/Release/bin)
 set(GenToolFilePathDebug ${GenToolBinDirPathDebug}/${GenToolExeName})
 set(GenToolFilePathRelease ${GenToolBinDirPathRelease}/${GenToolExeName})
 set(GenToolExe "$<$<CONFIG:Debug>:${GenToolFilePathDebug}>$<$<CONFIG:Release>:${GenToolFilePathRelease}>")
@@ -86,7 +104,6 @@ add_custom_command(
             ${OptModuleIncludePaths} 
             -g "${GenOutputDirPath}"
 			-gbt 
-			-debug 
     DEPENDS ${ModuleHeaders}
     COMMENT "${GenToolExe}: ${ModuleName}"
 )

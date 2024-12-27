@@ -31,7 +31,6 @@ target_include_directories(${ModuleName}
 
 include(../Base/Default.cmake)
 
-target_link_libraries(${ModuleName} PRIVATE Niflect)
 target_link_libraries(${ModuleName} PRIVATE TestEngine)
 target_link_libraries(${ModuleName} PRIVATE TestModule0)
 
