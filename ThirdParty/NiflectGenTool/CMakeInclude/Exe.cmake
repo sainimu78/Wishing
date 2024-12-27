@@ -1,4 +1,6 @@
 
+set(GenToolName NiflectGenTool)
+set(GenToolRootPath ${ProjectRootThirdPartyPath}/${GenToolName}/${GenToolName})
 set(NiflectRootPath ${ProjectRootThirdPartyPath}/Niflect/Niflect)
 
 set(GenOutputDirPath ${ProjectGeneratedRootPath}/${ModuleName})
@@ -63,14 +65,17 @@ if("${CMAKE_SIZEOF_VOID_P}" EQUAL "8")
 	set(Arch x64)
 endif()
 
-set(GenToolName NiflectGenCLI)
+#begin, 区分 Debug 与 Release 两种版本的 GenTool, add_custom_command 中变量不用引号
+#set(GenToolExeName ${GenToolName}${ExeExt})
+#set(GenToolBinDirPathDebug ${GenToolRootPath}/build/${Platform}/${Arch}/Debug/bin)
+#set(GenToolBinDirPathRelease ${GenToolRootPath}/build/${Platform}/${Arch}/Release/bin)
+#set(GenToolFilePathDebug ${GenToolBinDirPathDebug}/${GenToolExeName})
+#set(GenToolFilePathRelease ${GenToolBinDirPathRelease}/${GenToolExeName})
+#set(GenToolExeFilePath "$<$<CONFIG:Debug>:${GenToolFilePathDebug}>$<$<CONFIG:Release>:${GenToolFilePathRelease}>")
+#end
 
 set(GenToolExeName ${GenToolName}${ExeExt})
-set(GenToolBinDirPathDebug ${NiflectRootPath}/build/${Platform}/${Arch}/Debug/bin)
-set(GenToolBinDirPathRelease ${EditorBinDirPath}/build/${Platform}/${Arch}/Release/bin)
-set(GenToolFilePathDebug ${GenToolBinDirPathDebug}/${GenToolExeName})
-set(GenToolFilePathRelease ${GenToolBinDirPathRelease}/${GenToolExeName})
-set(GenToolExe "$<$<CONFIG:Debug>:${GenToolFilePathDebug}>$<$<CONFIG:Release>:${GenToolFilePathRelease}>")
+set(GenToolExeFilePath ${GenToolRootPath}/build/${Platform}/${Arch}/Release/bin/${GenToolExeName})
 
 set(GeneratedModulePrivateH ${GenSourcePrivate}/${ModuleName}_private.h)
 
@@ -94,7 +99,7 @@ set(GeneratedModulePrivateH ${GenSourcePrivate}/${ModuleName}_private.h)
 
 add_custom_command(
     OUTPUT "${GeneratedModulePrivateH}"
-    COMMAND ${GenToolExe} 
+    COMMAND "${GenToolExeFilePath}" 
             -n ${ModuleName} 
             ${OptModuleHeaders}
             ${ListOptModuleAPIMacro} 
@@ -105,7 +110,7 @@ add_custom_command(
             -g "${GenOutputDirPath}"
 			-gbt 
     DEPENDS ${ModuleHeaders}
-    COMMENT "${GenToolExe}: ${ModuleName}"
+    COMMENT "${GenToolName}: ${ModuleName}"
 )
 
 set(GenToolTargetName ${GenToolName}_${ModuleName})

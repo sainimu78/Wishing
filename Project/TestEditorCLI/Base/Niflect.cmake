@@ -1,1 +1,1 @@
-include(${ProjectRootThirdPartyPath}/Niflect/CMakeInclude/Niflect.cmake)
+include(${ProjectRootThirdPartyPath}/Niflect/CMakeInclude/Shared.cmake)

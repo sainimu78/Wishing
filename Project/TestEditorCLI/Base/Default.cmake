@@ -1,2 +1,2 @@
-include(${ProjectRootThirdPartyPath}/Niflect/CMakeInclude/Niflect.cmake)
-include(${ProjectRootThirdPartyPath}/Niflect/CMakeInclude/NiflectGenCLI.cmake)
+include(../Base/Niflect.cmake)
+include(${ProjectRootThirdPartyPath}/NiflectGenTool/CMakeInclude/Exe.cmake)
