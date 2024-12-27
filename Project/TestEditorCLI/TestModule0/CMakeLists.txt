@@ -23,7 +23,7 @@ target_compile_definitions(${ModuleName}
 	PRIVATE -DTESTMODULE0_C_EXPORTS
 )
 
-include(../Niflect/Niflect.cmake)
+include(../Base/Niflect.cmake)
 
 target_link_libraries(${ModuleName} PRIVATE Niflect)
 target_link_libraries(${ModuleName} PRIVATE TestEngine)

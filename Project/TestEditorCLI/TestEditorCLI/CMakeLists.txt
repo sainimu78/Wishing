@@ -22,15 +22,6 @@ set(SrcAll "")
 list(APPEND SrcAll ${ModuleSources})
 list(APPEND SrcAll ${ModuleHeaders})
 
-set(GenOutputDirPath ${ProjectGeneratedRootPath}/${ModuleName})
-set(GenSourcePrivate ${GenOutputDirPath}/_GenSource)
-set(GenSourcePublic ${GenSourcePrivate}/include)
-#beign, 用于模式 EGeneratingHeaderAndSourceFileMode::ESourceAndHeader, 将生成文件加到模块
-#file(GLOB_RECURSE GeneratedSrc ${GenSourcePrivate}/*.cpp ${GenSourcePrivate}/*.h)
-#create_source_group(${NiflectGeneratedRootPath} ${GeneratedSrc})
-#list(APPEND SrcAll ${GeneratedSrc})
-#end
-
 add_executable(${ModuleName} ${SrcAll})
 
 target_include_directories(${ModuleName}
@@ -38,13 +29,7 @@ target_include_directories(${ModuleName}
 	PUBLIC ${IncludePathsPublic}
 )
 
-target_include_directories(${ModuleName}
-	PRIVATE ${GenSourcePrivate}
-	PUBLIC ${GenSourcePublic}
-)
-
-include(../Niflect/Niflect.cmake)
-include(../Niflect/GenTool.cmake)
+include(../Base/Default.cmake)
 
 target_link_libraries(${ModuleName} PRIVATE Niflect)
 target_link_libraries(${ModuleName} PRIVATE TestEngine)

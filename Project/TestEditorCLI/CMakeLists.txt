@@ -17,7 +17,6 @@ endif()
 add_library(Niflect SHARED IMPORTED)
 
 
-add_subdirectory(Niflect)
 add_subdirectory(TestEditorCLI)
 add_subdirectory(TestEngine)
 add_subdirectory(TestModule0)

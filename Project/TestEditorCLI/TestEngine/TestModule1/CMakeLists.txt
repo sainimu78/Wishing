@@ -40,8 +40,7 @@ target_compile_definitions(${ModuleName}
 	PRIVATE -DTESTMODULE1_EXPORTS
 )
 
-include(../Niflect/Niflect.cmake)
-include(../Niflect/GenTool.cmake)
+include(../../Base/Default.cmake)
 
 target_link_libraries(${ModuleName} PRIVATE Niflect)
 
