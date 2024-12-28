@@ -97,9 +97,15 @@ set(GeneratedModulePrivateH ${GenSourcePrivate}/${ModuleName}_private.h)
 #	message(${It})
 #endforeach()
 
+set(GenToolDebugMode "-debuggerAttaching")
+set(ListOptGenToolDebugMode "")
+if(GenToolDebugMode)
+	list(APPEND ListOptGenToolDebugMode cmd.exe /C start)
+endif()
+
 add_custom_command(
     OUTPUT "${GeneratedModulePrivateH}"
-    COMMAND "${GenToolExeFilePath}" 
+    COMMAND ${ListOptGenToolDebugMode} "${GenToolExeFilePath}" 
             -n ${ModuleName} 
             ${OptModuleHeaders}
             ${ListOptModuleAPIMacro} 
@@ -109,6 +115,7 @@ add_custom_command(
             ${OptModuleIncludePaths} 
             -g "${GenOutputDirPath}"
 			-gbt 
+			${GenToolDebugMode} 
     DEPENDS ${ModuleHeaders}
     COMMENT "${GenToolName}: ${ModuleName}"
 )
