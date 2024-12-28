@@ -97,15 +97,18 @@ set(GeneratedModulePrivateH ${GenSourcePrivate}/${ModuleName}_private.h)
 #	message(${It})
 #endforeach()
 
-set(GenToolDebugMode "-debuggerAttaching")
-set(ListOptGenToolDebugMode "")
-if(GenToolDebugMode)
-	list(APPEND ListOptGenToolDebugMode cmd.exe /C start)
+#在模块 cmake 中, 如 Wishing\Project\TestEditorCLI\TestEngine\CMakeLists.txt
+#定义变量 set(GenToolDebuggerAttaching ON) 即可启用可附加进程的调试模式
+set(ListOptGenToolDebuggerAttaching "")
+set(ListOptCmdCallingGenTool "")
+if(GenToolDebuggerAttaching)
+	list(APPEND ListOptCmdCallingGenTool cmd.exe /C start)
+	list(APPEND ListOptGenToolDebuggerAttaching "-debuggerattaching")
 endif()
 
 add_custom_command(
     OUTPUT "${GeneratedModulePrivateH}"
-    COMMAND ${ListOptGenToolDebugMode} "${GenToolExeFilePath}" 
+    COMMAND ${ListOptCmdCallingGenTool} "${GenToolExeFilePath}" 
             -n ${ModuleName} 
             ${OptModuleHeaders}
             ${ListOptModuleAPIMacro} 
@@ -115,7 +118,7 @@ add_custom_command(
             ${OptModuleIncludePaths} 
             -g "${GenOutputDirPath}"
 			-gbt 
-			${GenToolDebugMode} 
+			${ListOptGenToolDebuggerAttaching} 
     DEPENDS ${ModuleHeaders}
     COMMENT "${GenToolName}: ${ModuleName}"
 )
@@ -124,3 +127,5 @@ set(GenToolTargetName ${GenToolName}_${ModuleName})
 add_custom_target(${GenToolTargetName} DEPENDS "${GeneratedModulePrivateH}")
 set_target_properties(${GenToolTargetName} PROPERTIES FOLDER "AutoGen")
 add_dependencies(${ModuleName} ${GenToolTargetName})
+
+set(GenToolDebuggerAttaching "")#清理标志, 避免影响其它模块
