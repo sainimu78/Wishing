@@ -1,12 +1,12 @@
 
-set(MyLibNames)
-list(APPEND MyLibNames
+set(QtLibFileNames)
+list(APPEND QtLibFileNames
 	Qt5Core
 	Qt5Gui
 	Qt5Widgets
 )
-set(MyIncDirNames)
-list(APPEND MyIncDirNames
+set(QtIncludeDirNames)
+list(APPEND QtIncludeDirNames
 	QtCore
 	QtWidgets
 )

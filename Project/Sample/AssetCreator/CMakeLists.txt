@@ -1,14 +1,15 @@
 cmake_minimum_required(VERSION 3.20.0)
 
-include(../SampleRootPathSetup.cmake)
-set(ProjectName AssetCreator)
-set(ProjectRootSourcePath ${RootSourcePath}/Sample/${ProjectName})
-set(ProjectGeneratedRootPath ${GeneratedRootPath}/Sample/${ProjectName})
-set(ProjectRootThirdPartyPath ${RootThirdPartyPath})
+include(../InitSampleRootPath.cmake)
 
-include(${RootProjectPath}/CommonBeforeProject.cmake)
-project(${ProjectName})
-include(${RootProjectPath}/CommonAfterProject.cmake)
+set(c_ProjectName AssetCreator)
+
+set(c_SampleRootSourceDirPath ${c_RootSourceDirPath}/Sample/${c_ProjectName})
+set(c_SampleRootGeneratedDirPath ${c_RootGeneratedDirPath}/Sample/${c_ProjectName})
+
+include(${c_RootCMakeDirPath}/ProjectBegin.cmake)
+project(${c_ProjectName})
+include(${c_RootCMakeDirPath}/ProjectEnd.cmake)
 
 if(MSVC)
     set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT Editor)
@@ -16,3 +17,6 @@ endif()
 
 add_subdirectory(Editor)
 add_subdirectory(Engine)
+
+include(${c_RootCMakeDirPath}/Setup.cmake)
+include(${c_RootCMakeDirPath}/Release.cmake)
