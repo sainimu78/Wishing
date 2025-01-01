@@ -5,7 +5,6 @@ include(../InitSampleRootPath.cmake)
 set(c_ProjectName AssetCreator)
 
 set(c_SampleRootSourceDirPath ${c_RootSourceDirPath}/Sample/${c_ProjectName})
-set(c_SampleRootGeneratedDirPath ${c_RootGeneratedDirPath}/Sample/${c_ProjectName})
 
 include(${c_RootCMakeDirPath}/ProjectBegin.cmake)
 project(${c_ProjectName})
