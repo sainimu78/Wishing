@@ -74,8 +74,23 @@ else()
 	)
 endif()
 
+#begin, Required
+set(v_ImportedLibName "")
+set(v_ImportedLibRootDirPath "")
+set(v_UnzippedDirPath "")
+set(v_ZipFileName "")
+set(v_SrcAddrZipFilePath "")
+set(v_LibPlatformArchDirPath "")
+set(v_LibIncludeDirPaths "")
 set(v_LibPlatformArchIncludeDirPath "")
+#end
+
+#begin, Optional
 set(v_DebugLibFileNamePostfix "")
+#end
+
+#begin, Single option
 set(v_ImportedLibFilePathsDebug "")
 set(v_ImportedLibFilePathsRelease "")
 set(v_ImportedLibFileNames "")
+#end
