@@ -17,5 +17,5 @@ endif()
 add_subdirectory(Editor)
 add_subdirectory(Engine)
 
-include(${c_RootCMakeDirPath}/Setup.cmake)
 include(${c_RootCMakeDirPath}/Release.cmake)
+include(${c_RootCMakeDirPath}/Cleanup.cmake)
