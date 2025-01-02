@@ -9,7 +9,6 @@ set(v_DebugLibFileNamePostfix d)
 
 include(${c_RootThirdPartyDirPath}/Qt/Qt_5_x/Deps.cmake)
 
-set(v_ListLibIncludeDirPath "")
 set(QtIncludeRootDirPath ${v_UnzippedDirPath}/include)
 list(APPEND v_ListLibIncludeDirPath ${QtIncludeRootDirPath})
 foreach(It ${QtIncludeDirNames})
