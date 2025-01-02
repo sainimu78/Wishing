@@ -9,14 +9,14 @@ set(v_DebugLibFileNamePostfix d)
 
 include(${c_RootThirdPartyDirPath}/Qt/Qt_5_x/Deps.cmake)
 
-set(v_LibIncludeDirPaths "")
+set(v_ListLibIncludeDirPath "")
 set(QtIncludeRootDirPath ${v_UnzippedDirPath}/include)
-list(APPEND v_LibIncludeDirPaths ${QtIncludeRootDirPath})
+list(APPEND v_ListLibIncludeDirPath ${QtIncludeRootDirPath})
 foreach(It ${QtIncludeDirNames})
-    list(APPEND v_LibIncludeDirPaths ${QtIncludeRootDirPath}/${It})
+    list(APPEND v_ListLibIncludeDirPath ${QtIncludeRootDirPath}/${It})
 endforeach()
 foreach(It ${QtLibFileNames})
-	list(APPEND v_ImportedLibFileNames ${It})
+	list(APPEND v_ListImportedLibFileName ${It})
 endforeach()
 
 include(${c_RootCMakeDirPath}/ImportShared2.cmake)
