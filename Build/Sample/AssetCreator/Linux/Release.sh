@@ -7,5 +7,5 @@ Toolset="Unix Makefiles"
 OldDirPath=$(pwd)
 
 cd $BuildDirPathRelease
-cmake ../../../../../Project/Sample/$ProjectName -G "$Toolset" -DCMAKE_INSTALL_PREFIX="$InstallPrefix" -DPROJECT_SETUP=OFF -DPROJECT_RELEASE=ON
+cmake ../../../../../../Project/Sample/$ProjectName -G "$Toolset" -DCMAKE_INSTALL_PREFIX="$InstallPrefix" -DPROJECT_SETUP=OFF -DPROJECT_RELEASE=ON
 cd $OldDirPath
