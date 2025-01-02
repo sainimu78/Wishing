@@ -1,8 +1,10 @@
-include(${c_RootThirdPartyDirPath}/Qt/Qt_5_x/Deps.cmake)
-
+set(v_ImportedLibName Qt_5_12_8)
 set(QtRootDirPath /usr)
 set(QtIncludeRootDirPath ${QtRootDirPath}/include/x86_64-linux-gnu/qt5)
 list(APPEND v_ListLibIncludeDirPath ${QtIncludeRootDirPath})
+
+include(${c_RootThirdPartyDirPath}/Qt/Qt_5_x/Deps.cmake)
+
 foreach(It ${QtIncludeDirNames})
     list(APPEND v_ListLibIncludeDirPath ${QtIncludeRootDirPath}/${It})
 endforeach()
