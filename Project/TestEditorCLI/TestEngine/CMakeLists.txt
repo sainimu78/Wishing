@@ -7,23 +7,26 @@ set(ModuleSourcePath ${ModuleRootPath}/src)
 set(ModuleIncludePath ${ModuleRootPath}/include)
 
 set(v_ModuleAPIMacro ENGINE_API)
-set(v_ModuleAPIMacroHeader ${ModuleIncludePath}/Engine/EngineCommon.h)
-set(v_AccessorSettingHeaders "")
-list(APPEND v_AccessorSettingHeaders ${ModuleIncludePath}/EngineAccessorSetting.h)
+set(v_ModuleAPIMacroHeaderFilePath ${ModuleIncludePath}/Engine/EngineCommon.h)
 
-set(v_IncludePathsPrivate "")
-set(v_IncludePathsPublic "")
-list(APPEND v_IncludePathsPrivate ${ModuleSourcePath})
-list(APPEND v_IncludePathsPrivate ${c_RootSourceDirPath}/TestModule1/include)
-list(APPEND v_IncludePathsPublic ${ModuleIncludePath})
+set(IncludePathsPrivate "")
+set(IncludePathsPublic "")
+list(APPEND IncludePathsPrivate ${ModuleSourcePath})
+list(APPEND IncludePathsPrivate ${c_RootSourceDirPath}/TestModule1/include)
+list(APPEND IncludePathsPublic ${ModuleIncludePath})
 
 file(GLOB_RECURSE ModuleSources ${ModuleSourcePath}/*.cpp ${ModuleSourcePath}/*.h)
 create_source_group(${ModuleSourcePath} ${ModuleSources})
-file(GLOB_RECURSE v_ModuleHeaders ${ModuleIncludePath}/*.h)
-create_source_group(${ModuleIncludePath} ${v_ModuleHeaders})
+file(GLOB_RECURSE ModuleHeaders ${ModuleIncludePath}/*.h)
+create_source_group(${ModuleIncludePath} ${ModuleHeaders})
 set(SrcAll "")
 list(APPEND SrcAll ${ModuleSources})
-list(APPEND SrcAll ${v_ModuleHeaders})
+list(APPEND SrcAll ${ModuleHeaders})
+
+list(APPEND v_ListAccessorSettingHeaderFilePath ${ModuleIncludePath}/EngineAccessorSetting.h)
+list(APPEND v_ListModuleIncludeDirPath ${IncludePathsPrivate})
+list(APPEND v_ListModuleIncludeDirPath ${IncludePathsPublic})
+list(APPEND v_ListModuleHeaderFilePath ${ModuleHeaders})
 
 add_library(${ModuleName} SHARED ${SrcAll})
 
@@ -35,8 +38,8 @@ target_precompile_headers(${ModuleName} PRIVATE ${ModuleSourcePath}/EngineDevelo
 #)
 
 target_include_directories(${ModuleName}
-	PRIVATE ${v_IncludePathsPrivate}
-	PUBLIC ${v_IncludePathsPublic}
+	PRIVATE ${IncludePathsPrivate}
+	PUBLIC ${IncludePathsPublic}
 )
 
 target_compile_definitions(${ModuleName}
