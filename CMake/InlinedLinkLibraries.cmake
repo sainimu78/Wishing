@@ -1,0 +1,30 @@
+foreach(It ${v_ListLibFileName})
+	set(LibFileNameDebug ${It})
+	set(LibFileNameRelease ${It})
+	if(v_DebugLibFileNamePostfix)
+		set(LibFileNameDebug ${LibFileNameDebug}${v_DebugLibFileNamePostfix})
+	endif()
+	set(LibFileExt )
+	if(WIN32)
+		set(LibFileExt ${c_StaticLibFileExt})
+	else()
+		if(NOT LibFileNameDebug MATCHES "^${c_SharedLibFileNamePrefix}")
+			set(LibFileNameDebug ${c_SharedLibFileNamePrefix}${LibFileNameDebug})
+		endif()
+		if(NOT LibFileNameRelease MATCHES "^${c_SharedLibFileNamePrefix}")
+			set(LibFileNameRelease ${c_SharedLibFileNamePrefix}${LibFileNameRelease})
+		endif()
+		set(LibFileExt ${c_SharedLibFileExt})
+	endif()
+	list(APPEND LibFilePathsDebug "${v_LibDirPathDebug}/${LibFileNameDebug}${LibFileExt}")
+	list(APPEND LibFilePathsRelease "${v_LibDirPathRelease}/${LibFileNameRelease}${LibFileExt}")
+endforeach()
+
+target_link_libraries(${ModuleName} PRIVATE
+	"$<$<CONFIG:Debug>:${LibFilePathsDebug}>"
+	"$<$<CONFIG:Release>:${LibFilePathsRelease}>"
+)
+
+set(v_ListLibFileName "")
+set(v_LibDirPathDebug "")
+set(v_LibDirPathRelease "")
