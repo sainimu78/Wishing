@@ -1,8 +1,3 @@
-if(NOT v_ImportedLibName)
-	message(FATAL_ERROR "v_ImportedLibName must be specified and not duplicated in this project")
-endif()
-
-set(NeesInstallation_${ModuleName}_${v_ImportedLibName} FALSE)
 if(v_ZipFileName)
 	set(DstDownloadedFilePath ${v_ImportedLibRootDirPath}/${v_ZipFileName})
 	if(PROJECT_SETUP OR NOT EXISTS "${v_UnzippedDirPath}")
@@ -11,9 +6,7 @@ if(v_ZipFileName)
 			file(COPY "${v_LibPlatformArchDirPath}/" DESTINATION "${c_ProjectPlatformArchDirPath}/")
 		endif()
 	endif()
-	set(NeesInstallation_${ModuleName}_${v_ImportedLibName} TRUE)
 endif()
-set(NeesInstallation NeesInstallation_${ModuleName}_${v_ImportedLibName})
 
 target_include_directories(${ModuleName} PRIVATE "${v_ListLibIncludeDirPath}")
 
@@ -59,7 +52,7 @@ target_link_libraries(${ModuleName} PRIVATE
 	"$<$<CONFIG:Release>:${LibFilePathsRelease}>"
 )
 
-if(NeesInstallation)
+if(v_ZipFileName)
 	if(WIN32)
 		set(BinDirPathDebug ${v_LibPlatformArchDirPath}/Debug/${c_BinDirName})
 		set(BinDirPathRelease ${v_LibPlatformArchDirPath}/Release/${c_BinDirName})
