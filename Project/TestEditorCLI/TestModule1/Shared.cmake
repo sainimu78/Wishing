@@ -40,6 +40,7 @@ set(v_ModuleAPIMacroHeaderFilePath ${ModuleIncludePath}/TestModule1Common.h)
 list(APPEND v_ListAccessorSettingHeaderFilePath ${c_RootThirdPartyDirPath}/Niflect/Niflect/include/Niflect/CommonlyUsed/DefaultAccessorSetting.h)
 list(APPEND v_ListModuleIncludeDirPath ${IncludePathsPublic})
 list(APPEND v_ListModuleHeaderFilePath ${ModuleHeaders})
+
 include(${c_RootProjectDirPath}/Niflect/Default.cmake)
 
 include(${c_ProjectDirPath}/Install.cmake)
