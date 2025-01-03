@@ -33,6 +33,7 @@ list(APPEND v_ListModuleIncludeDirPath ${IncludePathsPublic})
 list(APPEND v_ListModuleHeaderFilePath ${ModuleHeaders})
 set(v_ModuleAPIMacro SAMPLEAPI_API)
 set(v_ModuleAPIMacroHeaderFilePath ${ModuleIncludePath}/SampleAPICommon.h)
+list(APPEND v_ListToolOption "-gsm")
 
 include(${c_RootProjectDirPath}/Niflect/Default.cmake)
 
