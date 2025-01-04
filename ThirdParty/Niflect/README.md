@@ -8,5 +8,5 @@ git clone git@github.com:sainimu78/Niflect.git
 
 ## hfs
 
-http://localhost/sainimu78_Storage/Release/Windows/x64/Debug/Niflect.zip
+http://localhost/sainimu78_Storage/Release/Windows/Niflect.zip
 

@@ -1,8 +1,8 @@
 ## libs & header directories
 
-`CMakeInclude\Deps.cmake`
+`Qt_5_x\Deps.cmake`
 
-## Build from source 5.15.16 (Failed)
+## (Failed) Build from source 5.15.16
 
 https://download.qt.io/archive/qt/
 
