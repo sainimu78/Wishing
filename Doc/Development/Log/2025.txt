@@ -1,0 +1,78 @@
+
+2024.05.14, 五星, Scene序列化, 统一通过manager创建对象; base反射宏增加通过base获取type; 简易Scene编辑流程, 模拟EntityNode可载入模拟Mesh
+2024.05.19, 五星, 构思撤销与序列化如何实现序列化习惯不变, 使用简单的diff撤销系统, UE的撤销要求对象本身序列化, 使用者必须将所有被改的对象执行Modify备份状态, 相比这下, NodeEditor的用法则简单许多, 应对简单与复杂编辑甚至跨流程编辑都只要维护Begin与End的撤销command即可, 但效率极低, 够通过某种序列化方法实现撤销优化, 并且还需要支持增量序列化, 只在读写时处理变化的数据, 概念上是通过序列化编辑系统; 调研UE引用关系, 见F:\Fts\Doc\UnrealEngine\f反射系统及其关联系统\z资源加载与引用关系\README.md
+2024.05.20, 五星, 回顾blender撤销, 不确定是否仅保存diff, 还需要调研撤销读数据的过程; 构思实现方案, 考虑能否通过读写对象跟踪修改, 进而考虑到能否将对象与序列化偏移对应实现一种映射以快速diff; 规划全状态撤销方案, 1. 格式无关树型结构, 缓存二进制数据格式. 2. Stream Reader/Writer, 字节/文件. 3. json/二进制格式, json为文本型, diff标识为换行符, 二进制为diff专用格式, 具有块概念, 块长度粗diff, 字段标识细diff; 实现新的格式无关树型结构, 可打印测试, 现名仍为RwNode, 可考虑新名称; 打印测试改写为输出Json; json读
+2024.05.27, 五星, json读, 不用rapidjson的原因是避免多创建树型结构, 另外也作为二进制格式的对称示例; 二进制格式; 索引化读写
+2024.05.28, 五星, 修复ifstream, ofstream误用, 未指定binary, 现象为逻辑错误, 出现错误时与写入的整数值有关, 难以理解的错误; CJsonFormat::Read改为可overwrite; 二进制索引化Read改为分读节点本身与子节点索引化2种, 索引化方案见最后修改处的注释; rwNode树型diff实验
+2024.06.09, 五星, 决定先用LCS拉平树结构进行比较, 层级关系应改到Node的属性中; diff实验代码优化, 修复apply的insert错误; 移植空间占用小的算法, 整理代码; 尝试diff RwNode, 拉平结构更适合diff, 但树型结构更具易用性, 现决定先尝试以树型结构实现diff
+2024.06.17, 五星, diff Apply 到 RwNode; 制作若干测试, 验证可处理所有情况
+2024.06.20, 五星, 测试jsonformat, 测试diff 10000个节点性能, 60000 ms, 无法使用; 调研UE Transaction 保存; 测试diff2性能, 90 ms, 调研diff2改写为非文本或通用结构的可行性, 认为通用结构的比较是低效的原因之一, 但具可行性, 还需要进一步验证diff2对数组的diff结果, 如果结果为线性diff的结果, 则无改写的必要, 针对数组型, 只能通过LCS才能获取最优结果
+2024.06.24, 五星, 构思简化框架可行性; 废弃CAsset中耦合instanceRef, 改为instanceRef引用CAsset; 废弃assetRef持有多个instanceRef, 改为只缓存一个instanceRef和CAsset; 废弃原有Test, 遗留TestPrefeb示例未修改, 需要区分实例与资源; 调研UE资源与实例创建方式, 见 GPT解答_UE加载资源与创建实例.md; 回顾编辑实现方式, 资源属性中只需要记录globalId与arnId, 其中globalId用于方便查找到唯一对象, 在用于Runtime的序列化时, 为避免查找, 可考虑以tableId实现获取assetRef, arnId在编辑阶段生成, 编辑器资源属性也需要注册到System, 以接受id更新流程, 比如旧tableId改成新tableId, 资源属性不缓存CAsset, 只在需要时查找获取; 沟通Dock问题, 陈立;
+2024.07.08, 五星, UE Level保存加载调研, 见 ‪F:\Fts\Doc\UnrealEngine\f反射系统及其关联系统\Level保存\README.md; 构思Prefeb资源与实例, 调研unity prefeb编辑; 调研ImportMap的索引如何生成, 未理清流程, 发现ImportMap为资源的索引表, Export为反射信息对象索引表; 构思实例索引表结构, 如何分类, 或是否有必要分类, 表示类型的对象与资源是否有必要以分类区分合到同一个表中, 还是不同模块管理各个的索引表即可; 搭建Interedit项目, Windows, MinGW 的 cmake
+2024.07.29, Interedit, 整理cmake; 调整RwNode, 静态帮助函数参数改用指针; 测试序列化;
+2024.07.30, Interedit, 测试TLS Default Allocator, 增加简易内存池;
+2024.07.31, Interedit, 修复JsonFormat读写不一致问题; 移植BinaryFormat; 测试读写; 移植DiffArrays的LCS Diff, EditGraph的Diff2, 仅作代码备份; 发现vs2022和MinGW的Build运行LCS的Diff快非常多, 未查明原因, 但可能表明有一定机会应用; 测试MinGW也同样快非常多; 测试Release Build则差别不大; 
+2024.08.01, Interedit, 回顾Niflect实现概况; 移植qt的connect; 尝试简化成员函数代理使用风格; 移除原Niflect, 计划重构与简化; 移植简化field, 改为只保留Save/Load, Property归到编辑器或另外的模块; 继承类测试; 简单数组测试; 移植数组, MyTransform测试
+2024.08.01, Interedit, MapAccessor, 二维数组; 注册实验, 废弃Table与Module绑定, 废弃FieldRoot, 改为AccessorRot作为FieldLayout; 从FieldLyaout实例化, 模拟复制; 检查gcc编译错误, bool数组有关; 
+2024.08.11, Interedit, 修复gcc错误, 废弃TStlArrayAccessor直接支持bool数组, 为保持其特殊性, 增加TStlBitsArrayAccessor; 静态注册与初始化注册实验; 回复上一次StatsScope继续统计内存, 避免无法正确统计引入静态注册后的内存分配; 
+2024.08.12, Interedit, 简化StatsScope定义, Scope定为模板, 全局Stats指针归到CDefaultMemory; 预留加载卸载模块反射信息实验; 导出特化StaticGetType; 定义新概念, CustomData为 Natimeta, 即Native Meta, 特点在于使用native C++ 结构表示meta数据, 只需要Cast为正确类型, 不需要解析; 修复MinGWModuleReg释放错误, 全局SharedPtr误用; 
+2024.08.13, Interedit, 移植 Ubuntu, 编译测试; 修复不支持本模块内部默认StaticGetType; 改MinGW为Linux; 尝试规范StaticGetType导入导出, 简化定义, 但能都编过的只有分离声明与定义一种方式; 配置 NiflectGenTool Build; 整理cmake; 沟通琼英碧灵方案, 等策划沟通确认是否复刻; 整理cmake; 
+2024.08.14, Interedit, 整理cmake, 引入libclang, 仅Windows; 修复Ubuntu, Windows输出目录不一致问题; 编llvm-project; Ubuntu上可运行NiflectGenTool, libclang的测试代码
+2024.08.17, Interedit, 整理 NiflectGenTool 的 Linux Build; 移植原 NiflectGenTool 代码; 尝试支持特化类型的 Binding Type, 废弃要求非模板Accessor须Tag;
+2024.08.21, Interedit, 生成特化类型 BindingType 的 Field 代码; 计划调整为模板实例的Field当作一种类型, 与非模板Field代码生成流程统一; TypeReg, SplittedModuleReg, ModuleReg生成文件;
+2024.08.22, Interedit, 改用Engine代码测试, 改写为新框架, 即废弃Field, 改为Accessor; Gen改写为概念改为Accessor的框架, 模板相应调整, 可生成 ModuleReg, SplittedModuleReg, TypeReg
+2024.08.23, Interedit, 现未重构整理代码, 为避免重构前增加复杂性, 仅支持 public 的成员, 成员类型只可为 float 和 bool, 无法指定标签的类型如builtin类型, 只能通过模拟 Static Reg 阶段注册; 评估重构AccessorBinding可行性; 考虑同类型分散到不同模块中后, 直接通过指针不能不判断相同, 可用typeid, 还需要考虑是否有必要集中注册到一个位置; 尝试废弃StaticGetType_Misc, 发现不能正确生成Map套Array或Array套Map套Array; 
+2024.08.24, Interedit, Accessor 反射为 Property 实验, 归纳重构生成代码的代码写法;
+2024.08.26, Interedit, MyTransform自定义属性; RwValue加模板GetAs, SetAs; 整理RwTree, Linux测试; 简化查找BindingType方法实验; 
+2024.09.22, Interedit, 梳理模板, 特化, 模板套特化, 查找方法; 梳理AccessorBindingMapping收集流程; 兼容特化, 部分特化, 别名等检查是否从CAccessor继承; 总结框架概念, Main.cpp 开头; 加测试流程, 为重构或优化预留测试, 为避免修改后无法确保复杂流程正确性; BindingType查重;
+2024.09.23, Interedit, 查重TestSuccess与TestFailure两种测试, 常见误用检查; 构思重构方法, 见 F:\Fts\Proj\Test\Interedit\Doc\Development\Task\2024.txt; 构思UntaggedType信息收集流程; 生成完整scope的typeName测试; 
+2024.09.25, Interedit, 模板套模板, 模板套特化, 多维BindingSetting等field类型查找bindingType; 整理代码; 构思生成AccessorBinding对应的CodePattern; 
+2024.10.04, Interedit, 构思重构生成流程; 生成树型结构索引BindingAccessorMapping; 
+2024.10.06, Interedit, 生成SignatureMapping, 类定义ClassDecl与Field类型编码与索引; 获取FieldLayout函数代码生成必要信息;
+2024.10.07, Interedit, 简化FieldLayout代码生成必要信息; 整理代码; 总结模板用途认定的规则, 见 Main.cpp 12, 13, 14; 回顾生成需求; 考虑热重载需求; 生成代码重构;
+2024.10.08, Interedit, Signature生成测试; 生成代码重构; 枚举测试; 考虑枚举的Accessor如何指定, 计划增加一种AccessorBinding用于指定枚举的Accessor, 且不可重复指定; TSharedPtr加enable_if, 当子类不能转为父类时取消对应构造的定义使产生正确位置的报错信息; 代码生成
+2024.10.10, Interedit, TypeReg代码生成; ModuleReg, SplittedModuleReg代码生成;
+2024.10.11, Interedit, 若干计划备忘, 见开发计划; 整理代码, RegisterType, CreateFieldLayoutOfType; 
+2024.10.12, Interedit, 发现cursorName生成错误, 准备加测试; 简化 CResocursorNode, 不记录是否为 isTemplateFormat, 在生成 ResocursorName 时确定; 加为 Field 查找 Accessor 测试; ResocursorName 生成测试, 修复原 scope 不完整的问题; TaggedType 可绑定 AccessorBinding
+2024.10.15, Interedit, 保存结构模板索引, 可获取原始模板结构, 但还不支持别名; 整理AccessorBinding查找代码; untaggedTemplate获取原始decl; 发现如别名不能与原始类型同时定义特化, 因此需要重构, 如生成一种id作为CreateFieldLayout的函数名; BindingType重复检查实验, 困难较大, 暂时放弃, 计划先实现生成代码;
+2024.10.16, Interedit, 规则总结, 见 Main.cpp; 简易生成CreateFieldLayoutOfType框架, 打印必要信息; 尝试解析模板类名scope, 找到可行性, 但太繁琐, 因此放弃;
+2024.10.17, Interedit, 再次尝试, 但仍失败, 结论见开发宏说明; 代码生成;
+2024.10.18, Interedit, 代码生成, 根据指定的Original头文件确定生成范围; 整理生成代码; 改写枚举Accessor, 测试; 预留Method注册; 废弃BindingSetting, 改为AccessorSetting, 增加Compound, EnumClass, EnumBitsMask的Accessor设置类型; 
+2024.10.19, Interedit, 为枚举生成CreateFieldLayout; 可指定BCD型AS; 整理CAccessor等初始化系列函数, 计划通过friend一些框架用的函数避免暴露初始化函数; CreateFieldLayoutOfType改为CreateTypeAccessor, 生成该函数; 获取Accessor所在头文件; 整理代码;
+2024.10.28, Interedit, 按手写习惯生成include顺序; 生成代码接入cmake, 编译; VC启用并行编译; 生成代码接入Engine 的 cmake; 简易初始化测试, 废弃旧注册方式; 枚举InitType; 修复未检查为std::string 的 TypedefDecl 不应继续展开resocursorName; EngineObject.h序列化测试; 另外定义 CStdStringAccessor 以支持std::string的序列化;
+2024.11.02, Interedit, 重构测试, 规范文件名, 原OriginalHeader改为ModuleHeader; 生成Inheritable的InitType; 继承类SaveLoad; table加初始化TypeLayout; 整理代码;
+2024.11.03, Interedit, 生成gen.h的StaticGetType特化导出; 拆分StaticGetType与CreateTypeAccessor生成数据; 评估生成后不执行cmake可行性; 增加仅头文件接入Module模式, 不需要接入build系统;
+2024.11.04, Interedit, HeaderOnly模式时cpp的后缀改为private.h, 以避免误解; 生成行号宏; 生成_gen.h的行号宏流程; 生成CreateTypeAccessor的friend宏; 调整LineNumberMacros生成流程, 方便扩展; 改为以Module为base的输出目录结构
+2024.11.05, Interedit, 简化输入参数; 整理计划; 使用 UnsavedFile 生成 Bypass 实验; Bypass代码改为在解析时生成, 避免用户指定 Bypass 的头文件搜索路径; Natimeta改名为Nata; 修复 _gen.h 未生成时解析报错, 无标记宏定义;
+2024.11.06, Interedit, 常用Accessor移到Niflect/CommonlyUsed; Engine 测试 AccessorSetting 改为从 DefaultAccessorSetting.h include; 接命令行, 命令行解析误解, 返工, 实际上只需要一个选项配一个参数即可; 改为允许输出路径为空, 即输出到工作目录; 整理 cmake, 调 MinGW; 
+2024.11.07, Interedit, 调 MinGW, Linux 的 Gen; 修复Linux行号问题; 
+2024.11.11, Interedit, 将TRegisteredType::s_type 和 StaticGetType移到private.h仍不能避免Linux不同模块相同std::string问题; 
+2024.11.12, Interedit, 继续实验Linux不同模块相同std::string问题; 查明原因为只要signature相同, 就会选其中某个so的函数; 构思重构方法; 测试发现现生成功能缺陷, 不能处理其它模块依赖作为成员的情况, 不能正确创建Layout, 不能复用其它模块导出type的layout;
+2024.11.13, Interedit, 明确定义 Field, Layout, Accessor 三者意义; 改为创建Layout, 通过Layout可saveload继承对象; 重构代码生成, 2024.txt 48, Linux可正确生成; 尝试 Build libclang 静态库; 
+2024.11.14, Interedit, 整理 Build, 测试静态库链接; 
+2024.11.15, Interedit, Windows 静态库链接可用; 查看一些 cmake 逻辑 F:\Fts\Proj\Test\llvm-project\clang\tools\libclang\CMakeLists.txt, F:\Fts\Proj\Test\llvm-project\clang\tools\c-index-test\CMakeLists.txt, 进行 build 实验, 结论见 ThirdParty\libclang\README.md; 制定 LICENSE.txt; 改提交作者; 宏 token 旧实验测试;
+2024.11.16, Interedit, 调研 C++ 反射现状, C++ 更新标准如 26 有引入新语法以支持反射, 但认为并无实践意义, 似乎仍须代码生成工具生成用户自定义的绑定 meta; 发现通过 loc 找不到, 不是由于 linux 下 libclang 的机制, 而是由于误使用了默认的 libclang 20, 应使用 libclang 17; 回退的重要原因是, 发现启用宏的实现方法, 无法获取正确的宏标签 token, 另未计划基于 20 摸索获取正确的宏标签 token 方法, 因此现使用未启用宏的回退实现; 获取含换行的宏token; 生成 Field Nata
+2024.11.17, Interedit, 生成 Type, Enum Const 的 Nata; NiflectMacro.h 部分改为 Gen Time 替换; BypassSTL输出目录名改为GenTime, 统一存放生成阶段使用的文件, 此目录路径作为生成阶段的位置最前的include搜索路径
+2024.11.18, Interedit, 部署测试, 修复若干路径问题; 统一命令行参数解析的路径为绝对路径, includeSearchPath须以/结尾, 在转换为includeSearchPath时, 只处理绝对路径; 固定生成GeneratedBody, 因为现已调整为 Misc 仅在模块反射生成代码中使用, TaggedType都须特化 StaticGetType; 改用基于文本的路径解析避免runtime的路径解析不能处理不存在的路径; 总结 C++ 反射现状, F:\Fts\Proj\Test\Interedit\Doc\Development\Task\2024.txt 中 55; 文件搜索备用; 简化private.h的include形式; 简化Save; 简化cmake脚本生成文件模式; 
+2024.11.21, Interedit, 规范genTime路径, 无须includeSearchPath则不套转换; 预留获取lifecycleMeta, 用于定义任意创建释放方法, 如使用默认堆创建释放; 拆分h与cpp, 预留简化接入; 写简介;
+2024.11.22, Interedit, 支持Raw指针反射; 新建 NiflectSample, 原MyApp改为其中的Sample0, Sample1为Raw指针序列化示例; 指针数组实验, 未提交; 补basic_string任意单参数构造和默认构造, 避免解析错误; 构思增加指针模板; 指针模板实验
+2024.11.23, Interedit, 反射指针模板, 增加 NIF_AS_E; 允许指针模板中的类型无tag; 实验3文档, 简介加说明与读前建议; 改名为 Wishing, 清理个人信息明显的位置;
+2024.11.24, 五星, 输出Reg排序避免不必要的文件变化; 整理代码; 合并GenInclude中的同namespace StaticGetType模板特化依赖类型; 
+2024.11.25, 五星, cmake集成可行性实验, cmake 的 add_custom_command 自带文件修改检测, 非常方便, 无须另实现文件修改检测; 考虑定义一些参数用于指定使用默认参数以简化命令参数指定; 确认解析大量头文件时的正确性; 与 Flax 对比评估简单头文件的生成耗时, Flax Build 一个模块 2 秒, TestModule1 2.5 秒, libclang 非 Release, 因此有一定可比性, 且耗时程度较乐观; 目录结构调整, 预留使用用户自定义ResolverCustomizationHeader; Niflect/include 改为 -t, 与其它 -I 区分, 主要用于指定 NiflectMacro.h 的路径; 发现由于未Bypass cstring 导致冗余, 增加后解析更快; 修复错误添加 Niflect/include 导致生成绝对路径; 检查\r问题; 测试fs模式, 发现_GenTime也被加到工程中, 但由于include路径是在末尾位置, 无影响;
+2024.12.03, 五星, 拆分生成GenTIme与可被-fs加入工程的文件; 增加-gs预留可指定适合被纳入版本控制的文件, 可用于避免构建阶段生成; 修复linux build; 枚举声明一并生成underlyingtype; 确认无修改 F5 也触发执行, 暂不启用 add_dependency, 现仅按 F7 可触发生成, 同样地, 也有无修改也触发的问题, 这于更早的实验结论不同, 须确认; 经检查发现由于add_custom_command中的依赖路径未改为_GenSource的路径导致每次生成都触发执行, 现已回退为使用 add_dependency 的用法; ResolveDependencies拆分为ResolveBasic, ResolveBasic先遍历执行, 避免field的taggedResonode未初始化, 导致潜在错误; 规范C++模板解析;
+2024.12.06, 五星, 启用工程可收纳到目录中; 增加 WishingProjectTool 用于生成项目工程, 一个项目 build 的初始内容大体相同; CCppWriter改为CCodeWriter, 作更基础的代码生成writer; 略简化项目生成脚本, 预留项目模板生成; CCodeTemplate可以头文件复用; 改项目名为 CppProjectGenTool, 计划实现一定通用性的 C++ 项目生成工具; 整理cmake, 使VS中的目录与include路径一致; Editor 代码目录调整, 接入 NiflectGenTool, 试用; 修复 ApiMacro 为空时出错
+2024.12.09, 五星, 无任何类型宏标签时不生成模块_private.h中的内容; -gbt 生成行号宏的 CThis, 方便扩展 GENERATED_BODY; 修复 Linux Build; 测从资源实例化; 改用hashmap建立类型查找表; 准备模拟引擎载资源流程验证架构设想; 收集编辑器UI资料, 见 F:\Fts\Proj\Test\Wishing\Doc\备用资料\编辑器 UI Backend 的一种方案.md; 确定2个符合项目定位的概念, 编辑器端的资源对象名称为 Content, 引擎端的资源对象名称为 Asset; 整理计划;
+2024.12.12, 五星, 生成模块静态注册, 获取模块指针可以静态或动态的形式获取; 检查出现 __gnuc_va_list 的问题, 是由于在 NiflectCommon.h 中 include 未旁路的 cstdio; 另测试旁路 stdio.h 将产生很多未定义 c 函数的错误, 因此推断可能大部分可旁路的只有无后缀的头文件; 
+2024.12.15, 五星, 载模块代码整理; Editor与Engine工程改名, 预留正式工程目录名; 整理搭建 AssetCreator 新 Project, 预留 SampleProjectTemplate 方便手工搭建新项目, 注意到手工搭建花费多则 2 小时, 包括调整 cmake, 检查问题;
+2024.12.16, 五星, 接 Qt 5.8; 整理 Qt 接入, 尝试 6.8, 5.15.16 均失败, 计划都用预构建的库; Ubuntu 改用自带 Qt 5.12.8, Windows 改用预 Build 5.8.0; 
+2024.12.17, 五星, 整理 cmake; 调研 ezEngine 的属性控件, 添加 2000 个文本型属性测试, Shipping 模式同样卡顿严重; 预留测试按钮等, 改为复用Qt5.8的deps.cmake; include头文件转换失败错误提示; 移植 Getter, Setter, DefaultValue 关键字, AccessMethod 备用, 打印测试移植正确; 遍历收集文件;
+2024.12.21, 五星, 调试收集文件, Linux测试, 可中文; 尝试减小 libclang, 但参考 GPT 建议指定一些选项 OFF, 无效果; Niflect 移到单独 git, 构建改用 hfs;
+2024.12.27, 五星, 改写构建流程, Windows 可用; 
+2024.12.28, 五星, 改用基于 cmake 的构建流程, 尽可能少地使用平台脚本, Niflect 可用; 
+2024.12.30, 五星, NiflectGenTool 可用; 
+2024.12.31, 五星, Linux 改写; 通过 VirtualBox 共享文件夹, sudo mount -t vboxsf sainimu78_Storage /mnt/Ubuntu_Storage, 发布到 Windows 上的 hfs 目录, 实现基本跨平台构建流程;
+2025.01.01, 五星, 改用 7z.exe; zip 打印处理进度; 整理 cmake; 测试构建; 着手改写 Wishing; 规范 cmake 变量命名, c_ 为全局常量, v_ 为局部变量; 封装 ImportShared.cmake 方便引用动态库
+2025.01.02, 五星, 修复未指定 NiflectGenTool 的 lib 路径; 修复 Setup 未改写; 修复 Setup 时未在一次执行过程中检查已下载的错误重复下载; TestEditorCLI 改写
+2025.01.03, 五星, AssetCreator Linux Build; 发现 cmake 的 include 行为在 Linux 下不同, 并不能按预期在使用位置展开代码使用位置前的变量; SampleProjectTemplate 改写; 整理平台脚本, 统一风格; SampleProjectTemplate 改写; 其它已改写的项目略调 cmake 的风格; SampleApp 增加 Niflect 使用示例; 发现Linux 下, 无法通过 ZipFileName 等非空检查的方式确定是否 Install, 因此改为另外的 ImportInstalledShared.cmake
+2025.01.04, 五星, 迁移 sainimu78_Storage; 修复 Linux 的 Setup 重复执行的问题, 现无可行办法, 只能避免对单配置生成器(Unix Makefiles, Ninja)避免重复对不同构建配置执行 cmake; hfs 改用 VPN 地址, 借用 VPN 访问 Storage; 
+?/2025.01.05, 五星, 
