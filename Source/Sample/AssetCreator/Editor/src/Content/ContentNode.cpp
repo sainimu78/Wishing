@@ -7,7 +7,7 @@ namespace Wishing
 	{
 
 	}
-	void CContentNode::InitGlobalId(const CUuid& globalId)
+	void CContentNode::Init(const CUuid& globalId)
 	{
 		m_globalId = globalId;
 	}

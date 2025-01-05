@@ -10,7 +10,7 @@ namespace Wishing
 		CContentNode();
 
 	public:
-		void InitGlobalId(const CUuid& globalId);
+		void Init(const CUuid& globalId);
 
 	public:
 		const Niflect::CString& GetName() const;

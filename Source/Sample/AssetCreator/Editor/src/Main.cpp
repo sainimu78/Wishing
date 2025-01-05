@@ -1,5 +1,6 @@
 #include "QApplication"
 #include "Widget/Creator/CreatorWindow.h"
+#include "QDesktopWidget"
 #ifdef WIN32
 #include <Windows.h>
 #endif
@@ -7,14 +8,19 @@
 static int EditorMain(int argc, char** argv)
 {
     QApplication app(argc, argv);
+    QDesktopWidget desktop;
+    QRect screenRect = desktop.screenGeometry();
+    int width = static_cast<int>(screenRect.width() * 0.8);
+    int height = static_cast<int>(screenRect.height() * 0.8);
+#ifdef WIN32
+#undef min
+#endif
+    width = std::min(width, 800);
+    height = std::min(height, 600);
 
     using namespace WishingQt;
     QCreatorWindow wnd;
-#ifdef WIN32
-    wnd.resize(800, 600);
-#else
-    wnd.resize(600, 400);
-#endif
+    wnd.resize(width, height);
     wnd.show();
     return app.exec();
 }

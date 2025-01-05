@@ -4,15 +4,12 @@
 #include "Niflect/Util/StringUtil.h"
 #include "QBoxLayout"
 #include "Widget/Util/CoreUtil.h"
-#include "Base/UuidGen.h"
 
 namespace WishingQt
 {
 	QContentView::QContentView(QWidget* parentWidget)
 		: inherited(parentWidget)
 	{
-		Wishing::_Test_CUuid();
-
 		auto mainLayout = new QVBoxLayout(this);
 		m_tree = new QTreeWidget(this);
 		mainLayout->addWidget(m_tree);

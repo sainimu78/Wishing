@@ -3,7 +3,7 @@
 
 namespace Wishing
 {
-	class CContentFileSystem
+	class CContentFileManager
 	{
 	public:
 		CContentNode* GetRootNode();
@@ -13,7 +13,7 @@ namespace Wishing
 		void DeleteNode(uint32 idx);
 
 	private:
-		Niflect::TArrayNif<CSharedContentNode> m_vecContentNode;
+		Niflect::TArray<CSharedContentNode> m_vecContentNode;
 		CContentNode m_rootNode;
 	};
 }
