@@ -7,11 +7,10 @@ namespace Wishing
 	{
 
 	}
-	void CContentNode::Init(const Niflect::CString& name, CContentNode* parentNode)
-	{
-		this->SetName(name);
-		this->SetParentNode(parentNode);
-	}
+	//void CContentNode::InitGlobalId(const CSharedUuid& globalId)
+	//{
+	//	m_globalId = globalId;
+	//}
 	void CContentNode::SetName(const Niflect::CString& name)
 	{
 		m_name = name;

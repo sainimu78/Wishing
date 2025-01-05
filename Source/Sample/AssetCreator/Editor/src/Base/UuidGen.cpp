@@ -115,24 +115,6 @@ namespace boost
 
 namespace Wishing
 {
-	CSharedUuid CreateUuid()
-	{
-		boost::uuids::random_generator gen;
-		return Niflect::MakeShared<boost::uuids::uuid>(gen());
-	}
-	Niflect::CString ConvertUuidToString(const CSharedUuid& id)
-	{
-		if(id != NULL)
-			return boost::lexical_cast<Niflect::CString>(*id);
-		return Niflect::CString();
-	}
-	CSharedUuid ConvertStringToUuid(const Niflect::CString& str)
-	{
-		auto u = Niflect::MakeShared<boost::uuids::uuid>();
-		Niflect::CStringStream ss(str);
-		boost::uuids::fromStringStream(ss, *u);
-		return u;
-	}
 	static void MyBytesToHexString(const void* data, size_t bytes, char* str)
 	{
 		static const char kHexToLiteral[16] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
@@ -149,39 +131,164 @@ namespace Wishing
 		result.resize(numBytes * 2);
 		MyBytesToHexString(data, numBytes, &result[0]);
 	}
-	size_t GetUuidHash(const CSharedUuid& id)
+	CUuid::CUuid()
+		: m_data{}
 	{
-		return boost::uuids::hash_value(*id);
 	}
-	Niflect::CString GetUuidHex(const CSharedUuid& id)
+	CUuid::CUuid(const Niflect::CString& str)
 	{
-		size_t shortId = GetUuidHash(id);
+		this->FromString(str);
+	}
+	static boost::uuids::uuid& CastRef(CUuid* p)
+	{
+		return *reinterpret_cast<boost::uuids::uuid*>(p);
+	}
+	static const boost::uuids::uuid& CastRef(const CUuid* p)
+	{
+		return *reinterpret_cast<const boost::uuids::uuid*>(p);
+	}
+	void CUuid::FromString(const Niflect::CString& str)
+	{
+		Niflect::CStringStream ss(str);
+		boost::uuids::fromStringStream(ss, CastRef(this));
+	}
+	Niflect::CString CUuid::ToString() const
+	{
+		return boost::lexical_cast<Niflect::CString>(CastRef(this));
+	}
+	size_t CUuid::GetHash() const
+	{
+		return boost::uuids::hash_value(CastRef(this));
+	}
+	Niflect::CString CUuid::GetHexString() const
+	{
+		size_t shortId = this->GetHash();
 		Niflect::CString strHex;
 		MyBytesToHexString(&shortId, sizeof(size_t), strHex);
 		return strHex;
 	}
-	bool IsUuidValid(const CSharedUuid& id)
+	bool CUuid::IsValid() const
 	{
-		if (id != NULL)
-			return !id->is_nil();
-		return false;
+		return !CastRef(this).is_nil();
 	}
-	bool CompareUuidsEqual(const CSharedUuid& lhs, const CSharedUuid& rhs)
+	CUuid CUuid::Generate()
 	{
-		if (!lhs && !rhs)
-			return true;
-		if (!lhs || !rhs)
-			return false;
-		return *lhs == *rhs;
+		boost::uuids::random_generator gen;
+		auto raw = gen();
+		CUuid u;
+		static_assert(sizeof(CUuid) == sizeof(boost::uuids::uuid), "asdf");
+		memcpy(&u, &raw, sizeof(CUuid));
+		return u;
 	}
-	bool CompareUuidsLess(const CSharedUuid& lhs, const CSharedUuid& rhs)
+	bool CUuid::operator==(const CUuid& rhs) const
 	{
-		if (lhs == NULL && rhs == NULL)
-			return false;
-		else if (lhs == NULL)
-			return true;
-		else if (rhs == NULL)
-			return false;
-		return *lhs < *rhs;
+		return CastRef(this) == CastRef(&rhs);
 	}
+	bool CUuid::operator!=(const CUuid& rhs) const
+	{
+		return CastRef(this) != CastRef(&rhs);
+	}
+	bool CUuid::operator<(const CUuid& rhs) const
+	{
+		return CastRef(this) < CastRef(&rhs);
+	}
+	void _Test_CUuid()
+	{
+		auto a = CUuid::Generate();
+		auto b = a.ToString();
+		CUuid c(b);
+		ASSERT(a == c);
+		printf("UUID: %s\n", b.c_str());
+
+		Niflect::TArray<Wishing::CUuid> array;
+		for (uint32 idx = 0; idx < 4096; ++idx)
+			array.push_back(Wishing::CUuid::Generate());
+		Niflect::TMap<Wishing::CUuid, float> map;
+		float val = 0.0f;
+		for (auto& it : array)
+		{
+			val += 1.0f;
+			map[it] = val;
+		}
+		float expected = 0.0f;
+		for (auto& it : array)
+		{
+			expected += 1.0f;
+			auto& val = map.at(it);
+			ASSERT(val == expected);
+		}
+	}
+}
+
+namespace Wishing
+{
+	//CSharedUuid CreateUuid()
+	//{
+	//	boost::uuids::random_generator gen;
+	//	return Niflect::MakeShared<boost::uuids::uuid>(gen());
+	//}
+	//Niflect::CString ConvertUuidToString(const CSharedUuid& id)
+	//{
+	//	if(id != NULL)
+	//		return boost::lexical_cast<Niflect::CString>(*id);
+	//	return Niflect::CString();
+	//}
+	//CSharedUuid ConvertStringToUuid(const Niflect::CString& str)
+	//{
+	//	auto u = Niflect::MakeShared<boost::uuids::uuid>();
+	//	Niflect::CStringStream ss(str);
+	//	boost::uuids::fromStringStream(ss, *u);
+	//	return u;
+	//}
+	//static void MyBytesToHexString(const void* data, size_t bytes, char* str)
+	//{
+	//	static const char kHexToLiteral[16] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
+	//	for (size_t i = 0; i < bytes; i++)
+	//	{
+	//		uint8_t b = ((uint8_t*)data)[i];
+	//		str[2 * i + 0] = kHexToLiteral[b >> 4];
+	//		str[2 * i + 1] = kHexToLiteral[b & 0xf];
+	//	}
+	//}
+	//template <typename TString>
+	//static void MyBytesToHexString(const void* data, size_t numBytes, TString& result)
+	//{
+	//	result.resize(numBytes * 2);
+	//	MyBytesToHexString(data, numBytes, &result[0]);
+	//}
+	//size_t GetUuidHash(const CSharedUuid& id)
+	//{
+	//	return boost::uuids::hash_value(*id);
+	//}
+	//Niflect::CString GetUuidHex(const CSharedUuid& id)
+	//{
+	//	size_t shortId = GetUuidHash(id);
+	//	Niflect::CString strHex;
+	//	MyBytesToHexString(&shortId, sizeof(size_t), strHex);
+	//	return strHex;
+	//}
+	//bool IsUuidValid(const CSharedUuid& id)
+	//{
+	//	if (id != NULL)
+	//		return !id->is_nil();
+	//	return false;
+	//}
+	//bool CompareUuidsEqual(const CSharedUuid& lhs, const CSharedUuid& rhs)
+	//{
+	//	if (!lhs && !rhs)
+	//		return true;
+	//	if (!lhs || !rhs)
+	//		return false;
+	//	return *lhs == *rhs;
+	//}
+	//bool CompareUuidsLess(const CSharedUuid& lhs, const CSharedUuid& rhs)
+	//{
+	//	if (lhs == NULL && rhs == NULL)
+	//		return false;
+	//	else if (lhs == NULL)
+	//		return true;
+	//	else if (rhs == NULL)
+	//		return false;
+	//	return *lhs < *rhs;
+	//}
 }

@@ -68,24 +68,54 @@
 
 #include "Niflect/NiflectBase.h"
 
-namespace boost
-{
-	namespace uuids
-	{
-		struct uuid;
-	}
-}
-
 namespace Wishing
 {
-	using CSharedUuid = Niflect::TSharedPtr<boost::uuids::uuid>;
+	class CUuid
+	{
+	public:
+		CUuid();
+		CUuid(const Niflect::CString& str);
 
-	CSharedUuid CreateUuid();
-	Niflect::CString ConvertUuidToString(const CSharedUuid& id);
-	CSharedUuid ConvertStringToUuid(const Niflect::CString& str);
-	size_t GetUuidHash(const CSharedUuid& id);
-	Niflect::CString GetUuidHex(const CSharedUuid& id);
-	bool IsUuidValid(const CSharedUuid& id);
-	bool CompareUuidsEqual(const CSharedUuid& lhs, const CSharedUuid& rhs);
-	bool CompareUuidsLess(const CSharedUuid& lhs, const CSharedUuid& rhs);
+	public:
+		void FromString(const Niflect::CString& str);
+		Niflect::CString ToString() const;
+		size_t GetHash() const;
+		Niflect::CString GetHexString() const;
+		bool IsValid() const;
+
+	public:
+		static CUuid Generate();
+
+	public:
+		bool operator==(const CUuid& rhs) const;
+		bool operator!=(const CUuid& rhs) const;
+		bool operator<(const CUuid& rhs) const;
+
+	private:
+		uint8 m_data[16];
+	};
+
+	void _Test_CUuid();
 }
+
+//namespace boost
+//{
+//	namespace uuids
+//	{
+//		struct uuid;
+//	}
+//}
+//
+//namespace Wishing
+//{
+//	using CSharedUuid = Niflect::TSharedPtr<boost::uuids::uuid>;
+//
+//	CSharedUuid CreateUuid();
+//	Niflect::CString ConvertUuidToString(const CSharedUuid& id);
+//	CSharedUuid ConvertStringToUuid(const Niflect::CString& str);
+//	size_t GetUuidHash(const CSharedUuid& id);
+//	Niflect::CString GetUuidHex(const CSharedUuid& id);
+//	bool IsUuidValid(const CSharedUuid& id);
+//	bool CompareUuidsEqual(const CSharedUuid& lhs, const CSharedUuid& rhs);
+//	bool CompareUuidsLess(const CSharedUuid& lhs, const CSharedUuid& rhs);
+//}

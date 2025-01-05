@@ -11,11 +11,7 @@ namespace WishingQt
 	QContentView::QContentView(QWidget* parentWidget)
 		: inherited(parentWidget)
 	{
-		auto a = Wishing::CreateUuid();
-		auto b = Wishing::ConvertUuidToString(a);
-		auto c = Wishing::ConvertStringToUuid(b);
-		ASSERT(Wishing::CompareUuidsEqual(a, c));
-		printf("UUID: %s\n", b.c_str());
+		Wishing::_Test_CUuid();
 
 		auto mainLayout = new QVBoxLayout(this);
 		m_tree = new QTreeWidget(this);
