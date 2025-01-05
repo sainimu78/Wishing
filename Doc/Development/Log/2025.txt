@@ -73,6 +73,6 @@
 2024.12.31, 五星, Linux 改写; 通过 VirtualBox 共享文件夹, sudo mount -t vboxsf sainimu78_Storage /mnt/Ubuntu_Storage, 发布到 Windows 上的 hfs 目录, 实现基本跨平台构建流程;
 2025.01.01, 五星, 改用 7z.exe; zip 打印处理进度; 整理 cmake; 测试构建; 着手改写 Wishing; 规范 cmake 变量命名, c_ 为全局常量, v_ 为局部变量; 封装 ImportShared.cmake 方便引用动态库
 2025.01.02, 五星, 修复未指定 NiflectGenTool 的 lib 路径; 修复 Setup 未改写; 修复 Setup 时未在一次执行过程中检查已下载的错误重复下载; TestEditorCLI 改写
-2025.01.03, 五星, AssetCreator Linux Build; 发现 cmake 的 include 行为在 Linux 下不同, 并不能按预期在使用位置展开代码使用位置前的变量; SampleProjectTemplate 改写; 整理平台脚本, 统一风格; SampleProjectTemplate 改写; 其它已改写的项目略调 cmake 的风格; SampleApp 增加 Niflect 使用示例; 发现Linux 下, 无法通过 ZipFileName 等非空检查的方式确定是否 Install, 因此改为另外的 ImportInstalledShared.cmake
+2025.01.03, 五星, AssetCreator Linux Build; 发现 cmake 的 include 行为在 Linux 下不同, 并不能按预期在使用位置展开代码使用位置前的变量; SampleProjectTemplate 改写; 整理平台脚本, 统一风格; SampleProjectTemplate 改写; 其它已改写的项目略调 cmake 的风格; SampleApp 增加 Niflect 使用示例; 发现Linux 下, 无法通过 ZipFileName 等非空检查的方式确定是否 Install, 因此改为另外的 ImportLibInstalled.cmake
 2025.01.04, 五星, 迁移 sainimu78_Storage; 修复 Linux 的 Setup 重复执行的问题, 现无可行办法, 只能避免对单配置生成器(Unix Makefiles, Ninja)避免重复对不同构建配置执行 cmake; hfs 改用 VPN 地址, 借用 VPN 访问 Storage; 
 ?/2025.01.05, 五星, 

@@ -4,12 +4,19 @@
 #include "Niflect/Util/StringUtil.h"
 #include "QBoxLayout"
 #include "Widget/Util/CoreUtil.h"
+#include "Base/Uuid.h"
 
 namespace WishingQt
 {
 	QContentView::QContentView(QWidget* parentWidget)
 		: inherited(parentWidget)
 	{
+		auto a = Wishing::CreateUuid();
+		auto b = Wishing::ConvertUuidToString(a);
+		auto c = Wishing::ConvertStringToUuid(b);
+		ASSERT(Wishing::CompareUuidsEqual(a, c));
+		printf("UUID: %s\n", b.c_str());
+
 		auto mainLayout = new QVBoxLayout(this);
 		m_tree = new QTreeWidget(this);
 		mainLayout->addWidget(m_tree);

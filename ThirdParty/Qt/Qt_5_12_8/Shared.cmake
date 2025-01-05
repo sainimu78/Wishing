@@ -1,11 +1,11 @@
 set(QtRootDirPath /usr)
 set(QtIncludeRootDirPath ${QtRootDirPath}/include/x86_64-linux-gnu/qt5)
-list(APPEND v_ListLibIncludeDirPath ${QtIncludeRootDirPath})
+list(APPEND v_ListLibIncludeDirPathPrivate ${QtIncludeRootDirPath})
 
 include(${c_RootThirdPartyDirPath}/Qt/Qt_5_x/Deps.cmake)
 
 foreach(It ${QtIncludeDirNames})
-    list(APPEND v_ListLibIncludeDirPath ${QtIncludeRootDirPath}/${It})
+    list(APPEND v_ListLibIncludeDirPathPrivate ${QtIncludeRootDirPath}/${It})
 endforeach()
 foreach(It ${QtLibFileNames})
 	list(APPEND v_ListImportedLibFileName ${It})
@@ -14,7 +14,7 @@ set(QtLibRootDirPath ${QtRootDirPath}/lib/x86_64-linux-gnu)
 set(v_InstalledLibDirPathDebug ${QtLibRootDirPath})
 set(v_InstalledLibDirPathRelease ${QtLibRootDirPath})
 
-include(${c_RootCMakeDirPath}/ImportInstalledShared.cmake)
+include(${c_RootCMakeDirPath}/ImportLibInstalled.cmake)
 
 
 #add_library(Qt_5_12_8 SHARED IMPORTED)

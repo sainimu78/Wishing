@@ -47,6 +47,7 @@ list(APPEND v_ListModuleHeaderFilePath ${ModuleHeaders})
 include(${c_RootProjectDirPath}/Niflect/Default.cmake)
 
 include(Licensed_Qt.cmake)
+include(Licensed_boost.cmake)
 
 include(${c_ProjectDirPath}/Install.cmake)
 
