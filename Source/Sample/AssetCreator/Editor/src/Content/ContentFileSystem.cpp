@@ -2,12 +2,17 @@
 
 namespace Wishing
 {
-	CContentNode* CContentFileSystem::InsertNode(CContentNode* parent, const Niflect::CString& name, bool isDir)
+	CContentNode* CContentFileSystem::GetRootNode()
 	{
-		return NULL;
+		return &m_rootNode;
 	}
-	void CContentFileSystem::DeleteNode(CContentNode* node)
+	bool CContentFileSystem::InsertNode(const CSharedContentNode& node, uint32 idx)
 	{
-
+		m_vecContentNode.insert(m_vecContentNode.begin() + idx, node);
+		return true;
+	}
+	void CContentFileSystem::DeleteNode(uint32 idx)
+	{
+		m_vecContentNode.erase(m_vecContentNode.begin() + idx);
 	}
 }

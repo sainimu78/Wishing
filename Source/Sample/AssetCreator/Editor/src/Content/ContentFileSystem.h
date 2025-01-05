@@ -6,8 +6,11 @@ namespace Wishing
 	class CContentFileSystem
 	{
 	public:
-		CContentNode* InsertNode(CContentNode* parent, const Niflect::CString& name, bool isDir);
-		void DeleteNode(CContentNode* node);
+		CContentNode* GetRootNode();
+
+	public:
+		bool InsertNode(const CSharedContentNode& node, uint32 idx);
+		void DeleteNode(uint32 idx);
 
 	private:
 		Niflect::TArrayNif<CSharedContentNode> m_vecContentNode;
