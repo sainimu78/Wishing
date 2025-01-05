@@ -4,7 +4,7 @@
 #include "Niflect/Util/StringUtil.h"
 #include "QBoxLayout"
 #include "Widget/Util/CoreUtil.h"
-#include "Base/Uuid.h"
+#include "Base/UuidGen.h"
 
 namespace WishingQt
 {
