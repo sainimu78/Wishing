@@ -1,6 +1,6 @@
 #pragma once
 #include "Niflect/NiflectBase.h"
-//#include "Base/UuidGen.h"
+#include "Base/UuidGen.h"
 
 namespace Wishing
 {
@@ -10,7 +10,7 @@ namespace Wishing
 		CContentNode();
 
 	public:
-		//void InitGlobalId(const CSharedUuid& globalId);
+		void InitGlobalId(const CUuid& globalId);
 
 	public:
 		const Niflect::CString& GetName() const;
@@ -24,7 +24,7 @@ namespace Wishing
 	private:
 		Niflect::CString m_name;
 		CContentNode* m_parentNode;
-		//CSharedUuid m_globalId;
+		CUuid m_globalId;
 	};
 	using CSharedContentNode = Niflect::TSharedPtr<CContentNode>;
 }
