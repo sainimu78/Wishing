@@ -57,7 +57,6 @@ int main(int argc, char** argv)
 #endif
 
 
-#include "boost/chrono.hpp"
 #include <iostream>
 
 class CMy
@@ -65,30 +64,52 @@ class CMy
 public:
     CMy()
     {
-        this->Test();
-    }
-    int Test()
-    {
 #ifdef WIN32
         AllocConsole();
         freopen("CONOUT$", "w", stdout);
 #endif
-        // 开始计时
-        auto start = boost::chrono::high_resolution_clock::now();
-
-        // 模拟一些计算工作
-        for (volatile int i = 0; i < 100000000; ++i) {
-            // 这里什么也不做，只是耗时
-        }
-
-        // 结束计时
-        auto end = boost::chrono::high_resolution_clock::now();
-
-        // 计算所花费的时间
-        boost::chrono::duration<double> elapsed = end - start;
-        std::cout << "Operation took: " << elapsed.count() << " seconds." << std::endl;
-
-        return 0;
+        this->Test0();
+        this->Test1();
     }
+    int Test0();
+    int Test1();
 };
+
+//#include "boost/filesystem.hpp"
+int CMy::Test0()
+{
+    //// 要检查的目录路径
+    //boost::filesystem::path dir("../");
+
+    //// 检查目录是否存在
+    //if (boost::filesystem::exists(dir)) {
+    //    std::cout << "目录存在！" << std::endl;
+    //}
+    //else {
+    //    std::cout << "目录不存在！" << std::endl;
+    //}
+
+    return 0;
+}
+
+#include "boost/chrono.hpp"
+int CMy::Test1()
+{
+    // 开始计时
+    auto start = boost::chrono::high_resolution_clock::now();
+
+    // 模拟一些计算工作
+    for (volatile int i = 0; i < 100000000; ++i) {
+        // 这里什么也不做，只是耗时
+    }
+
+    // 结束计时
+    auto end = boost::chrono::high_resolution_clock::now();
+
+    // 计算所花费的时间
+    boost::chrono::duration<double> elapsed = end - start;
+    std::cout << "Operation took: " << elapsed.count() << " seconds." << std::endl;
+
+    return 0;
+}
 static CMy g_a;
