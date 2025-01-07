@@ -38,7 +38,13 @@ b2 address-model=64 variant=release link=shared runtime-link=shared threading=mu
 
 ## Ubuntu
 
+```
+cd boost_1_73_0
 
+./bootstrap.sh gcc
+
+./b2 address-model=64 link=static runtime-link=shared threading=multi --prefix=../Installed stage install
+```
 
 ## 安装
 
