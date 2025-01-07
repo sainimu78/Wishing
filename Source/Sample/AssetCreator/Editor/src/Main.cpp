@@ -55,3 +55,40 @@ int main(int argc, char** argv)
     return EditorMain(argc, argv);
 }
 #endif
+
+
+#include "boost/chrono.hpp"
+#include <iostream>
+
+class CMy
+{
+public:
+    CMy()
+    {
+        this->Test();
+    }
+    int Test()
+    {
+#ifdef WIN32
+        AllocConsole();
+        freopen("CONOUT$", "w", stdout);
+#endif
+        // 开始计时
+        auto start = boost::chrono::high_resolution_clock::now();
+
+        // 模拟一些计算工作
+        for (volatile int i = 0; i < 100000000; ++i) {
+            // 这里什么也不做，只是耗时
+        }
+
+        // 结束计时
+        auto end = boost::chrono::high_resolution_clock::now();
+
+        // 计算所花费的时间
+        boost::chrono::duration<double> elapsed = end - start;
+        std::cout << "Operation took: " << elapsed.count() << " seconds." << std::endl;
+
+        return 0;
+    }
+};
+static CMy g_a;

@@ -1,1 +1,1 @@
-include(${c_RootThirdPartyDirPath}/boost/boost_1_73_0/HeaderOnly.cmake)
+include(${c_RootThirdPartyDirPath}/boost/boost_1_73_0/Static.cmake)
