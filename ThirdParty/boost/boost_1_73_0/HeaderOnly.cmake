@@ -5,6 +5,6 @@ set(v_UnzippedDirPath ${v_ImportedLibRootDirPath}/${ImportedLibName})
 set(v_ZipFileName ${ImportedLibName}.zip)
 set(v_SrcAddrZipFilePath ${c_StorageAddrPath}/ThirdParty/boost/${v_ZipFileName})
 
-list(APPEND v_ListLibIncludeDirPathPrivate ${v_UnzippedDirPath})
+list(APPEND v_ListLibIncludeDirPathPrivate ${v_UnzippedDirPath}/include/boost-1_73)
 
 include(${c_RootCMakeDirPath}/ImportLibDownloaded.cmake)

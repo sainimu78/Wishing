@@ -1,3 +1,8 @@
+#ifdef WIN32
+//对于 boost 1.73, 如果链接了 boost 的一些静态库, 如 chrono, 不定义此宏则出现关于 bcrypt 的链接错误, 如不希望定义此宏, 将所有实现移到头文件即可
+#define BOOST_UUID_FORCE_AUTO_LINK
+#endif
+
 #include "Base/UuidGen.h"
 #include "boost/uuid/uuid.hpp"
 #include <boost/lexical_cast.hpp>
