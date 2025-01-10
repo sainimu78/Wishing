@@ -1,80 +1,90 @@
+#ifdef WIN32
+//对于 boost 1.73, 如果链接了 boost 的一些静态库, 如 chrono, 不定义此宏则出现关于 bcrypt 的链接错误, 如不希望定义此宏
+//1. 将所有实现移到头文件
+//2. cmake 中指定链接
+//	if (MSVC)
+//		target_link_libraries(${ModuleName} PRIVATE BCrypt)
+//	endif()
+#define BOOST_UUID_FORCE_AUTO_LINK
+#endif
+
 #include "Base/UuidGen.h"
 #include "boost/uuid/uuid.hpp"
 #include <boost/lexical_cast.hpp>
 #include <boost/uuid/random_generator.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
-//namespace boost
-//{
-//	namespace uuids
-//	{
-//		//修复boost/uuid/uuid_io.hpp:operator>>出警告被视为错误
-//		template <typename ch, typename char_traits>
-//		static std::basic_istream<ch, char_traits>& fromStringStream(std::basic_istream<ch, char_traits>& is, uuid& u)
-//		{
-//			const typename std::basic_istream<ch, char_traits>::sentry ok(is);
-//			if (ok) {
-//				unsigned char data[16];
-//
-//				typedef std::ctype<ch> ctype_t;
-//				ctype_t const& ctype = std::use_facet<ctype_t>(is.getloc());
-//
-//				ch xdigits[16];
-//				{
-//					char szdigits[] = "0123456789ABCDEF";
-//					ctype.widen(szdigits, szdigits + 16, xdigits);
-//				}
-//				ch* const xdigits_end = xdigits + 16;
-//
-//				ch c;
-//				for (std::size_t i = 0; i < u.size() && is; ++i) {
-//					is >> c;
-//					c = ctype.toupper(c);
-//
-//					ch* f = std::find(xdigits, xdigits_end, c);
-//					if (f == xdigits_end) {
-//						is.setstate(std::ios_base::failbit);
-//						break;
-//					}
-//
-//					unsigned char byte = static_cast<unsigned char>(std::distance(&xdigits[0], f));
-//
-//					is >> c;
-//					c = ctype.toupper(c);
-//					f = std::find(xdigits, xdigits_end, c);
-//					if (f == xdigits_end) {
-//						is.setstate(std::ios_base::failbit);
-//						break;
-//					}
-//
-//					byte <<= 4;
-//					byte |= static_cast<unsigned char>(std::distance(&xdigits[0], f));
-//
-//					data[i] = byte;
-//
-//					if (is) {
-//						if (i == 3 || i == 5 || i == 7 || i == 9) {
-//							is >> c;
-//							if (c != is.widen('-')) is.setstate(std::ios_base::failbit);
-//						}
-//					}
-//				}
-//
-//				if (is) {
-//					std::copy(data, data + 16, u.data);
-//				}
-//			}
-//			return is;
-//		}
-//		static uuid fromString(const std::string& str)
-//		{
-//			uuid u;
-//			std::stringstream ss(str);
-//			boost::uuids::fromStringStream(ss, u);
-//			return u;
-//		}
-//	}
-//}
+namespace boost
+{
+	namespace uuids
+	{
+		//DT?′boost/uuid/uuid_io.hpp:operator>>3??ˉ??±?êó?a′í?ó
+		template <typename ch, typename char_traits>
+		static std::basic_istream<ch, char_traits>& fromStringStream(std::basic_istream<ch, char_traits>& is, uuid& u)
+		{
+			const typename std::basic_istream<ch, char_traits>::sentry ok(is);
+			if (ok) {
+				unsigned char data[16];
+
+				typedef std::ctype<ch> ctype_t;
+				ctype_t const& ctype = std::use_facet<ctype_t>(is.getloc());
+
+				ch xdigits[16];
+				{
+					char szdigits[] = "0123456789ABCDEF";
+					ctype.widen(szdigits, szdigits + 16, xdigits);
+				}
+				ch* const xdigits_end = xdigits + 16;
+
+				ch c;
+				for (std::size_t i = 0; i < u.size() && is; ++i) {
+					is >> c;
+					c = ctype.toupper(c);
+
+					ch* f = std::find(xdigits, xdigits_end, c);
+					if (f == xdigits_end) {
+						is.setstate(std::ios_base::failbit);
+						break;
+					}
+
+					unsigned char byte = static_cast<unsigned char>(std::distance(&xdigits[0], f));
+
+					is >> c;
+					c = ctype.toupper(c);
+					f = std::find(xdigits, xdigits_end, c);
+					if (f == xdigits_end) {
+						is.setstate(std::ios_base::failbit);
+						break;
+					}
+
+					byte <<= 4;
+					byte |= static_cast<unsigned char>(std::distance(&xdigits[0], f));
+
+					data[i] = byte;
+
+					if (is) {
+						if (i == 3 || i == 5 || i == 7 || i == 9) {
+							is >> c;
+							if (c != is.widen('-')) is.setstate(std::ios_base::failbit);
+						}
+					}
+				}
+
+				if (is) {
+					std::copy(data, data + 16, u.data);
+				}
+			}
+			return is;
+		}
+		static uuid fromString(const std::string& str)
+		{
+			uuid u;
+			std::stringstream ss(str);
+			boost::uuids::fromStringStream(ss, u);
+			return u;
+		}
+	}
+}
 
 namespace Wishing
 {
@@ -112,12 +122,8 @@ namespace Wishing
 	}
 	void CUuid::FromString(const Niflect::CString& str)
 	{
-		//Niflect::CStringStream ss(str);
-		//boost::uuids::fromStringStream(ss, CastRef(this));
-
-		boost::uuids::uuid u;
 		Niflect::CStringStream ss(str);
-		ss >> CastRef(this);
+		boost::uuids::fromStringStream(ss, CastRef(this));
 	}
 	Niflect::CString CUuid::ToString() const
 	{

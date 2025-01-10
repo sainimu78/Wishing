@@ -1,7 +1,6 @@
 #include "QApplication"
 #include "Widget/Creator/CreatorWindow.h"
-#include "QScreen"
-#include "Base/UuidGen.h"
+#include "QDesktopWidget"
 #ifdef WIN32
 #include <Windows.h>
 #endif
@@ -9,8 +8,8 @@
 static int EditorMain(int argc, char** argv)
 {
     QApplication app(argc, argv);
-    QScreen* screen = QGuiApplication::primaryScreen();
-    QRect screenRect = screen->geometry();
+    QDesktopWidget desktop;
+    QRect screenRect = desktop.screenGeometry();
     int width = static_cast<int>(screenRect.width() * 0.8);
     int height = static_cast<int>(screenRect.height() * 0.8);
 #ifdef WIN32
@@ -69,8 +68,6 @@ public:
         AllocConsole();
         freopen("CONOUT$", "w", stdout);
 #endif
-        Wishing::_Test_CUuid();
-
         this->Test0();
         this->Test1();
     }
