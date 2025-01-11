@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.30) # 3.30 如指定低于 3.30, 将出现 find_package(Boost 相关的提示
+cmake_minimum_required(VERSION 3.20) # 3.30 如指定低于 3.30, 将出现 find_package(Boost 相关的提示
 
 set(BoostVersion boost_1_73_0)
 set(ImportedLibName ${BoostVersion}_partial)
@@ -10,7 +10,7 @@ set(v_SrcAddrZipFilePath ${c_StorageAddrPath}/ThirdParty/boost/${c_ProjectPlatfo
 include(${c_RootCMakeDirPath}/InlineDownloadAndUnzip.cmake)
 
 # 设置 Boost 的安装路径
-set(BOOST_ROOT "${v_UnzippedDirPath}")  # 替换成你的 Boost 安装路径
+set(Boost_ROOT "${v_UnzippedDirPath}")  # 替换成你的 Boost 安装路径
 #set(BOOST_ROOT "I:/F/Fts/Proj/Test/Wishing/ThirdParty/boost/boost_1_73_0/boost_1_73_0_partial")
 
 #set(Boost_USE_STATIC_LIBS OFF) # 测试用的构建版本为动态库, 因此须指定该标志 OFF
