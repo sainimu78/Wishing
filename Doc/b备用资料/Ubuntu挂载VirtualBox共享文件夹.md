@@ -3,6 +3,9 @@ VirtualBox 设置的共享文件夹名为 `SharedFolder`
 ```
 sudo mkdir /mnt/Ubuntu_Storage
 sudo mount -t vboxsf sainimu78_Storage /mnt/Ubuntu_Storage
+
+mkdir ~/Ubuntu_Storage
+sudo mount -t vboxsf sainimu78_Storage ~/Ubuntu_Storage
 ```
 
 
