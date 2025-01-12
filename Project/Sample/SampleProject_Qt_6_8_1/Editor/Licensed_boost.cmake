@@ -1,0 +1,1 @@
+include(${c_RootThirdPartyDirPath}/boost/boost_1_87_0/Static.cmake)
