@@ -1,5 +1,3 @@
-cmake_minimum_required(VERSION 3.20.0)
-
 set(ModuleName TestModule0)
 
 set(SourcePath ${c_RootSourceDirPath}/${ModuleName})
