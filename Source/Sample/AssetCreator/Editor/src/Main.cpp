@@ -1,6 +1,6 @@
 #include "QApplication"
 #include "Widget/Creator/CreatorWindow.h"
-#include "QScreen"
+#include "QDesktopWidget"
 #include "Base/UuidGen.h"
 #ifdef WIN32
 #include <Windows.h>
@@ -9,8 +9,8 @@
 static int EditorMain(int argc, char** argv)
 {
     QApplication app(argc, argv);
-    QScreen* screen = QGuiApplication::primaryScreen();
-    QRect screenRect = screen->geometry();
+    QDesktopWidget desktop;
+    QRect screenRect = desktop.screenGeometry();
     int width = static_cast<int>(screenRect.width() * 0.8);
     int height = static_cast<int>(screenRect.height() * 0.8);
 #ifdef WIN32

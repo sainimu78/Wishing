@@ -10,9 +10,6 @@ include(${c_RootCMakeDirPath}/ProjectBegin.cmake)
 project(${c_ProjectName})
 include(${c_RootCMakeDirPath}/ProjectEnd.cmake)
 
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
 if(MSVC)
     set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT Editor)
 endif()

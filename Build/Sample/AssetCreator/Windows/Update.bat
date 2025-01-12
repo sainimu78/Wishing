@@ -6,8 +6,7 @@ set OldDirPath=%cd%
 
 mkdir %BuildDirPath%
 cd %BuildDirPath%
-::-T v140 is required for Qt 5.8.0
-cmake %ProjectDirPath% -DCMAKE_INSTALL_PREFIX=%InstallPrefix% -DPROJECT_SETUP=OFF -DPROJECT_RELEASE=OFF
+cmake %ProjectDirPath% -DCMAKE_INSTALL_PREFIX=%InstallPrefix% -DPROJECT_SETUP=OFF -DPROJECT_RELEASE=OFF -T v140
 if %ERRORLEVEL% neq 0 (
     echo "### cmake generating failed ###"
     pause
