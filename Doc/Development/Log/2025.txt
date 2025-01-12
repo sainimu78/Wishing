@@ -78,4 +78,5 @@
 2025.01.05, 五星, 接 boost 1.73; 移植旧 boost 的 uuid 封装, 可生成 UUID; 准备接 boost, 构建实验, 见 I:\F\Fts\Proj\Test\boost_zipeed\README.txt; cmake 接入实验, cmake 对 boost 有专门的支持, 通过 b2 ... install 后, 即可方便地接入 cmake 项目;
 2025.01.07, 五星, boost 构建步骤整理; 改用 Qt 6.8.1 完整源码构建实验, 可行, 见 Test\Qt\README.md; Ubuntu 接 boost 定时器测试; 生成内容相同不写入; 为 Qt 6.8.1 改用 C++ 17, 另 boost 1.87;
 2025.01.09, 五星, 原用 Qt 5.8.0 的项目改为 SampleProject_Qt_5_8_0 备用; Ubuntu 20 构建 Qt 6.8.1 失败, 无法构建出 libqxcb
-?/2025.01.10, 五星, Ubuntu 22, 24 安装, 发现 24 无法再直接使用 Virtual Box 的增强功能, 22 可安装, 但安装后出现不能再启动的问题; 改用 cmake 3.28, 相应改 boost 接入 cmake, 避免警告; 
+2025.01.10, 五星, Ubuntu 22, 24 安装, 发现 24 无法再直接使用 Virtual Box 的增强功能, 22 可安装, 但安装后出现不能再启动的问题; 改用 cmake 3.28, 相应改 boost 接入 cmake, 避免警告; Qt6 构建实验, 解决不能生成 libqxcb 问题, 但生成后, 运行仍提示失败, libQt6XcbQpa含未定义符号, 可能还是有依赖缺少导致; 
+4/2025.01.11, 五星, 最后安装 qt5-default 环境后, 可解决 libQt6XcbQpa Undefined symbol问题, 但运行后字体错误, 找不到如何正确部署的方法, 放弃自行构建, 另总结可能可行的构建方法, 见 F:\sainimu78_Storage\ThirdParty\Qt\Source\Qt_6_8_1\README.md; 
