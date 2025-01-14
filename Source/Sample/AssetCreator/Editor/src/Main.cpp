@@ -1,7 +1,9 @@
 #include "QApplication"
 #include "Widget/Creator/CreatorWindow.h"
 #include "QDesktopWidget"
-#include "Base/UuidGen.h"
+#include "Base/UuidGen.h"//≤‚ ‘”√
+#include "Creator/CreatorSystem.h"
+
 #ifdef WIN32
 #include <Windows.h>
 #endif
@@ -18,6 +20,11 @@ static int EditorMain(int argc, char** argv)
 #endif
     width = std::min(width, 800);
     height = std::min(height, 600);
+
+    using namespace Wishing;
+    CCreatorSystem sys;
+    sys.Initialize();
+    sys.Start();
 
     using namespace WishingQt;
     QCreatorWindow wnd;
