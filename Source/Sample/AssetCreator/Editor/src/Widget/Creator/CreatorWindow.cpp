@@ -12,6 +12,7 @@ namespace WishingQt
 {
 	QCreatorWindow::QCreatorWindow(QWidget* parentWidget)
 		: inherited(parentWidget)
+		, m_sys(NULL)
 	{
 		auto wdgCentral = new QWidget(this);
 		this->setCentralWidget(wdgCentral);
@@ -34,6 +35,13 @@ namespace WishingQt
 			});
 		rightLayout->addWidget(btnDebug);
 
+		auto btnReloadScript = new QPushButton("Reload Script", this);
+		QObject::connect(btnReloadScript, &QPushButton::clicked, [this]()
+			{
+				m_sys->ReloadScript();
+			});
+		rightLayout->addWidget(btnReloadScript);
+
 		auto toolBar = this->addToolBar("Default");
 		auto actDebug = new QAction("Nihao");
 		QObject::connect(actDebug, &QAction::triggered, [this]()
@@ -41,5 +49,9 @@ namespace WishingQt
 				QToolTip::showText(QCursor::pos(), "nihao");
 			});
 		toolBar->addAction(actDebug);
+	}
+	void QCreatorWindow::Init(Wishing::CCreatorSystem* sys)
+	{
+		m_sys = sys;
 	}
 }

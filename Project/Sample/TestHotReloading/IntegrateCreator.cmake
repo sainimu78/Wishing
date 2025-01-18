@@ -8,4 +8,15 @@ if(MSVC)
 	set_target_properties(${ModuleName} PROPERTIES
 		VS_DEBUGGER_COMMAND "$<IF:$<CONFIG:Debug>,${ExeDirPathDebug}/${ExeFileName},${ExeDirPathRelease}/${ExeFileName}>"
 	)
+
+	get_filename_component(ProjectDirPath "../../../../Build/Sample/TestHotReloading" ABSOLUTE)
+	set(ListOptCreatorOption "")
+	list(APPEND ListOptCreatorOption "-p" ${ProjectDirPath})
+	set(OptCreatorOption "")
+	foreach(It IN LISTS ListOptCreatorOption)
+		set(OptCreatorOption "${OptCreatorOption} ${It}")
+	endforeach()
+	set_target_properties(${ModuleName} PROPERTIES
+		VS_DEBUGGER_COMMAND_ARGUMENTS "$<IF:$<CONFIG:Debug>,${OptCreatorOption},${OptCreatorOption}>"
+	)
 endif()

@@ -3,13 +3,62 @@
 #include "QDesktopWidget"
 #include "Base/UuidGen.h"//≤‚ ‘”√
 #include "Creator/CreatorSystem.h"
+#include "Niflect/Util/SystemUtil.h"
+#include "Creator/CreatorOption.h"
 
 #ifdef WIN32
 #include <Windows.h>
 #endif
 
+static Niflect::CString GetNextArgValue(const char* const* argv, int& idx)
+{
+	idx += 1;
+	Niflect::CString str;
+	auto& psz = argv[idx];
+	if (psz[0] == '\"')
+	{
+		str = &psz[1];
+		ASSERT(str.length() >= 2);
+		if (str.back() == '\"')
+			str.erase(str.begin() + str.length() - 1);
+		else
+			ASSERT(false);
+	}
+	else
+	{
+		str = psz;
+	}
+	return str;
+}
+static Niflect::CString GetNextArgPath(const char* const* argv, int& idx)
+{
+	auto path = GetNextArgValue(argv, idx);
+    std::replace(path.begin(), path.end(), '\\', '/');
+	return NiflectUtil::ResolvePath(path);
+}
+
+static void ParseOptions(int argc, const char* const* argv, Wishing::CCreatorOption& opt)
+{
+	ASSERT(argc > 1);
+	for (int idx = 1; idx < argc; ++idx)
+	{
+		auto& pszV = argv[idx];
+		if (strcmp(pszV, "-p") == 0)
+		{
+			opt.m_projectDirPath = GetNextArgPath(argv, idx);
+		}
+		else
+		{
+			LogInfo("Unknown option: %s\n", pszV);
+		}
+	}
+}
+
 static int EditorMain(int argc, char** argv)
 {
+    Wishing::CCreatorOption opt;
+    ParseOptions(argc, argv, opt);
+
     QApplication app(argc, argv);
     QDesktopWidget desktop;
     QRect screenRect = desktop.screenGeometry();
@@ -23,11 +72,12 @@ static int EditorMain(int argc, char** argv)
 
     using namespace Wishing;
     CCreatorSystem sys;
-    sys.Initialize();
+    sys.Initialize(opt);
     sys.Start();
 
     using namespace WishingQt;
     QCreatorWindow wnd;
+    wnd.Init(&sys);
     wnd.resize(width, height);
     wnd.show();
     return app.exec();
