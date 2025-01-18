@@ -39,3 +39,17 @@ include(${c_RootProjectDirPath}/Niflect/Default.cmake)
 
 include(${c_ProjectDirPath}/Install.cmake)
 include(${c_ProjectDirPath}/IntegrateCreator.cmake)
+
+#if(WIN32)
+#	file(GLOB_RECURSE HotReloadingCounterFilePath "${CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG}/*.hot_reloading_counter")
+#	if(EXISTS "${HotReloadingCounterFilePath}")
+#		get_filename_component(Counter "${HotReloadingCounterFilePath}" NAME_WE)
+#		set(OutputFileName ${ModuleName}_${Counter})
+#		message("ssssssssssssssssssssssssss ${OutputFileName}")
+#		set_target_properties(${ModuleName} PROPERTIES
+#			OUTPUT_NAME ${OutputFileName}
+#			SUFFIX ".dll"
+#			PDB_NAME ${OutputFileName}
+#		)
+#	endif()
+#endif()

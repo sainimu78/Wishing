@@ -2,6 +2,5 @@
 
 void CPanel::Execute()
 {
-	printf("shima\n");
-	printf("zhende\n");
+	printf("nihao\n");
 }

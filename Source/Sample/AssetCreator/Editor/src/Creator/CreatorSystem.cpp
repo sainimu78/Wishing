@@ -88,7 +88,7 @@ namespace Wishing
 		//if (m_loadingCounter > 0)
 		//{
 		//	auto fileExt = NiflectUtil::GetFileExt(moduleFilePath);
-		//	moduleFilePath = NiflectUtil::ReplaceFilePathExt(moduleFilePath, fileExt, NiflectUtil::FormatString(".%u%s", m_loadingCounter, fileExt.c_str()));
+		//	moduleFilePath = NiflectUtil::ReplaceFilePathExt(moduleFilePath, fileExt, NiflectUtil::FormatString("_%u%s", m_loadingCounter, fileExt.c_str()));
 		//}
 		//printf("Try to load: %s\n", moduleFilePath.c_str());
 
