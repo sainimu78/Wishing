@@ -1,4 +1,3 @@
-# 五星引擎(Wishing Engine)
+# Wishing Engine (五星引擎)
 
-Wishing is a content editor engine project.
-
+Wishing Engine is a content editor project.
