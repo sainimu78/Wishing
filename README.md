@@ -29,7 +29,7 @@ Content-editing products often share some common systems and functionalities, wh
 - Cooking pipeline for edited content
   - "Cooking" refers to the process of converting content files into a simpler and more compact data format.
   - This is used to improve the loading and serialization efficiency of runtime applications.
-- Modification and validation update processes after editing instance properties
+- Modification and validation update processes after editing contents or instance properties
 - Collaborative content editing for multiple users
 
 As a result, Wishing Engine aims to standardize the development process for content-editing products.
