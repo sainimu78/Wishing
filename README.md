@@ -18,8 +18,7 @@ Wishing Engine is a framework for developing content editors
 # Expected Application Cases
 
 - Game Development Workflow
-- Computer Vision Applications
-- Presentations (PPT)
+- Presentations (PPT) based on Next-Gen Resource Management Solutions
 - Video or Image Post-Processing Applications
 
 # R&D Goals
