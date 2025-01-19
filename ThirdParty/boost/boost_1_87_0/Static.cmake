@@ -30,8 +30,8 @@ else()
 endif()
 
 #begin, Required
-set(v_ImportedLibRootDirPath "")
-set(v_ZipFileName "")
-set(v_SrcAddrZipFilePath "")
-set(v_UnzippedDirPath "")
+unset(v_ImportedLibRootDirPath)
+unset(v_ZipFileName)
+unset(v_SrcAddrZipFilePath)
+unset(v_UnzippedDirPath)
 #end
