@@ -2,7 +2,7 @@
 
 # Wishing Engine
 
-Wishing Engine is a content editor.
+Wishing Engine is a framework for developing content editors
 
 # Features
 
