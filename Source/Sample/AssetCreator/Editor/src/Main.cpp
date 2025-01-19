@@ -49,7 +49,7 @@ static void ParseOptions(int argc, const char* const* argv, Wishing::CCreatorOpt
 		}
 		else
 		{
-			LogInfo("Unknown option: %s\n", pszV);
+			printf("Unknown option: %s\n", pszV);
 		}
 	}
 }
