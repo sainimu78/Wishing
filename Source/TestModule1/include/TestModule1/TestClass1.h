@@ -98,7 +98,7 @@ namespace TestModule1
 	enum class ETestEnum0
 	{
 		MyDefault NIF_C(),
-		Option0 NIF_C(CMyEnumConstNata().SetOptionName("Nihao opt 0")),
+		Option0 NIF_C(CMyEnumConstNata().SetOptionName("ÄãºÃ")),
 		Option1,
 		Option2 NIF_C(),
 	};
