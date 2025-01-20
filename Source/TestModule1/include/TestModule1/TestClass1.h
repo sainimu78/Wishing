@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "TestModule1/TestClass1_gen.h"
 
 namespace TestModule1
@@ -98,7 +98,7 @@ namespace TestModule1
 	enum class ETestEnum0
 	{
 		MyDefault NIF_C(),
-		Option0 NIF_C(CMyEnumConstNata().SetOptionName("ÄãºÃ")),
+		Option0 NIF_C(CMyEnumConstNata().SetOptionName("ä½ å¥½")),
 		Option1,
 		Option2 NIF_C(),
 	};
@@ -118,7 +118,7 @@ namespace TestModule1
 		{
 
 		}
-		~CTestClass1()//²»ÓÃvirtual, ÓÃÓÚÑéÖ¤ÊÇ·ñÕıÈ·Ê¹ÓÃ±¾ÀàĞÍµÄÎö¹¹
+		~CTestClass1()//ä¸ç”¨virtual, ç”¨äºéªŒè¯æ˜¯å¦æ­£ç¡®ä½¿ç”¨æœ¬ç±»å‹çš„ææ„
 		{
 
 		}
