@@ -16,14 +16,14 @@ set(BOOST_ROOT "${v_UnzippedDirPath}")  # 替换成你的 Boost 安装路径
 # 查找 Boost 库
 find_package(Boost 1.73 REQUIRED COMPONENTS 
 	chrono 
-	#filesystem
+	thread
 )
 
 # 链接 Boost 库
 if(Boost_FOUND)
     target_link_libraries(${ModuleName} 
 		PRIVATE Boost::chrono 
-		#PRIVATE Boost::filesystem
+		PRIVATE Boost::thread 
 	)
 else()
 	message(FATAL_ERROR "Failed to linking boost")

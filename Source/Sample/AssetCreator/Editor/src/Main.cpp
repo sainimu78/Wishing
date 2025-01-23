@@ -5,6 +5,7 @@
 #include "Creator/CreatorSystem.h"
 #include "Niflect/Util/SystemUtil.h"
 #include "Creator/CreatorOption.h"
+#include "Creator/CreatorPipeline.h"
 
 #ifdef WIN32
 #include <Windows.h>
@@ -56,6 +57,9 @@ static void ParseOptions(int argc, const char* const* argv, Wishing::CCreatorOpt
 
 static int EditorMain(int argc, char** argv)
 {
+    Wishing::TestPipeline();
+    return 0;
+
     Wishing::CCreatorOption opt;
     ParseOptions(argc, argv, opt);
 
