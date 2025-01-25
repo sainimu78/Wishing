@@ -58,3 +58,5 @@ if(MSVC)
 		VS_DEBUGGER_WORKING_DIRECTORY "$<IF:$<CONFIG:Debug>,${CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG},${CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE}>"
 	)
 endif()
+
+target_precompile_headers(${ModuleName} PRIVATE ${ModuleSourcePath}/EditorDevelopmentMacro.h)

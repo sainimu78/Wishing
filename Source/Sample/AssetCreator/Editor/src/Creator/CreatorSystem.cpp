@@ -1,40 +1,87 @@
 #include "Creator/CreatorSystem.h"
+#include "boost/thread/thread.hpp"
+#ifdef PIPELINE_RUNNING_WITH_IO_CONTEXT
+#include "boost/asio/io_context.hpp"
+#endif
+
+#ifdef CPP_SCRIPT_HOT_RELOADING_EXPERIMENT
 #include "Niflect/Util/StringUtil.h"
 #include "Niflect/Util/SystemUtil.h"
 #include "Niflect/NiflectModule.h"
 #include "Script.h"
 #include "Niflect/Memory/Default/DefaultMemory.h"
-
 #include <Windows.h>
+#endif
 
 namespace Wishing
 {
+	boost::mutex& CCreatorPipeline::CThreadSafeState::GetMutex()
+	{
+		return *m_mtx;
+	}
+	void CCreatorPipeline::Clear()
+	{
+		*this = CCreatorPipeline();
+	}
+
+#ifdef CPP_SCRIPT_HOT_RELOADING_EXPERIMENT
 	CCreatorSystem::CCreatorSystem()
 		: m_loadingCounter(0)
 	{
 
 	}
+#else
+	CCreatorSystem::CCreatorSystem()
+		: m_pipelineActivatedCount(0)
+	{
+
+	}
+#endif
 	bool CCreatorSystem::Initialize(const CCreatorOption& opt)
 	{
 		m_opt = opt;
+#ifdef CPP_SCRIPT_HOT_RELOADING_EXPERIMENT
 		this->FindProject();
+#endif
 		return true;
 	}
 	bool CCreatorSystem::Start()
 	{
+#ifdef CPP_SCRIPT_HOT_RELOADING_EXPERIMENT
 		for (auto& it : m_vecFoundModuleInfo)
 			printf("Found module: %s\n", it.m_name.c_str());
-		
-		return false;
+#endif
+
+		ASSERT(m_pipeline.m_thread == NULL);
+		bool ok = false;
+		m_pipeline.m_cv = Niflect::MakeShared<boost::condition_variable>();
+		m_pipeline.m_state.m_mtx = Niflect::MakeShared<boost::mutex>();
+		m_pipeline.m_state.m_running = true;
+#ifdef PIPELINE_RUNNING_WITH_IO_CONTEXT
+		m_pipeline.m_ctx = Niflect::MakeShared<boost::asio::io_context>();
+		//m_pipeline.m_thread = Niflect::MakeShared<boost::thread>(&CCreatorSystem::AsyncRun2, this);
+#else
+		m_pipeline.m_thread = Niflect::MakeShared<boost::thread>(&CCreatorSystem::AsyncRun, this);
+#endif
+		ok = m_pipeline.m_thread != NULL;
+		return ok;
 	}
 	bool CCreatorSystem::Stop()
 	{
-		return false;
+		{
+			boost::lock_guard<boost::mutex> lock(m_pipeline.m_state.GetMutex());
+			m_pipeline.m_state.m_running = false;
+		}
+		m_pipeline.m_cv->notify_all();
+		m_pipeline.m_thread->join();
+		m_pipeline.Clear();
+		return true;
 	}
 	bool CCreatorSystem::Finalize()
 	{
 		return false;
 	}
+#ifdef CPP_SCRIPT_HOT_RELOADING_EXPERIMENT
 	void CCreatorSystem::FindProject()
 	{
 		ASSERT(!m_opt.m_projectDirPath.empty());
@@ -121,4 +168,62 @@ namespace Wishing
 		m_loadingCounter++;
 		printf("Reload count: %u\n", m_loadingCounter);
 	}
+#endif
+	void CCreatorSystem::AsyncActivate()
+	{
+		m_pipeline.m_cv->notify_one();
+	}
+	void CCreatorSystem::AsyncRun()
+	{
+		while (true)
+		{
+			{
+				boost::unique_lock<boost::mutex> lock(m_pipeline.m_state.GetMutex());
+				m_pipeline.m_cv->wait(lock);
+				if (!m_pipeline.m_state.m_running)
+					break;
+			}
+			printf("Activated: %u\n", m_pipelineActivatedCount);
+			boost::this_thread::sleep_for(boost::chrono::seconds(3));
+			printf("Done\n");
+			m_pipelineActivatedCount++;
+
+			{
+				boost::unique_lock<boost::mutex> lock(m_pipeline.m_state.GetMutex());
+				if (!m_pipeline.m_state.m_running)
+					break;
+			}
+		}
+		printf("Finished\n");
+	}
+#ifdef PIPELINE_RUNNING_WITH_IO_CONTEXT
+	void CCreatorSystem::AsyncRun2()
+	{
+		this->AsyncWaitReaction();
+		m_pipeline.m_ctx->run();
+	}
+	void CCreatorSystem::AsyncWaitReaction()
+	{
+		m_pipeline.m_ctx->post([this]()
+			{
+				{
+					boost::unique_lock<boost::mutex> lock(m_pipeline.m_state.GetMutex());
+					m_pipeline.m_cv->wait(lock);
+					if (!m_pipeline.m_state.m_running)
+						return;
+				}
+				printf("Activated: %u\n", m_pipelineActivatedCount);
+				boost::this_thread::sleep_for(boost::chrono::seconds(3));
+				printf("Done\n");
+				m_pipelineActivatedCount++;
+
+				{
+					boost::unique_lock<boost::mutex> lock(m_pipeline.m_state.GetMutex());
+					if (!m_pipeline.m_state.m_running)
+						return;
+				}
+				this->AsyncWaitReaction();
+			});
+	}
+#endif
 }

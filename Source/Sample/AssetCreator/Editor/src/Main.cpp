@@ -57,9 +57,6 @@ static void ParseOptions(int argc, const char* const* argv, Wishing::CCreatorOpt
 
 static int EditorMain(int argc, char** argv)
 {
-    Wishing::TestPipeline();
-    return 0;
-
     Wishing::CCreatorOption opt;
     ParseOptions(argc, argv, opt);
 
@@ -77,14 +74,17 @@ static int EditorMain(int argc, char** argv)
     using namespace Wishing;
     CCreatorSystem sys;
     sys.Initialize(opt);
-    sys.Start();
+    if (!sys.Start())
+        ASSERT(false);
 
     using namespace WishingQt;
     QCreatorWindow wnd;
     wnd.Init(&sys);
     wnd.resize(width, height);
     wnd.show();
-    return app.exec();
+    auto ret = app.exec();
+    sys.Stop();
+    return ret;
 }
 
 #ifdef WIN32

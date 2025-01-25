@@ -35,10 +35,19 @@ namespace WishingQt
 			});
 		rightLayout->addWidget(btnDebug);
 
+#ifdef CPP_SCRIPT_HOT_RELOADING_EXPERIMENT
 		auto btnReloadScript = new QPushButton("Reload Script", this);
 		QObject::connect(btnReloadScript, &QPushButton::clicked, [this]()
 			{
 				m_sys->ReloadScript();
+			});
+		rightLayout->addWidget(btnReloadScript);
+#endif
+
+		auto btnReloadScript = new QPushButton("Activate", this);
+		QObject::connect(btnReloadScript, &QPushButton::clicked, [this]()
+			{
+				m_sys->AsyncActivate();
 			});
 		rightLayout->addWidget(btnReloadScript);
 
