@@ -1,6 +1,7 @@
 #pragma once
 #include "Creator/CreatorOption.h"
 #include "Base/BoostWrapper.h"
+#include "Content/ContentManager.h"
 
 namespace Wishing
 {
@@ -65,6 +66,8 @@ namespace Wishing
 	private:
 		void FindProject();
 #endif
+	public:
+		CContentManager& GetContentManager() { return m_contentMgr; }
 
 	private:
 		CCreatorOption m_opt;
@@ -74,5 +77,6 @@ namespace Wishing
 #endif
 		CCreatorPipeline m_pipeline;
 		uint32 m_pipelineActivatedCount;
+		CContentManager m_contentMgr;
 	};
 }

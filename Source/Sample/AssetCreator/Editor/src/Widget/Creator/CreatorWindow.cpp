@@ -7,6 +7,7 @@
 #include "Project/Project.h"
 #include "Base/AssetCreatorDefinition.h"
 #include "Niflect/Util/StringUtil.h"
+#include "Content/ContentBuilder.h"
 
 namespace WishingQt
 {
@@ -44,12 +45,21 @@ namespace WishingQt
 		rightLayout->addWidget(btnReloadScript);
 #endif
 
-		auto btnReloadScript = new QPushButton("Activate", this);
-		QObject::connect(btnReloadScript, &QPushButton::clicked, [this]()
+		auto btnActivate = new QPushButton("Activate", this);
+		QObject::connect(btnActivate, &QPushButton::clicked, [this]()
 			{
 				m_sys->AsyncActivate();
 			});
-		rightLayout->addWidget(btnReloadScript);
+		rightLayout->addWidget(btnActivate);
+
+		auto btnCreateContent= new QPushButton("Create Content", this);
+		QObject::connect(btnCreateContent, &QPushButton::clicked, [this]()
+			{
+				using namespace Wishing;
+				CContentBuilder builder(m_sys->GetContentManager());
+				
+			});
+		rightLayout->addWidget(btnCreateContent);
 
 		auto toolBar = this->addToolBar("Default");
 		auto actDebug = new QAction("Nihao");
