@@ -9,28 +9,31 @@ namespace Wishing
 	{
 		return &m_rootDirNode;
 	}
-	static void AddNode(CContentNode* parentNode, const CSharedContentNode& shared, const Niflect::CString& name, Niflect::TArray<CSharedContentNode>& m_vecNode, CContentEditContext& ctx)
+	static void InitAddingNode(const CSharedContentNode& shared, const Niflect::CString& name, CContentDirNode* parentNode, Niflect::TArray<CSharedContentNode>& m_vecNode, CContentChangeContext& ctx)
 	{
 		auto tableIdx = static_cast<uint32>(m_vecNode.size());
 		m_vecNode.push_back(shared);
 		auto node = shared.Get();
-		node->Init(name, tableIdx);
-		parentNode->AddNode(node);
+		node->Init(name, parentNode, tableIdx);
 		ctx.MarkExistingDirty(node);
 	}
-	CContentDirNode* CContentManager::AddDirNode(CContentDirNode* parentNode, const Niflect::CString& name, CContentEditContext& ctx)
+	CContentDirNode* CContentManager::AddDirNode(CContentDirNode* parentNode, const Niflect::CString& name, CContentChangeContext& ctx)
 	{
-		auto dirNode = Niflect::MakeShared<CContentDirNode>();
-		AddNode(parentNode, dirNode, name, m_vecNode, ctx);
-		return dirNode.Get();
+		auto shared = Niflect::MakeShared<CContentDirNode>();
+		InitAddingNode(shared, name, parentNode, m_vecNode, ctx);
+		auto node = shared.Get();
+		parentNode->AddDirNode(node);
+		return node;
 	}
-	CContentFileNode* CContentManager::AddFileNode(CContentDirNode* parentNode, const Niflect::CString& name, CContentEditContext& ctx)
+	CContentFileNode* CContentManager::AddFileNode(CContentDirNode* parentNode, const Niflect::CString& name, CContentChangeContext& ctx)
 	{
-		auto fileNode = Niflect::MakeShared<CContentFileNode>();
-		AddNode(parentNode, fileNode, name, m_vecNode, ctx);
-		return fileNode.Get();
+		auto shared = Niflect::MakeShared<CContentFileNode>();
+		InitAddingNode(shared, name, parentNode, m_vecNode, ctx);
+		auto node = shared.Get();
+		parentNode->AddFileNode(node);
+		return node;
 	}
-	void CContentManager::DeleteNode(CContentNode* node, CContentEditContext& ctx)
+	void CContentManager::DeleteNode(CContentFileNode* node, CContentChangeContext& ctx)
 	{
 		auto& tableIdx = node->GetTableIndex();
 		auto shared = m_vecNode[tableIdx];
@@ -50,7 +53,7 @@ namespace Wishing
 	//	}
 	//	return NULL;
 	//}
-	CContentFileNode* CContentManager::FindOrCreateFileNodePath(const Niflect::CString& filePath, CContentEditContext& ctx)
+	CContentFileNode* CContentManager::FindOrCreateFileNodePath(const Niflect::CString& filePath, CContentChangeContext& ctx)
 	{
 		CContentDirNode* parentDirNode = this->GetRootDirNode();
 		auto vecName = NiflectUtil::Split(filePath, '/');
@@ -61,7 +64,7 @@ namespace Wishing
 			for (int32 idx = 0; idx < cntDirCount; ++idx)
 			{
 				auto& name = vecName[idx];
-				if (auto found = CContentDirNode::CastChecked(parentDirNode->FindNode(name)))
+				if (auto found = parentDirNode->FindDirNode(name))
 					parentDirNode = found;
 				else
 					parentDirNode = this->AddDirNode(parentDirNode, name, ctx);

@@ -3,7 +3,7 @@
 
 namespace Wishing
 {
-	class CContentEditContext
+	class CContentChangeContext
 	{
 	public:
 		void MarkExistingDirty(CContentNode* node) { m_vecExistingDirtyNode.push_back(node); }
@@ -18,10 +18,10 @@ namespace Wishing
 		CContentDirNode* GetRootDirNode();
 
 	public:
-		CContentDirNode* AddDirNode(CContentDirNode* parentNode, const Niflect::CString& name, CContentEditContext& ctx);
-		CContentFileNode* AddFileNode(CContentDirNode* parentNode, const Niflect::CString& name, CContentEditContext& ctx);
-		void DeleteNode(CContentNode* node, CContentEditContext& ctx);
-		CContentFileNode* FindOrCreateFileNodePath(const Niflect::CString& filePath, CContentEditContext& ctx);
+		CContentDirNode* AddDirNode(CContentDirNode* parentNode, const Niflect::CString& name, CContentChangeContext& ctx);
+		CContentFileNode* AddFileNode(CContentDirNode* parentNode, const Niflect::CString& name, CContentChangeContext& ctx);
+		void DeleteNode(CContentFileNode* node, CContentChangeContext& ctx);
+		CContentFileNode* FindOrCreateFileNodePath(const Niflect::CString& filePath, CContentChangeContext& ctx);
 
 	//private:
 	//	CContentDirNode* FindDirNode(CContentDirNode* parent, const Niflect::CString& name) const;

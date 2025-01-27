@@ -52,7 +52,7 @@ namespace WishingQt
 			});
 		rightLayout->addWidget(btnActivate);
 
-		auto btnCreateContent= new QPushButton("Create Content", this);
+		auto btnCreateContent= new QPushButton("Print Dirty Nodes", this);
 		QObject::connect(btnCreateContent, &QPushButton::clicked, [this]()
 			{
 				using namespace Wishing;

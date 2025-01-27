@@ -44,15 +44,20 @@ namespace Wishing
 		this->FindProject();
 #endif
 
-		m_contentMgr.GetRootDirNode()->DebugPrint();
+		DebugPrintDirNodeRecurs(m_contentMgr.GetRootDirNode());
 		{
-			CContentEditContext ctx;
+			CContentChangeContext ctx;
 			m_contentMgr.FindOrCreateFileNodePath("Nihao/Bucuo/a.txt", ctx);
 			m_contentMgr.FindOrCreateFileNodePath("Nihao/Shi/b.txt", ctx);
 			m_contentMgr.FindOrCreateFileNodePath("c.txt", ctx);
 			m_contentMgr.FindOrCreateFileNodePath("Buxin/d.txt", ctx);
+
+			for (auto& it : ctx.m_vecDeletingDirtyNode)
+				printf("%s\n", it->GetName().c_str());
+			for (auto& it : ctx.m_vecExistingDirtyNode)
+				printf("%s\n", it->GetName().c_str());
 		}
-		m_contentMgr.GetRootDirNode()->DebugPrint();
+		DebugPrintDirNodeRecurs(m_contentMgr.GetRootDirNode());
 		return true;
 	}
 	bool CCreatorSystem::Start()
