@@ -1,7 +1,7 @@
 #!/bin/bash
 ProjectDirPath=../../../../../../Project/Sample/AssetCreator
-BuildDirPathDebug=./DefaultBuild/Debug
-BuildDirPathRelease=./DefaultBuild/Release
+BuildDirPathDebug=$(pwd)/DefaultBuild/Debug
+BuildDirPathRelease=$(pwd)/DefaultBuild/Release
 InstallPrefix=../Installed
 Toolset="Unix Makefiles"
 OldDirPath=$(pwd)

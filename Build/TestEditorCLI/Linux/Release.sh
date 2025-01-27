@@ -1,7 +1,7 @@
 #!/bin/bash
 ProjectDirPath=../../../../../Project/TestEditorCLI
-BuildDirPathDebug=./DefaultBuild/Debug
-BuildDirPathRelease=./DefaultBuild/Release
+BuildDirPathDebug=$(pwd)/DefaultBuild/Debug
+BuildDirPathRelease=$(pwd)/DefaultBuild/Release
 InstallPrefix=../Installed
 Toolset="Unix Makefiles"
 OldDirPath=$(pwd)
