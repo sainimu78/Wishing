@@ -43,6 +43,16 @@ namespace Wishing
 #ifdef CPP_SCRIPT_HOT_RELOADING_EXPERIMENT
 		this->FindProject();
 #endif
+
+		m_contentMgr.GetRootDirNode()->DebugPrint();
+		{
+			CContentEditContext ctx;
+			m_contentMgr.FindOrCreateFileNodePath("Nihao/Bucuo/a.txt", ctx);
+			m_contentMgr.FindOrCreateFileNodePath("Nihao/Shi/b.txt", ctx);
+			m_contentMgr.FindOrCreateFileNodePath("c.txt", ctx);
+			m_contentMgr.FindOrCreateFileNodePath("Buxin/d.txt", ctx);
+		}
+		m_contentMgr.GetRootDirNode()->DebugPrint();
 		return true;
 	}
 	bool CCreatorSystem::Start()

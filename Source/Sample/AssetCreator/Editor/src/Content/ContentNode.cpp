@@ -30,4 +30,23 @@ namespace Wishing
 	//{
 	//	return m_parentNode;
 	//}
+	void CContentNode::AddNode(CContentNode* node)
+	{
+		m_vecNode.push_back(node);
+	}
+	void CContentNode::DeleteNode(CContentNode* node)
+	{
+		auto itFound = std::find(m_vecNode.begin(), m_vecNode.end(), node);
+		ASSERT(itFound != m_vecNode.end());
+		m_vecNode.erase(itFound);
+	}
+	CContentNode* CContentNode::FindNode(const Niflect::CString& name) const
+	{
+		for (auto& it : m_vecNode)
+		{
+			if (it->GetName() == name)
+				return it;
+		}
+		return NULL;
+	}
 }

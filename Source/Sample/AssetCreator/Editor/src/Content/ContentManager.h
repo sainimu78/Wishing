@@ -18,10 +18,13 @@ namespace Wishing
 		CContentDirNode* GetRootDirNode();
 
 	public:
-		CContentDirNode* InsertDirNode(const Niflect::CString& name, CContentDirNode* parentNode, CContentEditContext& ctx);
-		CContentFileNode* InsertFileNode(const Niflect::CString& name, CContentDirNode* parentNode, CContentEditContext& ctx);
+		CContentDirNode* AddDirNode(CContentDirNode* parentNode, const Niflect::CString& name, CContentEditContext& ctx);
+		CContentFileNode* AddFileNode(CContentDirNode* parentNode, const Niflect::CString& name, CContentEditContext& ctx);
 		void DeleteNode(CContentNode* node, CContentEditContext& ctx);
-		void CreateFileNodePath(const Niflect::CString& filePath, CContentEditContext& ctx);
+		CContentFileNode* FindOrCreateFileNodePath(const Niflect::CString& filePath, CContentEditContext& ctx);
+
+	//private:
+	//	CContentDirNode* FindDirNode(CContentDirNode* parent, const Niflect::CString& name) const;
 
 	private:
 		Niflect::TArray<CSharedContentNode> m_vecNode;

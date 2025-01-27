@@ -9,25 +9,25 @@ namespace Wishing
 	{
 		return &m_rootDirNode;
 	}
-	static void InsertNode(CContentDirNode* parentNode, const CSharedContentNode& shared, const Niflect::CString& name, Niflect::TArray<CSharedContentNode>& m_vecNode, CContentEditContext& ctx)
+	static void AddNode(CContentNode* parentNode, const CSharedContentNode& shared, const Niflect::CString& name, Niflect::TArray<CSharedContentNode>& m_vecNode, CContentEditContext& ctx)
 	{
 		auto tableIdx = static_cast<uint32>(m_vecNode.size());
 		m_vecNode.push_back(shared);
 		auto node = shared.Get();
 		node->Init(name, tableIdx);
-		parentNode->AddChild(node);
+		parentNode->AddNode(node);
 		ctx.MarkExistingDirty(node);
 	}
-	CContentDirNode* CContentManager::InsertDirNode(const Niflect::CString& name, CContentDirNode* parentNode, CContentEditContext& ctx)
+	CContentDirNode* CContentManager::AddDirNode(CContentDirNode* parentNode, const Niflect::CString& name, CContentEditContext& ctx)
 	{
 		auto dirNode = Niflect::MakeShared<CContentDirNode>();
-		InsertNode(parentNode, dirNode, name, m_vecNode, ctx);
+		AddNode(parentNode, dirNode, name, m_vecNode, ctx);
 		return dirNode.Get();
 	}
-	CContentFileNode* CContentManager::InsertFileNode(const Niflect::CString& name, CContentDirNode* parentNode, CContentEditContext& ctx)
+	CContentFileNode* CContentManager::AddFileNode(CContentDirNode* parentNode, const Niflect::CString& name, CContentEditContext& ctx)
 	{
 		auto fileNode = Niflect::MakeShared<CContentFileNode>();
-		InsertNode(parentNode, fileNode, name, m_vecNode, ctx);
+		AddNode(parentNode, fileNode, name, m_vecNode, ctx);
 		return fileNode.Get();
 	}
 	void CContentManager::DeleteNode(CContentNode* node, CContentEditContext& ctx)
@@ -37,13 +37,38 @@ namespace Wishing
 		m_vecNode.erase(m_vecNode.begin() + tableIdx);
 		ctx.MarkDeletingDirty(shared);
 	}
-	static void CreateNodePathRecurs(const Niflect::TArray<Niflect::CString>& vecName, uint32 frontIdx)
+	//CContentDirNode* CContentManager::FindDirNode(CContentDirNode* parent, const Niflect::CString& name) const
+	//{
+	//	for (auto& it : m_vecNode)
+	//	{
+	//		if (it->GetName() == name)
+	//		{
+	//			auto node = it.Get();
+	//			if (auto dirNode = CContentDirNode::CastChecked(node))
+	//				return dirNode;
+	//		}
+	//	}
+	//	return NULL;
+	//}
+	CContentFileNode* CContentManager::FindOrCreateFileNodePath(const Niflect::CString& filePath, CContentEditContext& ctx)
 	{
+		CContentDirNode* parentDirNode = this->GetRootDirNode();
+		auto vecName = NiflectUtil::Split(filePath, '/');
+		ASSERT(vecName.size() > 0);
+		int32 cntDirCount = static_cast<int32>(vecName.size()) - 1;
+		if (cntDirCount > 0)
+		{
+			for (int32 idx = 0; idx < cntDirCount; ++idx)
+			{
+				auto& name = vecName[idx];
+				if (auto found = CContentDirNode::CastChecked(parentDirNode->FindNode(name)))
+					parentDirNode = found;
+				else
+					parentDirNode = this->AddDirNode(parentDirNode, name, ctx);
+			}
+			ASSERT(parentDirNode->GetName() == vecName[cntDirCount - 1]);
+		}
 
-	}
-	void CContentManager::CreateFileNodePath(const Niflect::CString& filePath, CContentEditContext& ctx)
-	{
-		auto parentDirPath = NiflectUtil::GetParentDirPath(filePath);
-
+		return this->AddFileNode(parentDirNode, vecName.back(), ctx);
 	}
 }
