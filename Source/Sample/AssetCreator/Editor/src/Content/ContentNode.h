@@ -10,10 +10,12 @@ namespace Wishing
 		CContentNode();
 
 	public:
-		void Init(const CUuid& globalId);
+		void Init(const Niflect::CString& name, uint32 tableIdx);
+		void InitGlobalId(const CUuid& globalId);
 
-	//public:
-	//	const Niflect::CString& GetName() const;
+	public:
+		const Niflect::CString& GetName() const { return m_name; }
+		const uint32& GetTableIndex() const { return m_tableIdx; }
 	//	void SetName(const Niflect::CString& name);
 	//	CContentNode* GetParentNode() const;
 	//	void SetParentNode(CContentNode* parentNode);
@@ -25,6 +27,7 @@ namespace Wishing
 		Niflect::CString m_name;
 		CContentNode* m_parentNode;
 		CUuid m_globalId;
+		uint32 m_tableIdx;
 	};
 	using CSharedContentNode = Niflect::TSharedPtr<CContentNode>;
 }
