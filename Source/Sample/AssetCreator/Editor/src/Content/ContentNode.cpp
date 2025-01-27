@@ -1,4 +1,5 @@
 #include "Content/ContentNode.h"
+#include <algorithm>
 
 namespace Wishing
 {
