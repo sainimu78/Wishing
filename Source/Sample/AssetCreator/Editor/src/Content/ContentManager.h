@@ -1,5 +1,6 @@
 #pragma once
 #include "Content/ContentDirNode.h"
+#include "Niflect/Serialization/RwTree.h"
 
 namespace Wishing
 {
@@ -23,8 +24,9 @@ namespace Wishing
 		void DeleteNode(CContentFileNode* node, CContentChangeContext& ctx);
 		CContentFileNode* FindOrCreateFileNodePath(const Niflect::CString& filePath, CContentChangeContext& ctx);
 
-	//private:
-	//	CContentDirNode* FindDirNode(CContentDirNode* parent, const Niflect::CString& name) const;
+	public:
+		bool Save(RwTree::CRwNode* rw) const;
+		bool Load(const RwTree::CRwNode* rw);
 
 	private:
 		Niflect::TArray<CSharedContentNode> m_vecNode;

@@ -40,19 +40,6 @@ namespace Wishing
 		m_vecNode.erase(m_vecNode.begin() + tableIdx);
 		ctx.MarkDeletingDirty(shared);
 	}
-	//CContentDirNode* CContentManager::FindDirNode(CContentDirNode* parent, const Niflect::CString& name) const
-	//{
-	//	for (auto& it : m_vecNode)
-	//	{
-	//		if (it->GetName() == name)
-	//		{
-	//			auto node = it.Get();
-	//			if (auto dirNode = CContentDirNode::CastChecked(node))
-	//				return dirNode;
-	//		}
-	//	}
-	//	return NULL;
-	//}
 	CContentFileNode* CContentManager::FindOrCreateFileNodePath(const Niflect::CString& filePath, CContentChangeContext& ctx)
 	{
 		CContentDirNode* parentDirNode = this->GetRootDirNode();
@@ -73,5 +60,17 @@ namespace Wishing
 		}
 
 		return this->AddFileNode(parentDirNode, vecName.back(), ctx);
+	}
+	bool CContentManager::Save(RwTree::CRwNode* rw) const
+	{
+		using namespace RwTree;
+		auto rwMyArray = AddRwArray(rw, "MyArray");
+		for (auto& it : m_vecNode)
+			rwMyArray->AddItemString(it->GetName());
+		return true;
+	}
+	bool CContentManager::Load(const RwTree::CRwNode* rw)
+	{
+		return false;
 	}
 }

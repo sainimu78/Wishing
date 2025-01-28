@@ -13,6 +13,11 @@
 #include <Windows.h>
 #endif
 
+#include "Niflect/Serialization/JsonFormat.h"
+#include "Niflect/Util/FileStreamUtil.h"
+#include "Base/AssetCreatorDefinition.h"
+#include "Niflect/Util/StringUtil.h"
+
 namespace Wishing
 {
 	boost::mutex& CCreatorPipeline::CThreadSafeState::GetMutex()
@@ -56,6 +61,14 @@ namespace Wishing
 				printf("%s\n", it->GetName().c_str());
 			for (auto& it : ctx.m_vecExistingDirtyNode)
 				printf("%s\n", it->GetName().c_str());
+		}
+		{
+			RwTree::CRwNode rw;
+			m_contentMgr.Save(&rw);
+			auto filePath = NiflectUtil::ConcatPath(AssetCreatorDefinition::DirPath::GetExampleAssetDirPath(), "a.txt");
+			std::ofstream ofs;
+			if (NiflectUtil::OpenFileStream(ofs, filePath))
+				RwTree::CJsonFormat::Write(&rw, ofs);
 		}
 		DebugPrintDirNodeRecurs(m_contentMgr.GetRootDirNode());
 		return true;
