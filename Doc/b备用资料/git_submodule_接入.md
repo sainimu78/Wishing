@@ -12,6 +12,6 @@ clone 后须 切到某个分支, 如切到主分支
 
 ```
 git submodule update --init --recursive
-git pull origin main
+git checkout main
 ```
 
