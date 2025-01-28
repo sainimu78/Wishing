@@ -1,9 +1,11 @@
 # 用乌龟添加 submodule
 
+![1738077472817](1738077472817.png)
+
 或
 
 ```
-git submodule add git@github.com:sainimu78/CMakeProjectFramework.git F:\Fts\Proj\Test\Niflect\ThirdParty\CMakeProjectFramework
+git submodule add -b main git@github.com:sainimu78/CMakeProjectFramework.git F:\Fts\Proj\Test\Niflect\ThirdParty\CMakeProjectFramework
 ```
 
 # 主 git checkout/pull 之后 clone 子模块
