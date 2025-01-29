@@ -1,6 +1,7 @@
 #pragma once
 #include "Content/ContentNode.h"
 #include "Content/ContentFileNode.h"
+#include <algorithm>//std::find for std::vector
 
 namespace Wishing
 {
