@@ -1,3 +1,2 @@
 @echo off
-del DefaultBuild\CMakeCache.txt
-Update.bat
+@..\..\..\..\ThirdParty\CMakeProjectFramework\PlatformSpecificScript\Windows\Generate.bat
