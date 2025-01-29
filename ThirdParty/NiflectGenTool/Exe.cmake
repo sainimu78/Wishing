@@ -6,4 +6,4 @@ set(v_SrcAddrZipFilePath ${c_StorageAddrPath}/Release/${c_ProjectPlatform}/${v_Z
 
 set(v_NiflectGenToolBinDirPath ${v_UnzippedDirPath}/build/${c_ProjectPlatform}/${c_ProjectArch}/Release/${c_BinDirName})
 
-include(${c_RootCMakeDirPath}/IntegrateNiflectGenTool.cmake)
+include(${c_RootCMakeProjectFrameworkDirPath}/IntegrateNiflectGenTool.cmake)

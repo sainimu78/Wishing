@@ -22,4 +22,4 @@ foreach(It ${QtLibFileNames})
 	list(APPEND v_ListImportedLibFileName ${It})
 endforeach()
 
-include(${c_RootCMakeDirPath}/ImportLibDownloaded.cmake)
+include(${c_RootCMakeProjectFrameworkDirPath}/ImportLibDownloaded.cmake)

@@ -14,7 +14,7 @@ set(QtLibRootDirPath ${QtRootDirPath}/lib/x86_64-linux-gnu)
 set(v_InstalledLibDirPathDebug ${QtLibRootDirPath})
 set(v_InstalledLibDirPathRelease ${QtLibRootDirPath})
 
-include(${c_RootCMakeDirPath}/ImportLibInstalled.cmake)
+include(${c_RootCMakeProjectFrameworkDirPath}/ImportLibInstalled.cmake)
 
 
 #add_library(Qt_5_12_8 SHARED IMPORTED)

@@ -1,3 +1,3 @@
 @echo off
 @set ProjectDirPath=..\..\..\..\Project\TestEditorCLI
-@..\..\..\CMake\Platform\Windows\Release.bat
+@..\..\..\ThirdParty\CMakeProjectFramework\PlatformSpecificScript\Windows\Release.bat

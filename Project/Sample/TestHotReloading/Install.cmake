@@ -1,1 +1,1 @@
-include(${c_RootCMakeDirPath}/InstalDynamicLinkinglLibrary.cmake)
+include(${c_RootCMakeProjectFrameworkDirPath}/InstalDynamicLinkinglLibrary.cmake)

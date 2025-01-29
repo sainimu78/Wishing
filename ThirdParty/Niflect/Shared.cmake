@@ -7,4 +7,4 @@ set(v_LibPlatformArchDirPath ${v_UnzippedDirPath}/build/${c_ProjectPlatform}/${c
 list(APPEND v_ListLibIncludeDirPathPrivate ${v_UnzippedDirPath}/include)
 list(APPEND v_ListImportedLibFileName ${v_ImportedLibName})
 
-include(${c_RootCMakeDirPath}/ImportLibDownloaded.cmake)
+include(${c_RootCMakeProjectFrameworkDirPath}/ImportLibDownloaded.cmake)

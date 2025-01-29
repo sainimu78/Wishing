@@ -6,9 +6,9 @@ set(c_ProjectName SampleProject_Qt_6_8_1)
 
 set(c_SampleRootSourceDirPath ${c_RootSourceDirPath}/Sample/${c_ProjectName})
 
-include(${c_RootCMakeDirPath}/ProjectBegin.cmake)
+include(${c_RootCMakeProjectFrameworkDirPath}/ProjectBegin.cmake)
 project(${c_ProjectName})
-include(${c_RootCMakeDirPath}/ProjectEnd.cmake)
+include(${c_RootCMakeProjectFrameworkDirPath}/ProjectEnd.cmake)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -20,5 +20,5 @@ endif()
 add_subdirectory(Editor)
 add_subdirectory(Engine)
 
-include(${c_RootCMakeDirPath}/Release.cmake)
-include(${c_RootCMakeDirPath}/Cleanup.cmake)
+include(${c_RootCMakeProjectFrameworkDirPath}/Release.cmake)
+include(${c_RootCMakeProjectFrameworkDirPath}/Cleanup.cmake)
