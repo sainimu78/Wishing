@@ -1,4 +1,2 @@
-cd DefaultBuild
-cmake --build . --target clean --config Debug
-cmake --build . --target clean --config Release
-cd ..
+@echo off
+@..\..\..\..\ThirdParty\CMakeProjectFramework\PlatformSpecificScript\Windows\Clean.bat
