@@ -45,10 +45,10 @@ namespace Wishing
 		CContentDirNode* parentDirNode = this->GetRootDirNode();
 		auto vecName = NiflectUtil::Split(filePath, '/');
 		ASSERT(vecName.size() > 0);
-		int32 cntDirCount = static_cast<int32>(vecName.size()) - 1;
-		if (cntDirCount > 0)
+		int32 dirsCount = static_cast<int32>(vecName.size()) - 1;
+		if (dirsCount > 0)
 		{
-			for (int32 idx = 0; idx < cntDirCount; ++idx)
+			for (int32 idx = 0; idx < dirsCount; ++idx)
 			{
 				auto& name = vecName[idx];
 				if (auto found = parentDirNode->FindDirNode(name))
@@ -56,7 +56,7 @@ namespace Wishing
 				else
 					parentDirNode = this->AddDirNode(parentDirNode, name, ctx);
 			}
-			ASSERT(parentDirNode->GetName() == vecName[cntDirCount - 1]);
+			ASSERT(parentDirNode->GetName() == vecName[dirsCount - 1]);
 		}
 
 		return this->AddFileNode(parentDirNode, vecName.back(), ctx);
