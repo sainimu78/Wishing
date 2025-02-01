@@ -43,7 +43,7 @@ namespace Wishing
 	CContentFileNode* CContentManager::FindOrCreateFileNodePath(const Niflect::CString& filePath, CContentChangeContext& ctx)
 	{
 		CContentDirNode* parentDirNode = this->GetRootDirNode();
-		auto vecName = NiflectUtil::Split(filePath, '/');
+		auto vecName = NiflectUtil::SplitPath(filePath);
 		ASSERT(vecName.size() > 0);
 		int32 dirsCount = static_cast<int32>(vecName.size()) - 1;
 		if (dirsCount > 0)
