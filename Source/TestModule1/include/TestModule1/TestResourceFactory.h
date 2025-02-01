@@ -11,19 +11,20 @@ namespace TestModule1
 	public:
 		CTestResource* FindOrAdd(const Niflect::CString& path)
 		{
-			CSharedTestResource resource;
+			CTestResource* resource = NULL;
 			auto ret = m_mapPathToResource.insert({ path, NULL });
 			if (ret.second)
 			{
-				resource = Niflect::MakeShared<CTestResource>();
+				auto shared = Niflect::MakeShared<CTestResource>();
+				ret.first->second = shared;
+				resource = shared.Get();
 				resource->InitForTest(path);
-				ret.first->second = resource;
 			}
 			else
 			{
-				resource = ret.first->second;
+				resource = ret.first->second.Get();
 			}
-			return resource.Get();
+			return resource;
 		}
 
 	private:
