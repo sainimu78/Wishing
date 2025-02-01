@@ -88,7 +88,8 @@ namespace Engine
 			m_derived_array_resource_3.resize(2);
 			m_derived_array_resource_3[0] = fac->FindOrAdd("Nihao/a.txt");
 			m_derived_array_resource_3[1] = fac->FindOrAdd("Bucuo/b.jpg");
-			m_derived_resource_4 = fac->FindOrAdd("Shima/c.jpg");
+			m_derived_resource_4 = fac->FindOrAdd("Shima/c.png");
+			m_derived_resource_ptr_5 = fac->FindOrAdd("Zhende/d.avi");
 		}
 		bool operator==(const CDerivedFromModule1& rhs) const
 		{
@@ -98,6 +99,7 @@ namespace Engine
 				&& m_derived_string_2 == rhs.m_derived_string_2
 				&& m_derived_array_resource_3 == rhs.m_derived_array_resource_3
 				&& m_derived_resource_4 == rhs.m_derived_resource_4
+				&& m_derived_resource_ptr_5 == rhs.m_derived_resource_ptr_5
 				;
 		}
 
@@ -112,6 +114,8 @@ namespace Engine
 		Niflect::TArray<CTestResource*> m_derived_array_resource_3;
 		NIF_F()
 		CTestResource* m_derived_resource_4;
+		NIF_F()
+		TTestResourcePointer<CTestResource> m_derived_resource_ptr_5;
 	};
 
 	//NIF_T()

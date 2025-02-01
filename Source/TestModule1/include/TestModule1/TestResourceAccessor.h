@@ -24,4 +24,23 @@ namespace TestModule1
 			return true;
 		}
 	};
+
+	template <typename TInstance>
+	class TTestResourcePointerAccessor : public Niflect::CAccessor
+	{
+	protected:
+		virtual bool SaveInstanceImpl(const AddrType base, CRwNode* rw) const override
+		{
+			const auto& instance = *static_cast<const TInstance*>(base);
+			AddRwString(rw, "Path", instance.m_p->m_path);
+			return true;
+		}
+		virtual bool LoadInstanceImpl(AddrType base, const CRwNode* rw) const override
+		{
+			auto& instance = *static_cast<TInstance*>(base);
+			auto path = FindRwString(rw, "Path");
+			instance.m_p = GetTestResourceFactory()->FindOrAdd(path);
+			return true;
+		}
+	};
 }

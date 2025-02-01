@@ -20,4 +20,23 @@ namespace TestModule1
 		float m_data_float_0;
 	};
 	using CSharedTestResource = Niflect::TSharedPtr<CTestResource>;
+
+	template <typename TResource>
+	class TTestResourcePointer
+	{
+	public:
+		TTestResourcePointer()
+			: m_p(NULL)
+		{
+		}
+		TTestResourcePointer(TResource* p)
+			: m_p(p)
+		{
+		}
+		bool operator==(const TTestResourcePointer& rhs) const
+		{
+			return m_p == rhs.m_p;
+		}
+		TResource* m_p;
+	};
 }
