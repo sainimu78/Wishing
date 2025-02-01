@@ -55,6 +55,7 @@ void TestEngineRun()
 		printf("%s\n", ss.str().c_str());
 	}
 	{
+		TestModule1::CreateTestResourceFactory();
 		using CTestType = Engine::CDerivedFromModule1;
 		auto type = Niflect::StaticGetType<CTestType>();
 		RwTree::CRwNode rw;
@@ -70,6 +71,7 @@ void TestEngineRun()
 		Niflect::CStringStream ss;
 		RwTree::CJsonFormat::Write(&rw, ss);
 		printf("%s\n", ss.str().c_str());
+		TestModule1::DestroyTestResourceFactory();
 	}
 	{
 		using CTestType = TestModule1::SMyRecord;

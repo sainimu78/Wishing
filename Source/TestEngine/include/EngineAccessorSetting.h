@@ -1,12 +1,14 @@
 #pragma once
 #include "Niflect/CommonlyUsed/DefaultAccessorSetting.h"
 #include "Engine/Test/TestMyTransform.h"
+#include "TestModule1/TestResourceAccessor.h"
 
 namespace EngineTypeBindingSettingScope
 {
 	using namespace NiflectAccessorSetting;
 
 	NIF_AS_A() TSetting<TestAccessor2::TMyTransformAccessor<float>, TestAccessor2::TMyTransform<float> >;
+	NIF_AS_A() TSetting<TestModule1::CTestResourceAccessor, TestModule1::CTestResource*>;
 }
 
 

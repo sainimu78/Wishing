@@ -1,6 +1,7 @@
 #pragma once
 #include "Engine/EngineObject.h"
 #include "TestModule1/TestClass1.h"
+#include "TestModule1/TestResourceFactory.h"
 #include "Engine/DerivedObject_gen.h"
 
 namespace Engine
@@ -14,6 +15,7 @@ namespace Engine
 		CDerivedObject()
 			: m_derived_bool_1(false)
 			, m_derived_float_2(0.0f)
+			, m_my_record_6{}
 		{
 		}
 		void InitForTest()
@@ -58,6 +60,8 @@ namespace Engine
 		TestModule1::SMyRecord m_my_record_6;
 	};
 
+	using namespace TestModule1;
+
 	NIF_T()
 	class CDerivedFromModule1 : public TestModule1::CTestClass1
 	{
@@ -66,6 +70,7 @@ namespace Engine
 	public:
 		CDerivedFromModule1()
 			: m_derived_bool_1(false)
+			, m_derived_resource_4(NULL)
 		{
 
 		}
@@ -79,6 +84,11 @@ namespace Engine
 			m_derived_array_float_0[2] = 1.2f;
 			m_derived_bool_1 = true;
 			m_derived_string_2 = "derived string 2";
+			auto fac = TestModule1::GetTestResourceFactory();
+			m_derived_array_resource_3.resize(2);
+			m_derived_array_resource_3[0] = fac->FindOrAdd("Nihao/a.txt");
+			m_derived_array_resource_3[1] = fac->FindOrAdd("Bucuo/b.jpg");
+			m_derived_resource_4 = fac->FindOrAdd("Shima/c.jpg");
 		}
 		bool operator==(const CDerivedFromModule1& rhs) const
 		{
@@ -86,6 +96,8 @@ namespace Engine
 				&& m_derived_array_float_0 == rhs.m_derived_array_float_0
 				&& m_derived_bool_1 == rhs.m_derived_bool_1
 				&& m_derived_string_2 == rhs.m_derived_string_2
+				&& m_derived_array_resource_3 == rhs.m_derived_array_resource_3
+				&& m_derived_resource_4 == rhs.m_derived_resource_4
 				;
 		}
 
@@ -96,6 +108,10 @@ namespace Engine
 		bool m_derived_bool_1;
 		NIF_F()
 		Niflect::CString m_derived_string_2;
+		NIF_F()
+		Niflect::TArray<CTestResource*> m_derived_array_resource_3;
+		NIF_F()
+		CTestResource* m_derived_resource_4;
 	};
 
 	//NIF_T()
