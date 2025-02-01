@@ -87,4 +87,6 @@
 2025.01.23, 五星, 接 cv, mtx 异步执行功能流程; 整理代码, 试用 asio 的 io_context 执行流程, 现不需要定时器, 因此不启用;
 2025.01.27, 五星, 重构平台脚本以复用; Content 节点创建等基本结构和流程试验; 构思序列化方法, 考虑用 Niflect; 
 2025.01.28, 五星, 下载错误更具体的提示, StorageConfig.cmake 移到 Project 目录中; 增加 git@github.com:sainimu78/CMakeProjectFramework.git 与 git@github.com:sainimu78/CommandLineArgParser.git; cmake 项目框架目录调整, 相应修改; 剩余项目改用 cmake 项目框架; UE 架构强大与扩展性核心, 结论技术导向: 反射是因, 序列化是果(AI). 业务导向: 序列化是架构设计出发点(我); 
-2/2025.01.30, 五星, 与 DeepSeek 聊 C++ 反射系统, 结论 Niflect 最好, Wishing\Doc\b备用资料\Niflect技术验证_DeepSeek\README.md
+2025.01.30, 五星, 与 DeepSeek 聊 C++ 反射系统, 结论 Niflect 最好, Wishing\Doc\b备用资料\Niflect技术验证_DeepSeek\README.md; 与 DeepSeek 聊 Rust 优势, 其观点认为 C++ 存在固有语法缺陷导致难以确保一些实现的可靠性, 而 Rust 可取而代之, Rust 与 C++ 的语法差异也是为核心的可靠性服务的; 
+2025.02.01, 五星, 检查指针类型无法通过 CXType 查找问题, 现未查明原因, 通过另定义专门的 CPointerCursor 实现指针类型查找 AS; 增加指针类型的测试代码; 增加 E 型指针模板测试; 
+?/2025.02.02, 五星, 
