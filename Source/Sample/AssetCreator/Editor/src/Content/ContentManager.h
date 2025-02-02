@@ -21,7 +21,7 @@ namespace Wishing
 	public:
 		CContentDirNode* AddDirNode(CContentDirNode* parentNode, const Niflect::CString& name, CContentChangeContext& ctx);
 		CContentFileNode* AddFileNode(CContentDirNode* parentNode, const Niflect::CString& name, CContentChangeContext& ctx);
-		void DeleteNode(CContentFileNode* node, CContentChangeContext& ctx);
+		void DeleteFileNode(CContentFileNode* node, CContentChangeContext& ctx);
 		CContentFileNode* FindOrCreateFileNodePath(const Niflect::CString& filePath, CContentChangeContext& ctx);
 
 	public:

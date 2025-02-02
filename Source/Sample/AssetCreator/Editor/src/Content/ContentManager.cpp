@@ -33,7 +33,7 @@ namespace Wishing
 		parentNode->AddFileNode(node);
 		return node;
 	}
-	void CContentManager::DeleteNode(CContentFileNode* node, CContentChangeContext& ctx)
+	void CContentManager::DeleteFileNode(CContentFileNode* node, CContentChangeContext& ctx)
 	{
 		auto& tableIdx = node->GetTableIndex();
 		auto shared = m_vecNode[tableIdx];
