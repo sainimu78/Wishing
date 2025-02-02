@@ -9,22 +9,26 @@ namespace TestModule1
 	class CTestResourceFactory
 	{
 	public:
-		CTestResource* FindOrAdd(const Niflect::CString& path)
+		CSharedTestResource FindOrAddShared(const Niflect::CString& path)
 		{
-			CTestResource* resource = NULL;
+			CSharedTestResource resource;
 			auto ret = m_mapPathToResource.insert({ path, NULL });
 			if (ret.second)
 			{
-				auto shared = Niflect::MakeShared<CTestResource>();
-				ret.first->second = shared;
-				resource = shared.Get();
+				resource = Niflect::MakeShared<CTestResource>();
+				ret.first->second = resource;
 				resource->InitForTest(path);
 			}
 			else
 			{
-				resource = ret.first->second.Get();
+				resource = ret.first->second;
 			}
 			return resource;
+		}
+		CTestResource* FindOrAddRaw(const Niflect::CString& path)
+		{
+			auto shared = this->FindOrAddShared(path);
+			return shared.Get();
 		}
 
 	private:

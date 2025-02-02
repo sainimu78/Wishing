@@ -86,10 +86,11 @@ namespace Engine
 			m_derived_string_2 = "derived string 2";
 			auto fac = TestModule1::GetTestResourceFactory();
 			m_derived_array_resource_3.resize(2);
-			m_derived_array_resource_3[0] = fac->FindOrAdd("Nihao/a.txt");
-			m_derived_array_resource_3[1] = fac->FindOrAdd("Bucuo/b.jpg");
-			m_derived_resource_4 = fac->FindOrAdd("Shima/c.png");
-			m_derived_resource_ptr_5 = fac->FindOrAdd("Zhende/d.avi");
+			m_derived_array_resource_3[0] = fac->FindOrAddRaw("Nihao/a.txt");
+			m_derived_array_resource_3[1] = fac->FindOrAddRaw("Bucuo/b.jpg");
+			m_derived_resource_4 = fac->FindOrAddRaw("Shima/c.png");
+			m_derived_resource_ptr_5 = fac->FindOrAddRaw("Zhende/d.avi");
+			m_derived_shared_resource_6 = fac->FindOrAddShared("KeBuShi/e.mp4");
 		}
 		bool operator==(const CDerivedFromModule1& rhs) const
 		{
@@ -100,6 +101,7 @@ namespace Engine
 				&& m_derived_array_resource_3 == rhs.m_derived_array_resource_3
 				&& m_derived_resource_4 == rhs.m_derived_resource_4
 				&& m_derived_resource_ptr_5 == rhs.m_derived_resource_ptr_5
+				&& m_derived_shared_resource_6 == rhs.m_derived_shared_resource_6
 				;
 		}
 
@@ -116,6 +118,8 @@ namespace Engine
 		CTestResource* m_derived_resource_4;
 		NIF_F()
 		TTestResourcePointer<CTestResource> m_derived_resource_ptr_5;
+		NIF_F()
+		CSharedTestResource m_derived_shared_resource_6;
 	};
 
 	//NIF_T()

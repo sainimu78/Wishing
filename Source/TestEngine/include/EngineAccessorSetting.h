@@ -8,9 +8,10 @@ namespace EngineTypeBindingSettingScope
 	using namespace NiflectAccessorSetting;
 
 	NIF_AS_A() TSetting<TestAccessor2::TMyTransformAccessor<float>, TestAccessor2::TMyTransform<float> >;
-	NIF_AS_A() TSetting<TestModule1::CTestResourceAccessor, TestModule1::CTestResource*>;
+	NIF_AS_A() TSetting<TestModule1::CRawTestResourceAccessor, TestModule1::CTestResource*>;
 	template <typename TInstance, typename T>
-	NIF_AS_E() TSetting<TestModule1::TTestResourcePointerAccessor<TInstance>, TestModule1::TTestResourcePointer<T> >;
+	NIF_AS_E() TSetting<TestModule1::TRawTestResourcePointerAccessor<TInstance>, TestModule1::TTestResourcePointer<T> >;
+	NIF_AS_A() TSetting<TestModule1::CSharedTestResourceAccessor, TestModule1::CSharedTestResource>;
 }
 
 

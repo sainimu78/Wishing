@@ -6,7 +6,7 @@ namespace TestModule1
 {
 	using namespace RwTree;
 
-	class CTestResourceAccessor : public Niflect::CAccessor
+	class CRawTestResourceAccessor : public Niflect::CAccessor
 	{
 		using MyPtr = CTestResource*;
 	protected:
@@ -20,13 +20,13 @@ namespace TestModule1
 		{
 			auto& instance = *static_cast<MyPtr*>(base);
 			auto path = FindRwString(rw, "Path");
-			instance = GetTestResourceFactory()->FindOrAdd(path);
+			instance = GetTestResourceFactory()->FindOrAddRaw(path);
 			return true;
 		}
 	};
 
 	template <typename TInstance>
-	class TTestResourcePointerAccessor : public Niflect::CAccessor
+	class TRawTestResourcePointerAccessor : public Niflect::CAccessor
 	{
 	protected:
 		virtual bool SaveInstanceImpl(const AddrType base, CRwNode* rw) const override
@@ -39,7 +39,25 @@ namespace TestModule1
 		{
 			auto& instance = *static_cast<TInstance*>(base);
 			auto path = FindRwString(rw, "Path");
-			instance.m_p = GetTestResourceFactory()->FindOrAdd(path);
+			instance.m_p = GetTestResourceFactory()->FindOrAddRaw(path);
+			return true;
+		}
+	};
+
+	class CSharedTestResourceAccessor : public Niflect::CAccessor
+	{
+	protected:
+		virtual bool SaveInstanceImpl(const AddrType base, CRwNode* rw) const override
+		{
+			const auto& instance = *static_cast<const CSharedTestResource*>(base);
+			AddRwString(rw, "Path", instance->m_path);
+			return true;
+		}
+		virtual bool LoadInstanceImpl(AddrType base, const CRwNode* rw) const override
+		{
+			auto& instance = *static_cast<CSharedTestResource*>(base);
+			auto path = FindRwString(rw, "Path");
+			instance = GetTestResourceFactory()->FindOrAddShared(path);
 			return true;
 		}
 	};
