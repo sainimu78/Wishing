@@ -61,4 +61,23 @@ namespace TestModule1
 			return true;
 		}
 	};
+
+	class CRawTestResourcePtrPtrAccessor : public Niflect::CAccessor
+	{
+		using MyPtr = CTestResource**;
+	protected:
+		virtual bool SaveInstanceImpl(const AddrType base, CRwNode* rw) const override
+		{
+			const auto& instance = *static_cast<const MyPtr*>(base);
+			AddRwString(rw, "Path", (*instance)->m_path);
+			return true;
+		}
+		virtual bool LoadInstanceImpl(AddrType base, const CRwNode* rw) const override
+		{
+			auto& instance = *static_cast<MyPtr*>(base);
+			auto path = FindRwString(rw, "Path");
+			instance = GetTestResourceFactory()->FindOrAddRawPtrPtr(path);
+			return true;
+		}
+	};
 }

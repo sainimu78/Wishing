@@ -71,6 +71,7 @@ namespace Engine
 		CDerivedFromModule1()
 			: m_derived_bool_1(false)
 			, m_derived_resource_4(NULL)
+			, m_derived_resource_ptr_ptr_7(NULL)
 		{
 
 		}
@@ -91,6 +92,7 @@ namespace Engine
 			m_derived_resource_4 = fac->FindOrAddRaw("Shima/c.png");
 			m_derived_resource_ptr_5 = fac->FindOrAddRaw("Zhende/d.avi");
 			m_derived_shared_resource_6 = fac->FindOrAddShared("KeBuShi/e.mp4");
+			m_derived_resource_ptr_ptr_7 = fac->FindOrAddRawPtrPtr("JiuShiShuo/f.md");
 		}
 		bool operator==(const CDerivedFromModule1& rhs) const
 		{
@@ -120,6 +122,8 @@ namespace Engine
 		TTestResourcePointer<CTestResource> m_derived_resource_ptr_5;
 		NIF_F()
 		CSharedTestResource m_derived_shared_resource_6;
+		NIF_F()
+		CTestResource** m_derived_resource_ptr_ptr_7;
 	};
 
 	//NIF_T()

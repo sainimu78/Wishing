@@ -12,6 +12,7 @@ namespace EngineTypeBindingSettingScope
 	template <typename TInstance, typename T>
 	NIF_AS_E() TSetting<TestModule1::TRawTestResourcePointerAccessor<TInstance>, TestModule1::TTestResourcePointer<T> >;
 	NIF_AS_A() TSetting<TestModule1::CSharedTestResourceAccessor, TestModule1::CSharedTestResource>;
+	NIF_AS_A() TSetting<TestModule1::CRawTestResourcePtrPtrAccessor, TestModule1::CTestResource**>;
 }
 
 
