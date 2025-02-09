@@ -89,4 +89,6 @@
 2025.01.28, 五星, 下载错误更具体的提示, StorageConfig.cmake 移到 Project 目录中; 增加 git@github.com:sainimu78/CMakeProjectFramework.git 与 git@github.com:sainimu78/CommandLineArgParser.git; cmake 项目框架目录调整, 相应修改; 剩余项目改用 cmake 项目框架; UE 架构强大与扩展性核心, 结论技术导向: 反射是因, 序列化是果(AI). 业务导向: 序列化是架构设计出发点(我); 
 2025.01.30, 五星, 与 DeepSeek 聊 C++ 反射系统, 结论 Niflect 最好, Wishing\Doc\b备用资料\Niflect技术验证_DeepSeek\README.md; 与 DeepSeek 聊 Rust 优势, 其观点认为 C++ 存在固有语法缺陷导致难以确保一些实现的可靠性, 而 Rust 可取而代之, Rust 与 C++ 的语法差异也是为核心的可靠性服务的; 
 2025.02.01, 五星, 检查指针类型无法通过 CXType 查找问题, 现未查明原因, 通过另定义专门的 CPointerCursor 实现指针类型查找 AS; 增加指针类型的测试代码; 增加 E 型指针模板测试; 
-?/2025.02.02, 五星, 
+2025.02.02, 五星, 设想高效 GUI 方案, 通过 2D 场景管理与绘制实现控件, 可用 QGraphicsItem 实现, 但不希望捆绑传统 QWidget 等多余功能, 因此方案定为 skia 作图形引擎, 再用 Qt 或其它库做窗口管理, 目标是丰富动画元素与渲染高效, 对于控件部分可进一步探索, 如 chromium 框架 UI 模块是否已像 skia 形成通用库或移植代码; 尝试构建 skia;
+2025.02.09, 五星, 构建 skia 分支 chrome/m134, Windows, Linux, Android, 见 F:\sainimu78_Storage\ThirdParty\skia\Source\README.md; 
+?/2025.02.10, 五星, 
