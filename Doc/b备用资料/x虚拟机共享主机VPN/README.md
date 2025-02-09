@@ -11,4 +11,4 @@ git config --global https.proxy http://192.168.31.233:1080
 
 浏览器访问可通过 Network 的 Network Proxy
 
-![Screenshot 2025-02-09 161242](Screenshot 2025-02-09 161242.png)
+![Screenshot 2025-02-09 161242](Screenshot 2025-02-09 163017.png)
