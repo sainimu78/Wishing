@@ -8,9 +8,9 @@
 #include "Base/AssetCreatorDefinition.h"
 #include "Niflect/Util/StringUtil.h"
 #include "Content/ContentBuilder.h"
-#include "QGraphicsView.h"
-#include "QGraphicsScene.h"
-#include "QGraphicsItem.h"
+#include "qgraphicsview.h"
+#include "qgraphicsscene.h"
+#include "qgraphicsitem.h"
 
 namespace WishingQt
 {
