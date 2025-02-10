@@ -8,9 +8,44 @@
 #include "Base/AssetCreatorDefinition.h"
 #include "Niflect/Util/StringUtil.h"
 #include "Content/ContentBuilder.h"
+#include "QGraphicsView.h"
+#include "QGraphicsScene.h"
+#include "QGraphicsItem.h"
 
 namespace WishingQt
 {
+	class QMyGraphicsItem : public QGraphicsItem
+	{
+		typedef QGraphicsItem inherited;
+	public:
+		QMyGraphicsItem(QGraphicsItem* parent = NULL);
+		virtual ~QMyGraphicsItem() override;
+
+	public:
+		virtual QRectF boundingRect() const override;
+		virtual void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override;
+	};
+	QMyGraphicsItem::QMyGraphicsItem(QGraphicsItem* parent)
+		: inherited(parent)
+	{
+
+	}
+	QMyGraphicsItem::~QMyGraphicsItem()
+	{
+
+	}
+	QRectF QMyGraphicsItem::boundingRect() const
+	{
+		return QRectF(-50, -50, 100, 100);
+	}
+	void QMyGraphicsItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)
+	{
+		Q_UNUSED(option);
+		Q_UNUSED(widget);
+		painter->setBrush(Qt::blue);
+		painter->drawEllipse(this->boundingRect());
+	}
+
 	QCreatorWindow::QCreatorWindow(QWidget* parentWidget)
 		: inherited(parentWidget)
 		, m_sys(NULL)
@@ -21,6 +56,12 @@ namespace WishingQt
 
 		m_contentView = new QContentView(this);
 		mainLayout->addWidget(m_contentView);
+
+		auto scene = new QGraphicsScene(this);
+		auto view0 = new QGraphicsView(scene, this);
+		mainLayout->addWidget(view0);
+		auto item = new QMyGraphicsItem;
+		scene->addItem(item);
 
 		auto panelRight = new QWidget(this);
 		auto rightLayout = new QVBoxLayout(panelRight);
