@@ -7,7 +7,7 @@ set(ModuleIncludePath ${ModuleRootPath}/include)
 set(IncludePathsPrivate "")
 set(IncludePathsPublic "")
 list(APPEND IncludePathsPrivate ${ModuleSourcePath})
-get_filename_component(EngineIncludePath "../../../../Source/Sample/AssetCreator/Engine/include" ABSOLUTE)
+get_filename_component(EngineIncludePath "../../../../Source/Sample/ContentCreator/Engine/include" ABSOLUTE)
 list(APPEND IncludePathsPrivate ${EngineIncludePath})
 list(APPEND IncludePathsPublic ${ModuleIncludePath})
 

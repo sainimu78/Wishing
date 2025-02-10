@@ -1,0 +1,12 @@
+{
+	"MyArray": [
+		"Nihao",
+		"Bucuo",
+		"a.txt",
+		"Shi",
+		"b.txt",
+		"c.txt",
+		"Buxin",
+		"d.txt"
+	]
+}

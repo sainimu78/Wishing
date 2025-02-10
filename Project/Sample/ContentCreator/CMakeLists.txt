@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.10.0)
 
 include(../InitSampleRootPath.cmake)
 
-set(c_ProjectName AssetCreator)
+set(c_ProjectName ContentCreator)
 
 set(c_SampleRootSourceDirPath ${c_RootSourceDirPath}/Sample/${c_ProjectName})
 
