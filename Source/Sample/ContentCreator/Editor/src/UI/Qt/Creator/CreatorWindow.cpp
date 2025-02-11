@@ -1,5 +1,5 @@
-#include "Widget/Qt/Creator/CreatorWindow.h"
-#include "Widget/Qt/ContentExplorer/ContentView.h"
+#include "UI/Qt/Creator/CreatorWindow.h"
+#include "UI/Qt/ContentExplorer/ContentView.h"
 #include "QToolBar"
 #include "QToolTip"
 #include "QBoxLayout"

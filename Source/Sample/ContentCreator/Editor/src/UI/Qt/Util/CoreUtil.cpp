@@ -1,4 +1,4 @@
-#include "Widget/Qt/Util/CoreUtil.h"
+#include "UI/Qt/Util/CoreUtil.h"
 
 namespace WishingQt
 {

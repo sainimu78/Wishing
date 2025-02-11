@@ -1,9 +1,9 @@
-#include "Widget/Qt/ContentExplorer/ContentView.h"
+#include "UI/Qt/ContentExplorer/ContentView.h"
 #include "Base/AssetCreatorDefinition.h"
 #include "Niflect/Util/SystemUtil.h"
 #include "Niflect/Util/StringUtil.h"
 #include "QBoxLayout"
-#include "Widget/Qt/Util/CoreUtil.h"
+#include "UI/Qt/Util/CoreUtil.h"
 
 namespace WishingQt
 {
