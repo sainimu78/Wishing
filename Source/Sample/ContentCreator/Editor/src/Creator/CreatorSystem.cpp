@@ -87,7 +87,7 @@ namespace Wishing
 		m_pipeline.m_state.m_running = true;
 #ifdef PIPELINE_RUNNING_WITH_IO_CONTEXT
 		m_pipeline.m_ctx = Niflect::MakeShared<boost::asio::io_context>();
-		//m_pipeline.m_thread = Niflect::MakeShared<boost::thread>(&CCreatorSystem::AsyncRun2, this);
+		m_pipeline.m_thread = Niflect::MakeShared<boost::thread>(&CCreatorSystem::AsyncRun2, this);
 #else
 		m_pipeline.m_thread = Niflect::MakeShared<boost::thread>(&CCreatorSystem::AsyncRun, this);
 #endif
