@@ -6,6 +6,7 @@
 #include "Niflect/Util/SystemUtil.h"
 #include "Creator/CreatorOption.h"
 #include "Creator/CreatorPipeline.h"
+#include "WishingEngine/WishingEngine.h"
 
 #ifdef WIN32
 #include <Windows.h>
@@ -61,6 +62,8 @@ static int EditorMain(int argc, char** argv)
     AllocConsole();
     freopen("CONOUT$", "w", stdout);
 #endif
+
+    TestWishingEngineInvocation();
 
     Wishing::CCreatorOption opt;
     ParseOptions(argc, argv, opt);

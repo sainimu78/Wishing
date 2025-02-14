@@ -36,11 +36,6 @@ target_compile_definitions(${ModuleName}
 	PRIVATE -DENGINE_EXPORTS
 	PRIVATE -DENGINE_C_EXPORTS
 )
-target_link_libraries(${ModuleName} PRIVATE TestModule1)
-
-#if(UNIX)
-#	file(MAKE_DIRECTORY ${NiflectGeneratedRootPath}) # 由于创建目录的函数实现存在缺陷, NiflectGenTool 并发执行时出现首次创建不存在的输出目录失败与之后写文件失败, 因此仅在 UNIX 上通过 cmake 创建输出目录
-#endif()
 
 list(APPEND v_ListAccessorSettingHeaderFilePath ${ModuleIncludePath}/EngineAccessorSetting.h)
 list(APPEND v_ListModuleIncludeDirPath ${IncludePathsPrivate})
@@ -48,9 +43,9 @@ list(APPEND v_ListModuleIncludeDirPath ${IncludePathsPublic})
 list(APPEND v_ListModuleHeaderFilePath ${ModuleHeaders})
 set(v_ModuleAPIMacro ENGINE_API)
 set(v_ModuleAPIMacroHeaderFilePath ${ModuleIncludePath}/Engine/EngineCommon.h)
-
 include(${c_RootProjectDirPath}/Niflect/Default.cmake)
 
 include(${c_ProjectDirPath}/Install.cmake)
 
+target_link_libraries(${ModuleName} PRIVATE TestModule1)
 include(${c_ProjectDirPath}/TestModule1/Shared.cmake)
