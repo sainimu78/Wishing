@@ -41,8 +41,6 @@ list(APPEND v_ListModuleHeaderFilePath ${ModuleHeaders})
 
 include(${c_RootProjectDirPath}/Niflect/Default.cmake)
 
-include(${c_ProjectDirPath}/Install.cmake)
-
 #if(UNIX)
 #	file(MAKE_DIRECTORY ${NiflectGeneratedRootPath}) # 由于创建目录的函数实现存在缺陷, NiflectGenTool 并发执行时出现首次创建不存在的输出目录失败与之后写文件失败, 因此仅在 UNIX 上通过 cmake 创建输出目录
 #endif()

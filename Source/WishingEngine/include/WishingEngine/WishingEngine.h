@@ -1,4 +1,5 @@
 #pragma once
 #include "WishingEngineCommon.h"
+#include "Niflect/Base/String.h"
 
-WISHINGENGINE_API void TestWishingEngineInvocation();
+WISHINGENGINE_API Niflect::CString TestWishingEngineInvocation();

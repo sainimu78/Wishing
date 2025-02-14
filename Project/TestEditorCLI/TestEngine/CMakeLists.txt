@@ -49,3 +49,4 @@ include(${c_ProjectDirPath}/Install.cmake)
 
 target_link_libraries(${ModuleName} PRIVATE TestModule1)
 include(${c_ProjectDirPath}/TestModule1/Shared.cmake)
+include(${c_ProjectDirPath}/Install.cmake)

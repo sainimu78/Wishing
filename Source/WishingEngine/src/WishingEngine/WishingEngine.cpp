@@ -1,7 +1,7 @@
 #include "WishingEngine/WishingEngine.h"
 #include <stdio.h>
 
-void TestWishingEngineInvocation()
+Niflect::CString TestWishingEngineInvocation()
 {
-	printf("nihao\n");
+	return "WishingEngine: nihao";
 }

@@ -63,7 +63,7 @@ static int EditorMain(int argc, char** argv)
     freopen("CONOUT$", "w", stdout);
 #endif
 
-    TestWishingEngineInvocation();
+    printf("%s\n", TestWishingEngineInvocation().c_str());
 
     Wishing::CCreatorOption opt;
     ParseOptions(argc, argv, opt);
