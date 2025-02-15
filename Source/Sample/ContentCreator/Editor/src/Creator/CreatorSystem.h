@@ -42,16 +42,23 @@ namespace Wishing
 	class QtMainThreadExecutor : public QObject {
 		Q_OBJECT
 	public:
-		void post(std::function<void()> task) {
-			QObject::connect(this, &QtMainThreadExecutor::workFinished, [task]()
+		QtMainThreadExecutor()
+		{
+			QObject::connect(this, &QtMainThreadExecutor::workFinished, [this]()
 				{
-					task();
+					m_task();
 				});
+		}
+		void post(const std::function<void()>& task) {
+			m_task = task;
 			QMetaObject::invokeMethod(this, "workFinished", Qt::QueuedConnection);
 		}
 
 	signals:
 		void workFinished();
+
+	private:
+		std::function<void()> m_task;
 	};
 
 	class CCreatorSystem
