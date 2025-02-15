@@ -2,7 +2,7 @@ set(v_FindPackageBasedIntegration TRUE)
 
 include(${c_RootThirdPartyDirPath}/Qt/Qt_5_x/Deps.cmake)
 if(v_FindPackageBasedIntegration)
-    set(v_LibNameFindPackgetBased Qt5)
+    set(v_LibNameFindPackgeBased Qt5)
 	set(v_ListComponentFindPackgeBased ${c_ListQtLibNameFindPackageBased})
     set_target_properties(${ModuleName} PROPERTIES AUTOMOC ON)
     #set(QT_ROOT "${v_UnzippedDirPath}/5.8.0/x64/5.8/msvc2015_64")

@@ -8,7 +8,7 @@ include(${c_RootCMakeProjectFrameworkDirPath}/ProjectBegin.cmake)
 project(${c_ProjectName})
 include(${c_RootCMakeProjectFrameworkDirPath}/ProjectEnd.cmake)
 
-set(c_ProjectRequiredLibInstallation FALSE)
+set(c_ProjectRequiredBinInstalling FALSE)
 
 add_subdirectory(${c_ProjectName})
 
