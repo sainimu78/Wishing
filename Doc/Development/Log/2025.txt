@@ -92,4 +92,5 @@
 2025.02.02, 五星, 设想高效 GUI 方案, 通过 2D 场景管理与绘制实现控件, 可用 QGraphicsItem 实现, 但不希望捆绑传统 QWidget 等多余功能, 因此方案定为 skia 作图形引擎, 再用 Qt 或其它库做窗口管理, 目标是丰富动画元素与渲染高效, 对于控件部分可进一步探索, 如 chromium 框架 UI 模块是否已像 skia 形成通用库或移植代码; 尝试构建 skia;
 2025.02.09, 五星, 构建 skia 分支 chrome/m134, Windows, Linux, Android, 见 F:\sainimu78_Storage\ThirdParty\skia\Source\README.md; 
 2025.02.10, 五星, QGraphicsItem 已具所需, 对于效率要求高的属性树, 文件浏览控件, 计划通过 QGraphicsItem 制作, 放弃基于 skia 开发控件库; 另构思主要研发内容为 WishingSDK, 作为内容制作框架, 应尝试尽可能简化 UI 层耦合, 此即主要挑战, 使 UI 可替换, 因此现选定 Qt 作为 UI 模块; 构思项目结构, 增加 WishingEngine 模块, 增加避免 library 项目安装依赖的 cmake 选项;
-?/2025.02.14, 五星, 
+2025.02.14, 五星, 为支持 moc 代码生成, 须按 find_package 接 Qt; cmake 框架支持以 find_package 接入三方, Qt 5.8 与 boost 1.73 已相应改用; 
+?/2025.02.15, 五星, 
