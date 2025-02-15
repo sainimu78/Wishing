@@ -218,7 +218,8 @@ namespace Wishing
 
 			m_a.post([]()
 				{
-					printf("");
+					static int s_cnt = 0;
+					printf("Invocation on main thread, %d\n", s_cnt++);
 				});
 			{
 				boost::unique_lock<boost::mutex> lock(m_pipeline.m_state.GetMutex());
