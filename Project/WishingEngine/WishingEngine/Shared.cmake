@@ -41,5 +41,7 @@ target_compile_definitions(${ModuleName}
 
 include(${c_RootProjectDirPath}/Niflect/Niflect.cmake)
 
+include(Licensed_boost.cmake)
+
 #target_link_libraries(${ModuleName} PRIVATE TestModule1)
 #include(${c_ProjectDirPath}/TestModule1/Shared.cmake)

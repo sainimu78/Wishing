@@ -6,7 +6,7 @@
 #include "Niflect/Util/SystemUtil.h"
 #include "Creator/CreatorOption.h"
 #include "Creator/CreatorPipeline.h"
-#include "WishingEngine/WishingEngine.h"
+#include "WishingEngine/Content/ContentSystem.h"
 
 #ifdef WIN32
 #include <Windows.h>
@@ -63,8 +63,6 @@ static int EditorMain(int argc, char** argv)
     freopen("CONOUT$", "w", stdout);
 #endif
 
-    printf("%s\n", TestWishingEngineInvocation().c_str());
-
     Wishing::CCreatorOption opt;
     ParseOptions(argc, argv, opt);
 
@@ -85,13 +83,21 @@ static int EditorMain(int argc, char** argv)
     if (!sys.Start())
         ASSERT(false);
 
+    auto sys2 = CreateContentSystem();
+    sys2->Initialize();
+    if (!sys2->Start())
+        ASSERT(false);
+
     using namespace WishingQt;
     QCreatorWindow wnd;
     wnd.Init(&sys);
+    wnd.Init2(sys2.Get());
     wnd.resize(width, height);
     wnd.show();
     auto ret = app.exec();
     sys.Stop();
+    sys2->Stop();
+    sys2->Finalize();
     return ret;
 }
 

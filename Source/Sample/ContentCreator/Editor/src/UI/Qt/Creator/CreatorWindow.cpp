@@ -49,6 +49,7 @@ namespace WishingQt
 	QCreatorWindow::QCreatorWindow(QWidget* parentWidget)
 		: inherited(parentWidget)
 		, m_sys(NULL)
+		, m_sys2(NULL)
 	{
 		auto wdgCentral = new QWidget(this);
 		this->setCentralWidget(wdgCentral);
@@ -57,11 +58,15 @@ namespace WishingQt
 		m_contentView = new QContentView(this);
 		mainLayout->addWidget(m_contentView);
 
+		auto viewLayout = new QVBoxLayout;
 		auto scene = new QGraphicsScene(this);
 		auto view0 = new QGraphicsView(scene, this);
-		mainLayout->addWidget(view0);
+		viewLayout->addWidget(view0);
+		auto view1 = new QGraphicsView(scene, this);
+		viewLayout->addWidget(view1);
 		auto item = new QMyGraphicsItem;
 		scene->addItem(item);
+		mainLayout->addLayout(viewLayout);
 
 		auto panelRight = new QWidget(this);
 		auto rightLayout = new QVBoxLayout(panelRight);
@@ -113,5 +118,9 @@ namespace WishingQt
 	void QCreatorWindow::Init(Wishing::CCreatorSystem* sys)
 	{
 		m_sys = sys;
+	}
+	void QCreatorWindow::Init2(Wishing::CContentSystem* sys)
+	{
+		m_sys2 = sys;
 	}
 }

@@ -2,6 +2,7 @@
 #include "Creator/CreatorOption.h"
 #include "Base/BoostWrapper.h"
 #include "Content/ContentManager.h"
+#include "qobject.h"
 
 namespace Wishing
 {
@@ -36,6 +37,21 @@ namespace Wishing
 		CSharedBoostIoContext m_ctx;
 #endif
 		CSharedBoostThread m_thread;
+	};
+
+	class QtMainThreadExecutor : public QObject {
+		Q_OBJECT
+	public:
+		void post(std::function<void()> task) {
+			QObject::connect(this, &QtMainThreadExecutor::workFinished, [task]()
+				{
+					task();
+				});
+			QMetaObject::invokeMethod(this, "workFinished", Qt::QueuedConnection);
+		}
+
+	signals:
+		void workFinished();
 	};
 
 	class CCreatorSystem
@@ -78,5 +94,6 @@ namespace Wishing
 		CCreatorPipeline m_pipeline;
 		uint32 m_pipelineActivatedCount;
 		CContentManager m_contentMgr;
+		QtMainThreadExecutor m_a;
 	};
 }

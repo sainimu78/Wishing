@@ -216,6 +216,10 @@ namespace Wishing
 			printf("Done\n");
 			m_pipelineActivatedCount++;
 
+			m_a.post([]()
+				{
+					printf("");
+				});
 			{
 				boost::unique_lock<boost::mutex> lock(m_pipeline.m_state.GetMutex());
 				if (!m_pipeline.m_state.m_running)
