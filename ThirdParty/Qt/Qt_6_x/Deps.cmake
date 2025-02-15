@@ -1,12 +1,12 @@
 
-set(QtLibFileNames)
-list(APPEND QtLibFileNames
+set(c_QtLibFileNames)
+list(APPEND c_QtLibFileNames
 	Qt6Core
 	Qt6Gui
 	Qt6Widgets
 )
-set(QtIncludeDirNames)
-list(APPEND QtIncludeDirNames
+set(c_QtIncludeDirNames)
+list(APPEND c_QtIncludeDirNames
 	QtCore
 	QtGui
 	QtWidgets

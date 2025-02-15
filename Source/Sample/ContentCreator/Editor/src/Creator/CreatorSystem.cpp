@@ -216,11 +216,13 @@ namespace Wishing
 			printf("Done\n");
 			m_pipelineActivatedCount++;
 
+#ifdef PIPELINE_MAIN_THREAD_SYNC_CALLBACK
 			m_a.post([]()
 				{
 					static int s_cnt = 0;
 					printf("Invocation on main thread, %d\n", s_cnt++);
 				});
+#endif
 			{
 				boost::unique_lock<boost::mutex> lock(m_pipeline.m_state.GetMutex());
 				if (!m_pipeline.m_state.m_running)

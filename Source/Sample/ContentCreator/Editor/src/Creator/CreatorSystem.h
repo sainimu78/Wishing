@@ -3,6 +3,7 @@
 #include "Base/BoostWrapper.h"
 #include "Content/ContentManager.h"
 #include "qobject.h"
+#include "EditorDevelopmentMacro.h"//避免 moc 不能获取到其中的宏定义导致可能的解析错误. 此显式 include 避免错误的方法仅当被 PCH 中宏包围且指定 Q_OBJECT 的类出现时使用, 或遇 moc 代码相关的链接错误出现时相应 include PCH 头文件, 需要注意的是, 当包围相应类的宏不定义时, 需要注释或移除相应的 PCH include, 否则出现 moc 代码相关错误
 
 namespace Wishing
 {
@@ -39,6 +40,7 @@ namespace Wishing
 		CSharedBoostThread m_thread;
 	};
 
+#ifdef PIPELINE_MAIN_THREAD_SYNC_CALLBACK
 	class QtMainThreadExecutor : public QObject {
 		Q_OBJECT
 	public:
@@ -60,6 +62,7 @@ namespace Wishing
 	private:
 		std::function<void()> m_task;
 	};
+#endif
 
 	class CCreatorSystem
 	{
@@ -101,6 +104,8 @@ namespace Wishing
 		CCreatorPipeline m_pipeline;
 		uint32 m_pipelineActivatedCount;
 		CContentManager m_contentMgr;
+#ifdef PIPELINE_MAIN_THREAD_SYNC_CALLBACK
 		QtMainThreadExecutor m_a;
+#endif
 	};
 }

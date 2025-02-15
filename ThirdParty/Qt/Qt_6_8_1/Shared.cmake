@@ -15,10 +15,10 @@ include(${c_RootThirdPartyDirPath}/Qt/Qt_6_x/Deps.cmake)
 
 set(QtIncludeRootDirPath ${v_UnzippedDirPath}/include)
 list(APPEND v_ListLibIncludeDirPathPrivate ${QtIncludeRootDirPath})
-foreach(It ${QtIncludeDirNames})
+foreach(It ${c_QtIncludeDirNames})
     list(APPEND v_ListLibIncludeDirPathPrivate ${QtIncludeRootDirPath}/${It})
 endforeach()
-foreach(It ${QtLibFileNames})
+foreach(It ${c_QtLibFileNames})
 	list(APPEND v_ListImportedLibFileName ${It})
 endforeach()
 
