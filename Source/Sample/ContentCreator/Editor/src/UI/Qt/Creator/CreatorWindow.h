@@ -5,7 +5,7 @@
 
 namespace WishingQt
 {
-	class QContentView;
+	class QContentTree;
 
 	class QCreatorWindow : public QMainWindow
 	{
@@ -18,7 +18,7 @@ namespace WishingQt
 		void Init2(Wishing::CContentSystem* sys);
 
 	private:
-		QContentView* m_contentView;
+		QContentTree* m_contentView;
 		Wishing::CCreatorSystem* m_sys;
 		Wishing::CContentSystem* m_sys2;
 	};

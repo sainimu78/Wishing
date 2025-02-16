@@ -1,5 +1,5 @@
 #include "UI/Qt/Creator/CreatorWindow.h"
-#include "UI/Qt/ContentExplorer/ContentView.h"
+#include "UI/Qt/Content/ContentTree.h"
 #include "QToolBar"
 #include "QToolTip"
 #include "QBoxLayout"
@@ -55,7 +55,7 @@ namespace WishingQt
 		this->setCentralWidget(wdgCentral);
 		auto mainLayout = new QHBoxLayout(wdgCentral);
 
-		m_contentView = new QContentView(this);
+		m_contentView = new QContentTree(this);
 		mainLayout->addWidget(m_contentView);
 
 		auto viewLayout = new QVBoxLayout;
