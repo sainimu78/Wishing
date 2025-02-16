@@ -1,5 +1,5 @@
 #pragma once
-#include "WishingEngine/Pipeline/UndoableObject.h"
+#include "WishingEngine/Pipeline/BaseObject.h"
 #include "Niflect/Base/Array.h"
 #include "WishingEngine/Content/ContentNode.h"
 #include "Niflect/Serialization/RwTree.h"
@@ -8,9 +8,9 @@ namespace Wishing
 {
 	using namespace RwTree;
 
-	class CContentNodeManager : public CUndoableObject
+	class CContentNodeManager : public CBaseObject
 	{
-		typedef CUndoableObject inherited;
+		typedef CBaseObject inherited;
 	public:
 		bool Save(CRwNode* rw) const;
 		bool Load(const CRwNode* rw);

@@ -2,7 +2,7 @@
 
 namespace Wishing
 {
-	class CUndoableObject
+	class CBaseObject
 	{
 
 	};
