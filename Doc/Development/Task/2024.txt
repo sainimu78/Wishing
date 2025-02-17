@@ -158,3 +158,4 @@
 81. Deprecated, (现认为目前可先按照完整解析的方式使用, 并可借助 VS 支持的可跳转的 Diagnotics 错误输出) NiflectGen, 避免未指定无 Tag 的基类时提示错误, 如 class CPanel : public Wishing::CSript 中的 CScript 无 NIF_T
 82. Done, CMakeProjectFramework	1. 清理 v_ImportedLibName; 2. 一些 cmake 文件名错误 InstalStaticLinkinglLibrary, InstalDynamicLinkinglLibrary; 3. 清理 c_RootCMakeProjectFrameworkDirPath
 83. TestEditorCLI, TSharedPtr 及其数组类型测试, Accessor 应为模板
+84. NiflectGen, 支持 PCH, 这可能是更简单的简化解析方法; 
