@@ -49,20 +49,28 @@ namespace TestModule1
 	public:
 		CTestMyInstance()
 			: m_float_0(0.0f)
+			, m_bool_1(false)
 		{
 		}
 		void InitForTest()
 		{
 			m_float_0 = 12.3f;
+			m_bool_1 = true;
+			m_string_2 = "my string 2";
 		}
 		bool operator==(const CTestMyInstance& rhs) const
 		{
-			return
-				m_float_0 == rhs.m_float_0
+			return m_float_0 == rhs.m_float_0
+				&& m_bool_1 == rhs.m_bool_1
+				&& m_string_2 == rhs.m_string_2
 				;
 		}
 		NIF_F()
 		float m_float_0;
+		NIF_F()
+		bool m_bool_1;
+		NIF_F()
+		Niflect::CString m_string_2;
 	};
 	using CSharedTestMyInstance = Niflect::TSharedPtr<CTestMyInstance>;
 }

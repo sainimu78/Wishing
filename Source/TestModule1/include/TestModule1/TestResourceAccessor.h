@@ -81,6 +81,7 @@ namespace TestModule1
 		}
 	};
 
+	//可用于不 Save 类型, Load 时创建相应实例
 	template <typename TInstanceType>
 	class TSharedInstanceAccessor : public Niflect::CAccessor
 	{
