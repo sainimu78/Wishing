@@ -92,6 +92,7 @@ namespace TestModule1
 			const auto& instance = *static_cast<const TSharedType*>(base);
 			if (instance == NULL)
 			{
+				//仅该测试类型的 Field 实例的此 Field 为空, 避免无限递归
 				auto offset = Niflect::GetFieldOffset(&CTestBase1::m_shared_self_instance_4);
 				auto dummy = static_cast<const char*>(base) - offset;
 				auto owner = reinterpret_cast<const CTestBase1*>(dummy);
