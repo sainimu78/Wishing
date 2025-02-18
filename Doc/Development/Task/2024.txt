@@ -160,7 +160,7 @@
 83. Done, TestEditorCLI, TSharedPtr 及其数组类型测试, Accessor 应为模板
 84. NiflectGen, 支持 PCH, 这可能是更简单的简化解析方法; 
 85. NiflectGen, 起始版本号定为 0.6.0, 距 1.0.0 还有 4 个版本, 主要工作有
-	1. 友好的常见误用, 错误提示
+	1. 版本信息, 依赖版本检查, 计划集成在 CMakeProjectFramework
 	2. PCH, 见 84
-	3. 自动测试流程, 计划集成在 CMakeProjectFramework
-	4. 版本信息, 依赖版本检查, 计划集成在 CMakeProjectFramework
+	3. 友好的常见误用, 错误提示, 搜索 GenLogError
+	4. 自动测试流程, 计划集成在 CMakeProjectFramework
