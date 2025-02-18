@@ -35,7 +35,8 @@ target_compile_definitions(${ModuleName}
 
 set(v_ModuleAPIMacro TESTMODULE1_API)
 set(v_ModuleAPIMacroHeaderFilePath ${ModuleIncludePath}/TestModule1Common.h)
-list(APPEND v_ListAccessorSettingHeaderFilePath ${c_RootThirdPartyDirPath}/Niflect/Niflect/include/Niflect/CommonlyUsed/DefaultAccessorSetting.h)
+#list(APPEND v_ListAccessorSettingHeaderFilePath ${c_RootThirdPartyDirPath}/Niflect/Niflect/include/Niflect/CommonlyUsed/DefaultAccessorSetting.h)
+list(APPEND v_ListAccessorSettingHeaderFilePath ${ModuleSourcePath}/TestModule1/TestModule1AccessorSetting.h)
 list(APPEND v_ListModuleIncludeDirPath ${IncludePathsPublic})
 list(APPEND v_ListModuleHeaderFilePath ${ModuleHeaders})
 

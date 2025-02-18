@@ -27,6 +27,11 @@ namespace TestModule1
 		rec.m_int_2 = 456;
 	}
 
+	class CTestBase1;
+	using CSharedTestBase1 = Niflect::TSharedPtr<CTestBase1>;
+
+#define TESTBASE1_SELF_INSTANCE_IDENTIFIER "self string 0"
+
 	NIF_T()
 	class CTestBase1
 	{
@@ -53,6 +58,15 @@ namespace TestModule1
 			m_array_map_string_float_3[1].insert({ "base zhende", 1.3f });
 			m_array_map_string_float_3[2].insert({ "base buxin", 1.4f });
 			m_array_map_string_float_3[2].insert({ "base ladao", 1.5f });
+			m_shared_self_instance_4 = Niflect::MakeShared<CTestBase1>();
+			m_shared_self_instance_4->m_base_string_0 = TESTBASE1_SELF_INSTANCE_IDENTIFIER;
+			m_shared_self_instance_4->m_base_bool_1 = true;
+			m_shared_self_instance_4->m_base_std_string_2 = "self std string 2";
+			m_shared_self_instance_4->m_array_map_string_float_3.resize(2);
+			m_shared_self_instance_4->m_array_map_string_float_3[0].insert({ "self nihao", 2.0f });
+			m_shared_self_instance_4->m_array_map_string_float_3[0].insert({ "self bucuo", 2.1f });
+			m_shared_self_instance_4->m_array_map_string_float_3[1].insert({ "self shima", 2.2f });
+			m_shared_self_instance_4->m_array_map_string_float_3[1].insert({ "self zhende", 2.3f });
 		}
 		bool operator==(const CTestBase1& rhs) const
 		{
@@ -60,18 +74,28 @@ namespace TestModule1
 				&& m_base_bool_1 == rhs.m_base_bool_1
 				&& m_base_std_string_2 == rhs.m_base_std_string_2
 				&& m_array_map_string_float_3 == rhs.m_array_map_string_float_3
+				&& m_shared_self_instance_4->m_base_string_0 == rhs.m_shared_self_instance_4->m_base_string_0
+				&& m_shared_self_instance_4->m_base_bool_1 == rhs.m_shared_self_instance_4->m_base_bool_1
+				&& m_shared_self_instance_4->m_base_std_string_2 == rhs.m_shared_self_instance_4->m_base_std_string_2
+				&& m_shared_self_instance_4->m_array_map_string_float_3 == rhs.m_shared_self_instance_4->m_array_map_string_float_3
 				;
 		}
 
-	private:
+	public:
 		NIF_F()
 		Niflect::CString m_base_string_0;
+
+	private:
 		NIF_F()
 		bool m_base_bool_1;
 		NIF_F()
 		std::string m_base_std_string_2;
 		NIF_F()
 		std::vector<std::map<std::string, float> > m_array_map_string_float_3;
+
+	public:
+		NIF_F()
+		TestModule1::CSharedTestBase1 m_shared_self_instance_4;
 	};
 
 	class CMyEnumConstNata : public Niflect::CNata
@@ -145,6 +169,8 @@ namespace TestModule1
 			ret.first->second.push_back(2.4f);
 			m_bool_6 = false;
 			m_float_7 = 1.0f;
+			m_shared_base1_instance_8 = Niflect::MakeShared<CTestBase1>();
+			m_shared_base1_instance_8->InitForTest();
 		}
 		bool operator==(const CTestClass1& rhs) const
 		{
@@ -157,6 +183,7 @@ namespace TestModule1
 				&& m_std_map_string_array_float_5 == rhs.m_std_map_string_array_float_5
 				&& m_bool_6 == rhs.m_bool_6
 				&& m_float_7 == rhs.m_float_7
+				&& (*m_shared_base1_instance_8) == (*rhs.m_shared_base1_instance_8)
 				;
 		}
 
@@ -177,5 +204,7 @@ namespace TestModule1
 		bool m_bool_6;
 		NIF_F()
 		float m_float_7;
+		NIF_F()
+		TestModule1::CSharedTestBase1 m_shared_base1_instance_8;
 	};
 }
