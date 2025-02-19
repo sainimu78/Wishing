@@ -7,7 +7,7 @@ int main()
 #ifdef WIN32
 	const char* cmd = "dir /B ..\\..\\..\\..\\..\\Niflect";
 #else
-	const char* cmd = "ls ~/Fts/Niflect";
+	const char* cmd = "ls ..\\..\\..\\..\\..\\Niflect";
 #endif
 	auto b = CmdExec(cmd, vecStr);
 	if(b)
