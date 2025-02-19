@@ -1,0 +1,1 @@
+g++ -I./ a.cpp Util/MyCmd.cpp
