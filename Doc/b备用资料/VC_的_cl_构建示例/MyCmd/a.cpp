@@ -5,7 +5,7 @@ int main()
 {
 	TStringList vecStr;
 #ifdef WIN32
-	const char* cmd = "dir /B ..\\..\\..\\..\\..\\..\\Niflect";
+	const char* cmd = "dir /B ..\\..\\..\\..\\..\\Niflect";
 #else
 	const char* cmd = "ls ~/Fts/Niflect";
 #endif
