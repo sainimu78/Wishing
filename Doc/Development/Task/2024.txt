@@ -164,5 +164,5 @@
 	2. PCH, 见 84, 87
 	3. 友好的常见误用, 错误提示, 搜索 GenLogError
 	4. 自动测试流程, 计划集成在 CMakeProjectFramework
-86. CMakeProjectFramework, 接入 NiflectGenTool 应区分构建配置, 如生成的代码分别输出到 Debug 与 Release 目录中, 避免 Build 多种配置时出现生成代码被修改的隐患, 如使用了 _DEBUG 宏的反射类型
+86. Deprecated, 现认为不区分配置生成为合理, 已将接入 custom target 的输出依赖改为 FinishedFlag.txt, 每次生成都写入, CMakeProjectFramework, 接入 NiflectGenTool 应区分构建配置, 如生成的代码分别输出到 Debug 与 Release 目录中, 避免 Build 多种配置时出现生成代码被修改的隐患, 如使用了 _DEBUG 宏的反射类型
 87. CMakeProjectFramework, IntegrateNiflectGenTool 获取 Target 所有默认指定的宏, 如 Windows 下 Debug 版本默认的 _DEBUG, 传入解析, 可与 PCH 一起未完成, 见 84
