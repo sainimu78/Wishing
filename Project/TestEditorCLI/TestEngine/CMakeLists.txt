@@ -7,7 +7,6 @@ set(ModuleIncludePath ${ModuleRootPath}/include)
 set(IncludePathsPrivate "")
 set(IncludePathsPublic "")
 list(APPEND IncludePathsPrivate ${ModuleSourcePath})
-list(APPEND IncludePathsPrivate ${c_RootSourceDirPath}/TestModule1/include)
 list(APPEND IncludePathsPublic ${ModuleIncludePath})
 
 file(GLOB_RECURSE ModuleSources ${ModuleSourcePath}/*.cpp ${ModuleSourcePath}/*.h)
