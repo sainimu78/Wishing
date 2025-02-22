@@ -32,6 +32,7 @@ namespace Engine
 			TestModule1::InitForTest_SMyRecord(m_my_record_6);
 			m_shared_my_instance_7 = Niflect::MakeShared<TestModule1::CTestMyInstance>();
 			m_shared_my_instance_7->InitForTest();
+			m_my_class_in_ph_8.InitForTest();
 		}
 		bool operator==(const CDerivedObject& rhs) const
 		{
@@ -44,6 +45,7 @@ namespace Engine
 				&& m_array_test_base_5 == rhs.m_array_test_base_5
 				&& m_my_record_6 == rhs.m_my_record_6
 				&& (*m_shared_my_instance_7) == (*rhs.m_shared_my_instance_7)
+				&& m_my_class_in_ph_8 == rhs.m_my_class_in_ph_8
 				;
 		}
 	public:
@@ -63,6 +65,8 @@ namespace Engine
 		TestModule1::SMyRecord m_my_record_6;
 		NIF_F()
 		TestModule1::CSharedTestMyInstance m_shared_my_instance_7;
+		NIF_F()
+		TestModule1::CMyClassInPrecompileHeader m_my_class_in_ph_8;
 	};
 
 	using namespace TestModule1;

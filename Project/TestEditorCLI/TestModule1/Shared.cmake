@@ -19,6 +19,8 @@ list(APPEND SrcAll ${ModuleHeaders})
 
 add_library(${ModuleName} SHARED ${SrcAll})
 
+target_precompile_headers(${ModuleName} PUBLIC ${ModuleIncludePath}/TestModule1PrecompileHeader.h)
+
 #set_target_properties(${ModuleName} PROPERTIES 
 #    RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG}
 #    RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE}
@@ -39,7 +41,6 @@ set(v_ModuleAPIMacroHeaderFilePath ${ModuleIncludePath}/TestModule1Common.h)
 list(APPEND v_ListAccessorSettingHeaderFilePath ${ModuleSourcePath}/TestModule1/TestModule1AccessorSetting.h)
 list(APPEND v_ListModuleIncludeDirPath ${IncludePathsPublic})
 list(APPEND v_ListModuleHeaderFilePath ${ModuleHeaders})
-
 include(${c_RootProjectDirPath}/Niflect/Default.cmake)
 
 #if(UNIX)

@@ -37,6 +37,15 @@ target_compile_definitions(${ModuleName}
 	PRIVATE -DENGINE_C_EXPORTS
 )
 
+function(scoped_integrate_TestModule1)
+	include(${c_ProjectDirPath}/TestModule1/Shared.cmake)
+	include(${c_ProjectDirPath}/Install.cmake)
+endfunction()
+scoped_integrate_TestModule1()
+
+#target_link_libraries(${ModuleName} PRIVATE TestModule1)
+ngt_target_link_libraries(TestEngine PRIVATE TestModule1)
+
 list(APPEND v_ListAccessorSettingHeaderFilePath ${ModuleIncludePath}/EngineAccessorSetting.h)
 list(APPEND v_ListModuleIncludeDirPath ${IncludePathsPrivate})
 list(APPEND v_ListModuleIncludeDirPath ${IncludePathsPublic})
@@ -45,8 +54,4 @@ set(v_ModuleAPIMacro ENGINE_API)
 set(v_ModuleAPIMacroHeaderFilePath ${ModuleIncludePath}/Engine/EngineCommon.h)
 include(${c_RootProjectDirPath}/Niflect/Default.cmake)
 
-include(${c_ProjectDirPath}/Install.cmake)
-
-target_link_libraries(${ModuleName} PRIVATE TestModule1)
-include(${c_ProjectDirPath}/TestModule1/Shared.cmake)
 include(${c_ProjectDirPath}/Install.cmake)

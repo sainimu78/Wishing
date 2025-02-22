@@ -171,6 +171,7 @@ namespace TestModule1
 			m_float_7 = 1.0f;
 			m_shared_base1_instance_8 = Niflect::MakeShared<CTestBase1>();
 			m_shared_base1_instance_8->InitForTest();
+			m_my_class_in_ph_9.InitForTest();
 		}
 		bool operator==(const CTestClass1& rhs) const
 		{
@@ -184,6 +185,7 @@ namespace TestModule1
 				&& m_bool_6 == rhs.m_bool_6
 				&& m_float_7 == rhs.m_float_7
 				&& (*m_shared_base1_instance_8) == (*rhs.m_shared_base1_instance_8)
+				&& m_my_class_in_ph_9 == rhs.m_my_class_in_ph_9
 				;
 		}
 
@@ -206,5 +208,7 @@ namespace TestModule1
 		float m_float_7;
 		NIF_F()
 		TestModule1::CSharedTestBase1 m_shared_base1_instance_8;
+		NIF_F()
+		TestModule1::CMyClassInPrecompileHeader m_my_class_in_ph_9;
 	};
 }
