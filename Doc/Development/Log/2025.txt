@@ -98,4 +98,4 @@
 2025.02.20, 五星, ReleaseNotes.md 生成, 内容为版本号与 ReleaseNotesDetail.md 拼接; 调研 submodule 用法, 简化更新操作; 被 custom target 依赖的文件不为被使用的 cpp, 改为一个 txt, 每次生成完成都写入, 表示执行完成, 使 cmake 目标依赖机制可确定正确执行; 修复生成时机错误导致新输出目录时提示未生成 FinishedFlag.txt; 修复新输出目录时无生成代码文件导致读 fileSize 为 0 仍减固定 BOM 偏移产生负 fileSize; PROJECT_SETUP PROJECT_RELEASE 合并到 PROJECT_PIPELINE 枚举; 标记版本号缓存变量为 advanced 避免默认可见;
 2025.02.21, 五星, NiflectGen 使用 PCH 实验, 不同编译器生成的 PCH 格式不同, 无好方法通过 cmake 获取到所有依赖的 PH 头文件, 须从依赖中获取再加到模块中, 这意味着 target_link_libraries 须为 NiflectGenTool 封装如 niflect_target_link_libraries; 获取 target 的 include 路径与 precompile header 路径, 简化接入; 
 2025.02.23, 五星, 构建 googletest Windows 并接入, 简单使用示例; Ubuntu 测试; 废弃专门的根目录 Test, 复用 Project 目录, 简化流程
-?/2025.02.23, 五星, 
+1/2025.02.23, 五星, 改为一般 Project 结构, 拆分流程; 
