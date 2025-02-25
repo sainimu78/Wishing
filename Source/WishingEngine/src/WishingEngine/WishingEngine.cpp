@@ -13,7 +13,7 @@ namespace Wishing
 		auto mgr = Niflect::GetModuleManager();
 		printf("Modules count: %u\n", mgr->GetModulesCount());
 	}
-	void FinalizeeWishingEngine()
+	void FinalizeWishingEngine()
 	{
 		g_engine = NULL;
 		Niflect::FinalizeModuleManager();

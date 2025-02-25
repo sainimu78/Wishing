@@ -9,6 +9,6 @@ namespace Wishing
 	};
 
 	WISHINGENGINE_API void InitializeWishingEngine();
-	WISHINGENGINE_API void FinalizeeWishingEngine();
+	WISHINGENGINE_API void FinalizeWishingEngine();
 	WISHINGENGINE_API CWishingEngine* GetWishingEngine();
 }

@@ -101,6 +101,8 @@ static int EditorMain(int argc, char** argv)
     sys.Stop();
     sys2->Stop();
     sys2->Finalize();
+
+    FinalizeWishingEngine();
     return ret;
 }
 
