@@ -16,5 +16,4 @@ namespace Wishing
 	using CSharedWishingEngine = Niflect::TSharedPtr<CWishingEngine>;
 
 	WISHINGENGINE_API CSharedWishingEngine CreateWishingEngine();
-	WISHINGENGINE_API CWishingEngine* GetWishingEngine();
 }
