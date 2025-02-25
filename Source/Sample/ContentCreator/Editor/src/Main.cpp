@@ -7,6 +7,7 @@
 #include "Creator/CreatorOption.h"
 #include "Creator/CreatorPipeline.h"
 #include "WishingEngine/Content/ContentSystem.h"
+#include "WishingEngine/WishingEngine.h"
 
 #ifdef WIN32
 #include <Windows.h>
@@ -82,6 +83,8 @@ static int EditorMain(int argc, char** argv)
     sys.Initialize(opt);
     if (!sys.Start())
         ASSERT(false);
+
+    InitializeWishingEngine();
 
     auto sys2 = CreateContentSystem();
     sys2->Initialize();

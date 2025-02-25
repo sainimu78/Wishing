@@ -1,5 +1,14 @@
 #pragma once
 #include "WishingEngineCommon.h"
-#include "Niflect/Base/String.h"
 
-WISHINGENGINE_API Niflect::CString TestWishingEngineInvocation();
+namespace Wishing
+{
+	class CWishingEngine
+	{
+	public:
+	};
+
+	WISHINGENGINE_API void InitializeWishingEngine();
+	WISHINGENGINE_API void FinalizeeWishingEngine();
+	WISHINGENGINE_API CWishingEngine* GetWishingEngine();
+}

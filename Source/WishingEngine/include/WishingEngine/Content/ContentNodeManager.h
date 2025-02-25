@@ -1,17 +1,16 @@
 #pragma once
-#include "WishingEngine/Pipeline/BaseObject.h"
+#include "WishingEngine/Content/ContentObject.h"
 #include "Niflect/Base/Array.h"
 #include "WishingEngine/Content/ContentNode.h"
+#include "WishingEngine/Content/ContentNodeManager_gen.h"
 
 namespace Wishing
 {
-	class CContentNodeManager : public CBaseObject
+	NIF_T()
+	class CContentNodeManager : public CContentObject
 	{
-		typedef CBaseObject inherited;
-	public:
-		virtual bool Save(CRwNode* rw) const override;
-		virtual bool Load(const CRwNode* rw) override;
-
+		CONTENT_OBJECT_DECLARE()
+		typedef CContentObject inherited;
 	private:
 		Niflect::TArray<CSharedContentFileNode2> m_vecFileNode;
 		Niflect::TArray<CSharedContentDirNode2> m_vecDirNode;
