@@ -15,6 +15,10 @@ namespace Wishing
 	void CWishingEngine::Initialize()
 	{
 	}
+	bool CWishingEngine::RegisterObject(CWishingObject* obj)
+	{
+
+	}
 	CSharedWishingEngine CreateWishingEngine()
 	{
 		return Niflect::MakeShared<CWishingEngine>();
