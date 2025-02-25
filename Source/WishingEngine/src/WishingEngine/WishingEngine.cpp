@@ -4,22 +4,28 @@
 
 namespace Wishing
 {
-	static Niflect::TSharedPtr<CWishingEngine> g_engine;
-	void InitializeWishingEngine()
+	static CWishingEngine* g_instance = NULL;
+	CWishingEngine::CWishingEngine()
 	{
-		ASSERT(g_engine == NULL);
-		g_engine = Niflect::MakeShared<CWishingEngine>();
-
-		auto mgr = Niflect::GetModuleManager();
-		printf("Modules count: %u\n", mgr->GetModulesCount());
+		ASSERT(g_instance == NULL);
+		g_instance = this;
 	}
-	void FinalizeWishingEngine()
+	CWishingEngine::~CWishingEngine()
 	{
-		g_engine = NULL;
 		Niflect::FinalizeModuleManager();
+		g_instance = NULL;
+	}
+	void CWishingEngine::Initialize()
+	{
+		auto mgr = Niflect::GetModuleManager();
+		mgr->InitRegisteredModules();
+	}
+	CSharedWishingEngine CreateWishingEngine()
+	{
+		return Niflect::MakeShared<CWishingEngine>();
 	}
 	CWishingEngine* GetWishingEngine()
 	{
-		return g_engine.Get();
+		return g_instance;
 	}
 }

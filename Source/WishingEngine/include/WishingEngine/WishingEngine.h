@@ -1,14 +1,20 @@
 #pragma once
 #include "WishingEngineCommon.h"
+#include "Niflect/Base/SharedPtr.h"
 
 namespace Wishing
 {
 	class CWishingEngine
 	{
 	public:
-	};
+		CWishingEngine();
+		~CWishingEngine();
 
-	WISHINGENGINE_API void InitializeWishingEngine();
-	WISHINGENGINE_API void FinalizeWishingEngine();
+	public:
+		WISHINGENGINE_API void Initialize();
+	};
+	using CSharedWishingEngine = Niflect::TSharedPtr<CWishingEngine>;
+
+	WISHINGENGINE_API CSharedWishingEngine CreateWishingEngine();
 	WISHINGENGINE_API CWishingEngine* GetWishingEngine();
 }

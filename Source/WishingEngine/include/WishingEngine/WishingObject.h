@@ -3,13 +3,13 @@
 
 namespace Wishing
 {
-	class CContentObject
+	class CWishingObject
 	{
 	public:
 		virtual Niflect::CNiflectType* GetType() const = 0;
 	};
 
-#define CONTENT_OBJECT_DECLARE()\
+#define WISHINGOBJECT_DECLARE()\
 	GENERATED_BODY()\
 	public:\
 		virtual Niflect::CNiflectType* GetType() const override\

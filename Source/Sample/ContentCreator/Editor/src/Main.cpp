@@ -84,7 +84,8 @@ static int EditorMain(int argc, char** argv)
     if (!sys.Start())
         ASSERT(false);
 
-    InitializeWishingEngine();
+    auto engine = CreateWishingEngine();
+    engine->Initialize();
 
     auto sys2 = CreateContentSystem();
     sys2->Initialize();
@@ -102,7 +103,6 @@ static int EditorMain(int argc, char** argv)
     sys2->Stop();
     sys2->Finalize();
 
-    FinalizeWishingEngine();
     return ret;
 }
 
