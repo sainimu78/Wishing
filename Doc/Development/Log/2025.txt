@@ -99,4 +99,5 @@
 2025.02.21, 五星, NiflectGen 使用 PCH 实验, 不同编译器生成的 PCH 格式不同, 无好方法通过 cmake 获取到所有依赖的 PH 头文件, 须从依赖中获取再加到模块中, 这意味着 target_link_libraries 须为 NiflectGenTool 封装如 niflect_target_link_libraries; 获取 target 的 include 路径与 precompile header 路径, 简化接入; 
 2025.02.23, 五星, 构建 googletest Windows 并接入, 简单使用示例; Ubuntu 测试; 废弃专门的根目录 Test, 复用 Project 目录, 简化流程
 2025.02.24, 五星, 改为一般 Project 结构, 拆分流程; 静态注册模块信息, -gmi 替代 -gsm, 模块导出类型信息接口可能无实用性; 整理代码; 整理 NiflectGen, 使可被 Test 引用; 
-5/2025.02.25, 五星, NiflectGen 代码生成测试, 还须改写 CmdExec 为返回未分行的结果; Niflect 构建测试; Linux 上的构建测试, 但流程繁琐, 须针对平台特殊处理; 
+2025.02.25, 五星, NiflectGen 代码生成测试, 还须改写 CmdExec 为返回未分行的结果; Niflect 构建测试; Linux 上的构建测试, 但流程繁琐, 须针对平台特殊处理; Niflect 0.5.1 通过函数内静态变量先于全局变量释放的方式确保不出现 MemoryStats 误检测泄漏, 因此移除非必要的清理; cpf_include 简化接入方式, 详见函数注释;
+?/2025.02.28, 五星, 
