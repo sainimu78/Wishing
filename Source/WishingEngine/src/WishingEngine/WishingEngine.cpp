@@ -10,7 +10,6 @@ namespace Wishing
 	}
 	CWishingEngine::~CWishingEngine()
 	{
-		Niflect::CleanupModuleManager();
 	}
 	void CWishingEngine::Initialize()
 	{
