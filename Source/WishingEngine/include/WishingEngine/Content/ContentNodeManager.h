@@ -11,6 +11,10 @@ namespace Wishing
 	{
 		WISHINGOBJECT_DECLARE()
 		typedef CWishingObject inherited;
+	//public:
+	//	bool AddFileNode(const CSharedContentFileNode2& node);
+	//	bool AddDirNode(const CSharedContentDirNode2& node);
+
 	private:
 		Niflect::TArray<CSharedContentFileNode2> m_vecFileNode;
 		Niflect::TArray<CSharedContentDirNode2> m_vecDirNode;

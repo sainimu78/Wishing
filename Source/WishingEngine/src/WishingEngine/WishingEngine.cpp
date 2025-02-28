@@ -14,10 +14,12 @@ namespace Wishing
 	}
 	void CWishingEngine::Initialize()
 	{
+		this->RegisterObject(&m_contentNodeMgr);
 	}
 	bool CWishingEngine::RegisterObject(CWishingObject* obj)
 	{
-
+		m_vecObject.push_back(obj);
+		return true;
 	}
 	CSharedWishingEngine CreateWishingEngine()
 	{
