@@ -36,11 +36,7 @@ target_compile_definitions(${ModuleName}
 	PRIVATE -DENGINE_C_EXPORTS
 )
 
-function(scoped_integrate_TestModule1)
-	include(${c_ProjectDirPath}/TestModule1/Shared.cmake)
-	include(${c_ProjectDirPath}/Install.cmake)
-endfunction()
-scoped_integrate_TestModule1()
+cpf_include_install(${c_ProjectDirPath}/TestModule1/Shared.cmake)
 
 #target_link_libraries(${ModuleName} PRIVATE TestModule1)
 ngt_target_link_libraries(TestEngine PRIVATE TestModule1)
