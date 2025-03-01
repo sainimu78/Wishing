@@ -37,7 +37,7 @@ list(APPEND v_ListAccessorSettingHeaderFilePath ${ModuleHeaderDirPath}/WishingEn
 list(APPEND v_ListModuleHeaderFilePath ${ModuleHeaders})
 set(v_ModuleAPIMacro WISHINGENGINE_API)
 set(v_ModuleAPIMacroHeaderFilePath ${ModuleHeaderDirPath}/WishingEngineCommon.h)
-list(APPEND v_ListToolOption "-gmi")
+list(APPEND v_ListToolOption "-gsr")
 include(${c_RootProjectDirPath}/Niflect/Default.cmake)
 
 #if(WIN32)
