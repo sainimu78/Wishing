@@ -5,8 +5,8 @@ namespace Wishing
 {
 	CWishingEngine::CWishingEngine()
 	{
-		auto mgr = Niflect::GetModuleManager();
-		mgr->InitRegisteredModules();
+		auto reg = Niflect::GetModuleRegistry();
+		reg->InitRegisteredModules();
 	}
 	CWishingEngine::~CWishingEngine()
 	{
