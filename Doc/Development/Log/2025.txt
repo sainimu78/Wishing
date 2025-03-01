@@ -100,4 +100,4 @@
 2025.02.23, 五星, 构建 googletest Windows 并接入, 简单使用示例; Ubuntu 测试; 废弃专门的根目录 Test, 复用 Project 目录, 简化流程
 2025.02.24, 五星, 改为一般 Project 结构, 拆分流程; 静态注册模块信息, -gmi 替代 -gsm, 模块导出类型信息接口可能无实用性; 整理代码; 整理 NiflectGen, 使可被 Test 引用; 
 2025.02.25, 五星, NiflectGen 代码生成测试, 还须改写 CmdExec 为返回未分行的结果; Niflect 构建测试; Linux 上的构建测试, 但流程繁琐, 须针对平台特殊处理; Niflect 0.5.1 通过函数内静态变量先于全局变量释放的方式确保不出现 MemoryStats 误检测泄漏, 因此移除非必要的清理; cpf_include 简化接入方式, 详见函数注释;
-1/2025.02.28, 五星, ModuleManager 改名为 ModuleRegistry, 废弃 ModuleInfo
+2/2025.02.28, 五星, ModuleManager 改名为 ModuleRegistry, 废弃 ModuleInfo; -gmi 改为 -gsr, 整理代码; 
