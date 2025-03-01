@@ -1,8 +1,8 @@
 [中文介绍](Doc/Introduction/中文/README.md)
 
-# Wishing Engine
+# Wishing
 
-Wishing Engine is a framework for developing content editors
+Wishing is a framework for developing content editors
 
 # Features
 
@@ -32,5 +32,5 @@ Content-editing products often share some common systems and functionalities, wh
 - Modification and validation update processes after editing contents or instance properties
 - Collaborative content editing for multiple users
 
-As a result, Wishing Engine aims to standardize the development process for content-editing products.
+As a result, Wishing aims to standardize the development process for content-editing products.
 
