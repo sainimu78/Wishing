@@ -163,9 +163,9 @@
 	Done, 1. 版本信息, 依赖版本检查, 计划集成在 CMakeProjectFramework
 	Done, 2. PCH, 见 84, 87
 	3. 自动测试流程, 计划集成在 CMakeProjectFramework
-	4. API Macro 改为生成, 见 88
+	Done, 4. API Macro 改为生成, 见 88
 	5. 友好的常见误用, 错误提示, 搜索 GenLogError
 86. Deprecated, 现认为不区分配置生成为合理, 已将接入 custom target 的输出依赖改为 FinishedFlag.txt, 每次生成都写入, CMakeProjectFramework, 接入 NiflectGenTool 应区分构建配置, 如生成的代码分别输出到 Debug 与 Release 目录中, 避免 Build 多种配置时出现生成代码被修改的隐患, 如使用了 _DEBUG 宏的反射类型
 87. Deprecated, 合并到 88, CMakeProjectFramework, IntegrateNiflectGenTool 获取 Target 所有默认指定的宏, 如 Windows 下 Debug 版本默认的 _DEBUG, 传入解析, 可与 PCH 一起未完成, 见 84
-88. NiflectGen, ApiMacro 相关参数和代码可简化为生成并根据目标类型确定默认是否导出, 实现生成后还可实现获取目标的所有宏定义, 所以此修改是必须的, 可先确认获取目标类型的可行性
+88. Done, (已实现生成 API macro 头文件, 但不实现获取所有宏定义, 常见情况为使用 PrecompileHeader 中的定义宏, 现已支持获取此类头文件信息, 因此认为可能无必要实现, 仅记录方法备用, 见 Doc\b备用资料\cmake获取target所有宏定义.md) NiflectGen, ApiMacro 相关参数和代码可简化为生成并根据目标类型确定默认是否导出, 实现生成后还可实现获取目标的所有宏定义, 所以此修改是必须的, 可先确认获取目标类型的可行性
 89. Done, NiflectGen, 测试 Project 的 Build 归到专门的目录中, 提供 Generate, Update, Build, Setup, Clean, Test 流程
