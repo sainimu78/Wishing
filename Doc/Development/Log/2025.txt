@@ -103,4 +103,4 @@
 2025.02.28, 五星, ModuleManager 改名为 ModuleRegistry, 废弃 ModuleInfo; -gmi 改为 -gsr, 整理代码; 回顾 UE Component 层级调整相关的序列化与撤销流程, 父 Component 保存在指针属性 AttachParent 中, 撤销时通过 operator<<( class UObject*& Res ) override { Res = SerializedObject.ReferencedObjects[ObjectIndex].Get(); } 索引获取指针, 未验证的推断是 AttachParent 指针直接保存内存地址, SerializedObject.ReferencedObjects.Add(FPersistentObjectRef(Res)) 再通过持久化引用该指针, 另侧面印证在撤销添加删除 Component 时, 未进入 UObject 的构造与析构; NiflectGenTool 改用 CommandLineArgParser; Field 类型为 AS 中对应设置 BindingType 的别名实验, 未解决特化别名解析为 AS 中对应设置;
 2025.03.03, 五星, 支持特化别名, 别名嵌套; 解析流程简化, 统一 TypeAlias 与 TypeAliasTemplate 递归方式; 增加 -aft 允许解析以别名定义的 Field; ASSERT 改为可继续运行; -aft 测试; 
 2025.03.04, 五星, 生成 API Macro 及其头文件; cmake 项目框架相应修改, 整理 SamplteProjectTemplate 的项目接入 Gen 的设置; 测试 -gam; 
-?/2025.03.05, 五星, 
+2/2025.03.05, 五星, CommandLineArgParser 加测试, 版本号与 ReleaseNodes.md; Niflect 加 ReleaseNodes.md; 
