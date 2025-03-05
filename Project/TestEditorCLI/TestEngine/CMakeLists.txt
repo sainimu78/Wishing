@@ -45,8 +45,8 @@ list(APPEND v_ListAccessorSettingHeaderFilePath ${ModuleIncludePath}/EngineAcces
 #list(APPEND v_ListModuleIncludeDirPath ${IncludePathsPrivate})
 #list(APPEND v_ListModuleIncludeDirPath ${IncludePathsPublic})
 list(APPEND v_ListModuleHeaderFilePath ${ModuleHeaders})
-set(v_ModuleAPIMacro ENGINE_API)
-set(v_ModuleAPIMacroHeaderFilePath ${ModuleIncludePath}/Engine/EngineCommon.h)
+#set(v_ModuleAPIMacro ENGINE_API)
+#set(v_ModuleAPIMacroHeaderFilePath ${ModuleIncludePath}/Engine/EngineCommon.h)
 include(${c_RootProjectDirPath}/Niflect/Default.cmake)
 
 include(${c_ProjectDirPath}/Install.cmake)
