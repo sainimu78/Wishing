@@ -27,11 +27,12 @@ target_include_directories(${ModuleName}
 target_compile_definitions(${ModuleName} PRIVATE -DSAMPLEAPI_EXPORTS)
 
 list(APPEND v_ListAccessorSettingHeaderFilePath ${c_RootThirdPartyDirPath}/Niflect/Niflect/include/Niflect/CommonlyUsed/DefaultAccessorSetting.h)
-list(APPEND v_ListModuleIncludeDirPath ${IncludePathsPublic})
+#list(APPEND v_ListModuleIncludeDirPath ${IncludePathsPublic})
 list(APPEND v_ListModuleHeaderFilePath ${ModuleHeaders})
-set(v_ModuleAPIMacro SAMPLEAPI_API)
-set(v_ModuleAPIMacroHeaderFilePath ${ModuleIncludePath}/SampleAPICommon.h)
-list(APPEND v_ListToolOption "-gsm")
+#set(v_ModuleAPIMacro SAMPLEAPI_API)
+#set(v_ModuleAPIMacroHeaderFilePath ${ModuleIncludePath}/SampleAPICommon.h)
+#set(v_ToGenApiModuleHeader TRUE)
+#list(APPEND v_ListToolOption "-gsm")
 
 include(${c_RootProjectDirPath}/Niflect/Default.cmake)
 

@@ -1,4 +1,5 @@
 #pragma once
-#include "SampleAPI_gen.h"
+#include "SampleAPICommon.h"
+#include "Niflect/NiflectTable.h"
 
-SAMPLEAPI_API void TestInvokeCpp();
+SAMPLEAPI_API void InitSampleAPI(Niflect::CNiflectTable& table);

@@ -4,13 +4,10 @@
 
 int main()
 {
-	TestInvokeCpp();
-	auto info = NiflectGeneratedGetModuleInfo_SampleAPI();
-	info->RegisterTypes();
-	info->InitTypes();
-	info->InitTableTypesLayout();
-
 	using namespace Niflect;
+	CNiflectTable table;
+	InitSampleAPI(table);
+
 	auto type = StaticGetType<CSampleObject>();
 	auto src = type->MakeSharedInstance<CSampleObject>();
 	src->InitForTest();

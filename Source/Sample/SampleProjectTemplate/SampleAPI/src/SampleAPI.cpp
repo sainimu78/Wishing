@@ -1,8 +1,10 @@
 #include "SampleAPI.h"
-#include <stdio.h>
 #include "SampleAPI_private.h"
 
-void TestInvokeCpp()
+void InitSampleAPI(Niflect::CNiflectTable& table)
 {
-	printf("Sampe C++ API\n");
+	using namespace Niflect;
+	GeneratedInitialReg(&table);
+	GeneratedInitTypes();
+	table.InitTypesLayout();
 }
