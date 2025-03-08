@@ -10,13 +10,13 @@ namespace TestModule1
 	{
 		using MyPtr = CTestResource*;
 	protected:
-		virtual bool SaveInstanceImpl(const AddrType base, CRwNode* rw) const override
+		virtual bool SaveInstanceImpl(const InstanceType* base, CRwNode* rw) const override
 		{
 			const auto& instance = *static_cast<const MyPtr*>(base);
 			AddRwString(rw, "Path", instance->m_path);
 			return true;
 		}
-		virtual bool LoadInstanceImpl(AddrType base, const CRwNode* rw) const override
+		virtual bool LoadInstanceImpl(InstanceType* base, const CRwNode* rw) const override
 		{
 			auto& instance = *static_cast<MyPtr*>(base);
 			auto path = FindRwString(rw, "Path");
@@ -29,13 +29,13 @@ namespace TestModule1
 	class TRawTestResourcePointerAccessor : public Niflect::CAccessor
 	{
 	protected:
-		virtual bool SaveInstanceImpl(const AddrType base, CRwNode* rw) const override
+		virtual bool SaveInstanceImpl(const InstanceType* base, CRwNode* rw) const override
 		{
 			const auto& instance = *static_cast<const TInstance*>(base);
 			AddRwString(rw, "Path", instance.m_p->m_path);
 			return true;
 		}
-		virtual bool LoadInstanceImpl(AddrType base, const CRwNode* rw) const override
+		virtual bool LoadInstanceImpl(InstanceType* base, const CRwNode* rw) const override
 		{
 			auto& instance = *static_cast<TInstance*>(base);
 			auto path = FindRwString(rw, "Path");
@@ -47,13 +47,13 @@ namespace TestModule1
 	class CSharedTestResourceAccessor : public Niflect::CAccessor
 	{
 	protected:
-		virtual bool SaveInstanceImpl(const AddrType base, CRwNode* rw) const override
+		virtual bool SaveInstanceImpl(const InstanceType* base, CRwNode* rw) const override
 		{
 			const auto& instance = *static_cast<const CSharedTestResource*>(base);
 			AddRwString(rw, "Path", instance->m_path);
 			return true;
 		}
-		virtual bool LoadInstanceImpl(AddrType base, const CRwNode* rw) const override
+		virtual bool LoadInstanceImpl(InstanceType* base, const CRwNode* rw) const override
 		{
 			auto& instance = *static_cast<CSharedTestResource*>(base);
 			auto path = FindRwString(rw, "Path");
@@ -66,13 +66,13 @@ namespace TestModule1
 	{
 		using MyPtr = CTestResource**;
 	protected:
-		virtual bool SaveInstanceImpl(const AddrType base, CRwNode* rw) const override
+		virtual bool SaveInstanceImpl(const InstanceType* base, CRwNode* rw) const override
 		{
 			const auto& instance = *static_cast<const MyPtr*>(base);
 			AddRwString(rw, "Path", (*instance)->m_path);
 			return true;
 		}
-		virtual bool LoadInstanceImpl(AddrType base, const CRwNode* rw) const override
+		virtual bool LoadInstanceImpl(InstanceType* base, const CRwNode* rw) const override
 		{
 			auto& instance = *static_cast<MyPtr*>(base);
 			auto path = FindRwString(rw, "Path");
@@ -87,7 +87,7 @@ namespace TestModule1
 	{
 		using TSharedType = Niflect::TSharedPtr<TInstanceType>;
 	protected:
-		virtual bool SaveInstanceImpl(const AddrType base, CRwNode* rw) const override
+		virtual bool SaveInstanceImpl(const InstanceType* base, CRwNode* rw) const override
 		{
 			auto type = Niflect::StaticGetType<TInstanceType>();
 			const auto& instance = *static_cast<const TSharedType*>(base);
@@ -103,7 +103,7 @@ namespace TestModule1
 			}
 			return type->SaveInstanceToRwNode(instance.Get(), rw);
 		}
-		virtual bool LoadInstanceImpl(AddrType base, const CRwNode* rw) const override
+		virtual bool LoadInstanceImpl(InstanceType* base, const CRwNode* rw) const override
 		{
 			auto type = Niflect::StaticGetType<TInstanceType>();
 			auto& instance = *static_cast<TSharedType*>(base);

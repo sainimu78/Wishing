@@ -49,7 +49,7 @@ namespace Engine
 	class TMyTransformAccessor : public Niflect::CAccessor
 	{
 	public:
-		virtual bool SaveInstanceImpl(const AddrType base, CRwNode* rw) const override
+		virtual bool SaveInstanceImpl(const InstanceType* base, CRwNode* rw) const override
 		{
 			auto& instance = *static_cast<const TMyTransform<T>*>(base);
 			//序列化方式是任意的, 因此可认为支持自定义编码
@@ -58,7 +58,7 @@ namespace Engine
 			AddRwString(rw, "m_scale", MyVectorToString<T>(instance.m_scale));
 			return true;
 		}
-		virtual bool LoadInstanceImpl(AddrType base, const CRwNode* rw) const override
+		virtual bool LoadInstanceImpl(InstanceType* base, const CRwNode* rw) const override
 		{
 			auto& instance = *static_cast<TMyTransform<T>*>(base);
 			//序列化方式是任意的, 因此可认为支持自定义编码
