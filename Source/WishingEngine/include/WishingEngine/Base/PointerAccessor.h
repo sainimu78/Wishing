@@ -10,7 +10,7 @@ namespace Wishing
 	class TSharedPtrAccessor : public Niflect::CAccessor
 	{
 	protected:
-		virtual bool SaveInstanceImpl(const AddrType base, CRwNode* rw) const override
+		virtual bool SaveInstanceImpl(const InstanceType* base, CRwNode* rw) const override
 		{
 			auto& instance = *static_cast<const TSharedType*>(base);
 			if (instance == NULL)
@@ -21,7 +21,7 @@ namespace Wishing
 			auto type = instance->GetType();
 			return type->SaveInstanceToRwNode(instance.Get(), rw);
 		}
-		virtual bool LoadInstanceImpl(AddrType base, const CRwNode* rw) const override
+		virtual bool LoadInstanceImpl(InstanceType* base, const CRwNode* rw) const override
 		{
 			auto& instance = *static_cast<TSharedType*>(base);
 			bool isNULL = FindRwNode(rw, "IsNULL");

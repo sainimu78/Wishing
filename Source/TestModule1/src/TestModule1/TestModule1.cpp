@@ -9,7 +9,7 @@ static Niflect::TSharedPtr<CNiflectTable> g_defaultTable;
 void TestModule1Create()
 {
 	g_defaultTable = Niflect::MakeShared<CNiflectTable>();
-	GeneratedInitialReg(g_defaultTable.Get());
+	GeneratedRegisterTypes(g_defaultTable.Get());
 	GeneratedInitTypes();
 	g_defaultTable->InitTypesLayout();
 }

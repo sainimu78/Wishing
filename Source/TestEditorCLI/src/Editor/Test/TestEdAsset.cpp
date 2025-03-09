@@ -103,7 +103,7 @@ void TestEdAsset()
 	{
 		auto tableHolder = Niflect::MakeShared<Niflect::CNiflectTable>();
 		auto table = tableHolder.Get();
-		Niflect::GeneratedInitialReg(table);
+		Niflect::GeneratedRegisterTypes(table);
 		Niflect::GeneratedInitTypes();
 		table->InitTypesLayout();
 

@@ -4,7 +4,7 @@
 void InitSampleAPI(Niflect::CNiflectTable& table)
 {
 	using namespace Niflect;
-	GeneratedInitialReg(&table);
+	GeneratedRegisterTypes(&table);
 	GeneratedInitTypes();
 	table.InitTypesLayout();
 }
