@@ -27,7 +27,7 @@ target_include_directories(${ModuleName}
 target_link_libraries(${ModuleName} PRIVATE TestEngine)
 target_link_libraries(${ModuleName} PRIVATE TestModule0)
 
-list(APPEND v_ListAccessorSettingHeaderFilePath ${c_RootThirdPartyDirPath}/Niflect/Niflect/include/Niflect/CommonlyUsed/DefaultAccessorSetting.h)
+#list(APPEND v_ListAccessorSettingHeaderFilePath ${c_RootThirdPartyDirPath}/Niflect/Niflect/include/Niflect/CommonlyUsed/DefaultAccessorSetting.h)
 #list(APPEND v_ListModuleIncludeDirPath ${IncludePathsPublic})
 list(APPEND v_ListModuleHeaderFilePath ${ModuleHeaders})
 include(${c_RootProjectDirPath}/Niflect/Default.cmake)

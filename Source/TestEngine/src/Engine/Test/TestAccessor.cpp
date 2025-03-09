@@ -1,7 +1,7 @@
 #include "Engine/Test/TestAccessor.h"
-#include "Niflect/CommonlyUsed/CompoundAccessor.h"
-#include "Niflect/CommonlyUsed/ValueTypeAccessor.h"
-#include "Niflect/CommonlyUsed/ContainerTypeAccessor.h"
+#include "Niflect/Default/CompoundAccessor.h"
+#include "Niflect/Default/ValueTypeAccessor.h"
+#include "Niflect/Default/ContainerTypeAccessor.h"
 
 namespace TestAccessor
 {

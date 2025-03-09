@@ -1,14 +1,14 @@
 #include "Engine/Test/TestAccessor2.h"
 #include <stdio.h>
-#include "Niflect/CommonlyUsed/CompoundAccessor.h"
-#include "Niflect/CommonlyUsed/ValueTypeAccessor.h"
-#include "Niflect/CommonlyUsed/ContainerTypeAccessor.h"
-#include "Niflect/CommonlyUsed/STLContainerTypeAccessor.h"
+#include "Niflect/Default/CompoundAccessor.h"
+#include "Niflect/Default/ValueTypeAccessor.h"
+#include "Niflect/Default/ContainerTypeAccessor.h"
+#include "Niflect/Default/STLContainerTypeAccessor.h"
 #include "Niflect/NiflectTable.h"
 #include "Niflect/Util/StringUtil.h"
 #include "Niflect/Serialization/JsonFormat.h"
 #include "Engine/Test/TestMyTransform.h"
-#include "Niflect/CommonlyUsed/EnumAccessor.h"
+#include "Niflect/Default/EnumAccessor.h"
 
 namespace TestAccessor2
 {

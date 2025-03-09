@@ -1,5 +1,5 @@
 #pragma once
-#include "Niflect/CommonlyUsed/DefaultAccessorSetting.h"
+#include "Niflect/Default/DefaultAccessorSetting.h"
 #include "WishingEngine/Base/PointerAccessor.h"
 
 using namespace NiflectAccessorSetting;

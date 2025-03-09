@@ -1,5 +1,5 @@
 #pragma once
-#include "Niflect/CommonlyUsed/DefaultAccessorSetting.h"
+#include "Niflect/Default/DefaultAccessorSetting.h"
 #include "Engine/Test/TestMyTransform.h"
 #include "TestModule1/TestResourceAccessor.h"
 
