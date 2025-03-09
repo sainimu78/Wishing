@@ -104,4 +104,4 @@
 2025.03.03, 五星, 支持特化别名, 别名嵌套; 解析流程简化, 统一 TypeAlias 与 TypeAliasTemplate 递归方式; 增加 -aft 允许解析以别名定义的 Field; ASSERT 改为可继续运行; -aft 测试; 
 2025.03.04, 五星, 生成 API Macro 及其头文件; cmake 项目框架相应修改, 整理 SamplteProjectTemplate 的项目接入 Gen 的设置; 测试 -gam; 
 2025.03.05, 五星, CommandLineArgParser 加测试, 版本号与 ReleaseNodes.md; Niflect 加 ReleaseNodes.md; 尝试将 AddrType 改为 using, 但发现对 const AddrType& 的作用存在误解, 这样定义表示的是 void* const, 而不是 const void*, 因此放弃修改; 废弃 AddrType 宏; 增加 Test2, 复用 NiflectGenTool 项目 cmake, 测试代码生成; 增加 -I 有效性检查; 
-2/2025.03.09, 五星, 整理测试 Test2, 增加 CPublicFields 测试无 GENERATED_BODY; GeneratedInitialReg 改名为 GeneratedRegisterTypes; private scope 与 GENERATED_BODY 测试; 
+3/2025.03.09, 五星, 整理测试 Test2, 增加 CPublicFields 测试无 GENERATED_BODY; GeneratedInitialReg 改名为 GeneratedRegisterTypes; private scope 与 GENERATED_BODY 测试; 原 CommonlyUse 目录录改为 Default; 
