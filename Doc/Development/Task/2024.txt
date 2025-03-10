@@ -169,3 +169,4 @@
 87. Deprecated, 合并到 88, CMakeProjectFramework, IntegrateNiflectGenTool 获取 Target 所有默认指定的宏, 如 Windows 下 Debug 版本默认的 _DEBUG, 传入解析, 可与 PCH 一起未完成, 见 84
 88. Done, (已实现生成 API macro 头文件, 但不实现获取所有宏定义, 常见情况为使用 PrecompileHeader 中的定义宏, 现已支持获取此类头文件信息, 因此认为可能无必要实现, 仅记录方法备用, 见 Doc\b备用资料\cmake获取target所有宏定义.md) NiflectGen, ApiMacro 相关参数和代码可简化为生成并根据目标类型确定默认是否导出, 实现生成后还可实现获取目标的所有宏定义, 所以此修改是必须的, 可先确认获取目标类型的可行性
 89. Done, NiflectGen, 测试 Project 的 Build 归到专门的目录中, 提供 Generate, Update, Build, Setup, Clean, Test 流程
+90. NiflectGen, 无法获取 StaticGetType<float>, 未生成 StaticGetType 与 CreateTypeAccessor, 而是模块内部的如 _Test2_StaticGetType ..., 相关原因见 Wishing git 中 dd5c27518b5a2b024e0e21f12228a08e9b48c214
