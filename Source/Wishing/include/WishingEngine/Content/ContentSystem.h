@@ -1,5 +1,5 @@
 #pragma once
-#include "WishingEngineCommon.h"
+#include "WishingCommon.h"
 #include "Niflect/Base/SharedPtr.h"
 #include "Niflect/Base/Array.h"
 #include "WishingEngine/Content/ContentNode.h"
@@ -12,10 +12,10 @@ namespace Wishing
 		CContentSystem();
 
 	public:
-		WISHINGENGINE_API bool Initialize();
-		WISHINGENGINE_API bool Start();
-		WISHINGENGINE_API bool Stop();
-		WISHINGENGINE_API void Finalize();
+		WISHING_API bool Initialize();
+		WISHING_API bool Start();
+		WISHING_API bool Stop();
+		WISHING_API void Finalize();
 
 	public:
 		CContentDirNode2* GetRootDirNode() const;
@@ -29,5 +29,5 @@ namespace Wishing
 	};
 	using CSharedContentSystem = Niflect::TSharedPtr<CContentSystem>;
 
-	WISHINGENGINE_API CSharedContentSystem CreateContentSystem();
+	WISHING_API CSharedContentSystem CreateContentSystem();
 }

@@ -1,3 +1,3 @@
 #!/bin/bash
-export ProjectDirPath=../../../../../Project/WishingEngine
+export ProjectDirPath=../../../../../Project/Wishing
 ../../../ThirdParty/CMakeProjectFramework/PlatformSpecificScript/Linux/Update.sh

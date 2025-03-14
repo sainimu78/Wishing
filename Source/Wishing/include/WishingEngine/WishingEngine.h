@@ -1,5 +1,5 @@
 #pragma once
-#include "WishingEngineCommon.h"
+#include "WishingCommon.h"
 #include "Niflect/Base/SharedPtr.h"
 #include "WishingEngine/WishingObject.h"
 #include "WishingEngine/Content/ContentNodeManager.h"
@@ -13,13 +13,13 @@ namespace Wishing
 		~CWishingEngine();
 
 	public:
-		WISHINGENGINE_API void Initialize();
+		WISHING_API void Initialize();
 
 	public:
-		WISHINGENGINE_API bool RegisterObject(CWishingObject* obj);
+		WISHING_API bool RegisterObject(CWishingObject* obj);
 
 	public:
-		WISHINGENGINE_API CContentNodeManager* GetContentNodeManager() { return &m_contentNodeMgr; }
+		WISHING_API CContentNodeManager* GetContentNodeManager() { return &m_contentNodeMgr; }
 
 	private:
 		Niflect::TArray<CWishingObject*> m_vecObject;
@@ -27,5 +27,5 @@ namespace Wishing
 	};
 	using CSharedWishingEngine = Niflect::TSharedPtr<CWishingEngine>;
 
-	WISHINGENGINE_API CSharedWishingEngine CreateWishingEngine();
+	WISHING_API CSharedWishingEngine CreateWishingEngine();
 }

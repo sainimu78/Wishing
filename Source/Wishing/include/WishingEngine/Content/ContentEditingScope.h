@@ -1,5 +1,5 @@
 #pragma once
-#include "WishingEngineCommon.h"
+#include "WishingCommon.h"
 #include "Niflect/Base/String.h"
 
 namespace Wishing
@@ -38,7 +38,7 @@ namespace Wishing
 		}
 
 	public:
-		WISHINGENGINE_API void AddFileNode(const Niflect::CString& name, const CContentAddingOption& opt = CContentAddingOption());
+		WISHING_API void AddFileNode(const Niflect::CString& name, const CContentAddingOption& opt = CContentAddingOption());
 
 	private:
 		CContentSystem* m_sys;

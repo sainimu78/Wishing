@@ -16,7 +16,7 @@ endif()
 
 add_subdirectory(Editor)
 add_subdirectory(Engine)
-cpf_include_install(${c_RootProjectDirPath}/WishingEngine/WishingEngine/Shared.cmake)
+cpf_include_install(${c_RootProjectDirPath}/Wishing/Wishing/Shared.cmake)
 
 include(${c_RootCMakeProjectFrameworkDirPath}/Release.cmake)
 include(${c_RootCMakeProjectFrameworkDirPath}/Cleanup.cmake)

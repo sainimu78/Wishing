@@ -1,5 +1,5 @@
 #include "WishingEngine/WishingEngine.h"
-#include "WishingEngine_private.h"
+#include "Wishing_private.h"
 
 namespace Wishing
 {

@@ -1,4 +1,4 @@
-set(ModuleName WishingEngine)
+set(ModuleName Wishing)
 
 set(ModuleRootDirPath ${c_RootSourceDirPath}/${ModuleName})
 set(ModuleSourceDirPath ${ModuleRootDirPath}/src)
@@ -27,16 +27,16 @@ target_include_directories(${ModuleName}
 )
 
 target_compile_definitions(${ModuleName}
-	PRIVATE -DWISHINGENGINE_EXPORTS
+	PRIVATE -DWISHING_EXPORTS
 )
 
 #list(APPEND v_ListAccessorSettingHeaderFilePath ${c_RootThirdPartyDirPath}/Niflect/Niflect/include/Niflect/CommonlyUsed/DefaultAccessorSetting.h)
-list(APPEND v_ListAccessorSettingHeaderFilePath ${ModuleHeaderDirPath}/WishingEngineAccessorSetting.h)
+list(APPEND v_ListAccessorSettingHeaderFilePath ${ModuleHeaderDirPath}/WishingAccessorSetting.h)
 #list(APPEND v_ListModuleIncludeDirPath ${IncludePathsPrivate})
 #list(APPEND v_ListModuleIncludeDirPath ${IncludePathsPublic})
 list(APPEND v_ListModuleHeaderFilePath ${ModuleHeaders})
-set(v_ModuleAPIMacro WISHINGENGINE_API)
-set(v_ModuleAPIMacroHeaderFilePath ${ModuleHeaderDirPath}/WishingEngineCommon.h)
+#set(v_ModuleAPIMacro WISHING_API)
+#set(v_ModuleAPIMacroHeaderFilePath ${ModuleHeaderDirPath}/WishingEngineCommon.h)
 list(APPEND v_ListToolOption "-gsr")
 include(${c_RootProjectDirPath}/Niflect/Default.cmake)
 

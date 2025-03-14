@@ -38,7 +38,7 @@ target_include_directories(${ModuleName}
 )
 
 target_link_libraries(${ModuleName} PRIVATE Engine)
-target_link_libraries(${ModuleName} PRIVATE WishingEngine)
+target_link_libraries(${ModuleName} PRIVATE Wishing)
 
 #list(APPEND v_ListAccessorSettingHeaderFilePath ${c_RootThirdPartyDirPath}/Niflect/Niflect/include/Niflect/CommonlyUsed/DefaultAccessorSetting.h)
 list(APPEND v_ListModuleIncludeDirPath ${IncludePathsPublic})

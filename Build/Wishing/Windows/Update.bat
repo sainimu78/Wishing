@@ -1,3 +1,3 @@
 @echo off
-@set ProjectDirPath=..\..\..\..\Project\WishingEngine
+@set ProjectDirPath=..\..\..\..\Project\Wishing
 @..\..\..\ThirdParty\CMakeProjectFramework\PlatformSpecificScript\Windows\Update.bat
