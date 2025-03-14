@@ -1,13 +1,13 @@
 #pragma once
-#include "WishingEngine/WishingObject.h"
+#include "Wishing/WishingObject.h"
 #include "Niflect/Base/Array.h"
-#include "WishingEngine/Content/ContentNode.h"
-#include "WishingEngine/Content/ContentNodeManager_gen.h"
+#include "Wishing/Content/ContentNode.h"
+#include "Wishing/Content/ContentGraph_gen.h"
 
 namespace Wishing
 {
 	NIF_T()
-	class CContentNodeManager : public CWishingObject
+	class CContentGraph : public CWishingObject
 	{
 		WISHINGOBJECT_DECLARE()
 		typedef CWishingObject inherited;

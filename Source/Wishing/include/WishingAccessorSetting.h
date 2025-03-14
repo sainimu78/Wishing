@@ -1,6 +1,6 @@
 #pragma once
 #include "Niflect/Default/DefaultAccessorSetting.h"
-#include "WishingEngine/Accessor/SharedPtrTypeAccessor.h"
+#include "Wishing/Accessor/SharedPtrTypeAccessor.h"
 
 using namespace NiflectAccessorSetting;
 

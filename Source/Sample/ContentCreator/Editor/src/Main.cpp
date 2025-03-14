@@ -6,8 +6,8 @@
 #include "Niflect/Util/SystemUtil.h"
 #include "Creator/CreatorOption.h"
 #include "Creator/CreatorPipeline.h"
-#include "WishingEngine/Content/ContentSystem.h"
-#include "WishingEngine/WishingEngine.h"
+#include "Wishing/Content/ContentSystem.h"
+#include "Wishing/WishingEngine.h"
 
 #ifdef WIN32
 #include <Windows.h>

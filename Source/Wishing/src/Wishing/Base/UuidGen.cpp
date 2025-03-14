@@ -8,7 +8,7 @@
 #define BOOST_UUID_FORCE_AUTO_LINK
 #endif
 
-#include "WishingEngine/Base/UuidGen.h"
+#include "Wishing/Base/UuidGen.h"
 #include "Niflect/Base/Array.h"
 #include "Niflect/Base/StringStream.h"
 #include "Niflect/Base/Map.h"

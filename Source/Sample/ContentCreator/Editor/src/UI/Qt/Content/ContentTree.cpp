@@ -6,7 +6,7 @@
 #include "UI/Qt/Util/CoreUtil.h"
 #include "qmenu.h"
 #include "qinputdialog.h"
-#include "WishingEngine/Content/ContentEditingScope.h"
+#include "Wishing/Content/ContentEditingScope.h"
 
 namespace WishingQt
 {

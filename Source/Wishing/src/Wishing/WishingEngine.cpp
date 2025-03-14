@@ -1,4 +1,4 @@
-#include "WishingEngine/WishingEngine.h"
+#include "Wishing/WishingEngine.h"
 #include "Wishing_private.h"
 
 namespace Wishing
@@ -13,7 +13,6 @@ namespace Wishing
 	}
 	void CWishingEngine::Initialize()
 	{
-		this->RegisterObject(&m_contentNodeMgr);
 	}
 	bool CWishingEngine::RegisterObject(CWishingObject* obj)
 	{

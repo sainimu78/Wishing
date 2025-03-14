@@ -1,4 +1,4 @@
-#include "WishingEngine/Content/ContentNodeManager.h"
+#include "Wishing/Content/ContentGraph.h"
 
 namespace Wishing
 {

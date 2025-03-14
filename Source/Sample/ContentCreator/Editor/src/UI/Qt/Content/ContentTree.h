@@ -1,7 +1,7 @@
 #pragma once
 #include "qtreeview.h"
 #include "qstandarditemmodel.h"
-#include "WishingEngine/Content/ContentSystem.h"
+#include "Wishing/Content/ContentSystem.h"
 
 namespace WishingQt
 {
