@@ -136,7 +136,7 @@ namespace TestRegistration
 			CNiflectTable table;
 			auto type = GetOrRegisterType<float, CFloatAccessor, CNiflectType>(&table, "float");
 			auto layout = type->CreateFieldLayout();
-			auto sharedSrcData = type->MakeSharedInstance<float>();
+			auto sharedSrcData = NiflectTypeMakeShared<float>(type);
 			auto& srcData = *sharedSrcData;
 			srcData = 1.23f;
 
@@ -145,7 +145,7 @@ namespace TestRegistration
 			CStringStream ss;
 			CJsonFormat::Write(&rw, ss);
 
-			auto sharedDstData = type->MakeSharedInstance<void*>();
+			auto sharedDstData = NiflectTypeMakeShared<void*>(type);
 			auto& dstData = *reinterpret_cast<float*>(sharedDstData.Get());
 			layout->LoadFromRwNode(&dstData, &rw);
 
@@ -167,7 +167,7 @@ namespace TestRegistration
 				auto elemLayout = type->CreateFieldLayout();
 				layout->InitElementAccessor(elemLayout);
 			}
-			auto sharedSrcData = type->MakeSharedInstance<void*>();
+			auto sharedSrcData = NiflectTypeMakeShared<void*>(type);
 			auto& srcData = *reinterpret_cast<Niflect::TArrayNif<float>*>(sharedSrcData.Get());
 			for (uint32 idx = 0; idx < 123; ++idx)
 				srcData.push_back(static_cast<float>(idx));
@@ -177,7 +177,7 @@ namespace TestRegistration
 			CStringStream ss;
 			CJsonFormat::Write(&rw, ss);
 
-			auto sharedDstData = type->MakeSharedInstance<void*>();
+			auto sharedDstData = NiflectTypeMakeShared<void*>(type);
 			auto& dstData = *reinterpret_cast<Niflect::TArrayNif<float>*>(sharedDstData.Get());
 			layout->LoadFromRwNode(&dstData, &rw);
 
@@ -218,7 +218,7 @@ namespace TestRegistration
 				printf("Nata, exampleValue: %f\n", nata->m_exampleValue);
 
 				auto layout = type->CreateFieldLayout();
-				auto sharedSrcData = type->MakeSharedInstance<void*>();
+				auto sharedSrcData = NiflectTypeMakeShared<void*>(type);
 				auto& srcData = *reinterpret_cast<CMyRegClass*>(sharedSrcData.Get());
 				srcData.TestInit();
 
@@ -227,7 +227,7 @@ namespace TestRegistration
 				CStringStream ss;
 				CJsonFormat::Write(&rw, ss);
 
-				auto sharedDstData = type->MakeSharedInstance<void*>();
+				auto sharedDstData = NiflectTypeMakeShared<void*>(type);
 				auto& dstData = *reinterpret_cast<CMyRegClass*>(sharedDstData.Get());
 				layout->LoadFromRwNode(&dstData, &rw);
 

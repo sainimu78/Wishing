@@ -46,7 +46,7 @@ void TestEngineRun()
 			srcData.InitForTest();
 			type->SaveInstanceToRwNode(&srcData, &rw);
 		}
-		auto instance = type->MakeSharedInstance<CTestType>();
+		auto instance = Niflect::NiflectTypeMakeShared<CTestType>(type);
 		CTestType& dstData = *instance;
 		type->LoadInstanceFromRwNode(&dstData, &rw);
 		ASSERT(srcData == dstData);
@@ -64,7 +64,7 @@ void TestEngineRun()
 			srcData.InitForTest();
 			type->SaveInstanceToRwNode(&srcData, &rw);
 		}
-		auto instance = type->MakeSharedInstance<CTestType>();
+		auto instance = Niflect::NiflectTypeMakeShared<CTestType>(type);
 		CTestType& dstData = *instance;
 		type->LoadInstanceFromRwNode(&dstData, &rw);
 		ASSERT(srcData == dstData);
@@ -82,7 +82,7 @@ void TestEngineRun()
 			TestModule1::InitForTest_SMyRecord(srcData);
 			type->SaveInstanceToRwNode(&srcData, &rw);
 		}
-		auto instance = type->MakeSharedInstance<CTestType>();
+		auto instance = Niflect::NiflectTypeMakeShared<CTestType>(type);
 		CTestType& dstData = *instance;
 		type->LoadInstanceFromRwNode(&dstData, &rw);
 		ASSERT(srcData == dstData);

@@ -578,7 +578,7 @@ namespace TestAccessor2
 		auto accessorType = accessorParent->GetType();
 		CSharedPropertyNode prop;
 		if (auto propType = factory.FindBinding(accessorType))
-			prop = propType->MakeSharedInstance<CPropertyNode>();
+			prop = NiflectTypeMakeShared<CPropertyNode>(propType);
 		if (prop == NULL)
 		{
 			if (rwParent->IsValue())
@@ -976,7 +976,7 @@ namespace TestAccessor2
 				{
 					auto type0 = StaticGetTypeOld<CTestClassMy>();
 					accessorSrc = type0->CreateFieldLayout();
-					auto instance = type0->MakeSharedInstance<void*>();
+					auto instance = NiflectTypeMakeShared<void*>(type0);
 					auto& srcData = *reinterpret_cast<CTestClassMy*>(instance.Get());
 					srcData.TestInit();
 					accessorSrc->SaveToRwNode(&srcData, &rwSrc);

@@ -48,7 +48,7 @@ static Niflect::TSharedPtr<Editor::CEdAsset> LoadAsset(Niflect::CNiflectTable* t
 		if (auto type = table->FindTypeByTypeName(typeName))
 		{
 			auto rwData = FindRwNode(&rw, "Data");
-			asset = type->MakeSharedInstance<Editor::CEdAsset>();
+			asset = Niflect::NiflectTypeMakeShared<Editor::CEdAsset>(type);
 			type->LoadInstanceFromRwNode(asset.Get(), rwData);
 		}
 	}

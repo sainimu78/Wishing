@@ -19,7 +19,7 @@ namespace TestEngineEditMode
 			auto typeName = FindRwString(&rw, "TypeName");
 			auto type = table->FindTypeByTypeName(typeName);
 			auto rwData = FindRwNode(&rw, "Data");
-			asset = type->MakeSharedInstance<CTestAsset>();
+			asset = Niflect::NiflectTypeMakeShared<CTestAsset>(type);
 			type->LoadInstanceFromRwNode(asset.Get(), rwData);
 		}
 		return asset;
