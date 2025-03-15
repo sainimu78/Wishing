@@ -22,6 +22,14 @@ namespace Wishing
 
 	}
 
+	CContentGraphEditingScope::CContentGraphEditingScope()
+	{
+
+	}
+	CContentGraphEditingScope::~CContentGraphEditingScope()
+	{
+	}
+
 	CSharedContentSystem CreateContentSystem()
 	{
 		return Niflect::MakeShared<CContentSystem>();

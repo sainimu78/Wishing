@@ -17,9 +17,16 @@ namespace Wishing
 		WISHING_API void Finalize();
 
 	private:
-
+		CContentGraph m_graph;
 	};
 	using CSharedContentSystem = Niflect::TSharedPtr<CContentSystem>;
+
+	class CContentGraphEditingScope
+	{
+	public:
+		CContentGraphEditingScope();
+		~CContentGraphEditingScope();
+	};
 
 	WISHING_API CSharedContentSystem CreateContentSystem();
 }

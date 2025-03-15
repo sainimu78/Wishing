@@ -6,7 +6,6 @@
 #include "UI/Qt/Util/CoreUtil.h"
 #include "qmenu.h"
 #include "qinputdialog.h"
-#include "Wishing/Content/ContentEditingScope.h"
 
 namespace WishingQt
 {
@@ -115,8 +114,8 @@ namespace WishingQt
             //parentItem->appendRow(newItem);
 
 
-            CContentEditingScope scope(m_sys);
-            scope.AddFileNode(WishingQt::QStringToCString(itemName));
+            //CContentEditingScope scope(m_sys);
+            //scope.AddFileNode(WishingQt::QStringToCString(itemName));
         }
     }
 }
