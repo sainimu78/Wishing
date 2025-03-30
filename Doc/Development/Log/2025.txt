@@ -108,4 +108,8 @@
 2025.03.11, 五星, DeepSeek 跨工具文件修改可撤销可行性讨论, 值得继续调研主题 1. 动态分块(Content-Defined Chunking, CDC), Rabin 指纹算法, 2. 透明虚拟文件访问, FUSE, 挂载虚拟目录, 读写拦截; 改目录名, 整理代码, 计划改为 ContentGraph 管理数据结构, ContentSystem 作为 Content 管理机制, 目标先实现内容编辑流程; 支持非默认构造函数形式的反射创建实例可行性实验, 确认具可行性, 为 GenericInstanceInvokeConstructor 生成特化, 在创建时指定构造函数参数形式即可, 后期如有必要还可支持指定多个中的一个构造函数被反射, 对于 NiflectGen 须确认生成特化的可行性, 另计划移除 RegisterTypeInternal 须指定的 TType, lifecycleMeta 移到外层以便代码生成特化构造, 同时也表明 TType 不与 RegisterTypeInternal 绑定更合理; 
 2025.03.15, 五星, 不要求 class 须定义默认构造, 计划在实现获取 method 的 resocursorName 后再考虑实现非默认构造的调用特化函数地址; 发现可复用 Field 的 Resonode 生成, 须重构; 收集 Method 下的 Detail Cursor; 
 2025.03.18, 五星, 收集 Method 下的 Detail Cursor; 解析引用型, 发现未设置 AS 的指针会被错误解析为无指针的类型, Debug 下由于使用 assert 检测到错误直接退出未生成代码, Release 下继续生成错误的代码, 应提示找不到 AS 的错误; 调整 AS 查找方式, 指针当作独立类型处理, 引用则获取并以指针类型继续查找; 
-3/2025.03.20, 五星, 获取 Qulifiers(const), Modifiers(&) 信息备用; 整理代码, Method 参数解析未应用, 先备份; 
+2025.03.20, 五星, 获取 Qulifiers(const), Modifiers(&) 信息备用; 整理代码, Method 参数解析未应用, 先备份; 考虑构造函数如何复用 Method 解析流程; 修复以带 const 的 builtin CXType 查找时失败, 简单调整即可实现收集 Constructor, 但须考虑 Constructor 是否需要另外的 Tag; 尝试为 NIF_F 误加到 class 上报错, 但发现流程无法支持, 若支持则须增加解析消耗, 如在不期望的位置检查是否使用无关 Tag; basetype 的 infotype Cast 为子类
+2025.03.26, 五星, DeepSeek 调研 SceneGraph 可行方案, 结论是提取 chromium 的 views 可能难度很高; 提取 Slate, 可运行, I:\F\Fts\Proj\Test\MyUe4; 提取 cef 支持浏览器控件; 
+2025.03.28, 五星, 提取 Slate 修复网页控件, I:\F\Fts\Proj\Test\MyUe4; 
+2025.03.29, 五星, CreateTypeAccessor 移入 CTypeBody, friend 改为该类, 预留 Method 的反射信息; 
+?/2025.03.30, 五星, 
