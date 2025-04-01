@@ -112,4 +112,4 @@
 2025.03.26, 五星, DeepSeek 调研 SceneGraph 可行方案, 结论是提取 chromium 的 views 可能难度很高; 提取 Slate, 可运行, I:\F\Fts\Proj\Test\MyUe4; 提取 cef 支持浏览器控件; 
 2025.03.28, 五星, 提取 Slate 修复网页控件, I:\F\Fts\Proj\Test\MyUe4; 
 2025.03.29, 五星, CreateTypeAccessor 移入 CTypeBody, friend 改为该类, 预留 Method 的反射信息; 
-2/2025.03.30, 五星, 构思 Method 信息添加方法; 
+6/2025.03.30, 五星, 构思 Method 信息添加方法; 增加 BuildTypeMeta 函数生成流程; 尝试简化 CTypeLayout, vecAccessor, CField, CNiflectType; 移植 TestEditorCLI; 
