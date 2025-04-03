@@ -180,5 +180,5 @@
 			auto instance = static_cast<CTestLib*>(base);
 			instance->Nihao();
 		}
-94. NiflectGen, 照 CreateTypeAccessor 新增 BuildTypeMeta<>, 先加入 Method 信息, 之后须废弃 CreateTypeAccessor, 将 Field 也加入 BuildTypeMeta<>
-95. Niflect, 废弃 Accessor, TypeLayout, Field 三者结构, 将 baseType 指针定义在 NiflectType 中, 在序列化时应递归遍历处理, 以避免重复的结构描述信息, 现问题是子类与基类中含重叠的结构描述信息.
+94. Done, NiflectGen, 照 CreateTypeAccessor 新增 BuildTypeMeta<>, 先加入 Method 信息, 之后须废弃 CreateTypeAccessor, 将 Field 也加入 BuildTypeMeta<>
+95. Done, Niflect, 废弃 Accessor, TypeLayout, Field 三者结构, 将 baseType 指针定义在 NiflectType 中, 在序列化时应递归遍历处理, 以避免重复的结构描述信息, 现问题是子类与基类中含重叠的结构描述信息.
