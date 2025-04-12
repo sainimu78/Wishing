@@ -173,7 +173,7 @@
 91. Done, (现定方式为通过项目自定义的 Accessor 实现统一, 保持 Builtin 与模板类型为模块内部使用), Niflect, 表示类型的类型序列化实验, 确定如何将基本类型与自定义类型的类型信息获取方式统一
 92. Done, NiflectGen, 重构 Field Resonode 生成为复用关键方法到 Method 中, 对于 Method 应实现生成一种可将 Method 及参数表示为一种类的形式的结构, 另可扩展用于 Constructor 的反射, 对于如 Builtin 和模板类型接入的如脚本应如何实现参数传递, 现设想与 91 相同, 通过项目专门定义为反射的 Accessor 实现传递
 	1. 通过 Accessor 进行参数传递隐含一种类型与序列化方式解耦的逻辑, 不同类型的序列化方式可能是相同的, 这点也体现在跨语言情形下的参数传递需求上, 以 Accessor 定义序列化标准方法, 而非由不同语言而不同的类型定义序列化方法
-93. NiflectGen, 生成 InvokeMethod, 
+93. Done, NiflectGen, 生成 InvokeMethod, 
 		template <>
 		void CTypeBody::InvokeMethod<CTestLib, 0>(Niflect::InstanceType* base, uint32 inputsCount, Niflect::InstanceType** inputArray, uint32 outputsCount, Niflect::InstanceType** outputArray)
 		{
@@ -182,3 +182,4 @@
 		}
 94. Done, NiflectGen, 照 CreateTypeAccessor 新增 BuildTypeMeta<>, 先加入 Method 信息, 之后须废弃 CreateTypeAccessor, 将 Field 也加入 BuildTypeMeta<>
 95. Done, Niflect, 废弃 Accessor, TypeLayout, Field 三者结构, 将 baseType 指针定义在 NiflectType 中, 在序列化时应递归遍历处理, 以避免重复的结构描述信息, 现问题是子类与基类中含重叠的结构描述信息.
+96. NiflectGen, 可考虑通过选项指定生成的信息, 或者 Nata 也引入宏标签, 支持某些选项或扩展用法

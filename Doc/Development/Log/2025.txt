@@ -114,4 +114,10 @@
 2025.03.29, 五星, CreateTypeAccessor 移入 CTypeBody, friend 改为该类, 预留 Method 的反射信息; 
 2025.03.30, 五星, 构思 Method 信息添加方法; 增加 BuildTypeMeta 函数生成流程; 尝试简化 CTypeLayout, vecAccessor, CField, CNiflectType; 移植 TestEditorCLI; 结构调整 CAccessor, CTypeLayout, CNiflectType, CField, 开发宏 REFACTORING_0_TYPE_ACCESSOR_FIELD_RESTRUACTURING; 
 2025.04.03, 五星, Test3 手改生成代码验证; 回退为合并 Elements 与 Children 的代码块生成; 重构 CNiflectType, CAccessor, CTypeLayout, CField, 简化结构, 避免错误地为了 Field 偏移冗余创建 Accessor; 暂废弃旧实验代码, 合适阶段可能移除; 废弃 CreateTypeAccessor 生成; 
-?/2025.04.04, 五星, 
+2025.04.04, 五星, 构思任意参数构造函数可行性, 计划先手写实验; 生成 InvokeMethod 流程; 
+2025.04.05, 五星, 调用构造改为通过通用参数形式的封装 InvokeDefaultConstructor; 生成带参数构造, 生成 Method; GENERATED_BODY 改名为 NIFGNSD, NIF_AS_ 改为 NIFAS_; 
+2025.04.06, 五星, 生成 type hash, signature hash, 作类型指纹; hash 方法为 FNV-1, 有概率冲突, 具 DeepSeek 介绍多款项目采用类似方法; 关于反射推广可行性, 现考虑目标不为知名项目渗透, 而是供一些想跌幅垂直领域标杆的开发者使用; 
+2025.04.07, 五星, rest_rpc 反射测试, msgpack 不够优雅, 如成员变量名须写两遍, 本身无法支持自动注册全局容器, RPC 方向的开发方式似乎很古老, 这可能是大部分行业对 C++ 的用法风格; 调研 Graph 组织的脚本, 与蓝图字节码的区别, 现并不确定为什么 UE 不基于此简单实现转而实现蓝图虚拟机, 因此推断很有可能是早就被 UE 放弃的方案; 静态成员函数反射; 
+2025.04.08, 五星, 尝试利用 Class 的流程生成全局变量与全局函数的 Misc 代码; 
+2025.04.11, 五星, 生成全局变量与函数反射代码, 当作生成的 _TestLib_CGlobals 的成员处理, 以复用对类型的生成流程; 生成模块范围内的获取 GlobalsType 的类型信息函数; 修复误用同名变量导致内存错误, 生成错误; Github Actions 的 Windows 构建流程; 
+4/2025.04.13, 五星, Codespaces 构建流程; CNiflectTable::InitTypesLayout 改名为 CNiflectTable::BuildTypesMeta; 
