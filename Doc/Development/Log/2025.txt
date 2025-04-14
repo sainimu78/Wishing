@@ -120,4 +120,6 @@
 2025.04.07, 五星, rest_rpc 反射测试, msgpack 不够优雅, 如成员变量名须写两遍, 本身无法支持自动注册全局容器, RPC 方向的开发方式似乎很古老, 这可能是大部分行业对 C++ 的用法风格; 调研 Graph 组织的脚本, 与蓝图字节码的区别, 现并不确定为什么 UE 不基于此简单实现转而实现蓝图虚拟机, 因此推断很有可能是早就被 UE 放弃的方案; 静态成员函数反射; 
 2025.04.08, 五星, 尝试利用 Class 的流程生成全局变量与全局函数的 Misc 代码; 
 2025.04.11, 五星, 生成全局变量与函数反射代码, 当作生成的 _TestLib_CGlobals 的成员处理, 以复用对类型的生成流程; 生成模块范围内的获取 GlobalsType 的类型信息函数; 修复误用同名变量导致内存错误, 生成错误; Github Actions 的 Windows 构建流程; 
-4/2025.04.13, 五星, Codespaces 构建流程; CNiflectTable::InitTypesLayout 改名为 CNiflectTable::BuildTypesMeta; 
+2025.04.13, 五星, Codespaces 构建流程; CNiflectTable::InitTypesLayout 改名为 CNiflectTable::BuildTypesMeta; 废弃 Member 字眼, 统一 Field 与 Method 的用语风格; NiflectHelloWorld 补充示例; 
+2025.04.14, 五星, c++ rust 简易评估零成本抽象 ECS 性能, 结论是须以相同后端为基准对比, 如 rustc 与 clang 后端同为 LLVM, msvc 的优化策略保守, 无可比性, 见 Wishing\Build\BenchMark; 低成本推广可行性评估;
+?/2025.04.15, 五星, 
