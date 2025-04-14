@@ -1,0 +1,58 @@
+cmake_minimum_required(VERSION 3.15)
+project(ecs_benchmark_cpp)
+
+# 设置 C++17 标准
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# 编译器特定优化配置
+if(MSVC)
+    # 编译选项
+    add_compile_options(
+        "/O2"           # 最大速度优化
+        "/fp:fast"      # 快速浮点运算
+        "/arch:AVX2"    # 启用 AVX2 指令集
+		"/Qpar"			# 启用自动并行化
+        "/GL"           # 全程序优化
+        "/MP"           # 多进程编译
+		"/Oy-"			# 禁用帧指针省略
+		"/Gw"			# 全局数据优化
+		#"/Qvec-report:2" # 查看向量化报告
+    )
+    
+    # 链接选项
+    add_link_options(
+        "/LTCG"         # 链接时代码生成
+        "/OPT:REF"      # 消除未引用数据
+        "/OPT:ICF"      # 相同 COMDAT 折叠
+		"/DYNAMICBASE:NO"# 禁用ASLR
+    )
+    
+    # 禁用安全检查（基准测试专用）
+    add_compile_definitions(
+        "_ITERATOR_DEBUG_LEVEL=0"
+        "_CRT_SECURE_NO_WARNINGS"
+    )
+else()
+    # GCC/Clang 配置
+    add_compile_options(
+        "-O3"
+        "-march=native"
+        "-ffast-math"
+		"-flto=auto"
+    )
+	target_link_options(${PROJECT_NAME} PRIVATE
+        -flto=auto
+    )
+endif()
+
+# 生成可执行文件
+add_executable(ECS_Cpp main.cpp)
+
+# MSVC 特定目标配置
+if(MSVC)
+    set_target_properties(ECS_Cpp PROPERTIES
+        WINDOWS_EXPORT_ALL_SYMBOLS OFF
+        MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>"
+    )
+endif()
