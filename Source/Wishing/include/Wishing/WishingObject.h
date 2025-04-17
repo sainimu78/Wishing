@@ -10,7 +10,7 @@ namespace Wishing
 	};
 
 #define WISHINGOBJECT_DECLARE()\
-	GENERATED_BODY()\
+	NIFGNSD()\
 	public:\
 		virtual Niflect::CNiflectType* GetType() const override\
 		{\
