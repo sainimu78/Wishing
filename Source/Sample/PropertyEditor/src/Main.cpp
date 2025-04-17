@@ -1,12 +1,16 @@
+#include "Setup.h"
 #include "QApplication"
 #include "Widget/ExampleWindow.h"
 #include "QDesktopWidget"
 #ifdef WIN32
 #include <Windows.h>
 #endif
+#include "qtimer.h"
 
 static int EditorMain(int argc, char** argv)
 {
+    auto table = Setup();
+
     QApplication app(argc, argv);
     QDesktopWidget desktop;
     QRect screenRect = desktop.screenGeometry();
@@ -21,6 +25,10 @@ static int EditorMain(int argc, char** argv)
     QExampleWindow wnd;
     wnd.resize(width, height);
     wnd.show();
+    QTimer::singleShot(1000, [&wnd, &table]()
+        {
+            wnd.BuildUi(table);
+        });
     return app.exec();
 }
 
