@@ -2,6 +2,7 @@
 #include "qmainwindow.h"
 #include "Niflect/NiflectTable.h"
 #include "qcombobox.h"
+#include "Niflect/Base/SharedPtr.h"
 
 class QPropertyTree;
 
@@ -16,4 +17,5 @@ private:
 	QComboBox* m_cobCollection;
 	Niflect::TArray<Niflect::CNiflectType*> m_vecType;
 	QPropertyTree* m_propTree;
+	Niflect::TSharedPtr<void*> m_dummy;
 };

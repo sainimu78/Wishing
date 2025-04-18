@@ -17,7 +17,8 @@ QExampleWindow::QExampleWindow(QWidget* parentWidget)
 	QObject::connect(cobCollection, &QComboBox::currentTextChanged, [this]()
 		{
 			auto& type = m_vecType[m_cobCollection->currentIndex()];
-			m_propTree->BuildFromInstance(type, NULL);
+			m_dummy = Niflect::NiflectTypeMakeShared<void*>(type);
+			m_propTree->BuildFromInstance(type, m_dummy.Get());
 		});
 	mainLayout->addWidget(cobCollection);
 	m_cobCollection = cobCollection;
