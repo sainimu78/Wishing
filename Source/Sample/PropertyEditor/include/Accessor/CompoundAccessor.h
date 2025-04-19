@@ -1,12 +1,15 @@
 #pragma once
-#include "Niflect/NiflectAccessor.h"
+#include "Accessor.h"
 #include "Accessor/CompoundAccessor_gen.h"
 
 using namespace RwTree;
 
 NIF_T()
-class CCompoundAccessor : public Niflect::CAccessor
+class CCompoundAccessor : public CAccessor
 {
+public:
+	virtual Niflect::CNiflectType* GetType() const override { return Niflect::StaticGetType<CCompoundAccessor>(); }
+
 protected:
 	virtual bool SaveInstanceImpl(const InstanceType* base, CRwNode* rw) const override
 	{

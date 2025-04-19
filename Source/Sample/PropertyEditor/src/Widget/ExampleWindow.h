@@ -5,12 +5,14 @@
 #include "Niflect/Base/SharedPtr.h"
 
 class QPropertyTree;
+class CPropertyEditorSystem;
 
 class QExampleWindow : public QMainWindow
 {
 	typedef QMainWindow inherited;
 public:
 	QExampleWindow(QWidget* parentWidget = NULL);
+	void Init(CPropertyEditorSystem* sys);
 	void BuildUi(const Niflect::CNiflectTable* table);
 
 private:
@@ -18,4 +20,5 @@ private:
 	Niflect::TArray<Niflect::CNiflectType*> m_vecType;
 	QPropertyTree* m_propTree;
 	Niflect::TSharedPtr<void*> m_dummy;
+	CPropertyEditorSystem* m_sys;
 };

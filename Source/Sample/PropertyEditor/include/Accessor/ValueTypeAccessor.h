@@ -1,13 +1,13 @@
 #pragma once
-#include "Niflect/NiflectAccessor.h"
+#include "Accessor.h"
 #include "Accessor/ValueTypeAccessor_gen.h"
 
 using namespace RwTree;
 
 template <typename TValue>
-class TBuiltinTypeAccessor : public Niflect::CAccessor
+class TBuiltinTypeAccessor : public CAccessor
 {
-public:
+protected:
 	virtual bool SaveInstanceImpl(const InstanceType* base, CRwNode* rw) const override
 	{
 		auto& instance = *static_cast<const TValue*>(base);
@@ -33,4 +33,6 @@ public:
 NIF_T()
 class CFloatAccessor : public TBuiltinTypeAccessor<float>
 {
+public:
+	virtual Niflect::CNiflectType* GetType() const override { return Niflect::StaticGetType<CFloatAccessor>(); }
 };

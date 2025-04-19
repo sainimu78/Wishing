@@ -1,4 +1,3 @@
-#include "Setup.h"
 #include "QApplication"
 #include "Widget/ExampleWindow.h"
 #include "QDesktopWidget"
@@ -6,10 +5,31 @@
 #include <Windows.h>
 #endif
 #include "qtimer.h"
+#include "PropertyEditorSystem.h"
+
+#include "Accessor/CompoundAccessor.h"
+#include "Accessor/ValueTypeAccessor.h"
+#include "Property/PropertyNode.h"
+
+//可改为根据 Nata 自动绑定
+static void InitBindings(CPropertyEditorSystem& sys)
+{
+    using namespace Niflect;
+    sys.RegisterBinding(StaticGetType<CCompoundAccessor>(), StaticGetType<CPropertyGroup>());
+    sys.RegisterBinding(StaticGetType<CFloatAccessor>(), StaticGetType<CFloatProperty>());
+}
 
 static int EditorMain(int argc, char** argv)
 {
-    auto table = Setup();
+#ifdef WIN32
+    AllocConsole();
+    freopen("CONOUT$", "w", stdout);
+#endif
+
+    CPropertyEditorSystem sys;
+    sys.Init();
+
+    InitBindings(sys);
 
     QApplication app(argc, argv);
     QDesktopWidget desktop;
@@ -23,11 +43,12 @@ static int EditorMain(int argc, char** argv)
     height = std::min(height, 600);
 
     QExampleWindow wnd;
+    wnd.Init(&sys);
     wnd.resize(width, height);
     wnd.show();
-    QTimer::singleShot(1000, [&wnd, &table]()
+    QTimer::singleShot(1000, [&wnd, &sys]()
         {
-            wnd.BuildUi(table);
+            wnd.BuildUi(sys.GetTable());
         });
     return app.exec();
 }
