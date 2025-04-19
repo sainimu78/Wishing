@@ -21,5 +21,5 @@ private:
 	Niflect::CNiflectTable* m_table;
 };
 
-CSharedPropertyNode CreateBranchProperty(const CBuildBranchContext& ctx);
+CSharedPropertyNode CreatePropertyBranch(const CPropertyBranchContext& ctx);
 void DebugPrintPropertyRecurs(CPropertyNode* propParent, uint32 depth);

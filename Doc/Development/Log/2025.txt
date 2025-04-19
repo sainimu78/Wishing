@@ -123,4 +123,5 @@
 2025.04.13, 五星, Codespaces 构建流程; CNiflectTable::InitTypesLayout 改名为 CNiflectTable::BuildTypesMeta; 废弃 Member 字眼, 统一 Field 与 Method 的用语风格; NiflectHelloWorld 补充示例; 
 2025.04.14, 五星, c++ rust 简易评估零成本抽象 ECS 性能, 结论是须以相同后端为基准对比, 如 rustc 与 clang 后端同为 LLVM, msvc 的优化策略保守, 无可比性, 见 Wishing\Build\BenchMark; 低成本推广可行性评估;
 2025.04.15, 五星, PropertyEditor 示例, 计划实现简易自定义属性编辑控件; 评估渗透 ImGUI, ethe 可行性, 与前者相比 Qt 在工业领域影响更大, 后者未基于反射实现属性编辑; AS 相关错误提示; PropertyEditor 定义专门 Accessor, 计划结合 Nata 演示自定义序列化; 
-?/2025.04.19, 五星, 
+2025.04.19, 五星, 修复 Precompile Header 在被反射类型所在文件中包含引起未定义问题; 不启用 libclang 解析时直接输出错误, 计划在之后的信息中挑出对框架有意义的错误; AS 相关错误提示; 
+2/2025.04.20, 五星, 反射信息创建属性树结构, 属性与 Accessor 的绑定方式也通过反射信息; 

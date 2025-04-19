@@ -4,7 +4,7 @@
 #include "Niflect/Base/String.h"
 #include "Niflect/NiflectAccessor.h"
 #include "qwidget.h"
-#include "PropertyBuilder.h"
+#include "PropertyBranchContext.h"
 #include "Niflect/Default/DefaultMacroTag.h"
 
 class CPropertyNode;
@@ -32,7 +32,7 @@ public:
 	}
 
 public:
-	virtual void BuildNode(const CBuildBranchContext& ctx) = 0;
+	virtual void BuildNode(const CPropertyBranchContext& ctx) = 0;
 	virtual CRwNode* GetRwData() const { return NULL; }
 
 public:
@@ -56,15 +56,15 @@ NIF_T()
 class CPropertyGroup : public CPropertyNode
 {
 public:
-	virtual void BuildNode(const CBuildBranchContext& ctx) override;
+	virtual void BuildNode(const CPropertyBranchContext& ctx) override;
 
 private:
-	void BuildFields(const CBuildBranchContext& ctx, Niflect::CNiflectType* type);
+	void BuildFields(const CPropertyBranchContext& ctx, Niflect::CNiflectType* type);
 };
 
 NIF_T()
 class CFloatProperty : public CPropertyItem
 {
 public:
-	virtual void BuildNode(const CBuildBranchContext& ctx) override;
+	virtual void BuildNode(const CPropertyBranchContext& ctx) override;
 };

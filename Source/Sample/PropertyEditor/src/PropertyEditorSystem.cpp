@@ -32,7 +32,7 @@ CSharedPropertyNode CPropertyEditorSystem::FindCreateBoundProperty(Niflect::CNif
 	return NULL;
 }
 
-CSharedPropertyNode CreateBranchProperty(const CBuildBranchContext& ctx)
+CSharedPropertyNode CreatePropertyBranch(const CPropertyBranchContext& ctx)
 {
 	auto prop = ctx.m_sys->FindCreateBoundProperty(GetAccessorType(ctx.m_type));
 	if (prop == NULL)

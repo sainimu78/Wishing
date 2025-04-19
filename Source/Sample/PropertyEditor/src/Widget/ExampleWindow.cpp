@@ -24,7 +24,7 @@ QExampleWindow::QExampleWindow(QWidget* parentWidget)
 			m_dummy = Niflect::NiflectTypeMakeShared<void*>(type);
 			CRwNode rw;
 			type->SaveInstanceToRwNode(m_dummy.Get(), &rw);
-			auto prop = CreateBranchProperty(CBuildBranchContext(m_sys, type, &rw));
+			auto prop = CreatePropertyBranch(CPropertyBranchContext(m_sys, type, &rw));
 			DebugPrintPropertyRecurs(prop.Get(), 0);
 			printf("");
 			//m_propTree->BuildFromInstance(m_propTree->GetRoot(), type, m_dummy.Get());

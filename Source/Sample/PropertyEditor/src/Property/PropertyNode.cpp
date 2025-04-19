@@ -1,7 +1,7 @@
 #include "Property/PropertyNode.h"
 #include "PropertyEditorSystem.h"
 
-void CPropertyGroup::BuildNode(const CBuildBranchContext& ctx)
+void CPropertyGroup::BuildNode(const CPropertyBranchContext& ctx)
 {
 	auto& layout = ctx.m_type->GetTypeLayout();
 	if (layout.m_vecSection.size() == 1)
@@ -18,20 +18,20 @@ void CPropertyGroup::BuildNode(const CBuildBranchContext& ctx)
 		}
 	}
 }
-void CPropertyGroup::BuildFields(const CBuildBranchContext& ctx, Niflect::CNiflectType* type)
+void CPropertyGroup::BuildFields(const CPropertyBranchContext& ctx, Niflect::CNiflectType* type)
 {
 	auto& vecFields = type->GetFields();
 	for (uint32 idx = 0; idx < vecFields.size(); ++idx)
 	{
 		auto rwField = ctx.m_rw->GetNode(idx);
 		auto& field = vecFields[idx];
-		auto propField = CreateBranchProperty(CBuildBranchContext(ctx.m_sys, field.GetType(), rwField));
+		auto propField = CreatePropertyBranch(CPropertyBranchContext(ctx.m_sys, field.GetType(), rwField));
 		propField->InitName(field.GetName());
 		this->AddNode(propField);
 	}
 }
 
-void CFloatProperty::BuildNode(const CBuildBranchContext& ctx)
+void CFloatProperty::BuildNode(const CPropertyBranchContext& ctx)
 {
 	ASSERT(ctx.m_rw->IsValue());
 	auto& value = ctx.m_rw->GetValue()->GetFloat();
