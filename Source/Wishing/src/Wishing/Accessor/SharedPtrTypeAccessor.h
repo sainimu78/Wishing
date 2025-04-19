@@ -7,7 +7,7 @@ namespace Wishing
 	using namespace RwTree;
 
 	template <typename TPtr>
-	class TSharedPtrTypeSpecialized : public Niflect::CAccessor
+	class TSharedPtrTypeSpecialized : public Niflect::CNiflectAccessor
 	{
 		using CSharedPtrType = Niflect::TSharedPtr<TPtr>;
 	protected:
